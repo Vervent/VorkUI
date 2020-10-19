@@ -1,0 +1,10 @@
+## Interface: 90001
+## Author: VorkaPal@Archimonde-EU
+## Title: |cff1700aaVorkUI|r
+## X-oUF: VorkUF
+
+Core\init.lua
+Libs\load.xml
+Medias\load.xml
+Core\load.xml
+Modules\load.xml
