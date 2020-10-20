@@ -1,4 +1,5 @@
 <Ui xmlns='http://www.blizzard.com/wow/ui/'>
 	<Include file='oUF\oUF.xml'/>
+	<Include file='Vork-oUF\load.xml'/>
 	<!-- <Include file='LibSharedMedia-3.0\lib.xml'/> -->
 </Ui>

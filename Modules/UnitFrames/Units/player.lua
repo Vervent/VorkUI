@@ -9,48 +9,32 @@ local V, C, L = select(2, ...):unpack()
 local UnitFrames = V["UnitFrames"]
 local Class = select(2, UnitClass("player"))
 
-local function RotateTexture(self, degrees)
-    local angle = math.rad(degrees)
-    local cos, sin = math.cos(angle), math.sin(angle)
-    self:SetTexCoord((sin - cos), -(cos + sin), -cos, -sin, sin, -cos, 0, 0)
-end
-
 function UnitFrames:Player()
 
     self:RegisterForClicks("AnyUp")
     self:SetScript("OnEnter", UnitFrame_OnEnter)
     self:SetScript("OnLeave", UnitFrame_OnLeave)
 
-    self.Backdrop = CreateFrame("Frame", nil, self, "BackdropTemplate")
-    self.Backdrop:SetAllPoints()
-    self.Backdrop:SetFrameLevel(self:GetFrameLevel())
-    self.Backdrop:SetBackdropColor(0, 0, 0)
+    local Health = self:CreateTexture(nil, "ARTWORK")
+    Health:SetSize(256,32)
+    Health:SetPoint("TOPLEFT", self, "TOPLEFT")
+    Health:SetTexture([[Interface\AddOns\VorkUI\Medias\slantedTest.tga]])
 
-    local Health = CreateFrame("StatusBar", nil, self)
-    Health:SetFrameStrata(self:GetFrameStrata())
-    Health:SetFrameLevel(4)
-    Health:SetHeight(28)
-    Health:SetPoint("TOPLEFT")
-    Health:SetPoint("TOPRIGHT")
-    Health:SetStatusBarTexture([[Interface\AddOns\VorkUI\Medias\Smooth.tga]])
-
-    Health.Background = Health:CreateTexture(nil, "BACKGROUND")
-   --Health.Background:SetTexture([[Interface\AddOns\VorkUI\Medias\Smooth.tga]])
-    Health.Background:SetAllPoints(Health)
-
-    RotateTexture(Health:GetStatusBarTexture(), 30)
+    Health.background = self:CreateTexture(nil, "BACKGROUND")
+    Health.background:SetSize(256,32)
+    Health.background:SetAllPoints(Health)
+    Health.background:SetTexture([[Interface\AddOns\VorkUI\Medias\slantedTest.tga]])
+    Health.background:SetColorTexture(0,0,0,1)
 
     Health.colorDisconnected = true
     Health.colorClass = true
     Health.colorReaction = true
 
-    Health.PostUpdate = UnitFrames.PostUpdateHealth
-
     self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
     self:HookScript("OnLeave", UnitFrames.MouseOnPlayer)
 
     -- Register with oUF
-    self.Health = Health
-    self.Health.bg = Health.Background
+    self.SlantHealth = Health
+    self.SlantHealth.bg = Health.background
 
 end
