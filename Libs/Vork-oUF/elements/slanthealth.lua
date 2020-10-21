@@ -138,7 +138,7 @@ local function UpdateColor(self, event, unit)
     end
 
     if(b) then
-        element:SetColorTexture(r, g, b)
+        element:SetVertexColor(r, g, b)
 
         local bg = element.bg
         if(bg) then
@@ -392,17 +392,20 @@ local function Enable(self, unit)
             self:HookScript("OnUpdate", UpdateAnimation)
             --duration should be < event_time to avoid visual artefact
             SetDefaultAnimationData(0, 0.33, VorkoUF.Easing["linear"])
-            if element.inverse then
-                VorkoUF.SetValue(element.bg, 1, 0, coord, slant)
-            else
-                VorkoUF.SetValue(element.bg, 0, 1, coord, slant)
+            if element.bg then
+                if element.inverse then
+                    VorkoUF.SetValue(element.bg, 1, 0, coord, slant)
+                else
+                    VorkoUF.SetValue(element.bg, 0, 1, coord, slant)
+                end
+
             end
         end
 
         element:Show()
 
-            return true
-        end
+        return true
+    end
 end
 
 local function Disable(self)

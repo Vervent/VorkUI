@@ -164,7 +164,7 @@ local function UpdateColor(self, event, unit)
 
     local r, g, b = 56/255, 167/255, 255/255
 
-    element:SetColorTexture(r, g, b)
+    element:SetVertexColor(r, g, b, 0.5)
 
     local bg = element.bg
     if(bg) then

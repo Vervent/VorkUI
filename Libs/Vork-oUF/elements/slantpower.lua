@@ -230,7 +230,7 @@ local function UpdateColor(self, event, unit)
     end
 
     if(b) then
-        element:SetColorTexture(r, g, b)
+        element:SetVertexColor(r, g, b)
 
         local bg = element.bg
         if(bg) then
