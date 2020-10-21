@@ -6,6 +6,8 @@ local CreateFrame = CreateFrame
 
 local VorkoUF = CreateFrame("Frame", "VORKOUF", UIParent)
 
+VorkoUF.Easing={}
+
 VorkoUF.defaultTexCoord = {
     ULx = 0,
     ULy = 0,
@@ -42,12 +44,17 @@ VorkoUF.Slant = function(self, startProgress, endProgress, coord)
 end
 
 VorkoUF.SetValue = function(self, cur, max, coord)
+
     VorkoUF.Slant(self, 0, cur/max, coord)
     self:SetVertexOffset(UPPER_RIGHT_VERTEX, coord.URvx, coord.URvy);
     self:SetVertexOffset(UPPER_LEFT_VERTEX, coord.ULvx, coord.ULvy);
     self:SetVertexOffset(LOWER_RIGHT_VERTEX, coord.LRvx, coord.LRvy);
     self:SetVertexOffset(LOWER_LEFT_VERTEX, coord.LLvx, coord.LLvy);
     self:SetTexCoord(coord.ULx, coord.ULy, coord.LLx, coord.LLy, coord.URx, coord.URy, coord.LRx, coord.LRy);
+end
+
+VorkoUF.Easing["linear"] = function(t, b, c, d)
+    return c * t / d + b
 end
 
 ns.VorkoUF = VorkoUF

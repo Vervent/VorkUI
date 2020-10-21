@@ -100,6 +100,11 @@ local coord = {
     LRvy = 0,
 };
 
+local animationTime
+local animationDuration
+local animationValue
+local animationUpdate
+
 local function UpdateColor(self, event, unit)
     if(not unit or self.unit ~= unit) then return end
     local element = self.SlantHealth
@@ -140,7 +145,7 @@ local function UpdateColor(self, event, unit)
         end
     end
 
-    --[[ Callback: Health:PostUpdateColor(unit, r, g, b)
+    --[[ Callback: SlantHealth:PostUpdateColor(unit, r, g, b)
     Called after the element color has been updated.
 
     * self - the Health element
@@ -154,8 +159,10 @@ local function UpdateColor(self, event, unit)
     end
 end
 
+
+
 local function ColorPath(self, ...)
-    --[[ Override: Health.UpdateColor(self, event, unit)
+    --[[ Override: SlantHealth.UpdateColor(self, event, unit)
     Used to completely override the internal function for updating the widgets' colors.
 
     * self  - the parent object
@@ -165,11 +172,19 @@ local function ColorPath(self, ...)
     (self.SlantHealth.UpdateColor or UpdateColor) (self, ...)
 end
 
+local function SetDefaultAnimationData(val, duration, fct)
+    animationTime = 0
+    animationDuration = duration or 1
+    animationValue = val or 0
+    animationUpdate = fct or (function() end)
+    print (animationValue)
+end
+
 local function Update(self, event, unit)
     if(not unit or self.unit ~= unit) then return end
     local element = self.SlantHealth
 
-    --[[ Callback: Health:PreUpdate(unit)
+    --[[ Callback: SlantHealth:PreUpdate(unit)
     Called before the element has been updated.
 
     * self - the Health element
@@ -183,17 +198,30 @@ local function Update(self, event, unit)
     --element:SetMinMaxValues(0, max)
 
     if(UnitIsConnected(unit)) then
-        VorkoUF.SetValue(element, cur, max, coord)
-        --SetValue(element, cur, max)
+        if element.animTexture then
+            element.onAnim = true
+            animationTime = 0
+            animationValue = element.cur or cur
+        else
+            VorkoUF.SetValue(element, cur, max, coord)
+            --SetValue(element, cur, max)
+        end
     else
-        VorkoUF.SetValue(element, max, max, coord)
-        --SetValue(element, max, max)
+        if element.animTexture then
+            element.onAnim = true
+            animationTime = 0
+            animationValue = element.cur or cur
+        else
+            VorkoUF.SetValue(element, max, max, coord)
+            --SetValue(element, max, max)
+        end
+
     end
 
     element.cur = cur
     element.max = max
 
-    --[[ Callback: Health:PostUpdate(unit, cur, max)
+    --[[ Callback: SlantHealth:PostUpdate(unit, cur, max)
     Called after the element has been updated.
 
     * self - the Health element
@@ -207,7 +235,7 @@ local function Update(self, event, unit)
 end
 
 local function Path(self, ...)
-    --[[ Override: Health.Override(self, event, unit)
+    --[[ Override: SlantHealth.Override(self, event, unit)
     Used to completely override the internal update function.
 
     * self  - the parent object
@@ -223,7 +251,7 @@ local function ForceUpdate(element)
     Path(element.__owner, 'ForceUpdate', element.__owner.unit)
 end
 
---[[ Health:SetColorDisconnected(state, isForced)
+--[[ SlantHealth:SetColorDisconnected(state, isForced)
 Used to toggle coloring if the unit is offline.
 
 * self     - the Health element
@@ -241,7 +269,7 @@ local function SetColorDisconnected(element, state, isForced)
     end
 end
 
---[[ Health:SetColorSelection(state, isForced)
+--[[ SlantHealth:SetColorSelection(state, isForced)
 Used to toggle coloring by the unit's selection.
 
 * self     - the Health element
@@ -259,7 +287,7 @@ local function SetColorSelection(element, state, isForced)
     end
 end
 
---[[ Health:SetColorTapping(state, isForced)
+--[[ SlantHealth:SetColorTapping(state, isForced)
 Used to toggle coloring if the unit isn't tapped by the player.
 
 * self     - the Health element
@@ -277,7 +305,7 @@ local function SetColorTapping(element, state, isForced)
     end
 end
 
---[[ Health:SetColorThreat(state, isForced)
+--[[ SlantHealth:SetColorThreat(state, isForced)
 Used to toggle coloring by the unit's threat status.
 
 * self     - the Health element
@@ -295,8 +323,33 @@ local function SetColorThreat(element, state, isForced)
     end
 end
 
+--[[ SlantHealth:UpdateAnimation(self, elapsed)
+Used to anim the texture progression
+
+* self     - the SlantHealth element
+* elapsed  - the time between last update
+--]]
+local function UpdateAnimation(self, elapsed)
+    local element = self.SlantHealth
+    if element and element.animTexture and element.onAnim then
+        animationTime = animationTime + elapsed
+
+        local cur, max = element.cur, element.max
+        --animation is over
+        if animationTime > animationDuration then
+            VorkoUF.SetValue(element, cur, max, coord)
+            element.onAnim = false
+            animationTime = 0
+            animationValue = cur
+        else
+            VorkoUF.SetValue(element,  animationUpdate(animationTime, animationValue, cur-animationValue, animationDuration), max, coord)
+        end
+    end
+end
+
 local function Enable(self, unit)
     local element = self.SlantHealth
+
     if(element) then
         element.__owner = self
         element.ForceUpdate = ForceUpdate
@@ -324,9 +377,12 @@ local function Enable(self, unit)
         self:RegisterEvent('UNIT_HEALTH', Path)
         self:RegisterEvent('UNIT_MAXHEALTH', Path)
 
-        --if(element:IsObjectType('StatusBar') and not (element:GetStatusBarTexture() or element:GetStatusBarAtlas())) then
-        --    element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
-        --end
+        self:SetScript("OnUpdate", UpdateAnimation)
+
+        if element.animTexture then
+            --duration should be < event_time to avoid visual artefact
+            SetDefaultAnimationData(0, 0.25, VorkoUF.Easing["linear"])
+        end
         VorkoUF.SetValue(element.bg, 1, 1, coord)
 
         element:Show()
@@ -336,7 +392,7 @@ local function Enable(self, unit)
 end
 
 local function Disable(self)
-    local element = self.Health
+    local element = self.SlantHealth
     if(element) then
         element:Hide()
 

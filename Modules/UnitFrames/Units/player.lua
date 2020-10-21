@@ -29,6 +29,7 @@ function UnitFrames:Player()
     Health.colorDisconnected = true
     Health.colorClass = true
     Health.colorReaction = true
+    Health.animTexture = true
 
     self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
     self:HookScript("OnLeave", UnitFrames.MouseOnPlayer)
