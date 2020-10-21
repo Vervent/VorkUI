@@ -1,4 +1,5 @@
 <Ui xmlns='http://www.blizzard.com/wow/ui/'>
 	<Script file='core.lua'/>
-	<Script file='elements\slantHealth.lua'/>
+	<Script file='elements\slanthealth.lua'/>
+	<Script file='elements\slantpower.lua'/>
 </Ui>

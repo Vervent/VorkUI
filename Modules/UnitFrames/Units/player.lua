@@ -15,6 +15,10 @@ function UnitFrames:Player()
     self:SetScript("OnEnter", UnitFrame_OnEnter)
     self:SetScript("OnLeave", UnitFrame_OnLeave)
 
+
+    --[[
+        HEALTH SLANTED STATUSBAR
+    --]]
     local Health = self:CreateTexture(nil, "ARTWORK")
     Health:SetSize(256,32)
     Health:SetPoint("TOPLEFT", self, "TOPLEFT")
@@ -31,11 +35,32 @@ function UnitFrames:Player()
     Health.colorReaction = true
     Health.animTexture = true
 
-    self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
-    self:HookScript("OnLeave", UnitFrames.MouseOnPlayer)
+    --[[
+        POWER SLANTED STATUSBAR
+    --]]
+    local Power = self:CreateTexture(nil, "ARTWORK")
+    Power:SetSize(240,16)
+    Power:SetPoint("TOPLEFT", Health, "BOTTOMLEFT", -15, 0)
+    Power:SetTexture([[Interface\AddOns\VorkUI\Medias\slantedTest.tga]])
+
+    Power.background = self:CreateTexture(nil, "BACKGROUND")
+    Power.background:SetSize(228,16)
+    Power.background:SetAllPoints(Power)
+    Power.background:SetTexture([[Interface\AddOns\VorkUI\Medias\slantedTest.tga]])
+    Power.background:SetColorTexture(0,0,0,1)
+
+    Power.colorPower = true
+    Power.animTexture = true
+    Power.frequentUpdates=true
 
     -- Register with oUF
     self.SlantHealth = Health
     self.SlantHealth.bg = Health.background
+
+    self.SlantPower = Power
+    self.SlantPower.bg = Power.background
+
+    self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
+    self:HookScript("OnLeave", UnitFrames.MouseOnPlayer)
 
 end

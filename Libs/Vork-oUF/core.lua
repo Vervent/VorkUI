@@ -29,13 +29,13 @@ VorkoUF.MoveCorner = function(width, height, corner, x, y, coord)
     coord[corner .. "y"] = y;
 end
 
-VorkoUF.Slant = function(self, startProgress, endProgress, coord)
-    local slant = 0.2;
-    startProgress = startProgress * (1 - slant);
-    endProgress = endProgress * (1 -  slant);
+VorkoUF.Slant = function(self, startProgress, endProgress, coord, slantFactor)
 
-    local slant1 = self.slantFirst and 0 or slant;
-    local slant2 = self.slantFirst and slant or 0;
+    startProgress = startProgress * (1 - slantFactor);
+    endProgress = endProgress * (1 -  slantFactor);
+
+    local slant1 = self.slantFirst and 0 or slantFactor;
+    local slant2 = self.slantFirst and slantFactor or 0;
 
     VorkoUF.MoveCorner(self:GetWidth(), self:GetHeight(), "UL", startProgress + slant1, 0, coord);
     VorkoUF.MoveCorner(self:GetWidth(), self:GetHeight(), "LL", startProgress + slant2, 1, coord );
@@ -43,9 +43,8 @@ VorkoUF.Slant = function(self, startProgress, endProgress, coord)
     VorkoUF.MoveCorner(self:GetWidth(), self:GetHeight(), "LR", endProgress + slant2, 1, coord );
 end
 
-VorkoUF.SetValue = function(self, cur, max, coord)
-
-    VorkoUF.Slant(self, 0, cur/max, coord)
+VorkoUF.SetValue = function(self, startProgress, endProgress, coord, slantFactor)
+    VorkoUF.Slant(self, startProgress, endProgress, coord, slantFactor)
     self:SetVertexOffset(UPPER_RIGHT_VERTEX, coord.URvx, coord.URvy);
     self:SetVertexOffset(UPPER_LEFT_VERTEX, coord.ULvx, coord.ULvy);
     self:SetVertexOffset(LOWER_RIGHT_VERTEX, coord.LRvx, coord.LRvy);
