@@ -339,7 +339,7 @@ local function UpdateAnimation(self, elapsed)
         --animation is over
         if animationTime > animationDuration then
             if element.inverse then
-                VorkoUF.SetValue(element, cur/max, 0, coord, slant)
+                VorkoUF.SetValue(element, 1-cur/max, 1, coord, slant)
             else
                 VorkoUF.SetValue(element, 0, cur/max, coord, slant)
             end
@@ -348,7 +348,7 @@ local function UpdateAnimation(self, elapsed)
             animationValue = cur
         else
             if element.inverse then
-                VorkoUF.SetValue(element, animationUpdate(animationTime, animationValue, cur-animationValue, animationDuration)/max, 0, coord, slant)
+                VorkoUF.SetValue(element, 1-animationUpdate(animationTime, animationValue, cur-animationValue, animationDuration)/max, 1, coord, slant)
             else
                 VorkoUF.SetValue(element, 0, animationUpdate(animationTime, animationValue, cur-animationValue, animationDuration)/max, coord, slant)
             end
