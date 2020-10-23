@@ -7,6 +7,7 @@ local Utils = CreateFrame("Frame", "UTILS", UIParent)
 Utils.Settings = {}
 Utils.API = {}
 Utils.Functions = {}
+Utils.DefaultSettings = {}
 
 Utils.Functions.AddAPI = function(object)
     local mt = getmetatable(object).__index
