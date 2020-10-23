@@ -19,8 +19,9 @@ function UnitFrames:Player()
     --[[
         HEALTH SLANTED STATUSBAR
     --]]
+    local size = {256, 32}
     local Health = self:CreateTexture(nil, "ARTWORK")
-    Health:SetSize(256,32)
+    Health:SetSize(unpack(size))
     Health:SetPoint("TOPLEFT", self, "TOPLEFT")
     Health:SetTexture([[Interface\AddOns\VorkUI\Medias\slantedTest.tga]])
 
@@ -34,12 +35,14 @@ function UnitFrames:Player()
     Health.colorClass = true
     Health.colorReaction = true
     Health.animTexture = true
+    Health.slant = size[2] / size[1]
 
     --[[
         POWER SLANTED STATUSBAR
     --]]
+    size = {240, 16}
     local Power = self:CreateTexture(nil, "ARTWORK")
-    Power:SetSize(240,16)
+    Power:SetSize(unpack(size))
     Power:SetPoint("TOPLEFT", Health, "BOTTOMLEFT", -15, 0)
     Power:SetTexture([[Interface\AddOns\VorkUI\Medias\slantedTest.tga]])
 
@@ -52,6 +55,7 @@ function UnitFrames:Player()
     Power.colorPower = true
     Power.animTexture = true
     Power.frequentUpdates=true
+    Power.slant = size[2] / size[1]
 
     -- Register with oUF
     self.SlantHealth = Health

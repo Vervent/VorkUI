@@ -367,7 +367,7 @@ local function Enable(self, unit)
         element.SetColorTapping = SetColorTapping
         element.SetColorThreat = SetColorThreat
 
-        slant = element:GetHeight() / element:GetWidth()
+        slant = element.slant or 0
 
         if(element.colorDisconnected) then
             self:RegisterEvent('UNIT_CONNECTION', ColorPath)
