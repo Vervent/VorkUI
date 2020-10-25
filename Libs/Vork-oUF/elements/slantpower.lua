@@ -449,7 +449,7 @@ local function Enable(self)
         element.SetColorThreat = SetColorThreat
         element.SetFrequentUpdates = SetFrequentUpdates
 
-        slant = element:GetHeight() / element:GetWidth()
+        slant = element.slant or 0
 
         if(element.colorDisconnected) then
             self:RegisterEvent('UNIT_CONNECTION', ColorPath)
