@@ -99,6 +99,256 @@ function UnitFrames:UTF8Sub(i, dots)
     end
 end
 
+function UnitFrames:UpdateAbsorbOverride(event, unit)
+    if(not unit or self.unit ~= unit) then return end
+    local element = self.Absorb
+
+    --[[ Callback: Absorb:PreUpdate(unit)
+    Called before the element has been updated.
+
+    * self - the Absorb element
+    * unit - the unit for which the update has been triggered (string)
+    --]]
+    if(element.PreUpdate) then
+        element:PreUpdate(unit)
+    end
+
+    local cur, max = UnitGetTotalAbsorbs(unit), UnitHealthMax(unit)
+
+    if(UnitIsConnected(unit)) then
+        element.Slant:Slant(0, cur/max);
+    else
+        element.Slant:Slant(0, 1);
+    end
+
+    element.cur = cur
+    element.max = max
+
+    --[[ Callback: Absorb:PostUpdate(unit, cur, max)
+    Called after the element has been updated.
+
+    * self - the Health element
+    * unit - the unit for which the update has been triggered (string)
+    * cur  - the unit's current health value (number)
+    * max  - the unit's maximum possible health value (number)
+    --]]
+    if(element.PostUpdate) then
+        element:PostUpdate(unit, cur, max)
+    end
+end
+
+function UnitFrames:UpdatePowerOverride(event, unit)
+    if(self.unit ~= unit) then return end
+    local element = self.Power
+
+    --[[ Callback: Power:PreUpdate(unit)
+    Called before the element has been updated.
+
+    * self - the Power element
+    * unit - the unit for which the update has been triggered (string)
+    --]]
+    if(element.PreUpdate) then
+        element:PreUpdate(unit)
+    end
+
+    local displayType, min
+    if(element.displayAltPower) then
+        displayType, min = element:GetDisplayPower()
+    end
+
+    local cur, max = UnitPower(unit, displayType), UnitPowerMax(unit, displayType)
+
+    if(UnitIsConnected(unit)) then
+        element.Slant:Slant(0, cur/max);
+    else
+        element.Slant:Slant(0, 1);
+    end
+
+    element.cur = cur
+    element.min = min
+    element.max = max
+    element.displayType = displayType
+
+    --[[ Callback: Power:PostUpdate(unit, cur, min, max)
+    Called after the element has been updated.
+
+    * self - the Power element
+    * unit - the unit for which the update has been triggered (string)
+    * cur  - the unit's current power value (number)
+    * min  - the unit's minimum possible power value (number)
+    * max  - the unit's maximum possible power value (number)
+    --]]
+    if(element.PostUpdate) then
+        element:PostUpdate(unit, cur, min, max)
+    end
+end
+
+function UnitFrames:UpdatePowerColorOverride(event, unit)
+    if(self.unit ~= unit) then return end
+    local element = self.Power
+
+    local pType, pToken, altR, altG, altB = UnitPowerType(unit)
+
+    local r, g, b, t
+    if(element.colorDisconnected and not UnitIsConnected(unit)) then
+        t = self.colors.disconnected
+    elseif(element.colorTapping and not UnitPlayerControlled(unit) and UnitIsTapDenied(unit)) then
+        t = self.colors.tapped
+    elseif(element.colorThreat and not UnitPlayerControlled(unit) and UnitThreatSituation('player', unit)) then
+        t =  self.colors.threat[UnitThreatSituation('player', unit)]
+    elseif(element.colorPower) then
+        if(element.displayType ~= ALTERNATE_POWER_INDEX) then
+            t = self.colors.power[pToken]
+            if(not t) then
+                if(element.GetAlternativeColor) then
+                    r, g, b = element:GetAlternativeColor(unit, pType, pToken, altR, altG, altB)
+                elseif(altR) then
+                    r, g, b = altR, altG, altB
+                    if(r > 1 or g > 1 or b > 1) then
+                        -- BUG: As of 7.0.3, altR, altG, altB may be in 0-1 or 0-255 range.
+                        r, g, b = r / 255, g / 255, b / 255
+                    end
+                else
+                    t = self.colors.power[pType] or self.colors.power.MANA
+                end
+            end
+        else
+            t = self.colors.power[ALTERNATE_POWER_INDEX]
+        end
+    elseif(element.colorClass and UnitIsPlayer(unit))
+            or (element.colorClassNPC and not UnitIsPlayer(unit))
+            or (element.colorClassPet and UnitPlayerControlled(unit) and not UnitIsPlayer(unit)) then
+        local _, class = UnitClass(unit)
+        t = self.colors.class[class]
+    elseif(element.colorSelection and unitSelectionType(unit, element.considerSelectionInCombatHostile)) then
+        t = self.colors.selection[unitSelectionType(unit, element.considerSelectionInCombatHostile)]
+    elseif(element.colorReaction and UnitReaction(unit, 'player')) then
+        t = self.colors.reaction[UnitReaction(unit, 'player')]
+    elseif(element.colorSmooth) then
+        local adjust = 0 - (element.min or 0)
+        r, g, b = self:ColorGradient((element.cur or 1) + adjust, (element.max or 1) + adjust, unpack(element.smoothGradient or self.colors.smooth))
+    end
+
+    if(t) then
+        r, g, b = t[1], t[2], t[3]
+    end
+
+    if(b) then
+        element:SetVertexColor(r, g, b)
+
+        local bg = element.bg
+        if(bg) then
+            local mu = bg.multiplier or 1
+            bg:SetVertexColor(r * mu, g * mu, b * mu)
+        end
+    end
+
+    --[[ Callback: Power:PostUpdateColor(unit, r, g, b)
+    Called after the element color has been updated.
+
+    * self - the Power element
+    * unit - the unit for which the update has been triggered (string)
+    * r    - the red component of the used color (number)[0-1]
+    * g    - the green component of the used color (number)[0-1]
+    * b    - the blue component of the used color (number)[0-1]
+    --]]
+    if(element.PostUpdateColor) then
+        element:PostUpdateColor(unit, r, g, b)
+    end
+end
+
+function UnitFrames:UpdateHealthOverride(event, unit)
+    if(not unit or self.unit ~= unit) then
+        return
+    end
+    local element = self.Health
+
+    if(element.PreUpdate) then
+        element:PreUpdate(unit)
+    end
+
+    local cur, max = UnitHealth(unit), UnitHealthMax(unit)
+
+    if(UnitIsConnected(unit)) then
+        element.Slant:Slant(0, cur/max);
+    else
+        element.Slant:Slant(0, 1);
+    end
+
+    element.cur = cur
+    element.max = max
+
+    if(element.PostUpdate) then
+        element:PostUpdate(unit, cur, max)
+    end
+end
+
+function UnitFrames:UpdateHealthColorOverride(event, unit)
+    if(not unit or self.unit ~= unit)
+    then
+        return
+    end
+    local element = self.Health
+
+    local r, g, b, t
+    if(element.colorDisconnected and not UnitIsConnected(unit)) then
+        t = self.colors.disconnected
+        --print ("colorDisconnected")
+    elseif(element.colorTapping and not UnitPlayerControlled(unit) and UnitIsTapDenied(unit)) then
+        t = self.colors.tapped
+        --print ("colorTapping")
+    elseif(element.colorThreat and not UnitPlayerControlled(unit) and UnitThreatSituation('player', unit)) then
+        t =  self.colors.threat[UnitThreatSituation('player', unit)]
+        --print ("colorThreat")
+    elseif(element.colorClass and UnitIsPlayer(unit))
+            or (element.colorClassNPC and not UnitIsPlayer(unit))
+            or (element.colorClassPet and UnitPlayerControlled(unit) and not UnitIsPlayer(unit)) then
+        local _, class = UnitClass(unit)
+        t = self.colors.class[class]
+        --print ("colorClass")
+    elseif(element.colorSelection and unitSelectionType(unit, element.considerSelectionInCombatHostile)) then
+        t = self.colors.selection[unitSelectionType(unit, element.considerSelectionInCombatHostile)]
+        --print ("colorSelection")
+    elseif(element.colorReaction and UnitReaction(unit, 'player')) then
+        t = self.colors.reaction[UnitReaction(unit, 'player')]
+        --print ("colorReaction")
+    elseif(element.colorSmooth) then
+        r, g, b = self:ColorGradient(element.cur or 1, element.max or 1, unpack(element.smoothGradient or self.colors.smooth))
+        --print ("colorSmooth")
+    elseif(element.colorHealth) then
+        t = self.colors.health
+        --print ("colorHealth")
+    end
+
+    if(t) then
+        r, g, b = t[1], t[2], t[3]
+    end
+
+    if(b) then
+        --element:SetStatusBarColor(r, g, b)
+        element:SetVertexColor(r, g, b)
+
+        local bg = element.bg
+        if(bg) then
+            local mu = bg.multiplier or 1
+            bg:SetVertexColor(r * mu, g * mu, b * mu)
+        end
+    end
+
+    --[[ Callback: Health:PostUpdateColor(unit, r, g, b)
+    Called after the element color has been updated.
+
+    * self - the Health element
+    * unit - the unit for which the update has been triggered (string)
+    * r    - the red component of the used color (number)[0-1]
+    * g    - the green component of the used color (number)[0-1]
+    * b    - the blue component of the used color (number)[0-1]
+    --]]
+    if(element.PostUpdateColor) then
+        element:PostUpdateColor(unit, r, g, b)
+    end
+end
+
 function UnitFrames:MouseOnPlayer()
 
 end
@@ -138,6 +388,8 @@ end
 function UnitFrames:CheckChannel(unit, name, rank)
 
 end
+
+
 
 function UnitFrames:PreUpdateHealth(unit)
 
@@ -226,6 +478,8 @@ function UnitFrames:Style(unit)
 
     if (unit == "player") then
         UnitFrames.Player(self)
+    elseif (unit == "target") then
+        UnitFrames.Target(self)
     end
 
     return self
@@ -233,12 +487,16 @@ end
 
 function UnitFrames:CreateUnits()
 
-        local Player = oUF:Spawn("player", "VorkuiPlayerFrame")
-        Player:SetPoint("CENTER", nil, "CENTER", -235, 0)
-        Player:SetSize(250, 57)
+    local Player = oUF:Spawn("player", "VorkuiPlayerFrame")
+    Player:SetPoint("CENTER", nil, "CENTER", -235, 0)
+    Player:SetSize(256, 60)
 
-        self.Units.Player = Player
+    local Target = oUF:Spawn("target", "VorkuiTargetFrame")
+    Target:SetPoint("CENTER", nil, "CENTER", 235, 0)
+    Target:SetSize(256, 60)
 
+    self.Units.Player = Player
+    self.Units.Target = Target
 
 end
 

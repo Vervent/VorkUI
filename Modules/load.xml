@@ -1,4 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="UnitFrames\core.lua"/>
 	<Script file="UnitFrames\Units\player.lua"/>
+	<Script file="UnitFrames\Units\target.lua"/>
 </Ui>
