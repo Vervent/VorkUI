@@ -293,31 +293,31 @@ function UnitFrames:UpdateHealthColorOverride(event, unit)
     local r, g, b, t
     if(element.colorDisconnected and not UnitIsConnected(unit)) then
         t = self.colors.disconnected
-        print ("colorDisconnected")
+        --print ("colorDisconnected")
     elseif(element.colorTapping and not UnitPlayerControlled(unit) and UnitIsTapDenied(unit)) then
         t = self.colors.tapped
-        print ("colorTapping")
+        --print ("colorTapping")
     elseif(element.colorThreat and not UnitPlayerControlled(unit) and UnitThreatSituation('player', unit)) then
         t =  self.colors.threat[UnitThreatSituation('player', unit)]
-        print ("colorThreat")
+        --print ("colorThreat")
     elseif(element.colorClass and UnitIsPlayer(unit))
             or (element.colorClassNPC and not UnitIsPlayer(unit))
             or (element.colorClassPet and UnitPlayerControlled(unit) and not UnitIsPlayer(unit)) then
         local _, class = UnitClass(unit)
         t = self.colors.class[class]
-        print ("colorClass")
+        --print ("colorClass")
     elseif(element.colorSelection and unitSelectionType(unit, element.considerSelectionInCombatHostile)) then
         t = self.colors.selection[unitSelectionType(unit, element.considerSelectionInCombatHostile)]
-        print ("colorSelection")
+        --print ("colorSelection")
     elseif(element.colorReaction and UnitReaction(unit, 'player')) then
         t = self.colors.reaction[UnitReaction(unit, 'player')]
-        print ("colorReaction")
+        --print ("colorReaction")
     elseif(element.colorSmooth) then
         r, g, b = self:ColorGradient(element.cur or 1, element.max or 1, unpack(element.smoothGradient or self.colors.smooth))
-        print ("colorSmooth")
+        --print ("colorSmooth")
     elseif(element.colorHealth) then
         t = self.colors.health
-        print ("colorHealth")
+        --print ("colorHealth")
     end
 
     if(t) then
@@ -478,6 +478,8 @@ function UnitFrames:Style(unit)
 
     if (unit == "player") then
         UnitFrames.Player(self)
+    elseif (unit == "target") then
+        UnitFrames.Target(self)
     end
 
     return self
@@ -485,12 +487,16 @@ end
 
 function UnitFrames:CreateUnits()
 
-        local Player = oUF:Spawn("player", "VorkuiPlayerFrame")
-        Player:SetPoint("CENTER", nil, "CENTER", -235, 0)
-        Player:SetSize(250, 57)
+    local Player = oUF:Spawn("player", "VorkuiPlayerFrame")
+    Player:SetPoint("CENTER", nil, "CENTER", -235, 0)
+    Player:SetSize(256, 60)
 
-        self.Units.Player = Player
+    local Target = oUF:Spawn("target", "VorkuiTargetFrame")
+    Target:SetPoint("CENTER", nil, "CENTER", 235, 0)
+    Target:SetSize(256, 60)
 
+    self.Units.Player = Player
+    self.Units.Target = Target
 
 end
 
