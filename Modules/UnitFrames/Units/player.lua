@@ -6,8 +6,12 @@
 
 local V, C, L = select(2, ...):unpack()
 
+local LibSlant = LibStub:GetLibrary("LibSlant")
+
 local UnitFrames = V["UnitFrames"]
 local Class = select(2, UnitClass("player"))
+
+local time = 0
 
 function UnitFrames:Player()
 
@@ -19,43 +23,56 @@ function UnitFrames:Player()
     --[[
         HEALTH SLANTED STATUSBAR
     --]]
-    local size = {256, 32}
+
     local Health = self:CreateTexture(nil, "ARTWORK")
-    Health:SetSize(unpack(size))
-    Health:SetPoint("TOPLEFT", self, "TOPLEFT")
-    Health:SetTexture([[Interface\AddOns\VorkUI\Medias\slantedTest.tga]])
+    Health:SetSize(256,32)
+    Health:SetPoint("TOPLEFT", self, "TOPLEFT",0, 0)
+    Health:SetTexture([[Interface\AddOns\VorkUI\Medias\default_statusbar.tga]])
 
     Health.background = self:CreateTexture(nil, "BACKGROUND")
     Health.background:SetSize(256,32)
     Health.background:SetAllPoints(Health)
-    Health.background:SetTexture([[Interface\AddOns\VorkUI\Medias\slantedTest.tga]])
+    Health.background:SetTexture([[Interface\AddOns\VorkUI\Medias\default_statusbar.tga]])
     Health.background:SetColorTexture(0,0,0,1)
 
     Health.colorDisconnected = true
     Health.colorClass = true
     Health.colorReaction = true
     Health.animTexture = true
-    Health.slant = size[2] / size[1]
 
     --[[
         POWER SLANTED STATUSBAR
     --]]
-    size = {240, 16}
     local Power = self:CreateTexture(nil, "ARTWORK")
-    Power:SetSize(unpack(size))
+    Power:SetSize(240,16)
     Power:SetPoint("TOPLEFT", Health, "BOTTOMLEFT", -15, 0)
-    Power:SetTexture([[Interface\AddOns\VorkUI\Medias\slantedTest.tga]])
+    Power:SetTexture([[Interface\AddOns\VorkUI\Medias\default_statusbar.tga]])
 
     Power.background = self:CreateTexture(nil, "BACKGROUND")
-    Power.background:SetSize(228,16)
+    Power.background:SetSize(240,16)
     Power.background:SetAllPoints(Power)
-    Power.background:SetTexture([[Interface\AddOns\VorkUI\Medias\slantedTest.tga]])
+    Power.background:SetTexture([[Interface\AddOns\VorkUI\Medias\default_statusbar.tga]])
     Power.background:SetColorTexture(0,0,0,1)
 
     Power.colorPower = true
     Power.animTexture = true
     Power.frequentUpdates=true
-    Power.slant = size[2] / size[1]
+
+    --[[
+        ABSORB SLANTED STATUSBAR
+    --]]
+    local Absorb = self:CreateTexture(nil, "ARTWORK")
+    Absorb:SetSize(240,16)
+    Absorb:SetPoint("BOTTOMLEFT", Health, "TOPLEFT", 0, 0)
+    Absorb:SetTexture([[Interface\AddOns\VorkUI\Medias\absorb4.tga]])
+
+    Absorb.background = self:CreateTexture(nil, "BACKGROUND")
+    Absorb.background:SetSize(240,16)
+    Absorb.background:SetAllPoints(Absorb)
+    Absorb.background:SetTexture([[Interface\AddOns\VorkUI\Medias\default_statusbar.tga]])
+    Absorb.background:SetColorTexture(0,0,0,1)
+    Absorb.animTexture = true
+    Absorb.inverse = true
 
     -- Register with oUF
     self.SlantHealth = Health
@@ -64,7 +81,119 @@ function UnitFrames:Player()
     self.SlantPower = Power
     self.SlantPower.bg = Power.background
 
+    self.SlantAbsorb = Absorb
+    self.SlantAbsorb.bg = Absorb.background
+
+    self.Panel = Panel
+
     self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
     self:HookScript("OnLeave", UnitFrames.MouseOnPlayer)
+
+    --[[
+    LibSlantFrame libs test
+    --]]
+
+    local frames = {}
+    for i= 1, 4 do
+        local frame = CreateFrame("Frame", nil, self)
+        frame:SetSize(256,64)
+        frame:SetPoint("CENTER", UIParent, "CENTER", 50, 200-i*64)
+        local slant = LibSlant:CreateSlant(self)
+
+        local bg = slant:AddTexture("BACKGROUND")
+        bg:SetSize(256,32)
+        bg:SetPoint("TOPLEFT", frame, "TOPLEFT")
+        bg:SetColorTexture(0,0,0)
+
+        local art = slant:AddTexture("ARTWORK")
+        art:SetSize(256,32)
+        art:SetPoint("TOPLEFT", frame, "TOPLEFT")
+        --art:SetTexture([[Interface\AddOns\VorkUI\Medias\absorb4.tga]])
+        art:SetColorTexture(0, 66, 128)
+
+        slant.IgnoreBackground = true -- ignore Background layer for update
+        slant:CalculateAutomaticSlant() -- set automatic slant if you don't want to set manually
+        --frame.Slant:PrintDebug() --debug information
+
+
+        frame.Slant = slant
+        frames[i] = frame
+    end
+
+    frames[1].Slant.Inverse = true  -- inverse the slant orientation
+    frames[1].Slant.FillInverse = true -- inverse the fill of the textyre
+    frames[1].Slant:StaticSlant("BACKGROUND") -- slant the background only one time
+
+    frames[2].Slant.Inverse = true  -- inverse the slant orientation
+    frames[2].Slant.FillInverse = false -- inverse the fill of the textyre
+    frames[2].Slant:StaticSlant("BACKGROUND") -- slant the background only one time
+
+    frames[3].Slant.Inverse = false  -- inverse the slant orientation
+    frames[3].Slant.FillInverse = true -- inverse the fill of the textyre
+    frames[3].Slant:StaticSlant("BACKGROUND") -- slant the background only one time
+
+    frames[4].Slant.Inverse = false  -- inverse the slant orientation
+    frames[4].Slant.FillInverse = false -- inverse the fill of the textyre
+    frames[4].Slant:StaticSlant("BACKGROUND") -- slant the background only one time
+
+    --local frame = CreateFrame("Frame", nil, self)
+    --frame:SetSize(256,64)
+    --frame:SetPoint("CENTER", UIParent, "CENTER", 50, 0)
+    --frame.Slant = LibSlant:CreateSlant(frame)
+    --
+    --local bg = frame.Slant:AddTexture("BACKGROUND")
+    --bg:SetSize(256,32)
+    --bg:SetPoint("TOPLEFT", frame, "TOPLEFT")
+    --bg:SetColorTexture(0,0,0)
+    --
+    --local art = frame.Slant:AddTexture("ARTWORK")
+    --art:SetSize(256,32)
+    --art:SetPoint("TOPLEFT", frame, "TOPLEFT")
+    ----art:SetTexture([[Interface\AddOns\VorkUI\Medias\absorb4.tga]])
+    --art:SetColorTexture(0, 66, 128)
+    --
+    --frame.Slant.Inverse = true  -- inverse the slant orientation
+    --frame.Slant.IgnoreBackground = true -- ignore Background layer for update
+    --frame.Slant:CalculateAutomaticSlant() -- set automatic slant if you don't want to set manually
+    --frame.Slant:PrintDebug() --debug information
+    --frame.Slant:StaticSlant("BACKGROUND") -- slant the background only one time
+    --frame.Slant.FillInverse = false -- inverse the fill of the textyre
+    --
+    --local frame2 = CreateFrame("Frame", nil, self)
+    --frame2:SetSize(256,64)
+    --frame2:SetPoint("CENTER", UIParent, "CENTER", 50, 80)
+    --frame2.Slant2 = LibSlant:CreateSlant(frame2)
+    --
+    --local bg2 = frame2.Slant2:AddTexture("BACKGROUND")
+    --bg2:SetSize(256,32)
+    --bg2:SetPoint("TOPLEFT", frame2, "TOPLEFT")
+    --bg2:SetColorTexture(0,0,0)
+    --
+    --local art2 = frame2.Slant2:AddTexture("ARTWORK")
+    --art2:SetSize(256,32)
+    --art2:SetPoint("TOPLEFT", frame2, "TOPLEFT")
+    ----art:SetTexture([[Interface\AddOns\VorkUI\Medias\absorb4.tga]])
+    --art2:SetColorTexture(0, 66, 128)
+    --
+    --frame2.Slant2.Inverse = true  -- inverse the slant orientation
+    --frame2.Slant2.IgnoreBackground = true -- ignore Background layer for update
+    --frame2.Slant2:CalculateAutomaticSlant() -- set automatic slant if you don't want to set manually
+    --frame2.Slant2:PrintDebug() --debug information
+    --frame2.Slant2:StaticSlant("BACKGROUND") -- slant the background only one time
+    --frame2.Slant2.FillInverse = true -- inverse the fill of the textyre
+
+    --self.SlantFrame2 = slantFrame
+    --self.SlantFrame = slantFrame
+
+    --self:HookScript("OnUpdate", function(self, elapsed)
+    --    time = time + elapsed
+    --    if time > 0.5 then
+    --        for i=1, 4 do
+    --            --print(i, frames[i], frames[i].Slant)
+    --            frames[i].Slant:Slant(math.random(), 1)
+    --        end
+    --        time = 0
+    --    end
+    --end)
 
 end

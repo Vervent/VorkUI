@@ -1,5 +1,20 @@
 <Ui xmlns='http://www.blizzard.com/wow/ui/'>
+	<!-- LibStub -->
+	<Script file='LibStub\LibStub.lua'/>
+
+	<!-- Callback Handler -->
+	<Script file='LibSharedMedia\CallbackHandler-1.0\CallbackHandler-1.0.lua'/>
+
+	<!-- LibAnim -->
+	<Script file='LibAnim\LibAnim.lua'/>
+
+	<!-- LibSlant -->
+	<Script file='LibSlant\LibSlant.lua'/>
+
+	<!-- oUF -->
 	<Include file='oUF\oUF.xml'/>
 	<Include file='Vork-oUF\load.xml'/>
-	<!-- <Include file='LibSharedMedia-3.0\lib.xml'/> -->
+
+	<!-- LSM -->
+	<Include file='LibSharedMedia\lib.xml'/>
 </Ui>
