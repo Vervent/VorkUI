@@ -138,7 +138,7 @@ local function UpdateColor(self, event, unit)
     end
 
     if(b) then
-        element:SetColorTexture(r, g, b)
+        element:SetVertexColor(r, g, b)
 
         local bg = element.bg
         if(bg) then
@@ -339,7 +339,7 @@ local function UpdateAnimation(self, elapsed)
         --animation is over
         if animationTime > animationDuration then
             if element.inverse then
-                VorkoUF.SetValue(element, cur/max, 0, coord, slant)
+                VorkoUF.SetValue(element, 1-cur/max, 1, coord, slant)
             else
                 VorkoUF.SetValue(element, 0, cur/max, coord, slant)
             end
@@ -348,7 +348,7 @@ local function UpdateAnimation(self, elapsed)
             animationValue = cur
         else
             if element.inverse then
-                VorkoUF.SetValue(element, animationUpdate(animationTime, animationValue, cur-animationValue, animationDuration)/max, 0, coord, slant)
+                VorkoUF.SetValue(element, 1-animationUpdate(animationTime, animationValue, cur-animationValue, animationDuration)/max, 1, coord, slant)
             else
                 VorkoUF.SetValue(element, 0, animationUpdate(animationTime, animationValue, cur-animationValue, animationDuration)/max, coord, slant)
             end
@@ -392,17 +392,20 @@ local function Enable(self, unit)
             self:HookScript("OnUpdate", UpdateAnimation)
             --duration should be < event_time to avoid visual artefact
             SetDefaultAnimationData(0, 0.33, VorkoUF.Easing["linear"])
-            if element.inverse then
-                VorkoUF.SetValue(element.bg, 1, 0, coord, slant)
-            else
-                VorkoUF.SetValue(element.bg, 0, 1, coord, slant)
+            if element.bg then
+                if element.inverse then
+                    VorkoUF.SetValue(element.bg, 1, 0, coord, slant)
+                else
+                    VorkoUF.SetValue(element.bg, 0, 1, coord, slant)
+                end
+
             end
         end
 
         element:Show()
 
-            return true
-        end
+        return true
+    end
 end
 
 local function Disable(self)

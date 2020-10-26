@@ -2,4 +2,5 @@
 	<Script file='core.lua'/>
 	<Script file='elements\slanthealth.lua'/>
 	<Script file='elements\slantpower.lua'/>
+	<Script file='elements\slantabsorb.lua'/>
 </Ui>
