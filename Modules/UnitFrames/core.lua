@@ -113,7 +113,19 @@ function UnitFrames:UpdateAbsorbOverride(event, unit)
         element:PreUpdate(unit)
     end
 
-    local cur, max = UnitGetTotalAbsorbs(unit), UnitHealthMax(unit)
+    local curDamageAbsorb = UnitGetTotalAbsorbs(unit)
+    local curHealAbsorb = UnitGetTotalHealAbsorbs(unit)
+    local cur
+
+    if curDamageAbsorb > curHealAbsorb then
+        element.colors = self.colors.absorbs.damageAbsorb
+        cur = curDamageAbsorb - curHealAbsorb
+    else
+        element.colors = self.colors.absorbs.healAbsorb
+        cur = curHealAbsorb - curDamageAbsorb
+    end
+
+    local max = UnitHealthMax(unit)
 
     if(UnitIsConnected(unit)) then
         element.Slant:Slant(0, cur/max);
@@ -326,6 +338,7 @@ function UnitFrames:UpdateHealthColorOverride(event, unit)
 
     if(b) then
         --element:SetStatusBarColor(r, g, b)
+
         element:SetVertexColor(r, g, b)
 
         local bg = element.bg
@@ -489,7 +502,7 @@ function UnitFrames:CreateUnits()
 
     local Player = oUF:Spawn("player", "VorkuiPlayerFrame")
     Player:SetPoint("CENTER", nil, "CENTER", -235, 0)
-    Player:SetSize(256, 60)
+    Player:SetSize(300, 60)
 
     local Target = oUF:Spawn("target", "VorkuiTargetFrame")
     Target:SetPoint("CENTER", nil, "CENTER", 235, 0)
