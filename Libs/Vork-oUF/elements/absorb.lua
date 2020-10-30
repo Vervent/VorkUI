@@ -48,7 +48,7 @@ local function UpdateColor(self, event, unit)
     if(not unit or self.unit ~= unit) then return end
     local element = self.Absorb
 
-    local r, g, b = unpack({7/255, 135/255, 255/255})
+    local r, g, b = unpack(element.colors)
 
     if(b) then
         if element:IsObjectType('StatusBar') then
@@ -103,7 +103,19 @@ local function Update(self, event, unit)
         element:PreUpdate(unit)
     end
 
-    local cur, max = UnitGetTotalAbsorbs(unit), UnitHealthMax(unit)
+    local curDamageAbsorb = UnitGetTotalAbsorbs(unit)
+    local curHealAbsorb = UnitGetTotalHealAbsorbs(unit)
+    local cur
+
+    if curDamageAbsorb > curHealAbsorb then
+        element.colors = self.colors.absorbs.damageAbsorb
+        cur = curDamageAbsorb - curHealAbsorb
+    else
+        element.colors = self.colors.absorbs.healAbsorb
+        cur = curHealAbsorb - curDamageAbsorb
+    end
+
+    local max = UnitHealthMax(unit)
     element:SetMinMaxValues(0, max)
 
     if(UnitIsConnected(unit)) then
@@ -175,6 +187,7 @@ local function Enable(self, unit)
         end
 
         self:RegisterEvent('UNIT_ABSORB_AMOUNT_CHANGED', Path)
+        self:RegisterEvent('UNIT_HEAL_ABSORB_AMOUNT_CHANGED', Path)
 
         if(element:IsObjectType('StatusBar') and not (element:GetStatusBarTexture() or element:GetStatusBarAtlas())) then
             element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
@@ -191,7 +204,9 @@ local function Disable(self)
     if(element) then
         element:Hide()
 
+        self:UnregisterEvent('UNIT_CONNECTION', Path)
         self:UnregisterEvent('UNIT_ABSORB_AMOUNT_CHANGED', Path)
+        self:UnregisterEvent('UNIT_HEAL_ABSORB_AMOUNT_CHANGED', Path)
     end
 end
 
