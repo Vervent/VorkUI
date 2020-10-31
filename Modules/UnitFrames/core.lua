@@ -99,6 +99,197 @@ function UnitFrames:UTF8Sub(i, dots)
     end
 end
 
+function UnitFrames:UpdatePowerPredictionOverride(event, unit)
+    if(self.unit ~= unit) then return end
+
+    local element = self.PowerPrediction
+
+    --[[ Callback: PowerPrediction:PreUpdate(unit)
+    Called before the element has been updated.
+
+    * self - the PowerPrediction element
+    * unit - the unit for which the update has been triggered (string)
+    --]]
+    if(element.PreUpdate) then
+        element:PreUpdate(unit)
+    end
+
+    local colors = self.colors.prediction
+
+    local _, _, _, startTime, endTime, _, _, _, spellID = UnitCastingInfo(unit)
+    local mainPowerType = UnitPowerType(unit)
+    local hasAltManaBar = ALT_MANA_BAR_PAIR_DISPLAY_INFO[playerClass] and ALT_MANA_BAR_PAIR_DISPLAY_INFO[playerClass][mainPowerType]
+    local mainCost, altCost = 0, 0
+
+    if(event == 'UNIT_SPELLCAST_START' and startTime ~= endTime) then
+        local costTable = GetSpellPowerCost(spellID)
+        for _, costInfo in next, costTable do
+            -- costInfo content:
+            -- - name: string (powerToken)
+            -- - type: number (powerType)
+            -- - cost: number
+            -- - costPercent: number
+            -- - costPerSec: number
+            -- - minCost: number
+            -- - hasRequiredAura: boolean
+            -- - requiredAuraID: number
+            if(costInfo.type == mainPowerType) then
+                mainCost = costInfo.cost
+
+                break
+            elseif(costInfo.type == ADDITIONAL_POWER_BAR_INDEX) then
+                altCost = costInfo.cost
+
+                break
+            end
+        end
+    end
+
+    if(element.mainBar) then
+        --We need to align Point using TexCoord cause of slant mechanism
+        if not element.mainBar.Slant.FillInverse then
+            local left = select(7 ,self.Power:GetTexCoord())
+            element.mainBar:SetPoint("TOPLEFT", self.Power, "TOPLEFT", left*element.mainBar:GetWidth(), 0)
+        else
+            local right = select(5 ,self.Power:GetTexCoord())
+            element.mainBar:SetPoint("TOPRIGHT", self.Power, "TOPLEFT", right*element.mainBar:GetWidth(), 0)
+        end
+        element.mainBar.Slant:Slant(0, mainCost/UnitPowerMax(unit, mainPowerType))
+        element.mainBar:SetVertexColor( unpack(colors.power) )
+        element.mainBar:Show()
+    end
+
+    if(element.altBar and hasAltManaBar) then
+        --We need to align Point using TexCoord cause of slant mechanism
+        if not element.altBar.Slant.FillInverse then
+            local left = select(7 ,self.AltPower:GetTexCoord())
+            element.altBar:SetPoint("TOPLEFT", self.AltPower, "TOPLEFT", left*256, 0)
+        else
+            local right = select(5 ,self.AltPower:GetTexCoord())
+            element.altBar:SetPoint("TOPRIGHT", self.AltPower, "TOPLEFT", right*256, 0)
+        end
+        element.altBar.Slant:Slant(0, altCost/UnitPowerMax(unit, ADDITIONAL_POWER_BAR_INDEX))
+        element.altBar:SetVertexColor( unpack(colors.altPower) )
+        element.altBar:Show()
+    end
+
+    --[[ Callback: PowerPrediction:PostUpdate(unit, mainCost, altCost, hasAltManaBar)
+    Called after the element has been updated.
+
+    * self          - the PowerPrediction element
+    * unit          - the unit for which the update has been triggered (string)
+    * mainCost      - the main power type cost of the cast ability (number)
+    * altCost       - the secondary power type cost of the cast ability (number)
+    * hasAltManaBar - indicates if the unit has a secondary power bar (boolean)
+    --]]
+    if(element.PostUpdate) then
+        return element:PostUpdate(unit, mainCost, altCost, hasAltManaBar)
+    end
+end
+
+function UnitFrames:UpdatePredictionOverride(event, unit)
+    if(self.unit ~= unit) then return end
+
+    local element = self.HealthPrediction
+
+    --[[ Callback: HealthPrediction:PreUpdate(unit)
+    Called before the element has been updated.
+
+    * self - the HealthPrediction element
+    * unit - the unit for which the update has been triggered (string)
+    --]]
+    if(element.PreUpdate) then
+        element:PreUpdate(unit)
+    end
+
+    local colors = self.colors.prediction
+
+    local myIncomingHeal = UnitGetIncomingHeals(unit, 'player') or 0
+    local allIncomingHeal = UnitGetIncomingHeals(unit) or 0
+
+    local absorb = UnitGetTotalAbsorbs(unit) or 0
+    local healAbsorb = UnitGetTotalHealAbsorbs(unit) or 0
+    local health, maxHealth = UnitHealth(unit), UnitHealthMax(unit)
+    local otherIncomingHeal = 0
+    local hasOverHealAbsorb = false
+
+    if(healAbsorb > allIncomingHeal) then
+        healAbsorb = healAbsorb - allIncomingHeal
+        allIncomingHeal = 0
+        myIncomingHeal = 0
+
+        if(health < healAbsorb) then
+            hasOverHealAbsorb = true
+            healAbsorb = health
+        end
+    else
+        allIncomingHeal = allIncomingHeal - healAbsorb
+        healAbsorb = 0
+
+        if(health + allIncomingHeal > maxHealth * element.maxOverflow) then
+            allIncomingHeal = maxHealth * element.maxOverflow - health
+        end
+
+        if(allIncomingHeal < myIncomingHeal) then
+            myIncomingHeal = allIncomingHeal
+        else
+            otherIncomingHeal = allIncomingHeal - myIncomingHeal
+        end
+    end
+
+    local hasOverAbsorb = false
+    if(health + allIncomingHeal + absorb >= maxHealth) then
+        if(absorb > 0) then
+            hasOverAbsorb = true
+        end
+
+        absorb = math.max(0, maxHealth - health - allIncomingHeal)
+    end
+
+    if(element.myBar) then
+        --We need to align Point using TexCoord cause of slant mechanism
+        if not element.myBar.Slant.FillInverse then
+            local left = select(7 ,self.Health:GetTexCoord())
+            element.myBar:SetPoint("TOPLEFT", self.Health, "TOPLEFT", left*256, 0)
+        else
+            local right = select(5 ,self.Health:GetTexCoord())
+            element.myBar:SetPoint("TOPRIGHT", self.Health, "TOPLEFT", right*256, 0)
+        end
+        element.myBar.Slant:Slant(0, myIncomingHeal/maxHealth)
+        element.myBar:SetVertexColor( unpack(colors.myHeal) )
+        element.myBar:Show()
+    end
+
+    if(element.otherBar) then
+        if not element.otherBar.Slant.FillInverse then
+            local left = select(7 , element.myBar:GetTexCoord())
+            element.otherBar:SetPoint("TOPLEFT", element.myBar, "TOPLEFT", left*256, 0)
+        else
+            local right = select(5 , element.myBar:GetTexCoord())
+            element.otherBar:SetPoint("TOPRIGHT",element.myBar, "TOPLEFT", right*256, 0)
+        end
+        element.otherBar.Slant:Slant(0, otherIncomingHeal/maxHealth)
+        element.otherBar:SetVertexColor( unpack(colors.otherHeal) )
+        element.otherBar:Show()
+    end
+
+    --[[ Callback: HealthPrediction:PostUpdate(unit, myIncomingHeal, otherIncomingHeal, absorb, healAbsorb, hasOverAbsorb, hasOverHealAbsorb)
+    Called after the element has been updated.
+
+    * self              - the HealthPrediction element
+    * unit              - the unit for which the update has been triggered (string)
+    * myIncomingHeal    - the amount of incoming healing done by the player (number)
+    * otherIncomingHeal - the amount of incoming healing done by others (number)
+    * absorb            - the amount of damage the unit can absorb without losing health (number)
+    * healAbsorb        - the amount of healing the unit can absorb without gaining health (number)
+    * hasOverAbsorb     - indicates if the amount of damage absorb is higher than the unit's missing health (boolean)
+    * hasOverHealAbsorb - indicates if the amount of heal absorb is higher than the unit's current health (boolean)
+    --]]
+    if(element.PostUpdate) then
+        return element:PostUpdate(unit, myIncomingHeal, otherIncomingHeal, absorb, healAbsorb, hasOverAbsorb, hasOverHealAbsorb)
+    end
+end
+
 function UnitFrames:UpdateAbsorbOverride(event, unit)
     if(not unit or self.unit ~= unit) then return end
     local element = self.Absorb
