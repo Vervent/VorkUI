@@ -52,6 +52,14 @@ UnitFrames.NameplatesVariables = {
 function UnitFrames:DisableBlizzard()
 end
 
+function UnitFrames:ShortPercent(precision)
+    if not precision or precision <= 0 then
+        return string.format("%d", self)
+    else
+        return string.format("%."..precision.."f", self)
+    end
+end
+
 function UnitFrames:ShortValue()
     if self <= 999 then
         return self
@@ -361,7 +369,7 @@ function UnitFrames:UpdatePowerOverride(event, unit)
 
     local cur, max = UnitPower(unit, displayType), UnitPowerMax(unit, displayType)
 
-    if(UnitIsConnected(unit)) then
+    if(UnitIsConnected(unit)) and max ~= 0 then
         element.Slant:Slant(0, cur/max);
     else
         element.Slant:Slant(0, 1);
@@ -605,9 +613,39 @@ end
 
 function UnitFrames:PostUpdateHealth(unit, min, max)
 
-end
+    if self.Value then
+        if (not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit)) then
+            if (not UnitIsConnected(unit)) then
+                self.Value:SetText("|cffD7BEA5"..FRIENDS_LIST_OFFLINE.."|r")
+            elseif (UnitIsDead(unit)) then
+                self.Value:SetText("|cffD7BEA5"..DEAD.."|r")
+            elseif (UnitIsGhost(unit)) then
+                self.Value:SetText("|cffD7BEA5"..L.UnitFrames.Ghost.."|r")
+            end
+        else
+            local IsRaid = string.match(self:GetParent():GetName(), "Button") or false
 
-function UnitFrames:PostUpdatePower(unit, current, min, max)
+            if (min == max) then
+                self.Value:SetText("")
+            else
+                self.Value:SetText(UnitFrames.ShortValue(min))
+            end
+        end
+    end
+
+    if self.Percent then
+        if (not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit)) then
+            return
+        else
+            local IsRaid = string.match(self:GetParent():GetName(), "Button") or false
+
+            if (min == max) then
+                self.Percent:SetText("")
+            else
+                self.Percent:SetText(UnitFrames.ShortPercent(min/max *100))
+            end
+        end
+    end
 
 end
 
