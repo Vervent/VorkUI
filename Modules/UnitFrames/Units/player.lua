@@ -1,42 +1,98 @@
 local V, C, L = select(2, ...):unpack()
 
-local LibSlant = LibStub:GetLibrary("LibSlant")
-
 local UnitFrames = V["UnitFrames"]
+local Medias = V["Medias"]
+local LibAtlas = Medias:GetLibAtlas()
 local Class = select(2, UnitClass("player"))
 
 --[[
-    bg healthcolor = {0.69, 0.04, 0.04}
-    gradient color = {
-        full = { 0, 0.45, 0.07 },
-        mid = { 1, 0.45, 0.03 },
-        low = { 0, 0, 0 }
-    }
-    overlay color = { 0.51, 0.77, 1 }
+    Player Configuration
 ]]--
-
---left, right, top, bottom
-local ClassIconAtlas = {
-    width = 512,
-    height = 256,
-    ["DEMONHUNTER"] = {0, 80, 0, 82},
-    ["DEATHKNIGHT"] = {80, 158, 0, 82},
-    ["DRUID"] = {158, 239, 0, 70},
-    ["HUNTER"] = {239, 317, 0, 82},
-    ["MAGE"] = {317, 397, 0, 80},
-    ["WARLOCK"] = {397, 480, 0, 83},
-    ["MONK"] = {0, 80, 83, 163},
-    ["PALADIN"] = {80, 155, 83, 165},
-    ["PRIEST"] = {155, 237, 83, 153},
-    ["ROGUE"] = {237, 320, 83, 164},
-    ["SHAMAN"] = {320, 402, 83, 163},
-    ["WARRIOR"] = {402, 472, 83, 165},
+local Config = {
+    Absorb = {
+        Textures ={
+            {
+                [[Interface\AddOns\VorkUI\Medias\StatusBar\bubbles.tga]], "ARTWORK"
+            },
+            {
+                {0,0,0,1}, "BACKGROUND", 1
+            }
+        },
+        Size = { 232, 8 },
+        Point = { "TOPRIGHT", "Frame", "TOPRIGHT", 0, 0 },
+        SlantSettings = {
+            ["IgnoreBackground"] = true,
+            ["FillInverse"] = true
+        },
+        StaticLayer = "BACKGROUND"
+    },
+    Health = {
+        Textures ={
+            {
+                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_1.tga]], "ARTWORK"
+            },
+            {
+                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_bg.tga]], "BACKGROUND", 1
+            },
+            {
+                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_border.tga]], "OVERLAY"
+            }
+        },
+        Size =  { 256, 32 },
+        Point =  { "TOPRIGHT", "Absorb", "BOTTOMRIGHT", -8, 0 },
+        SlantSettings = {
+            ["IgnoreBackground"] = true,
+        },
+        StaticLayer = "BACKGROUND"
+    },
+    HealthPrediction = {
+        Textures ={
+            {
+                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_1.tga]], "ARTWORK", 1
+            },
+            {
+                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_border.tga]], "OVERLAY"
+            }
+        },
+        Size =  { 256, 32 },
+        --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
+        SlantSettings = {
+            ["IgnoreBackground"] = true,
+        }
+    },
+    Power = {
+        Textures ={
+            {
+                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_1.tga]], "ARTWORK"
+            },
+            {
+                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_bg.tga]], "BACKGROUND", 1
+            }
+        },
+        Size =  { 235, 10 },
+        Point =  { "TOPLEFT", "Health", "BOTTOMLEFT", -10, 0 },
+        SlantSettings = {
+            ["IgnoreBackground"] = true,
+        },
+        StaticLayer = "BACKGROUND"
+    },
+    PowerPrediction = {
+        Textures ={
+            {
+                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_1.tga]], "ARTWORK", 1
+            },
+            {
+                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_border.tga]], "OVERLAY"
+            }
+        },
+        Size =  { 235, 10 },
+        --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
+        SlantSettings = {
+            ["IgnoreBackground"] = true,
+            ["FillInverse"] = true
+        }
+    },
 }
-
-local function GetTexCoord (class)
-    local l, r, t, b = unpack(ClassIconAtlas[class])
-    return l/ClassIconAtlas.width, r/ClassIconAtlas.width, t/ClassIconAtlas.height, b/ClassIconAtlas.height
-end
 
 function UnitFrames:Player()
 
@@ -44,59 +100,51 @@ function UnitFrames:Player()
     self:SetScript("OnEnter", UnitFrame_OnEnter)
     self:SetScript("OnLeave", UnitFrame_OnLeave)
 
+    local textureClassIconPath = LibAtlas:GetPath("ClassIcon")
+    local textureGlobalIconPath = LibAtlas:GetPath("GlobalIcon")
+    local textureRaidIconPath = LibAtlas:GetPath("RaidIcon")
+
     local Frame = CreateFrame("Frame", nil, self)
     Frame:SetAllPoints()
     Frame.background = Frame:CreateTexture(nil, "BACKGROUND")
     Frame.background:SetAllPoints()
-    Frame.background:SetColorTexture(0,0,0,1)
+    Frame.background:SetColorTexture( 33/255, 44/255, 79/255, 0.75 )
+
+    --
+    ----[[
+    --    FONT
+    ----]]
+    local regularTinyFont = Medias:GetFont('Regular10')
+    local regularNormalFont = Medias:GetFont('Regular14')
+    local regularMediumFont = Medias:GetFont('Regular22')
+    local regularBigFont = Medias:GetFont('Regular30')
+
+    local italicNormalFont = Medias:GetFont('Italic14')
+    local italicMediumFont = Medias:GetFont('Italic22')
+    local italicBigFont = Medias:GetFont('Italic30')
 
     --[[
        ABSORB SLANTED STATUSBAR
    --]]
-    local slantAbsorb = LibSlant:CreateSlant(Frame)
-    local Absorb = slantAbsorb:AddTexture("ARTWORK")
-    Absorb:SetSize(232,8)
-    Absorb:SetPoint("TOPRIGHT", Frame, "TOPRIGHT", 0, 0)
-    Absorb:SetTexture([[Interface\AddOns\VorkUI\Medias\StatusBar\bubbles.tga]])
-
-    Absorb.background = slantAbsorb:AddTexture("BACKGROUND", 1)
-    Absorb.background:SetSize(232,8)
-    Absorb.background:SetAllPoints(Absorb)
-    Absorb.background:SetColorTexture(0,0,0,1)
-
-    slantAbsorb.IgnoreBackground = true -- ignore Background layer for update
-    slantAbsorb.FillInverse = true
-    slantAbsorb:CalculateAutomaticSlant() -- set automatic slant if you don't want to set manually
-    slantAbsorb:StaticSlant("BACKGROUND")
-
-    Absorb.Slant = slantAbsorb
+    Config.Absorb.Point[2] = Frame
+    local Absorb = UnitFrames:CreateSlantedStatusBar(Frame,
+            Config.Absorb.Textures,
+            Config.Absorb.Size,
+            Config.Absorb.Point,
+            Config.Absorb.SlantSettings,
+            Config.Absorb.StaticLayer)
     Absorb.Override = UnitFrames.UpdateAbsorbOverride
 
     --[[
         HEALTH SLANTED STATUSBAR
     --]]
-
-    local slantHealth = LibSlant:CreateSlant(Frame)
-    local Health = slantHealth:AddTexture("ARTWORK")
-    Health:SetSize(256,32)
-    Health:SetPoint("TOPRIGHT", Absorb, "BOTTOMRIGHT", -8, 0)
-    Health:SetTexture([[Interface\AddOns\VorkUI\Medias\StatusBar\status_1.tga]])
-
-    Health.background = slantHealth:AddTexture("BACKGROUND", 1)
-    Health.background:SetSize(256,32)
-    Health.background:SetAllPoints(Health)
-    Health.background:SetTexture([[Interface\AddOns\VorkUI\Medias\StatusBar\status_bg.tga]])
-
-    Health.border = slantHealth:AddTexture("OVERLAY")
-    --Health.border:SetSize(256,32)
-    Health.border:SetAllPoints(Health)
-    Health.border:SetTexture([[Interface\AddOns\VorkUI\Medias\StatusBar\status_border.tga]])
-
-    slantHealth.IgnoreBackground = true -- ignore Background layer for update
-    slantHealth:CalculateAutomaticSlant() -- set automatic slant if you don't want to set manually
-    slantHealth:StaticSlant("BACKGROUND")
-    Health.Slant = slantHealth
-
+    Config.Health.Point[2] = Absorb
+    local Health = UnitFrames:CreateSlantedStatusBar(Frame,
+            Config.Health.Textures,
+            Config.Health.Size,
+            Config.Health.Point,
+            Config.Health.SlantSettings,
+            Config.Health.StaticLayer)
     Health.colorSmooth = true
     Health.Override = UnitFrames.UpdateHealthOverride
     Health.UpdateColor = UnitFrames.UpdateHealthColorOverride
@@ -104,100 +152,48 @@ function UnitFrames:Player()
     --[[
         HEALTH PREDICTION SLANTED STATUSBAR
     --]]
-    local slantMyPrediction = LibSlant:CreateSlant(Frame)
-    local MyPrediction = slantMyPrediction:AddTexture("ARTWORK", 1)
-    MyPrediction:SetSize( Health:GetSize() )
-    MyPrediction:SetTexture(Health:GetTexture())
-    MyPrediction:SetBlendMode("ADD")
+    local HealthPrediction = UnitFrames:CreateSlantedStatusBar(Frame,
+            Config.HealthPrediction.Textures,
+            Config.HealthPrediction.Size,
+            Config.HealthPrediction.Point,
+            Config.HealthPrediction.SlantSettings,
+            Config.HealthPrediction.StaticLayer)
+    HealthPrediction:SetBlendMode("ADD")
 
-    MyPrediction.border = slantMyPrediction:AddTexture("OVERLAY")
-    MyPrediction.border:SetAllPoints(MyPrediction)
-    MyPrediction.border:SetTexture(Health.border:GetTexture())
-
-    slantMyPrediction.Inverse = slantHealth.Inverse
-    slantMyPrediction.FillInverse = slantHealth.FillInverse
-    slantMyPrediction:CalculateAutomaticSlant()
-    MyPrediction.Slant = slantMyPrediction
-
-    local slantOtherPrediction = LibSlant:CreateSlant(Frame)
-    local OtherPrediction = slantOtherPrediction:AddTexture("ARTWORK", 1)
-    OtherPrediction:SetSize( Health:GetSize() )
-    OtherPrediction:SetTexture(Health:GetTexture())
-
-    OtherPrediction.border = slantOtherPrediction:AddTexture("OVERLAY")
-    OtherPrediction.border:SetAllPoints(OtherPrediction)
-    OtherPrediction.border:SetTexture(Health.border:GetTexture())
-
-    slantOtherPrediction.Inverse = slantHealth.Inverse
-    slantOtherPrediction.FillInverse = slantHealth.FillInverse
-    slantOtherPrediction:CalculateAutomaticSlant()
-    OtherPrediction.Slant = slantOtherPrediction
-
-    self.HealthPrediction = {
-        myBar = MyPrediction,
-        otherBar = OtherPrediction,
-        maxOverflow = 1,
-    }
-    self.HealthPrediction.Override = UnitFrames.UpdatePredictionOverride
+    local OtherHealthPrediction = UnitFrames:CreateSlantedStatusBar(Frame,
+            Config.HealthPrediction.Textures,
+            Config.HealthPrediction.Size,
+            Config.HealthPrediction.Point,
+            Config.HealthPrediction.SlantSettings,
+            Config.HealthPrediction.StaticLayer)
+    OtherHealthPrediction:SetBlendMode("ADD")
 
     --[[
         POWER SLANTED STATUSBAR
     --]]
-    local slantPower = LibSlant:CreateSlant(Frame)
-    local Power = slantPower:AddTexture("ARTWORK")
-    Power:SetSize(235,10)
-    Power:SetPoint("TOPLEFT", Health, "BOTTOMLEFT", -10, 0)
-    Power:SetTexture([[Interface\AddOns\VorkUI\Medias\StatusBar\status_1.tga]])
+    Config.Power.Point[2] = Health
+    local Power = UnitFrames:CreateSlantedStatusBar(Frame,
+            Config.Power.Textures,
+            Config.Power.Size,
+            Config.Power.Point,
+            Config.Power.SlantSettings,
+            Config.Power.StaticLayer)
 
-    Power.background = slantPower:AddTexture("BACKGROUND", 1)
-    Power.background:SetSize(240,16)
-    Power.background:SetAllPoints(Power)
-    Power.background:SetTexture([[Interface\AddOns\VorkUI\Medias\StatusBar\status_bg.tga]])
-
-    slantPower.IgnoreBackground = true -- ignore Background layer for update
-    slantPower:CalculateAutomaticSlant() -- set automatic slant if you don't want to set manually
-    slantPower:StaticSlant("BACKGROUND")
-
-    Power.Slant = slantPower
     Power.colorPower = true
     Power.frequentUpdates=true
-
     Power.Override = UnitFrames.UpdatePowerOverride
     Power.UpdateColor = UnitFrames.UpdatePowerColorOverride
 
     --[[
         POWER PREDICTION SLANTED STATUSBAR
     --]]
-    local slantMyPowerPrediction = LibSlant:CreateSlant(Frame)
-    local MyPowerPrediction = slantMyPowerPrediction:AddTexture("ARTWORK", 1)
-    MyPowerPrediction:SetSize( Power:GetSize() )
-    MyPowerPrediction:SetTexture(Power:GetTexture())
-    MyPowerPrediction:SetBlendMode("ADD")
-
-    slantMyPowerPrediction.Inverse = slantPower.Inverse
-    slantMyPowerPrediction.FillInverse = not slantPower.FillInverse
-    slantMyPowerPrediction:CalculateAutomaticSlant()
-    MyPowerPrediction.Slant = slantMyPowerPrediction
-
-    --local slantAltPowerPrediction = LibSlant:CreateSlant(Frame)
-    --local AltPowerPrediction = slantAltPowerPrediction:AddTexture("ARTWORK", 1)
-    --AltPowerPrediction:SetSize(256,32)
-    --AltPowerPrediction:SetTexture(Health:GetTexture())
-    --
-    --AltPowerPrediction.border = slantAltPowerPrediction:AddTexture("OVERLAY")
-    --AltPowerPrediction.border:SetAllPoints(AltPowerPrediction)
-    --AltPowerPrediction.border:SetTexture(Power.border:GetTexture())
-    --
-    --slantAltPowerPrediction.Inverse = slantPower.Inverse
-    --slantAltPowerPrediction.FillInverse = slantHealth.FillInverse
-    --slantAltPowerPrediction:CalculateAutomaticSlant()
-    --AltPowerPrediction.Slant = slantAltPowerPrediction
-
-    self.PowerPrediction = {
-        mainBar = MyPowerPrediction,
-        --altBar = AltPowerPrediction,
-    }
-    self.PowerPrediction.Override = UnitFrames.UpdatePowerPredictionOverride
+    local PowerPrediction = UnitFrames:CreateSlantedStatusBar(Frame,
+            Config.PowerPrediction.Textures,
+            Config.PowerPrediction.Size,
+            Config.PowerPrediction.Point,
+            Config.PowerPrediction.SlantSettings,
+            Config.PowerPrediction.StaticLayer)
+    PowerPrediction:SetBlendMode("ADD")
 
     --[[
         PORTRAIT 3D
@@ -205,8 +201,8 @@ function UnitFrames:Player()
 
     local Portrait = CreateFrame('PlayerModel', nil, Frame)
     Portrait:SetModelDrawLayer("BACKGROUND")
-    Portrait:SetSize(45, 45)
-    Portrait:SetPoint("BOTTOMLEFT", Power, "BOTTOMLEFT", -20, 1)
+    Portrait:SetSize(49, 49)
+    Portrait:SetPoint("TOPLEFT", Frame, "TOPLEFT", 0, 0)
     --Portrait:SetPortraitZoom(1)
     Portrait.PostUpdate = function(unit)
         Portrait:SetPosition(0.15,0 ,0)
@@ -217,16 +213,72 @@ function UnitFrames:Player()
         CLASS ICON
     --]]
 
-    local classIconPanel = Frame:CreateTexture(nil, "ARTWORK")
-    classIconPanel:SetSize(20, 25)
-    classIconPanel:SetPoint("BOTTOMLEFT", Portrait, "BOTTOMLEFT",0 , -1)
-    classIconPanel:SetTexture([[Interface\AddOns\VorkUI\Medias\Icons\mask.tga]])
+    local classIndicator = Frame:CreateTexture(nil, "OVERLAY")
+    classIndicator:SetSize(16, 16)
+    classIndicator:SetPoint("TOPLEFT", Portrait, "TOPRIGHT", -4, -2)
+    classIndicator:SetTexture(textureClassIconPath)
+    classIndicator:SetTexCoord(LibAtlas:GetTexCoord("ClassIcon", Class))
+    Frame.ClassIndicator = classIndicator
+    --[[
+        FONT
+    --]]
+    Frame.Name = Frame:CreateFontString(nil, "OVERLAY")
+    Frame.Name:SetFontObject(regularNormalFont)
+    Frame.Name:SetPoint("TOPLEFT", Frame, "BOTTOMLEFT", 20, 10)
+    self:Tag(Frame.Name, "[classification] [name] [difficulty][level]")
 
-    local classIcon = Frame:CreateTexture(nil, "OVERLAY")
-    classIcon:SetSize(16, 16)
-    classIcon:SetPoint("BOTTOMLEFT", classIconPanel, "BOTTOMLEFT", -4, -4)
-    classIcon:SetTexture([[Interface\AddOns\VorkUI\Medias\Icons\Class\atlas.tga]])
-    classIcon:SetTexCoord(GetTexCoord(Class))
+    Health.Value = Frame:CreateFontString(nil, "OVERLAY")
+    Health.Value:SetFontObject(italicNormalFont)
+    Health.Value:SetPoint("TOPRIGHT", Health, "TOP")
+    self:Tag(Health.Value, "[Vorkui:HealthColor(false)][missinghp]")
+
+    Health.Percent = Frame:CreateFontString(nil, "OVERLAY")
+    Health.Percent:SetFontObject(italicBigFont)
+    Health.Percent:SetPoint("BOTTOMRIGHT", Frame, "BOTTOMRIGHT")
+    self:Tag(Health.Percent, "[Vorkui:HealthColor(true)][Vorkui:PerHP]")
+
+    Power.Value = Frame:CreateFontString(nil, "OVERLAY")
+    Power.Value:SetFontObject(italicMediumFont)
+    Power.Value:SetPoint("BOTTOM", Power, "BOTTOM")
+    self:Tag(Power.Value, "[powercolor][missingpp]")
+
+    Absorb.Value = Frame:CreateFontString(nil, "OVERLAY")
+    Absorb.Value:SetFontObject(italicNormalFont)
+    Absorb.Value:SetText("100")
+    Absorb.Value:SetPoint("TOPLEFT", Health, "TOP")
+    self:Tag(Absorb.Value, " ([Vorkui:HealthColor][Vorkui:Absorb])")
+
+    --[[
+    RAID ICON
+    ]]--
+    local raidIndicator = Frame:CreateTexture(nil, "OVERLAY")
+    raidIndicator:SetSize(16, 16)
+    raidIndicator:SetPoint("LEFT", Health, "LEFT", 10, 0)
+    raidIndicator:SetTexture(textureRaidIconPath)
+    self.RaidTargetIndicator = raidIndicator
+
+    --[[
+    LEADER ICON
+    ]]--
+    local leaderIndicator = Frame:CreateTexture(nil, "OVERLAY")
+    leaderIndicator:SetSize(64/4, 53/4)
+    leaderIndicator:SetPoint("RIGHT", Frame.Name, "LEFT")
+    leaderIndicator:SetTexture(textureGlobalIconPath)
+    leaderIndicator:SetTexCoord(LibAtlas:GetTexCoord("GlobalIcon", "LEADER"))
+    leaderIndicator:SetVertexColor(163/255, 220/255, 255/255)
+    self.LeaderIndicator = leaderIndicator
+
+    --[[
+    RESTING ICON
+    ]]--
+    local restingIndicator = Frame:CreateTexture(nil, "OVERLAY")
+    restingIndicator:SetSize(32, 30)
+    restingIndicator:SetPoint("BOTTOMRIGHT", Frame, "BOTTOMRIGHT")
+    restingIndicator:SetTexture(textureGlobalIconPath)
+    restingIndicator:SetTexCoord(LibAtlas:GetTexCoord("GlobalIcon", "RESTING"))
+    restingIndicator:SetGradientAlpha("VERTICAL", 163/255, 220/255, 255/255, 0.75, 0, 0, 0, 1)
+    restingIndicator:SetBlendMode("ADD")
+    self.RestingIndicator = restingIndicator
 
     -- Register with oUF
     self.Absorb = Absorb
@@ -235,12 +287,21 @@ function UnitFrames:Player()
     self.Health.bg = Health.background
     self.Power = Power
     self.Power.bg = Power.background
-
     self.Portrait = Portrait
     self.Portrait.bg = Portrait.background
+    self.HealthPrediction = {
+        myBar = HealthPrediction,
+        otherBar = OtherHealthPrediction,
+        maxOverflow = 1,
+        Override = UnitFrames.UpdatePredictionOverride
+    }
+    self.PowerPrediction = {
+        mainBar = PowerPrediction,
+        --altBar = AltPowerPrediction,
+        Override = UnitFrames.UpdatePowerPredictionOverride
+    }
 
-    self.ClassIcon = classIcon
-    self.ClassIcon.bg = classIconPanel
+    self.ClassIcon = classIndicator
 
     --affect same frame level for PlayerModel than the PlayerFrame
     Portrait:SetFrameLevel(Frame:GetFrameLevel())
