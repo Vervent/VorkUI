@@ -9,6 +9,7 @@ local AddOn, Plugin = ...
 local oUF = Plugin.oUF or oUF
 local Noop = function() end
 local UnitFrames = V["UnitFrames"]
+local LibSlant = LibStub:GetLibrary("LibSlant")
 
 -- Lib globals
 local strfind = strfind
@@ -105,6 +106,52 @@ function UnitFrames:UTF8Sub(i, dots)
             return self
         end
     end
+end
+
+--[[
+* textures - table of this form { path or color, layer, sublayer }
+--]]
+function UnitFrames:CreateSlantedStatusBar(frame, textures, size, point, slantSettings, staticLayer)
+    local slant = LibSlant:CreateSlant(frame)
+    local result = nil
+    local texture
+    for _, t in ipairs(textures) do
+        texture = slant:AddTexture(t[2], t[3])
+        texture:SetSize(unpack(size))
+
+        if result == nil then
+            if point ~= nil then
+                texture:SetPoint(unpack(point))
+            end
+        else
+            texture:SetAllPoints(result)
+        end
+
+        if type(t[1]) == 'table' then
+            texture:SetColorTexture(unpack(t[1]))
+        elseif type(t[1]) == 'string' then
+            texture:SetTexture(t[1])
+        else
+            print("|cFFFF2200 ERROR CreateSlantedStatusBar |r")
+        end
+        if result == nil then
+            result = texture
+            result.childs = {}
+        else
+            result.childs[#result.childs+1] = texture
+        end
+    end
+
+    for k,v in pairs(slantSettings) do
+        slant[k]=v
+    end
+
+    slant:CalculateAutomaticSlant()
+    if staticLayer then
+        slant:StaticSlant(staticLayer)
+    end
+    result.Slant = slant
+    return result
 end
 
 function UnitFrames:UpdatePowerPredictionOverride(event, unit)
