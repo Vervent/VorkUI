@@ -7,17 +7,11 @@
 local V, C, L = select(2, ...):unpack()
 local Medias = V["Medias"]
 
-local LibAtlas = LibStub:GetLibrary("LibAtlas")
-local LibSharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
-
-
 Medias.MediaPath = {
     Fonts = [[Interface\AddOns\VorkUI\Medias\Fonts\]],
     Textures = [[Interface\AddOns\VorkUI\Medias\Textures\]],
     Icons = [[Interface\AddOns\VorkUI\Medias\Icons\]],
 }
-
-Medias.Fonts = {}
 
 local FontAdress = {
     {'Montserrat-Black.ttf', 'Montserrat Black'},
@@ -134,7 +128,7 @@ local AtlasSettings = {
 
 function Medias:LoadAllFonts()
 
-    for _,v in ipairs(FontAdress) do
+    for _, v in ipairs(FontAdress) do
         if FontSettings[ v[2] ] ~= nil then
             Medias:LoadFont(v[2], v[1],unpack(FontSettings[ v[2] ]))
         end
@@ -143,9 +137,8 @@ function Medias:LoadAllFonts()
 end
 
 function Medias:LoadAllAtlas()
-
-    for k,v in pairs( AtlasAdress ) do
-        LibAtlas:RegisterAtlas(v[2], self.MediaPath["Icons"]..v[1], AtlasSettings[ v[2] ])
+    for _, v in pairs( AtlasAdress ) do
+        Medias:LoadAtlas(v[2], v[1],  AtlasSettings[ v[2] ])
     end
 end
 

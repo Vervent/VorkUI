@@ -11,12 +11,13 @@ local LibSharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 
 local Medias = CreateFrame("Frame")
 
+local Fonts = {}
+
 function Medias:GetLSM()
     return LibSharedMedia
 end
 
 function Medias:PushFontObject(name, adress, size, ...)
-    local Fonts = self.Fonts
     if type(size) == 'table' then
         for _, s in ipairs(size) do
             Fonts[name..s] = CreateFont("Vorkaui" .. name .. s)
@@ -29,7 +30,6 @@ function Medias:PushFontObject(name, adress, size, ...)
 end
 
 function Medias:GetFont(name)
-    local Fonts = self.Fonts
     if Fonts[name] then
         return Fonts[name]
     end
@@ -56,7 +56,7 @@ function Medias:GetLibAtlas()
 end
 
 function Medias:LoadAtlas(name, adress, settings)
-    LibAtlas:RegisterAtlas(name, MediaPath["Icons"]..adress, settings)
+    LibAtlas:RegisterAtlas(name, self.MediaPath["Icons"]..adress, settings)
 end
 
 V["Medias"] = Medias
