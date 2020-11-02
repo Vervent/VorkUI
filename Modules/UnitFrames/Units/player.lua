@@ -22,7 +22,13 @@ local Config = {
             ["IgnoreBackground"] = true,
             ["FillInverse"] = true
         },
-        StaticLayer = "BACKGROUND"
+        StaticLayer = "BACKGROUND",
+        Value = {
+            Layer = "OVERLAY",
+            FontName = "Montserrat Italic14",
+            Point = { "TOPLEFT", nil, "TOP" },
+            Tag = " ([Vorkui:HealthColor][Vorkui:Absorb])"
+        },
     },
     Health = {
         Textures ={
@@ -41,7 +47,19 @@ local Config = {
         SlantSettings = {
             ["IgnoreBackground"] = true,
         },
-        StaticLayer = "BACKGROUND"
+        StaticLayer = "BACKGROUND",
+        Value = {
+            Layer = "OVERLAY",
+            FontName = "Montserrat Italic14",
+            Point = { "TOPRIGHT", nil, "TOP" },
+            Tag = "[Vorkui:HealthColor(false)][missinghp]"
+        },
+        Percent = {
+            Layer = "OVERLAY",
+            FontName = "Montserrat Italic30",
+            Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT" },
+            Tag = "[Vorkui:HealthColor(true)][Vorkui:PerHP]"
+        }
     },
     HealthPrediction = {
         Textures ={
@@ -72,7 +90,13 @@ local Config = {
         SlantSettings = {
             ["IgnoreBackground"] = true,
         },
-        StaticLayer = "BACKGROUND"
+        StaticLayer = "BACKGROUND",
+        Value = {
+            Layer = "OVERLAY",
+            FontName = "Montserrat Italic22",
+            Point = { "BOTTOM", nil, "BOTTOM" },
+            Tag = "[powercolor][missingpp]"
+        }
     },
     PowerPrediction = {
         Textures ={
@@ -135,6 +159,12 @@ local Config = {
         TexCoord = "MAELSTROM",
         GradientAlpha = { "VERTICAL", 255/255, 246/255, 0/255, 0.75, 255/255, 50/255, 0/255, 1 },
         BlendMode = "ADD"
+    },
+    Name = {
+        Layer = "OVERLAY",
+        FontName = "Montserrat",
+        Point = { "TOPLEFT", nil, "BOTTOMLEFT", 20, 10 },
+        Tag = "[classification] [name] [difficulty][level]"
     }
 }
 
@@ -153,15 +183,6 @@ function UnitFrames:Player()
     Frame.background = Frame:CreateTexture(nil, "BACKGROUND")
     Frame.background:SetAllPoints()
     Frame.background:SetColorTexture( 33/255, 44/255, 79/255, 0.75 )
-
-    --
-    ----[[
-    --    FONT
-    ----]]
-    local regularNormalFont = Medias:GetFont('Montserrat')
-    local italicNormalFont = Medias:GetFont('Montserrat Italic14')
-    local italicMediumFont = Medias:GetFont('Montserrat Italic22')
-    local italicBigFont = Medias:GetFont('Montserrat Italic30')
 
     --[[
        ABSORB SLANTED STATUSBAR
@@ -238,49 +259,42 @@ function UnitFrames:Player()
     --[[
         FONT
     --]]
-    Frame.Name = Frame:CreateFontString(nil, "OVERLAY")
-    Frame.Name:SetFontObject(regularNormalFont)
-    Frame.Name:SetPoint("TOPLEFT", Frame, "BOTTOMLEFT", 20, 10)
-    self:Tag(Frame.Name, "[classification] [name] [difficulty][level]")
+    if Config.Name then
+        Config.Name.Point[2] = Frame
+        Frame.Name = UnitFrames:CreateFontString(Frame, Config.Name)
+        self:Tag(Frame.Name, Config.Name.Tag)
+    end
 
-    Health.Value = Frame:CreateFontString(nil, "OVERLAY")
-    Health.Value:SetFontObject(italicNormalFont)
-    Health.Value:SetPoint("TOPRIGHT", Health, "TOP")
-    self:Tag(Health.Value, "[Vorkui:HealthColor(false)][missinghp]")
+    if Config.Health.Value then
+        Config.Health.Value.Point[2] = Health
+        Health.Value = UnitFrames:CreateFontString(Frame, Config.Health.Value)
+        self:Tag(Health.Value, Config.Health.Value.Tag)
+    end
 
-    Health.Percent = Frame:CreateFontString(nil, "OVERLAY")
-    Health.Percent:SetFontObject(italicBigFont)
-    Health.Percent:SetPoint("BOTTOMRIGHT", Frame, "BOTTOMRIGHT")
-    self:Tag(Health.Percent, "[Vorkui:HealthColor(true)][Vorkui:PerHP]")
+    if Config.Health.Percent then
+        Config.Health.Percent.Point[2] = Frame
+        Health.Percent = UnitFrames:CreateFontString(Frame, Config.Health.Percent)
+        self:Tag(Health.Percent, Config.Health.Percent.Tag)
+    end
 
-    Power.Value = Frame:CreateFontString(nil, "OVERLAY")
-    Power.Value:SetFontObject(italicMediumFont)
-    Power.Value:SetPoint("BOTTOM", Power, "BOTTOM")
-    self:Tag(Power.Value, "[powercolor][missingpp]")
+    if Config.Power.Value then
+        Config.Power.Value.Point[2] = Power
+        Power.Value = UnitFrames:CreateFontString(Frame, Config.Power.Value)
+        self:Tag(Power.Value, Config.Power.Value.Tag)
+    end
 
-    Absorb.Value = Frame:CreateFontString(nil, "OVERLAY")
-    Absorb.Value:SetFontObject(italicNormalFont)
-    Absorb.Value:SetText("100")
-    Absorb.Value:SetPoint("TOPLEFT", Health, "TOP")
-    self:Tag(Absorb.Value, " ([Vorkui:HealthColor][Vorkui:Absorb])")
+    if Config.Absorb.Value then
+        Config.Absorb.Value.Point[2] = Health
+        Absorb.Value = UnitFrames:CreateFontString(Frame, Config.Absorb.Value)
+        self:Tag(Absorb.Value, Config.Absorb.Value.Tag)
+    end
 
     --[[
     PORTRAIT 3D
     --]]
     if Config.Portrait.Type == "3D" then
         Config.Portrait.Point[2] = Frame
-        local Portrait = CreateFrame('PlayerModel', nil, Frame)
-        Portrait:SetModelDrawLayer( Config.Portrait.ModelDrawLayer )
-        Portrait:SetSize( unpack(Config.Portrait.Size) )
-        Portrait:SetPoint( unpack(Config.Portrait.Point) )
-        if Config.Portrait.PostUpdate then
-            Portrait.PostUpdate = function(unit)
-                Portrait:SetPosition( unpack(Config.Portrait.PostUpdate.Position) )
-                Portrait:SetCamDistanceScale( Config.Portrait.PostUpdate.CamDistance )
-                Portrait:SetRotation( Config.Portrait.PostUpdate.Rotation )
-            end
-        end
-        self.Portrait = Portrait
+        self.Portrait = UnitFrames:Create3DPortrait("PlayerModel", Frame, Config.Portrait)
     end
 
     --[[
@@ -288,13 +302,7 @@ function UnitFrames:Player()
     --]]
     if Config.ClassIndicator then
         Config.ClassIndicator.Point[2] = self.Portrait or Frame
-        local ClassIndicator = Frame:CreateTexture(nil, "OVERLAY")
-        local textureName = Config.ClassIndicator.Texture
-        ClassIndicator:SetSize( unpack(Config.ClassIndicator.Size) )
-        ClassIndicator:SetPoint( unpack(Config.ClassIndicator.Point) )
-        ClassIndicator:SetTexture( LibAtlas:GetPath(textureName) )
-        ClassIndicator:SetTexCoord(LibAtlas:GetTexCoord(textureName, Config.ClassIndicator.TexCoord))
-        self.ClassIndicator = ClassIndicator
+        self.ClassIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ClassIndicator)
     end
 
     --[[
@@ -302,11 +310,7 @@ function UnitFrames:Player()
     ]]--
     if Config.RaidIndicator then
         Config.RaidIndicator.Point[2] = Health
-        local RaidIndicator = Frame:CreateTexture(nil, "OVERLAY")
-        RaidIndicator:SetSize( unpack(Config.RaidIndicator.Size) )
-        RaidIndicator:SetPoint( unpack(Config.RaidIndicator.Point) )
-        RaidIndicator:SetTexture( LibAtlas:GetPath(Config.RaidIndicator.Texture) )
-        self.RaidTargetIndicator = RaidIndicator
+        self.RaidTargetIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.RaidIndicator)
     end
 
     --[[
@@ -314,13 +318,7 @@ function UnitFrames:Player()
     ]]--
     if Config.LeaderIndicator then
         Config.LeaderIndicator.Point[2] = Frame.Name or Frame
-        local LeaderIndicator = Frame:CreateTexture(nil, "OVERLAY")
-        LeaderIndicator:SetSize( unpack(Config.LeaderIndicator.Size) )
-        LeaderIndicator:SetPoint( unpack(Config.LeaderIndicator.Point) )
-        LeaderIndicator:SetTexture( LibAtlas:GetPath(Config.LeaderIndicator.Texture) )
-        LeaderIndicator:SetTexCoord(LibAtlas:GetTexCoord(Config.LeaderIndicator.Texture, Config.LeaderIndicator.TexCoord))
-        LeaderIndicator:SetVertexColor( unpack(Config.LeaderIndicator.VertexColor) )
-        self.LeaderIndicator = LeaderIndicator
+        self.LeaderIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.LeaderIndicator)
     end
 
     --[[
@@ -328,14 +326,7 @@ function UnitFrames:Player()
     ]]--
     if Config.RestingIndicator then
         Config.RestingIndicator.Point[2] = Frame
-        local RestingIndicator = Frame:CreateTexture(nil, "OVERLAY")
-        RestingIndicator:SetSize( unpack(Config.RestingIndicator.Size) )
-        RestingIndicator:SetPoint( unpack(Config.RestingIndicator.Point) )
-        RestingIndicator:SetTexture( LibAtlas:GetPath(Config.RestingIndicator.Texture) )
-        RestingIndicator:SetTexCoord(LibAtlas:GetTexCoord( Config.RestingIndicator.Texture ,Config.RestingIndicator.TexCoord))
-        RestingIndicator:SetGradientAlpha( unpack(Config.RestingIndicator.GradientAlpha) )
-        RestingIndicator:SetBlendMode(Config.RestingIndicator.BlendMode)
-        self.RestingIndicator = RestingIndicator
+        self.RestingIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.RestingIndicator)
     end
 
     --[[
@@ -343,14 +334,7 @@ function UnitFrames:Player()
     ]]--
     if Config.CombatIndicator then
         Config.CombatIndicator.Point[2] = self.RestingIndicator or Frame
-        local CombatIndicator = Frame:CreateTexture(nil, "OVERLAY")
-        CombatIndicator:SetSize( unpack(Config.CombatIndicator.Size) )
-        CombatIndicator:SetPoint( unpack(Config.CombatIndicator.Point) )
-        CombatIndicator:SetTexture(  LibAtlas:GetPath(Config.CombatIndicator.Texture) )
-        CombatIndicator:SetTexCoord(LibAtlas:GetTexCoord(Config.CombatIndicator.Texture, Config.CombatIndicator.TexCoord))
-        CombatIndicator:SetGradientAlpha( unpack(Config.CombatIndicator.GradientAlpha) )
-        CombatIndicator:SetBlendMode(Config.CombatIndicator.BlendMode)
-        self.CombatIndicator = CombatIndicator
+        self.CombatIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.CombatIndicator)
     end
 
     --[[
