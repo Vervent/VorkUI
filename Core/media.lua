@@ -12,6 +12,7 @@ local LibSharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 local Medias = CreateFrame("Frame")
 
 local Fonts = {}
+local StatusBar = {}
 
 function Medias:GetLSM()
     return LibSharedMedia
@@ -41,7 +42,7 @@ function Medias:GetFont(name)
         end
     end
 
-    return nil
+    return LibSharedMedia:Fetch('font', name)
 end
 
 function Medias:LoadFont(name, adress, size, ...)
@@ -57,6 +58,15 @@ end
 
 function Medias:LoadAtlas(name, adress, settings)
     LibAtlas:RegisterAtlas(name, self.MediaPath["Icons"]..adress, settings)
+end
+
+function Medias:GetStatusBar(name)
+    return StatusBar[name] or LibSharedMedia:Fetch('statusbar', name)
+end
+
+function Medias:LoadStatusBar(name, adress)
+    LibSharedMedia:Register('statusbar', name, self.MediaPath["Textures"]..adress)
+    StatusBar[name] = self.MediaPath["Textures"]..adress
 end
 
 V["Medias"] = Medias

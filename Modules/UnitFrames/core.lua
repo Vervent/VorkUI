@@ -9,6 +9,7 @@ local AddOn, Plugin = ...
 local oUF = Plugin.oUF or oUF
 local Noop = function() end
 local UnitFrames = V["UnitFrames"]
+local Medias = V["Medias"]
 local LibSlant = LibStub:GetLibrary("LibSlant")
 
 -- Lib globals
@@ -130,7 +131,7 @@ function UnitFrames:CreateSlantedStatusBar(frame, textures, size, point, slantSe
         if type(t[1]) == 'table' then
             texture:SetColorTexture(unpack(t[1]))
         elseif type(t[1]) == 'string' then
-            texture:SetTexture(t[1])
+            texture:SetTexture(Medias:GetStatusBar(t[1]))
         else
             print("|cFFFF2200 ERROR CreateSlantedStatusBar |r")
         end

@@ -13,6 +13,12 @@ Medias.MediaPath = {
     Icons = [[Interface\AddOns\VorkUI\Medias\Icons\]],
 }
 
+local StatusBarAdress ={
+    {[[StatusBar\bubbles.tga]], 'Bubbles'},
+    {[[StatusBar\default.tga]], 'Default'},
+    {[[StatusBar\background.tga]], 'Background'},
+    {[[StatusBar\border.tga]], 'Border'},
+}
 local FontAdress = {
     {'Montserrat-Black.ttf', 'Montserrat Black'},
     {'Montserrat-BlackItalic.ttf', 'Montserrat Black Italic'},
@@ -142,7 +148,14 @@ function Medias:LoadAllAtlas()
     end
 end
 
+function Medias:LoadAllTextures()
+    for _, v in pairs( StatusBarAdress ) do
+        Medias:LoadStatusBar(v[2], v[1])
+    end
+end
+
 function Medias:Enable()
     self:LoadAllAtlas()
     self:LoadAllFonts()
+    self:LoadAllTextures()
 end

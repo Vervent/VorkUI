@@ -12,7 +12,7 @@ local Config = {
     Absorb = {
         Textures ={
             {
-                [[Interface\AddOns\VorkUI\Medias\StatusBar\bubbles.tga]], "ARTWORK"
+                "Bubbles", "ARTWORK"
             },
             {
                 {0,0,0,1}, "BACKGROUND", 1
@@ -29,13 +29,13 @@ local Config = {
     Health = {
         Textures ={
             {
-                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_1.tga]], "ARTWORK"
+                "Default", "ARTWORK"
             },
             {
-                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_bg.tga]], "BACKGROUND", 1
+                "Background", "BACKGROUND", 1
             },
             {
-                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_border.tga]], "OVERLAY"
+                "Border", "OVERLAY"
             }
         },
         Size =  { 256, 32 },
@@ -48,10 +48,10 @@ local Config = {
     HealthPrediction = {
         Textures ={
             {
-                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_1.tga]], "ARTWORK", 1
+                "Default", "ARTWORK", 1
             },
             {
-                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_border.tga]], "OVERLAY"
+                "Border", "OVERLAY"
             }
         },
         Size =  { 256, 32 },
@@ -63,10 +63,10 @@ local Config = {
     Power = {
         Textures ={
             {
-                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_1.tga]], "ARTWORK"
+                "Default", "ARTWORK"
             },
             {
-                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_bg.tga]], "BACKGROUND", 1
+                "Border", "BACKGROUND", 1
             }
         },
         Size =  { 235, 10 },
@@ -79,10 +79,10 @@ local Config = {
     PowerPrediction = {
         Textures ={
             {
-                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_1.tga]], "ARTWORK", 1
+                "Default", "ARTWORK", 1
             },
             {
-                [[Interface\AddOns\VorkUI\Medias\StatusBar\status_border.tga]], "OVERLAY"
+                "Border", "OVERLAY"
             }
         },
         Size =  { 235, 10 },
