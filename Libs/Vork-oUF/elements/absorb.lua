@@ -204,7 +204,7 @@ local function Disable(self)
     if(element) then
         element:Hide()
 
-        self:UnregisterEvent('UNIT_CONNECTION', Path)
+        self:UnregisterEvent('UNIT_CONNECTION', ColorPath)
         self:UnregisterEvent('UNIT_ABSORB_AMOUNT_CHANGED', Path)
         self:UnregisterEvent('UNIT_HEAL_ABSORB_AMOUNT_CHANGED', Path)
     end
