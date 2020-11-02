@@ -199,9 +199,9 @@ function UnitFrames:Player()
     Portrait:SetModelDrawLayer("BACKGROUND")
     Portrait:SetSize(49, 49)
     Portrait:SetPoint("TOPLEFT", Frame, "TOPLEFT", 0, 0)
-    --Portrait:SetPortraitZoom(1)
     Portrait.PostUpdate = function(unit)
-        Portrait:SetPosition(0.15,0 ,0)
+        Portrait:SetPosition(0.2, 0 , 0)
+        Portrait:SetCamDistanceScale(2)
         Portrait:SetRotation(-math.pi/5)
     end
 
