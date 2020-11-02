@@ -87,9 +87,10 @@ local slant = function(self, startProgress, endProgress, coord, slantFactor, inv
 end
 
 local Methods = {
-    AddTexture = function(self, layer, factor)
-        local texture = self.Parent:CreateTexture(nil, layer)
+    AddTexture = function(self, layer, sublayer, factor)
+        local texture = self.Parent:CreateTexture(nil)
 
+        texture:SetDrawLayer(layer, sublayer )
         local textureIndex = #self.Textures + 1
 
         if self.UseCustomSlantByTexture then

@@ -5,6 +5,6 @@
 
 Core\init.lua
 Libs\load.xml
-Medias\load.xml
 Core\load.xml
+Medias\load.xml
 Modules\load.xml

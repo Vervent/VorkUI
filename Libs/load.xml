@@ -11,6 +11,9 @@
 	<!-- LibSlant -->
 	<Script file='LibSlant\LibSlant.lua'/>
 
+	<!-- LibAtlas -->
+	<Script file='LibAtlas\LibAtlas.lua'/>
+
 	<!-- oUF -->
 	<Include file='oUF\oUF.xml'/>
 	<Include file='Vork-oUF\load.xml'/>

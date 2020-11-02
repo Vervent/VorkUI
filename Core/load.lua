@@ -12,6 +12,7 @@ local Load = CreateFrame("Frame")
 
 function Load:OnEvent(event)
     if (event == "PLAYER_LOGIN") then
+        V["Medias"]:Enable()
         V["UnitFrames"]:Enable()
     end
 end
