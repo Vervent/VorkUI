@@ -13,6 +13,7 @@ local Medias = CreateFrame("Frame")
 
 local Fonts = {}
 local StatusBar = {}
+local Particles = {}
 
 function Medias:GetLSM()
     return LibSharedMedia
@@ -67,6 +68,19 @@ end
 function Medias:LoadStatusBar(name, adress)
     LibSharedMedia:Register('statusbar', name, self.MediaPath["Textures"]..adress)
     StatusBar[name] = self.MediaPath["Textures"]..adress
+end
+
+function Medias:GetParticle(name)
+    print (name, Particles[name])
+    return Particles[name] or nil
+end
+
+function Medias:LoadParticle(name, adress)
+    if Particles[name] then
+        return
+    end
+
+    Particles[name] = self.MediaPath["Icons"]..adress
 end
 
 V["Medias"] = Medias

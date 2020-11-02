@@ -13,7 +13,7 @@ Medias.MediaPath = {
     Icons = [[Interface\AddOns\VorkUI\Medias\Icons\]],
 }
 
-local StatusBarAdress ={
+local StatusBarAdress = {
     {[[StatusBar\bubbles.tga]], 'Bubbles'},
     {[[StatusBar\default.tga]], 'Default'},
     {[[StatusBar\background.tga]], 'Background'},
@@ -132,6 +132,10 @@ local AtlasSettings = {
     }
 }
 
+local ParticlesAdress = {
+    { [[Particles\muzzle_01.tga]], 'Spark' },
+}
+
 function Medias:LoadAllFonts()
 
     for _, v in ipairs(FontAdress) do
@@ -154,8 +158,15 @@ function Medias:LoadAllTextures()
     end
 end
 
+function Medias:LoadParticles()
+    for _, v in pairs( ParticlesAdress ) do
+        Medias:LoadParticle(v[2], v[1])
+    end
+end
+
 function Medias:Enable()
     self:LoadAllAtlas()
     self:LoadAllFonts()
     self:LoadAllTextures()
+    self:LoadParticles()
 end
