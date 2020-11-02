@@ -5,15 +5,19 @@
 ---
 
 local V, C, L = select(2, ...):unpack()
+local Medias = V["Medias"]
 
 local LibAtlas = LibStub:GetLibrary("LibAtlas")
 local LibSharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 
-local MediaPath = {
+
+Medias.MediaPath = {
     Fonts = [[Interface\AddOns\VorkUI\Medias\Fonts\]],
     Textures = [[Interface\AddOns\VorkUI\Medias\Textures\]],
     Icons = [[Interface\AddOns\VorkUI\Medias\Icons\]],
 }
+
+Medias.Fonts = {}
 
 local FontAdress = {
     {'Montserrat-Black.ttf', 'Montserrat Black'},
@@ -35,105 +39,47 @@ local FontAdress = {
     {'Montserrat-Thin.ttf', 'Montserrat Thin'},
     {'Montserrat-ThinItalic.ttf', 'Montserrat Thin Italic'},
 }
-
-local Fonts = {
+local FontSettings = {
+    ["Montserrat"] = {
+        {10, 14, 22, 30},
+        "OUTLINE"
+    },
+    ["Montserrat Italic"] = {
+        {14, 22, 30},
+        "OUTLINE"
+    },
+    ["Montserrat Light"] = {
+        {14, 22, 30},
+        "OUTLINE"
+    },
+    ["Montserrat Light Italic"] = {
+        {14, 22, 30},
+        "OUTLINE"
+    },
+    ["Montserrat Medium"] = {
+        {14, 22, 30},
+        "OUTLINE"
+    },
+    ["Montserrat Medium Italic"] = {
+        {14, 22, 30},
+        "OUTLINE"
+    },
+    ["Montserrat Bold"] = {
+        {14, 22, 30},
+        "OUTLINE"
+    },
+    ["Montserrat Bold Italic"] = {
+        {14, 22, 30},
+        "OUTLINE"
+    }
 }
-
-local Medias = V["Medias"]
-
-function Medias:GetLSM()
-    return LibSharedMedia
-end
-
-local function PushFontObject(name, adress, size, ...)
-    if type(size) == 'table' then
-        for _, s in ipairs(size) do
-            Fonts[name..s] = CreateFont("Vorkaui" .. name .. s)
-            Fonts[name..s]:SetFont(LibSharedMedia:Fetch('font', adress), s, ...)
-        end
-    else
-        Fonts[name] = CreateFont("Vorkaui"..name)
-        Fonts[name]:SetFont(LibSharedMedia:Fetch('font', adress), size, ...)
-    end
-end
-
-function Medias:GetFont(name)
-    if Fonts[name] then
-        return Fonts[name]
-    end
-
-    --return first iteration find, order not assured
-    for k, v in pairs(Fonts) do
-        if k:find(name) ~= nil then
-            return v
-        end
-    end
-
-    return nil
-end
-
-function Medias:LoadFonts()
-    for _,v in ipairs(FontAdress) do
-        LibSharedMedia:Register('font', v[2], MediaPath["Fonts"] .. v[1])
-    end
-
-    --[[
-     {'Montserrat-Black.ttf', 'Montserrat Black'},
-    {'Montserrat-BlackItalic.ttf', 'Montserrat Black Italic'},
-    {'Montserrat-Bold.ttf', 'Montserrat Bold'},
-    {'Montserrat-BoldItalic.ttf', 'Montserrat Bold Italic'},
-    {'Montserrat-ExtraBold.ttf', 'Montserrat Extra Bold'},
-    {'Montserrat-ExtraBoldItalic.ttf', 'Montserrat Extra Bold Italic'},
-    {'Montserrat-ExtraLight.ttf', 'Montserrat Extra Light'},
-    {'Montserrat-ExtraLightItalic.ttf', 'Montserrat Extra Light Italic'},
-    {'Montserrat-Italic.ttf', 'Montserrat Italic'},
-    {'Montserrat-Light.ttf', 'Montserrat Light'},
-    {'Montserrat-LightItalic.ttf', 'Montserrat Light Italic'},
-    {'Montserrat-Medium.ttf', 'Montserrat Medium'},
-    {'Montserrat-MediumItalic.ttf', 'Montserrat Medium Italic'},
-    {'Montserrat-Regular.ttf', 'Montserrat'},
-    {'Montserrat-SemiBold.ttf', 'Montserrat SemiBold'},
-    {'Montserrat-SemiBoldItalic.ttf', 'Montserrat SemiBold Italic'},
-    {'Montserrat-Thin.ttf', 'Montserrat Thin'},
-    {'Montserrat-ThinItalic.ttf', 'Montserrat Thin Italic'},
-    ]]--
-
-    -- Regular
-    PushFontObject('Regular', 'Montserrat', {10, 14, 22, 30}, "OUTLINE")
-    PushFontObject('Italic', 'Montserrat Italic', {14, 22, 30}, "OUTLINE")
-    PushFontObject('Light', 'Montserrat Light', {14, 22, 30}, "OUTLINE")
-    PushFontObject('LightItalic', 'Montserrat Light Italic', {14, 22, 30}, "OUTLINE")
-    PushFontObject('Medium', 'Montserrat Medium', {14, 22, 30}, "OUTLINE")
-    PushFontObject('MediumItalic', 'Montserrat Medium Italic', {14, 22, 30}, "OUTLINE")
-    PushFontObject('Bold', 'Montserrat Bold', {14, 22, 30}, "OUTLINE")
-    PushFontObject('BoldItalic', 'Montserrat Bold Italic', {14, 22, 30}, "OUTLINE")
-
-    --Fonts["Regular"] = CreateFont("VorkauiRegular")
-    --Fonts["Regular"]:SetFont(LibSharedMedia, 14, "OUTLINE")
-
-    --local regular = CreateFont("VorkaRegular")
-    --regular:SetFont([[Interface\AddOns\VorkUI\Medias\Fonts\Montserrat-Regular.ttf]], 14, "OUTLINE")
-    --local light = CreateFont("VorkaLight")
-    --light:SetFont([[Interface\AddOns\VorkUI\Medias\Fonts\Montserrat-Light.ttf]], 14, "NONE", "OUTLINE")
-    --local medium = CreateFont("VorkaMedium")
-    --medium:SetFont([[Interface\AddOns\VorkUI\Medias\Fonts\Montserrat-Medium.ttf]], 14, "OUTLINE")
-    --local semibold = CreateFont("VorkaSemibold")
-    --semibold:SetFont([[Interface\AddOns\VorkUI\Medias\Fonts\Montserrat-SemiBold.ttf]], 14, "OUTLINE")
-    --local bold = CreateFont("VorkaBold")
-    --bold:SetFont([[Interface\AddOns\VorkUI\Medias\Fonts\Montserrat-Bold.ttf]], 14, "OUTLINE")
-    --local extrabold = CreateFont("VorkaExtrabold")
-    --extrabold:SetFont([[Interface\AddOns\VorkUI\Medias\Fonts\Montserrat-ExtraBold.ttf]], 14, "OUTLINE")
-end
-
-function Medias:GetLibAtlas()
-    return LibAtlas
-end
-
-function Medias:LoadAtlas()
-    --[[
-        CLASS ICON
-    ]]--
-    local ClassIconAtlas = {
+local AtlasAdress = {
+    { [[Atlas\class.tga]], 'ClassIcon' },
+    { [[Atlas\general.tga]], 'GlobalIcon' },
+    { [[Atlas\raid_icons.tga]], 'RaidIcon' }
+}
+local AtlasSettings = {
+    ["ClassIcon"] = {
         width = 512,
         height = 256,
         ["DEMONHUNTER"] = {0, 80, 0, 82},
@@ -148,12 +94,8 @@ function Medias:LoadAtlas()
         ["ROGUE"] = {237, 320, 83, 164},
         ["SHAMAN"] = {320, 402, 83, 163},
         ["WARRIOR"] = {402, 472, 83, 165},
-    }
-    LibAtlas:RegisterAtlas("ClassIcon", MediaPath["Icons"]..[[Atlas\class.tga]], ClassIconAtlas)
-    --[[
-        GLOBAL ICON
-    ]]--
-    local GlobalIconAtlas = {
+    },
+    ["GlobalIcon"] = {
         width = 512,
         height = 128,
         ["AGILITY"] = {0, 63, 0, 64},
@@ -175,12 +117,8 @@ function Medias:LoadAtlas()
         ["STRENGTH"] = {429, 493, 92, 126},
         ["FOCUS"] = {401, 465, 0, 36}, --same as energy
         ["FURY"] = {55, 119, 64, 128}, --same as rage
-    }
-    LibAtlas:RegisterAtlas("GlobalIcon", MediaPath["Icons"]..[[Atlas\general.tga]], GlobalIconAtlas)
-    --[[
-        RAID ICON
-    ]]--
-    local RaidIconAtlas = {
+    },
+    ["RaidIcon"] = {
         width = 256,
         height = 256,
         ["STAR"] = {0, 64, 0, 64},
@@ -192,12 +130,26 @@ function Medias:LoadAtlas()
         ["CROSS"] = {128, 192, 64, 128},
         ["SKULL"] = {192, 256, 64, 128},
     }
-    LibAtlas:RegisterAtlas("RaidIcon", MediaPath["Icons"]..[[Atlas\raid_icons.tga]], RaidIconAtlas)
+}
+
+function Medias:LoadAllFonts()
+
+    for _,v in ipairs(FontAdress) do
+        if FontSettings[ v[2] ] ~= nil then
+            Medias:LoadFont(v[2], v[1],unpack(FontSettings[ v[2] ]))
+        end
+    end
+
+end
+
+function Medias:LoadAllAtlas()
+
+    for k,v in pairs( AtlasAdress ) do
+        LibAtlas:RegisterAtlas(v[2], self.MediaPath["Icons"]..v[1], AtlasSettings[ v[2] ])
+    end
 end
 
 function Medias:Enable()
-    self:LoadAtlas()
-    self:LoadFonts()
+    self:LoadAllAtlas()
+    self:LoadAllFonts()
 end
-
-Medias.Fonts = Fonts

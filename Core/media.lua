@@ -6,6 +6,57 @@
 
 local V,C,L = select(2,...):unpack()
 
-local VorkuiMedia = CreateFrame("Frame")
+local LibAtlas = LibStub:GetLibrary("LibAtlas")
+local LibSharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 
-V["Medias"] = VorkuiMedia
+local Medias = CreateFrame("Frame")
+
+function Medias:GetLSM()
+    return LibSharedMedia
+end
+
+function Medias:PushFontObject(name, adress, size, ...)
+    local Fonts = self.Fonts
+    if type(size) == 'table' then
+        for _, s in ipairs(size) do
+            Fonts[name..s] = CreateFont("Vorkaui" .. name .. s)
+            Fonts[name..s]:SetFont(LibSharedMedia:Fetch('font', adress), s, ...)
+        end
+    else
+        Fonts[name] = CreateFont("Vorkaui"..name)
+        Fonts[name]:SetFont(LibSharedMedia:Fetch('font', adress), size, ...)
+    end
+end
+
+function Medias:GetFont(name)
+    local Fonts = self.Fonts
+    if Fonts[name] then
+        return Fonts[name]
+    end
+
+    --return first iteration find, order not assured
+    for k, v in pairs(Fonts) do
+        if k:find(name) ~= nil then
+            return v
+        end
+    end
+
+    return nil
+end
+
+function Medias:LoadFont(name, adress, size, ...)
+
+    LibSharedMedia:Register('font', name, self.MediaPath["Fonts"] .. adress)
+    self:PushFontObject(name, adress, size, ...)
+
+end
+
+function Medias:GetLibAtlas()
+    return LibAtlas
+end
+
+function Medias:LoadAtlas(name, adress, settings)
+    LibAtlas:RegisterAtlas(name, MediaPath["Icons"]..adress, settings)
+end
+
+V["Medias"] = Medias

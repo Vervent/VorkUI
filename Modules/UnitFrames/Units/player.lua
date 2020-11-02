@@ -114,14 +114,10 @@ function UnitFrames:Player()
     ----[[
     --    FONT
     ----]]
-    local regularTinyFont = Medias:GetFont('Regular10')
-    local regularNormalFont = Medias:GetFont('Regular14')
-    local regularMediumFont = Medias:GetFont('Regular22')
-    local regularBigFont = Medias:GetFont('Regular30')
-
-    local italicNormalFont = Medias:GetFont('Italic14')
-    local italicMediumFont = Medias:GetFont('Italic22')
-    local italicBigFont = Medias:GetFont('Italic30')
+    local regularNormalFont = Medias:GetFont('Montserrat')
+    local italicNormalFont = Medias:GetFont('Montserrat Italic14')
+    local italicMediumFont = Medias:GetFont('Montserrat Italic22')
+    local italicBigFont = Medias:GetFont('Montserrat Italic30')
 
     --[[
        ABSORB SLANTED STATUSBAR
