@@ -11,6 +11,7 @@ local Noop = function() end
 local UnitFrames = V["UnitFrames"]
 local Medias = V["Medias"]
 local LibSlant = LibStub:GetLibrary("LibSlant")
+local LibAtlas = Medias:GetLibAtlas()
 
 -- Lib globals
 local strfind = strfind
@@ -107,6 +108,51 @@ function UnitFrames:UTF8Sub(i, dots)
             return self
         end
     end
+end
+
+function UnitFrames:CreateFontString(frame, config)
+    local font = frame:CreateFontString(nil, config.Layer)
+    font:SetFontObject( Medias:GetFont( config.FontName ) )
+    font:SetPoint( unpack(config.Point) )
+
+    return font
+end
+
+function UnitFrames:Create3DPortrait(template, parent, config)
+    local portrait = CreateFrame(template, nil, parent)
+    portrait:SetModelDrawLayer( config.ModelDrawLayer )
+    portrait:SetSize( unpack( config.Size ) )
+    portrait:SetPoint( unpack( config.Point ) )
+    if config.PostUpdate then
+        portrait.PostUpdate = function(unit)
+            portrait:SetPosition( unpack(config.PostUpdate.Position) )
+            portrait:SetCamDistanceScale( config.PostUpdate.CamDistance )
+            portrait:SetRotation( config.PostUpdate.Rotation )
+        end
+    end
+
+    return portrait
+end
+
+function UnitFrames:CreateIndicator(frame, layer, sublayer, config)
+    local indicator = frame:CreateTexture(nil, layer, sublayer)
+    indicator:SetSize( unpack(config.Size) )
+    indicator:SetPoint( unpack(config.Point) )
+    indicator:SetTexture( LibAtlas:GetPath(config.Texture) )
+    if config.TexCoord then
+        indicator:SetTexCoord(LibAtlas:GetTexCoord( config.Texture ,config.TexCoord))
+    end
+    if config.VertexColor then
+        indicator:SetVertexColor( unpack(config.VertexColor) )
+    end
+    if config.GradientAlpha then
+        indicator:SetGradientAlpha( unpack(config.GradientAlpha) )
+    end
+    if config.BlendMode then
+        indicator:SetBlendMode(config.BlendMode)
+    end
+
+    return indicator
 end
 
 --[[
