@@ -76,7 +76,11 @@ local FontSettings = {
 local AtlasAdress = {
     { [[Atlas\class.tga]], 'ClassIcon' },
     { [[Atlas\general.tga]], 'GlobalIcon' },
-    { [[Atlas\raid_icons.tga]], 'RaidIcon' }
+    { [[Atlas\raid_icons.tga]], 'RaidIcon' },
+    { [[Atlas\muzzle.tga]], 'Muzzle' },
+    { [[Atlas\flame.tga]], 'Flame' },
+    { [[Atlas\spark.tga]], 'Spark' },
+    { [[Atlas\dirt.tga]], 'Dirt' }
 }
 local AtlasSettings = {
     ["ClassIcon"] = {
@@ -129,11 +133,46 @@ local AtlasSettings = {
         ["SQUARE"] = {64, 128, 64, 128},
         ["CROSS"] = {128, 192, 64, 128},
         ["SKULL"] = {192, 256, 64, 128},
+    },
+    ["Muzzle"] = {
+        width = 256,
+        height = 128,
+        [1] = {0, 64, 0, 64},
+        [2] = {64, 128, 0, 64},
+        [3] = {128, 192, 0, 64},
+        [4] = {192, 256, 0, 64},
+        [5] = {0, 64, 64, 128},
+    },
+    ["Flame"] = {
+        width = 128,
+        height = 128,
+        [1] = {0, 64, 0, 64},
+        [2] = {64, 128, 0, 64},
+        [3] = {0, 64, 64, 128},
+        [4] = {64, 128, 64, 128},
+    },
+    ["Spark"] = {
+        width = 128,
+        height = 128,
+        [1] = {0, 64, 0, 64},
+        [2] = {64, 128, 0, 64},
+        [3] = {0, 64, 64, 128},
+        [4] = {64, 128, 64, 128},
+    },
+    ["Dirt"] = {
+        width = 128,
+        height = 128,
+        [1] = {0, 64, 0, 64},
+        [2] = {64, 128, 0, 64},
+        [3] = {0, 64, 64, 128},
+        [4] = {64, 128, 64, 128},
     }
 }
 
 local ParticlesAdress = {
     { [[Particles\muzzle_01.tga]], 'Spark' },
+    { [[Particles\muzzle_02.tga]], 'Spark2' },
+    { [[Particles\scorch_03.tga]], 'Scorch' },
 }
 
 function Medias:LoadAllFonts()
