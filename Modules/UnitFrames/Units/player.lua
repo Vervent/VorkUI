@@ -162,9 +162,63 @@ local Config = {
     },
     Name = {
         Layer = "OVERLAY",
-        FontName = "Montserrat",
+        FontName = "Montserrat14",
         Point = { "TOPLEFT", nil, "BOTTOMLEFT", 20, 10 },
         Tag = "[classification] [name] [difficulty][level]"
+    },
+    CastBar = {
+        Textures = {
+            {
+            "Default", "ARTWORK"
+            },
+            {
+                "Background", "BACKGROUND", 1
+            },
+            {
+                "Border", "OVERLAY"
+            }
+        },
+        Size =  { 300, 20 },
+        Point =  { "TOP", nil, "BOTTOM", 0, -2 },
+        StatusBarColor = { 0, 0.5, 1, 1 },
+        Spark = {
+            Layer = "OVERLAY",
+            Size = { 20, 20 },
+            BlendMode = "ADD",
+            CastSettings = {
+                AtlasName = 'Muzzle',
+                Point = {'RIGHT', nil, 'RIGHT', 5, 0},
+            },
+            ChannelSettings = {
+                AtlasName = 'Spark',
+                Point = { 'CENTER', nil, 'RIGHT', 0, 0 },
+            }
+        },
+        Time = {
+            Layer = "OVERLAY",
+            FontName = 'Montserrat10',
+            Point = {'RIGHT', nil}
+        },
+        Text = {
+            Layer = "OVERLAY",
+            FontName = 'Montserrat10',
+            Point = {'CENTER', nil}
+        },
+        Icon = {
+            Size = {20, 20},
+            Point = {'TOPLEFT', nil, 'TOPLEFT'}
+        },
+        Shield = {
+            Texture = 'GlobalIcon',
+            TexCoord = 'DEFENSE',
+            Size = {20, 20},
+            Point = {'CENTER', nil}
+        },
+        SafeZone = {
+            Layer = "OVERLAY",
+            BlendMode = "ADD",
+            VertexColor = {255/255, 246/255, 0, 0.75}
+        }
     }
 }
 
@@ -173,10 +227,6 @@ function UnitFrames:Player()
     self:RegisterForClicks("AnyUp")
     self:SetScript("OnEnter", UnitFrame_OnEnter)
     self:SetScript("OnLeave", UnitFrame_OnLeave)
-
-    local textureClassIconPath = LibAtlas:GetPath("ClassIcon")
-    local textureGlobalIconPath = LibAtlas:GetPath("GlobalIcon")
-    local textureRaidIconPath = LibAtlas:GetPath("RaidIcon")
 
     local Frame = CreateFrame("Frame", nil, self)
     Frame:SetAllPoints()
@@ -260,7 +310,6 @@ function UnitFrames:Player()
         FONT
     --]]
     if Config.Name then
-        Config.Name.Point[2] = Frame
         Frame.Name = UnitFrames:CreateFontString(Frame, Config.Name)
         self:Tag(Frame.Name, Config.Name.Tag)
     end
@@ -272,7 +321,6 @@ function UnitFrames:Player()
     end
 
     if Config.Health.Percent then
-        Config.Health.Percent.Point[2] = Frame
         Health.Percent = UnitFrames:CreateFontString(Frame, Config.Health.Percent)
         self:Tag(Health.Percent, Config.Health.Percent.Tag)
     end
@@ -293,7 +341,6 @@ function UnitFrames:Player()
     PORTRAIT 3D
     --]]
     if Config.Portrait.Type == "3D" then
-        Config.Portrait.Point[2] = Frame
         self.Portrait = UnitFrames:Create3DPortrait("PlayerModel", Frame, Config.Portrait)
     end
 
@@ -325,7 +372,6 @@ function UnitFrames:Player()
     RESTING ICON
     ]]--
     if Config.RestingIndicator then
-        Config.RestingIndicator.Point[2] = Frame
         self.RestingIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.RestingIndicator)
     end
 
@@ -340,60 +386,9 @@ function UnitFrames:Player()
     --[[
     CASTBAR
     ]]--
-    -- Position and size
-    local Castbar = CreateFrame('StatusBar', nil, Frame)
-    Castbar:SetSize(256, 20)
-    Castbar:SetStatusBarTexture(Medias:GetStatusBar('Default'))
-    Castbar:SetPoint('TOP', Frame, 'BOTTOM', 0, -10)
-
-    -- Add a background
-    local Background = Castbar:CreateTexture(nil, 'BACKGROUND')
-    Background:SetAllPoints(Castbar)
-    Background:SetTexture(Medias:GetStatusBar('Background'))
-
-    -- Add a spark
-    local Spark = Castbar:CreateTexture(nil, 'OVERLAY')
-    Spark:SetSize(20, 30)
-    Spark:SetVertexColor(0, 195/255, 1, 1)
-    Spark:SetBlendMode('ADD')
-    Spark:SetTexture(Medias:GetParticle("Spark"))
-    Spark:SetPoint('RIGHT', Castbar:GetStatusBarTexture(), 'RIGHT', 5, 0)
-
-    -- Add a timer
-    local Time = Castbar:CreateFontString(nil, 'OVERLAY', 'GameFontNormalSmall')
-    Time:SetPoint('RIGHT', Castbar)
-
-    -- Add spell text
-    local Text = Castbar:CreateFontString(nil, 'OVERLAY', 'GameFontNormalSmall')
-    Text:SetPoint('LEFT', Castbar)
-
-    -- Add spell icon
-    local Icon = Castbar:CreateTexture(nil, 'OVERLAY')
-    Icon:SetSize(20, 20)
-    Icon:SetPoint('TOPLEFT', Castbar, 'TOPLEFT')
-
-    -- Add Shield
-    local Shield = Castbar:CreateTexture(nil, 'OVERLAY')
-    Shield:SetSize(20, 20)
-    Shield:SetTexture(LibAtlas:GetTexCoord("GlobalIcon", "DEFENSE"))
-    Shield:SetPoint('CENTER', Castbar)
-
-    -- Add safezone
-    local SafeZone = Castbar:CreateTexture(nil, 'OVERLAY')
-    SafeZone:SetTexture(Medias:GetStatusBar('Default'))
-    SafeZone:SetVertexColor(255/255, 246/255, 0, 0.75)
-    SafeZone:SetBlendMode("ADD")
-
-    -- Register it with oUF
-    Castbar.bg = Background
-    Castbar.Spark = Spark
-    Castbar.Time = Time
-    Castbar.Text = Text
-    Castbar.Icon = Icon
-    Castbar.Shield = Shield
-    Castbar.SafeZone = SafeZone
-    self.Castbar = Castbar
-
+    if Config.CastBar then
+        self.Castbar = UnitFrames:CreateCastBar(Frame, Config.CastBar)
+    end
 
     -- Register with oUF
     self.Absorb = Absorb
@@ -420,5 +415,6 @@ function UnitFrames:Player()
 
     self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
     self:HookScript("OnLeave", UnitFrames.MouseOnPlayer)
+
 
 end
