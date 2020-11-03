@@ -147,7 +147,8 @@ local function CastBarUpdateSpark(self)
     end
 
     local atlasID = floor(self.duration / self.max * frequency + 0.5) % spriteCount + 1
-    spark:SetTexCoord(LibAtlas:GetTexCoord( atlasName , atlasID,  self.rotation))
+    spark:SetTexCoord(LibAtlas:GetTexCoord( atlasName , atlasID, self.rotation or self:GetReverseFill() ))
+
 
 end
 
@@ -258,6 +259,7 @@ function UnitFrames:CreateCastBar(frame, config)
     castbar:SetSize(unpack(config.Size))
     castbar:SetStatusBarTexture(Medias:GetStatusBar(textures[1][1]))
     castbar:SetStatusBarColor(unpack(config.StatusBarColor))
+    castbar:SetReverseFill(config.ReverseFill or false)
 
     config.Point[2] = frame
     castbar:SetPoint(unpack(config.Point))
@@ -468,6 +470,7 @@ function UnitFrames:UpdatePowerPredictionOverride(event, unit)
     local mainPowerType = UnitPowerType(unit)
     local hasAltManaBar = ALT_MANA_BAR_PAIR_DISPLAY_INFO[playerClass] and ALT_MANA_BAR_PAIR_DISPLAY_INFO[playerClass][mainPowerType]
     local mainCost, altCost = 0, 0
+    local max = UnitPowerMax(unit, mainPowerType)
 
     if(event == 'UNIT_SPELLCAST_START' and startTime ~= endTime) then
         local costTable = GetSpellPowerCost(spellID)
@@ -493,16 +496,28 @@ function UnitFrames:UpdatePowerPredictionOverride(event, unit)
         end
     end
 
-    if(element.mainBar) then
+    if (element.mainBar) and max > 0 then
         --We need to align Point using TexCoord cause of slant mechanism
-        if not element.mainBar.Slant.FillInverse then
-            local left = select(7 ,self.Power:GetTexCoord())
-            element.mainBar:SetPoint("TOPLEFT", self.Power, "TOPLEFT", left*element.mainBar:GetWidth(), 0)
+
+        if element.mainBar.Slant.FillInverse then
+            if element.mainBar.Slant.Inverse then
+                local right = select(1 ,self.Power:GetTexCoord())
+                element.mainBar:SetPoint("TOPLEFT", self.Power, "TOPLEFT", right*element.mainBar:GetWidth(), 0)
+            else
+                local left = select(5 ,self.Power:GetTexCoord())
+                element.mainBar:SetPoint("TOPRIGHT", self.Power, "TOPLEFT", left*element.mainBar:GetWidth(), 0)
+            end
         else
-            local right = select(5 ,self.Power:GetTexCoord())
-            element.mainBar:SetPoint("TOPRIGHT", self.Power, "TOPLEFT", right*element.mainBar:GetWidth(), 0)
+            if element.mainBar.Slant.Inverse then
+                local right = select(3 ,self.Power:GetTexCoord())
+                element.mainBar:SetPoint("TOPRIGHT", self.Power, "TOPLEFT", right*element.mainBar:GetWidth(), 0)
+            else
+                local left = select(7 ,self.Power:GetTexCoord())
+                element.mainBar:SetPoint("TOPLEFT", self.Power, "TOPLEFT", left*element.mainBar:GetWidth(), 0)
+            end
         end
-        element.mainBar.Slant:Slant(0, mainCost/UnitPowerMax(unit, mainPowerType))
+
+        element.mainBar.Slant:Slant(0, mainCost/max)
         element.mainBar:SetVertexColor( unpack(colors.power) )
         element.mainBar:Show()
     end
@@ -596,25 +611,46 @@ function UnitFrames:UpdatePredictionOverride(event, unit)
 
     if(element.myBar) then
         --We need to align Point using TexCoord cause of slant mechanism
-        if not element.myBar.Slant.FillInverse then
-            local left = select(7 ,self.Health:GetTexCoord())
-            element.myBar:SetPoint("TOPLEFT", self.Health, "TOPLEFT", left*256, 0)
+        if element.myBar.Slant.FillInverse then
+            if element.myBar.Slant.Inverse then
+                local right = select(1 ,self.Health:GetTexCoord())
+                element.myBar:SetPoint("TOPLEFT", self.Health, "TOPLEFT", right*element.myBar:GetWidth(), 0)
+            else
+                local left = select(5 ,self.Health:GetTexCoord())
+                element.myBar:SetPoint("TOPRIGHT", self.Health, "TOPLEFT", left*element.myBar:GetWidth(), 0)
+            end
         else
-            local right = select(5 ,self.Health:GetTexCoord())
-            element.myBar:SetPoint("TOPRIGHT", self.Health, "TOPLEFT", right*256, 0)
+            if element.myBar.Slant.Inverse then
+                local right = select(3 ,self.Health:GetTexCoord())
+                element.myBar:SetPoint("TOPRIGHT", self.Health, "TOPLEFT", right*element.myBar:GetWidth(), 0)
+            else
+                local left = select(7 ,self.Health:GetTexCoord())
+                element.myBar:SetPoint("TOPLEFT", self.Health, "TOPLEFT", left*element.myBar:GetWidth(), 0)
+            end
         end
+
         element.myBar.Slant:Slant(0, myIncomingHeal/maxHealth)
         element.myBar:SetVertexColor( unpack(colors.myHeal) )
         element.myBar:Show()
     end
 
     if(element.otherBar) then
-        if not element.otherBar.Slant.FillInverse then
-            local left = select(7 , element.myBar:GetTexCoord())
-            element.otherBar:SetPoint("TOPLEFT", element.myBar, "TOPLEFT", left*256, 0)
+        if element.otherBar.Slant.FillInverse then
+            if element.otherBar.Slant.Inverse then
+                local right = select(1 ,self.Health:GetTexCoord())
+                element.otherBar:SetPoint("TOPLEFT", self.Health, "TOPLEFT", right*element.otherBar:GetWidth(), 0)
+            else
+                local left = select(5 ,self.Health:GetTexCoord())
+                element.otherBar:SetPoint("TOPRIGHT", self.Health, "TOPLEFT", left*element.otherBar:GetWidth(), 0)
+            end
         else
-            local right = select(5 , element.myBar:GetTexCoord())
-            element.otherBar:SetPoint("TOPRIGHT",element.myBar, "TOPLEFT", right*256, 0)
+            if element.myBar.Slant.Inverse then
+                local right = select(3 ,self.Health:GetTexCoord())
+                element.otherBar:SetPoint("TOPRIGHT", self.Health, "TOPLEFT", right*element.otherBar:GetWidth(), 0)
+            else
+                local left = select(7 ,self.Health:GetTexCoord())
+                element.otherBar:SetPoint("TOPLEFT", self.Health, "TOPLEFT", left*element.otherBar:GetWidth(), 0)
+            end
         end
         element.otherBar.Slant:Slant(0, otherIncomingHeal/maxHealth)
         element.otherBar:SetVertexColor( unpack(colors.otherHeal) )
@@ -1082,7 +1118,7 @@ function UnitFrames:CreateUnits()
 
     local Target = oUF:Spawn("target", "VorkuiTargetFrame")
     Target:SetPoint("CENTER", nil, "CENTER", 235, 0)
-    Target:SetSize(256, 60)
+    Target:SetSize(300, 62)
 
     self.Units.Player = Player
     self.Units.Target = Target
