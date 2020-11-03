@@ -23,8 +23,19 @@ function LibAtlas:RegisterAtlas(name, path, spriteSheet)
     end
     Atlas[name] = {
         Path = path,
-        Sprites = spriteSheet,
+        Sprites = { },
     }
+
+    local tmp = false
+
+    for k, v in pairs(spriteSheet) do
+        if type(k) == 'number' then
+            tinsert( Atlas[name].Sprites, k, v)
+            tmp = true
+        else
+            Atlas[name].Sprites[k] = v
+        end
+    end
 
     if debug == 1 then
         Atlas[name].OnUse = false
@@ -72,7 +83,7 @@ function LibAtlas:GetSheet(key)
     return atlas.Sprites
 end
 
-function LibAtlas:GetTexCoord(key, spriteName)
+function LibAtlas:GetTexCoord(key, spriteName, flip)
 
     local atlas = self:GetAtlas(key)
 
@@ -83,7 +94,22 @@ function LibAtlas:GetTexCoord(key, spriteName)
     local width = atlas.Sprites.width
     local height = atlas.Sprites.height
     local l, r, t, b = unpack(atlas.Sprites[spriteName])
-    return l/width, r/width, t/height, b/height
+    if flip then
+        return 1-l/width, 1-r/width, t/height, b/height
+    else
+        return l/width, r/width, t/height, b/height
+    end
+
+end
+
+function LibAtlas:GetSpriteCount(key)
+    local atlas = self:GetAtlas(key)
+
+    if atlas == nil then
+        return 0
+    end
+
+    return #atlas.Sprites or 0
 end
 
 function LibAtlas:GetSpriteData(key, spriteName)
