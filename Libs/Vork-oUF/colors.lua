@@ -25,3 +25,16 @@ oUF.colors.smooth = {
 --oUF.colors.power.MANA = { 20/255, 75/255, 179/255 }
 oUF.colors.power.MANA = { 31/255, 177/255, 171/255 }
 --oUF.colors.power.MANA = { 27/255, 86/255, 206/255 }
+
+oUF.colors.castingbar = {
+    [1] = { 241/255, 86/255, 112/255 }, --Physical
+    [2] = { 1, 0.8, 0, 1 }, --Holy
+    [4] = { 255/255, 50/255, 0/255, 1 }, --Fire
+    [8] = { 0, 255/255, 192/255, 1 }, --Nature
+    [16] = { 0, 222/255, 255/255, 1}, --Frost
+    [32] = { 81/255, 0, 255/255, 1 }, --Shadow
+    [64] = { 0, 68/255, 255/255, 1 }, --Arcane
+    ['default'] = {0, 0.5, 1, 1}
+}
+
+oUF.colors.castingbarspark = { 1, 1, 1, 1 }
