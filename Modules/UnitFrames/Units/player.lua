@@ -1,8 +1,7 @@
 local V, C, L = select(2, ...):unpack()
 
 local UnitFrames = V["UnitFrames"]
-local Medias = V["Medias"]
-local LibAtlas = Medias:GetLibAtlas()
+
 --[[
     Player Configuration
 ]]--
