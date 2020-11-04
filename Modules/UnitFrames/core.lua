@@ -114,7 +114,7 @@ end
 --]]------------------------------------------------------------------
 
 local function CastBarResetAttribute(self)
-    self:SetStatusBarColor( unpack( oUF.colors.castingbar['default']) )
+    --self:SetStatusBarColor( unpack( oUF.colors.castingbar['default']) )
     self.spellSchool = nil
     self.castID = nil
     self.casting = nil
@@ -152,29 +152,25 @@ local function CastBarUpdateSpark(self)
 
 end
 
-function UnitFrames:CastBarSetSpellSchool(event)
+function UnitFrames:CastBarSetSpellSchool(event, ...)
 
-    if event ~= "COMBAT_LOG_EVENT_UNFILTERED" then
-        return
-    end
+    if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+        local eventInfo = { CombatLogGetCurrentEventInfo() }
 
-    local eventInfo = { CombatLogGetCurrentEventInfo() }
-
-    if eventInfo[4] ~= UnitGUID("player") then
-        return
-    end
-    if eventInfo[2] == "SPELL_CAST_START" or
-            eventInfo[2] == "SPELL_CAST_SUCCESS" or
-            eventInfo[2] == "SPELL_PERIODIC_HEAL" or
-            eventInfo[2] == "SPELL_PERIODIC_DAMAGE"
-    then
-        local colors = oUF.colors.castingbar
-        self:SetStatusBarColor(unpack( colors[ eventInfo[14] ]  or colors['default']))
-        if self.Spark then
-            self.Spark:SetVertexColor(unpack( oUF.colors.castingbarspark) )
+        if eventInfo[4] ~= UnitGUID("player") then
+            return
         end
+        if eventInfo[2] == "SPELL_CAST_START" or eventInfo[2] == "SPELL_CAST_SUCCESS"
+        then
+            local colors = oUF.colors.castingbar
+            self:SetStatusBarColor(unpack( colors[ eventInfo[14] ]  or colors['default']))
+            if self.Spark then
+                self.Spark:SetVertexColor(unpack( oUF.colors.castingbarspark) )
+            end
+        end
+    elseif event == "UNIT_SPELLCAST_START" then
+        self:SetStatusBarColor( unpack( oUF.colors.castingbar['default'] ))
     end
-
 end
 
 function UnitFrames:CastBarStart(unit)
@@ -327,6 +323,7 @@ function UnitFrames:CreateCastBar(frame, config)
     castbar.PostCastStop = UnitFrames.CastBarReset
 
     castbar:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    castbar:RegisterEvent("UNIT_SPELLCAST_START")
     castbar:SetScript('OnEvent', UnitFrames.CastBarSetSpellSchool)
 
     return castbar

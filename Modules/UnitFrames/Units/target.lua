@@ -202,7 +202,7 @@ local Config = {
             Texture = 'GlobalIcon',
             TexCoord = 'DEFENSE',
             Size = {20, 20},
-            Point = {'CENTER', nil}
+            Point = {'LEFT', nil}
         },
         SafeZone = {
             Layer = "OVERLAY",
