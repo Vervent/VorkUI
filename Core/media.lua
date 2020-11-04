@@ -23,34 +23,35 @@ function Medias:PushFontObject(name, adress, size, ...)
     if type(size) == 'table' then
         for _, s in ipairs(size) do
             Fonts[name..s] = CreateFont("Vorkaui" .. name .. s)
-            Fonts[name..s]:SetFont(LibSharedMedia:Fetch('font', adress), s, ...)
+            Fonts[name..s]:SetFont(LibSharedMedia:Fetch('font', name), s, ...)
         end
     else
-        Fonts[name] = CreateFont("Vorkaui"..name)
-        Fonts[name]:SetFont(LibSharedMedia:Fetch('font', adress), size, ...)
+        Fonts[name..size] = CreateFont("Vorkaui"..name)
+        Fonts[name..size]:SetFont(LibSharedMedia:Fetch('font', name), size, ...)
     end
 end
 
-function Medias:GetFont(name)
+function Medias:GetFont(name, partial)
     if Fonts[name] then
         return Fonts[name]
     end
 
-    --return first iteration find, order not assured
-    for k, v in pairs(Fonts) do
-        if k:find(name) ~= nil then
-            return v
+    --return partial find, parse order not assured
+    if partial then
+        for k, v in pairs(Fonts) do
+            if k:find(name) ~= nil then
+                return v
+            end
         end
     end
 
-    return LibSharedMedia:Fetch('font', name)
+    return nil
 end
 
 function Medias:LoadFont(name, adress, size, ...)
 
     LibSharedMedia:Register('font', name, self.MediaPath["Fonts"] .. adress)
     self:PushFontObject(name, adress, size, ...)
-
 end
 
 function Medias:GetLibAtlas()
@@ -82,5 +83,164 @@ function Medias:LoadParticle(name, adress)
 
     Particles[name] = self.MediaPath["Icons"]..adress
 end
+
+local function alterFont(globalName, fontName, size, flags, colors, shadow)
+
+    local font = _G[globalName]
+    if not font then
+        --print ("UNABLE TO CATCH SYSTEM FONT", globalName)
+        return
+    end
+
+    local fontObject = Medias:GetFont(fontName..size, false)
+    if not fontObject then
+        local address = Medias:GetFontAddress(fontName) or LibSharedMedia:Fetch('font', fontName)
+        Medias:LoadFont(fontName, address, size, flags)
+        font:SetFontObject(  Fonts[fontName..size] )
+    else
+        font:SetFontObject(fontObject)
+    end
+
+    if colors and type(colors) == 'table' then
+        font:SetTextColor(unpack(colors))
+    end
+
+    if shadow then
+        font:SetShadowColor(0, 0, 0, 0.75)
+        font:SetShadowOffset(2, -2)
+    end
+
+end
+
+function Medias:ChangeSystemFonts()
+
+    _G["STANDARD_TEXT_FONT"] = Medias:GetFontAddress('Montserrat', true)
+    _G["UNIT_NAME_FONT"] = Medias:GetFontAddress('Montserrat', true)
+    _G["DAMAGE_TEXT_FONT"] = Medias:GetFontAddress('Montserrat Extra Bold', true)
+    _G["NAMEPLATE_FONT"] = Medias:GetFontAddress('Montserrat', true)
+    _G["NAMEPLATE_SPELLCAST_FONT"] = Medias:GetFontAddress('Montserrat', true)
+
+    alterFont('Game11Font', 'Montserrat', 11)
+    alterFont('Game11Font_o1', 'Montserrat', 11, "OUTLINE")
+    alterFont('Game12Font', 'Montserrat', 12)
+    alterFont('Game12Font_o1', 'Montserrat', 12, "OUTLINE")
+    alterFont('Game13Font', 'Montserrat', 13)
+    alterFont('Game13Font_o1', 'Montserrat', 13, "OUTLINE")
+    alterFont('Game13FontShadow', 'Montserrat', 13, "OUTLINE", nil, true)
+    alterFont('Game15Font', 'Montserrat', 15)
+    alterFont('Game15Font_o1', 'Montserrat', 15, "OUTLINE")
+    alterFont('Game16Font', 'Montserrat', 16)
+    alterFont('Game18Font', 'Montserrat', 18)
+    alterFont('Game20Font', 'Montserrat', 20)
+    alterFont('Game24Font', 'Montserrat', 24)
+    alterFont('Game27Font', 'Montserrat', 27)
+    alterFont('Game30Font', 'Montserrat', 30)
+    alterFont('Game32Font', 'Montserrat', 32)
+    alterFont('Game36Font', 'Montserrat', 36)
+    alterFont('Game46Font', 'Montserrat', 46)
+    alterFont('Game48Font', 'Montserrat', 48)
+    alterFont('Game48FontShadow', 'Montserrat', 48, "OUTLINE", nil, true)
+    alterFont('Game60Font', 'Montserrat', 60)
+    alterFont('Game72Font', 'Montserrat', 72)
+    alterFont('Game120Font', 'Montserrat', 120)
+    alterFont('GameFont_Gigantic', 'Montserrat', 32, "OUTLINE")
+
+    alterFont( 'Fancy12Font', 'Montserrat', 12)
+    alterFont( 'Fancy14Font', 'Montserrat', 14)
+    alterFont( 'Fancy16Font', 'Montserrat', 16)
+    alterFont( 'Fancy18Font', 'Montserrat', 18)
+    alterFont( 'Fancy20Font', 'Montserrat', 20)
+    alterFont( 'Fancy22Font', 'Montserrat', 22)
+    alterFont( 'Fancy24Font', 'Montserrat', 24)
+    alterFont( 'Fancy27Font', 'Montserrat', 27)
+    alterFont( 'Fancy30Font', 'Montserrat', 30)
+    alterFont( 'Fancy32Font', 'Montserrat', 32)
+    alterFont( 'Fancy48Font', 'Montserrat', 48)
+
+    alterFont('NumberFont_GameNormal', 'Montserrat SemiBold Italic', 10, "OUTLINE")
+    alterFont('NumberFont_Normal_Med', 'Montserrat SemiBold Italic', 14, "OUTLINE")
+    --Affect Keybind/Macro text
+    alterFont('NumberFont_OutlineThick_Mono_Small', 'Montserrat SemiBold Italic', 12, "OUTLINE", nil, true)
+    alterFont('NumberFont_Outline_Huge', 'Montserrat SemiBold Italic', 30, "OUTLINE")
+    alterFont('NumberFont_Outline_Large', 'Montserrat SemiBold Italic', 16, "OUTLINE")
+    alterFont('NumberFont_Outline_Med', 'Montserrat SemiBold Italic', 14, "OUTLINE")
+    alterFont('NumberFont_Shadow_Med', 'Montserrat SemiBold Italic', 14, "OUTLINE")
+    alterFont('NumberFont_Shadow_Small', 'Montserrat SemiBold Italic', 12, "OUTLINE")
+    alterFont('NumberFont_Shadow_Tiny', 'Montserrat SemiBold Italic', 10, "OUTLINE")
+
+    alterFont('QuestFont_Enormous', 'Montserrat', 30, "OUTLINE")
+    alterFont('QuestFont_Huge', 'Montserrat Extra Light', 18, 'NONE')
+    alterFont('QuestFont_Large', 'Montserrat', 15)
+    alterFont('QuestFont_Outline_Huge', 'Montserrat', 18)
+    alterFont('QuestFont_Shadow_Small', 'Montserrat', 14, "NONE", nil, true)
+    alterFont('QuestFont_Super_Huge', 'Montserrat', 24)
+    alterFont('QuestFont_Super_Huge_Outline', 'Montserrat', 24)
+
+    alterFont('SystemFont_Huge1' ,'Montserrat', 20)
+    alterFont('SystemFont_Huge1_Outline' ,'Montserrat', 20, "OUTLINE")
+    alterFont('SystemFont_Huge2' ,'Montserrat', 24)
+    alterFont('SystemFont_InverseShadow_Small' ,'Montserrat', 10)
+    alterFont('SystemFont_Large' ,'Montserrat', 16)
+    alterFont('SystemFont_LargeNamePlate' ,'Montserrat', 12)
+    alterFont('SystemFont_LargeNamePlateFixed' ,'Montserrat', 20)
+    alterFont('SystemFont_Med1' ,'Montserrat', 12)
+    alterFont('SystemFont_Med2' ,'Montserrat', 13)
+    alterFont('SystemFont_Med3' ,'Montserrat', 14)
+    alterFont('SystemFont_NamePlate' ,'Montserrat', 9)
+    alterFont('SystemFont_NamePlateCastBar' ,'Montserrat', 10)
+    alterFont('SystemFont_NamePlateFixed' ,'Montserrat', 14)
+    alterFont('SystemFont_Outline' ,'Montserrat', 13, "OUTLINE")
+    alterFont('SystemFont_OutlineThick_Huge2' ,'Montserrat', 22, "OUTLINE")
+    alterFont('SystemFont_OutlineThick_Huge4' ,'Montserrat', 26, "OUTLINE")
+    alterFont('SystemFont_OutlineThick_WTF' ,'Montserrat', 32, "OUTLINE")
+    alterFont('SystemFont_Outline_Small' ,'Montserrat', 10, "OUTLINE")
+    alterFont('SystemFont_Outline_WTF2' ,'Montserrat', 36, "OUTLINE")
+    alterFont('SystemFont_Shadow_Huge1' ,'Montserrat', 20, "NONE", nil, true)
+    alterFont('SystemFont_Shadow_Huge2' ,'Montserrat', 24, "NONE", nil, true)
+    alterFont('SystemFont_Shadow_Huge3' ,'Montserrat', 25, "NONE", nil, true)
+    alterFont('SystemFont_Shadow_Large' ,'Montserrat', 16, "NONE", nil, true)
+    alterFont('SystemFont_Shadow_Large2' ,'Montserrat', 18, "NONE", nil, true)
+    alterFont('SystemFont_Shadow_Large_Outline' ,'Montserrat', 16, "OUTLINE", nil, true)
+    alterFont('SystemFont_Shadow_Med1' ,'Montserrat', 12, "NONE", nil, true)
+    alterFont('SystemFont_Shadow_Med1_Outline' ,'Montserrat', 12, "OUTLINE", nil, true)
+    alterFont('SystemFont_Shadow_Med2' ,'Montserrat', 14, "NONE", nil, true)
+    alterFont('SystemFont_Shadow_Med3' ,'Montserrat', 14, "NONE", nil, true)
+    alterFont('SystemFont_Shadow_Outline_Huge2' ,'Montserrat', 22, "OUTLINE", nil, true)
+    alterFont('SystemFont_Shadow_Outline_Huge3' ,'Montserrat', 25, "OUTLINE", nil, true)
+    alterFont('SystemFont_Shadow_Small' ,'Montserrat', 10, "NONE", nil, true)
+    alterFont('SystemFont_Shadow_Small2' ,'Montserrat', 11, "NONE", nil, true)
+    alterFont('SystemFont_Small' ,'Montserrat', 10)
+    alterFont('SystemFont_Small2' ,'Montserrat', 11)
+    alterFont('SystemFont_WTF2' ,'Montserrat', 36, "OUTLINE")
+    alterFont('SystemFont_World' ,'Montserrat', 64, "OUTLINE")
+    alterFont('SystemFont_World_ThickOutline' ,'Montserrat', 64, "OUTLINE")
+    alterFont('System_IME' ,'Montserrat', 16)
+
+    alterFont('Tooltip_Med', 'Montserrat', 12)
+    alterFont('Tooltip_Small', 'Montserrat', 10)
+
+    alterFont('FriendsFont_Large', 'Montserrat', 14)
+    alterFont('FriendsFont_Normal', 'Montserrat', 12)
+    alterFont('FriendsFont_Small', 'Montserrat', 10)
+    alterFont('FriendsFont_UserText', 'Montserrat', 11)
+  
+    alterFont('DestinyFontHuge', 'Montserrat', 32)
+    alterFont('DestinyFontLarge', 'Montserrat', 18)
+    alterFont('DestinyFontMed', 'Montserrat', 14)
+
+    alterFont('AchievementFont_Small', 'Montserrat', 10)
+    alterFont('ChatBubbleFont', 'Montserrat', 13)
+    alterFont('CoreAbilityFont', 'Montserrat', 32)
+    alterFont('GameTooltipHeader', 'Montserrat', 14)
+    alterFont('InvoiceFont_Med', 'Montserrat', 12)
+    alterFont('InvoiceFont_Small', 'Montserrat', 10)
+    alterFont('MailFont_Large', 'Montserrat', 15)
+    alterFont('ReputationDetailFont', 'Montserrat', 10)
+    alterFont('SpellFont_Small', 'Montserrat', 10)
+    alterFont('SplashHeaderFont', 'Montserrat', 24)
+
+end
+
+
 
 V["Medias"] = Medias

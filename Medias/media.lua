@@ -41,36 +41,43 @@ local FontAdress = {
 }
 local FontSettings = {
     ["Montserrat"] = {
-        {10, 14, 22, 30},
-        "OUTLINE"
+        {9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 25, 26, 27, 30, 32, 36, 46, 48, 60, 64, 72, 120},
     },
     ["Montserrat Italic"] = {
-        {14, 22, 30},
-        "OUTLINE"
+        {10, 12, 14, 22, 30},
     },
     ["Montserrat Light"] = {
-        {14, 22, 30},
-        "OUTLINE"
+        {14, 18, 22, 30},
     },
     ["Montserrat Light Italic"] = {
         {14, 22, 30},
-        "OUTLINE"
+    },
+    ["Montserrat Extra Light"] = {
+        {14, 18, 22, 30},
     },
     ["Montserrat Medium"] = {
         {14, 22, 30},
-        "OUTLINE"
     },
     ["Montserrat Medium Italic"] = {
-        {14, 22, 30},
-        "OUTLINE"
+        { 14 },
     },
     ["Montserrat Bold"] = {
         {14, 22, 30},
-        "OUTLINE"
     },
     ["Montserrat Bold Italic"] = {
-        {14, 22, 30},
-        "OUTLINE"
+        { 12, 30 },
+    },
+    ["Montserrat SemiBold"] = {
+        { 14 },
+    },
+    ["Montserrat SemiBold Italic"] = {
+        { 10, 12, 14, 16, 30 },
+    },
+    ["Montserrat Extra Bold"] = {
+        { 14 },
+    },
+    ["Montserrat Extra Bold Italic"] = {
+        { 12 },
     }
 }
 local AtlasAdress = {
@@ -176,6 +183,21 @@ local ParticlesAdress = {
     { [[Particles\scorch_03.tga]], 'Scorch' },
 }
 
+function Medias:GetFontAddress(name, fullpath)
+
+    for _, v in ipairs(FontAdress) do
+        if v[2] == name then
+            if fullpath then
+                return Medias.MediaPath.Fonts .. v[1]
+            else
+                return v[1]
+            end
+        end
+    end
+
+    return nil
+end
+
 function Medias:LoadAllFonts()
 
     for _, v in ipairs(FontAdress) do
@@ -205,8 +227,9 @@ function Medias:LoadParticles()
 end
 
 function Medias:Enable()
-    self:LoadAllAtlas()
     self:LoadAllFonts()
+    self:ChangeSystemFonts()
+    self:LoadAllAtlas()
     self:LoadAllTextures()
     self:LoadParticles()
 end
