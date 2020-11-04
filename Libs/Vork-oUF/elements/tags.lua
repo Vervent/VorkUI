@@ -29,7 +29,6 @@ oUF.Tags.Methods['Vorkui:HealthColor'] = function(unit, _, smooth)
     else
         return Hex(1, 1, 1)
     end
-
 end
 
 oUF.Tags.Events['Vorkui:AbsorbColor'] = 'UNIT_ABSORB_AMOUNT_CHANGED UNIT_HEAL_ABSORB_AMOUNT_CHANGED'
@@ -50,9 +49,43 @@ oUF.Tags.Methods['Vorkui:Absorb'] = function(unit)
     local curDamageAbsorb = UnitGetTotalAbsorbs(unit)
     local curHealAbsorb = UnitGetTotalHealAbsorbs(unit)
 
-    if curDamageAbsorb > curHealAbsorb then
-        return curDamageAbsorb-curHealAbsorb
+    local val = math.max(curDamageAbsorb, curHealAbsorb) - math.min(curDamageAbsorb, curHealAbsorb)
+    if val > 0 then
+        return "("..val..")"
     else
-        return curHealAbsorb-curDamageAbsorb
+        return ""
     end
+end
+
+oUF.Tags.Events['Vorkui:Deficit:Curhp'] = 'UNIT_HEALTH UNIT_MAXHEALTH'
+oUF.Tags.Methods['Vorkui:Deficit:Curhp'] = function(unit)
+
+    if not UnitIsFriend("player", unit) == true then
+        return UnitHealth(unit)
+    else
+        local deficit = UnitHealthMax(unit) - UnitHealth(unit)
+        if deficit > 0 then
+            return deficit
+        else
+            return ""
+        end
+    end
+
+end
+
+oUF.Tags.Events['Vorkui:Deficit:Curhp-Max'] = 'UNIT_HEALTH UNIT_MAXHEALTH'
+oUF.Tags.Methods['Vorkui:Deficit:Curhp-Max'] = function(unit)
+    local cur, max = UnitHealth(unit), UnitHealthMax(unit)
+
+    if not UnitIsFriend("player", unit) == true then
+        return cur.." | "..max
+    else
+        local deficit =  max - cur
+        if deficit > 0 then
+            return deficit
+        else
+            return ""
+        end
+    end
+
 end

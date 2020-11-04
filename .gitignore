@@ -39,3 +39,9 @@ luac.out
 *.x86_64
 *.hex
 
+/.idea/.gitignore
+/.idea/encodings.xml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml
+/.idea/Vorkui.iml

@@ -29,7 +29,7 @@ local Config = {
             Layer = "OVERLAY",
             FontName = "Montserrat Italic14",
             Point = { "TOPRIGHT", nil, "TOP" },
-            Tag = " ([Vorkui:HealthColor][Vorkui:Absorb])"
+            Tag = "[Vorkui:HealthColor][Vorkui:Absorb]"
         },
     },
     Health = {
@@ -55,7 +55,7 @@ local Config = {
             Layer = "OVERLAY",
             FontName = "Montserrat Italic14",
             Point = { "TOPLEFT", nil, "TOP" },
-            Tag = "[Vorkui:HealthColor(false)][missinghp]"
+            Tag = "[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp-Max]"
         },
         Percent = {
             Layer = "OVERLAY",
