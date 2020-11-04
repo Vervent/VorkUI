@@ -11,7 +11,9 @@ local LibSharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 
 local Medias = CreateFrame("Frame")
 
-local Fonts = {}
+local Fonts = {
+}
+
 local StatusBar = {}
 local Particles = {}
 
@@ -92,13 +94,11 @@ local function alterFont(globalName, fontName, size, flags, colors, shadow)
         return
     end
 
-    local fontObject = Medias:GetFont(fontName..size, false)
+    local address = Medias:GetFontAddress(fontName) or LibSharedMedia:Fetch('font', fontName)
     if not fontObject then
-        local address = Medias:GetFontAddress(fontName) or LibSharedMedia:Fetch('font', fontName)
-        Medias:LoadFont(fontName, address, size, flags)
-        font:SetFontObject(  Fonts[fontName..size] )
+        font:SetFont( address, size, flags )
     else
-        font:SetFontObject(fontObject)
+        font:SetFont( address, size, flags )
     end
 
     if colors and type(colors) == 'table' then

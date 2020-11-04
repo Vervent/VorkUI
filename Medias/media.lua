@@ -40,45 +40,78 @@ local FontAdress = {
     {'Montserrat-ThinItalic.ttf', 'Montserrat Thin Italic'},
 }
 local FontSettings = {
-    ["Montserrat"] = {
-        {9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 25, 26, 27, 30, 32, 36, 46, 48, 60, 64, 72, 120},
+    ["Montserrat Black"] = {
+        {},
+        "OUTLINE"
     },
-    ["Montserrat Italic"] = {
-        {10, 12, 14, 22, 30},
-    },
-    ["Montserrat Light"] = {
-        {14, 18, 22, 30},
-    },
-    ["Montserrat Light Italic"] = {
-        {14, 22, 30},
-    },
-    ["Montserrat Extra Light"] = {
-        {14, 18, 22, 30},
-    },
-    ["Montserrat Medium"] = {
-        {14, 22, 30},
-    },
-    ["Montserrat Medium Italic"] = {
-        { 14 },
+    ["Montserrat Black Italic"] = {
+        {},
+        "OUTLINE"
     },
     ["Montserrat Bold"] = {
-        {14, 22, 30},
+        {},
+        "OUTLINE"
     },
     ["Montserrat Bold Italic"] = {
-        { 12, 30 },
-    },
-    ["Montserrat SemiBold"] = {
-        { 14 },
-    },
-    ["Montserrat SemiBold Italic"] = {
-        { 10, 12, 14, 16, 30 },
+        {},
+        "OUTLINE"
     },
     ["Montserrat Extra Bold"] = {
-        { 14 },
+        {},
+        "OUTLINE"
     },
     ["Montserrat Extra Bold Italic"] = {
-        { 12 },
-    }
+        {},
+        "OUTLINE"
+    },
+    ["Montserrat Extra Light"] = {
+        {},
+        "OUTLINE"
+    },
+    ["Montserrat Extra Light Italic"] = {
+        {},
+        "OUTLINE"
+    },
+    ["Montserrat Italic"] = {
+        { 14, 22, 30},
+        "OUTLINE"
+    },
+    ["Montserrat Light"] = {
+        {},
+        "OUTLINE"
+    },
+    ["Montserrat Light Italic"] = {
+        {},
+        "OUTLINE"
+    },
+    ["Montserrat Medium"] = {
+        {},
+        "OUTLINE"
+    },
+    ["Montserrat Medium Italic"] = {
+        {},
+        "OUTLINE"
+    },
+    ["Montserrat"] = {
+        { 10, 14 },
+        "OUTLINE"
+    },
+    ["Montserrat SemiBold"] = {
+        {},
+        "OUTLINE"
+    },
+    ["Montserrat SemiBold Italic"] = {
+        {},
+        "OUTLINE"
+    },
+    ["Montserrat Thin"] = {
+        {},
+        "OUTLINE"
+    },
+    ["Montserrat Thin Italic"] = {
+        {},
+        "OUTLINE"
+    },
 }
 local AtlasAdress = {
     { [[Atlas\class.tga]], 'ClassIcon' },
