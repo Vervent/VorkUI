@@ -98,6 +98,7 @@ local AtlasSettings = {
         ["ROGUE"] = {237, 320, 83, 164},
         ["SHAMAN"] = {320, 402, 83, 163},
         ["WARRIOR"] = {402, 472, 83, 165},
+        ["BLANK"] = {0, 80, 176, 256}
     },
     ["GlobalIcon"] = {
         width = 512,

@@ -340,7 +340,10 @@ function UnitFrames:Target()
     --]]
     if Config.ClassIndicator then
         Config.ClassIndicator.Point[2] = self.Portrait or Frame
-        self.ClassIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ClassIndicator)
+        local indicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ClassIndicator)
+        indicator.AtlasName = Config.ClassIndicator.Texture
+        indicator.Override = UnitFrames.UpdateClassOverride
+        self.ClassIndicator = indicator
     end
 
     --[[

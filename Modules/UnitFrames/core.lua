@@ -351,6 +351,15 @@ end
 --[[------------------------------------------------------------------
 -- 3D PORTRAIT
 --]]------------------------------------------------------------------
+
+function UnitFrames:UpdatePortraitOverride(unit)
+    if(self.unit == unit) then return end
+
+    self:SetPosition( unpack(self.PostUpdateConfig.Position) )
+    self:SetCamDistanceScale( self.PostUpdateConfig.CamDistance )
+    self:SetRotation( self.PostUpdateConfig.Rotation )
+end
+
 function UnitFrames:Create3DPortrait(template, parent, config)
     local portrait = CreateFrame(template, nil, parent)
     portrait:SetModelDrawLayer( config.ModelDrawLayer )
@@ -360,14 +369,48 @@ function UnitFrames:Create3DPortrait(template, parent, config)
     end
     portrait:SetPoint( unpack( config.Point ) )
     if config.PostUpdate then
-        portrait.PostUpdate = function(unit)
-            portrait:SetPosition( unpack(config.PostUpdate.Position) )
-            portrait:SetCamDistanceScale( config.PostUpdate.CamDistance )
-            portrait:SetRotation( config.PostUpdate.Rotation )
-        end
+        portrait.PostUpdateConfig = config.PostUpdate
+        portrait.PostUpdate = UnitFrames.UpdatePortraitOverride
     end
 
     return portrait
+end
+
+--[[------------------------------------------------------------------
+-- Class SYSTEM
+--]]------------------------------------------------------------------
+function UnitFrames:UpdateClassOverride(event, unit)
+
+    if (unit ~= self.unit) then
+        return
+    end
+    local element = self.ClassIndicator
+    local class = select(2,UnitClass(unit)) or "BLANK"
+
+    --[[ Callback: RestingIndicator:PreUpdate()
+    Called before the element has been updated.
+
+    * self - the RestingIndicator element
+    --]]
+    if(element.PreUpdate) then
+        element:PreUpdate()
+    end
+
+    if(element.AtlasName) then
+        element:SetTexCoord( LibAtlas:GetTexCoord(element.AtlasName, class) )
+    end
+
+
+    --[[ Callback: RestingIndicator:PostUpdate(isResting)
+    Called after the element has been updated.
+
+    * self  - the RestingIndicator element
+    * class - the class of the unit
+    --]]
+    if(element.PostUpdate) then
+        return element:PostUpdate(class)
+    end
+
 end
 
 --[[------------------------------------------------------------------
