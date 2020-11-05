@@ -3,30 +3,14 @@ local V, C, L = select(2, ...):unpack()
 local UnitFrames = V["UnitFrames"]
 
 --[[
-    Target Configuration
+    Pet Configuration
 ]]--
 local Config = {
     Absorb = {
-        Textures ={
-            {
-                "Bubbles", "ARTWORK"
-            },
-            {
-                {0,0,0,1}, "BACKGROUND", 1
-            }
-        },
-        Size = { 232, 8 },
-        Point = { "TOPLEFT", "Frame", "TOPLEFT", 0, 0 },
-        SlantSettings = {
-            ["IgnoreBackground"] = true,
-            ["FillInverse"] = true,
-            ["Inverse"] = true
-        },
-        StaticLayer = "BACKGROUND",
         Value = {
             Layer = "OVERLAY",
             FontName = "Montserrat Italic14",
-            Point = { "TOPRIGHT", nil, "TOP" },
+            Point = { "TOPLEFT", nil, "TOP" },
             Tag = "[Vorkui:HealthColor][Vorkui:Absorb]"
         },
     },
@@ -42,23 +26,22 @@ local Config = {
                 "Border", "OVERLAY"
             }
         },
-        Size =  { 256, 32 },
-        Point =  { "TOPLEFT", "Absorb", "BOTTOMLEFT", 8, 0 },
+        Size =  { 156, 16 },
+        Point =  { "TOPRIGHT", "Frame", "TOPRIGHT", 0, 0 },
         SlantSettings = {
             ["IgnoreBackground"] = true,
-            ["Inverse"] = true
         },
         StaticLayer = "BACKGROUND",
         Value = {
             Layer = "OVERLAY",
             FontName = "Montserrat Italic14",
-            Point = { "TOPLEFT", nil, "TOP" },
-            Tag = "[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp-Max]"
+            Point = { "TOPRIGHT", nil, "TOP" },
+            Tag = "[Vorkui:HealthColor(false)][missinghp]"
         },
         Percent = {
             Layer = "OVERLAY",
-            FontName = "Montserrat Italic30",
-            Point = { "BOTTOMLEFT", nil, "BOTTOMLEFT" },
+            FontName = "Montserrat Italic22",
+            Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT" },
             Tag = "[Vorkui:HealthColor(true)][Vorkui:PerHP]"
         }
     },
@@ -71,11 +54,10 @@ local Config = {
                 "Border", "OVERLAY"
             }
         },
-        Size =  { 256, 32 },
+        Size =  { 156, 16 },
         --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
         SlantSettings = {
             ["IgnoreBackground"] = true,
-            ["Inverse"] = true
         }
     },
     Power = {
@@ -87,19 +69,18 @@ local Config = {
                 "Border", "BACKGROUND", 1
             }
         },
-        Size =  { 235, 10 },
-        Point =  { "TOPRIGHT", "Health", "BOTTOMRIGHT", 10, 0 },
+        Size =  { 145, 4 },
+        Point =  { "TOPLEFT", "Health", "BOTTOMLEFT", -4, 0 },
         SlantSettings = {
             ["IgnoreBackground"] = true,
-            ["Inverse"] = true
         },
         StaticLayer = "BACKGROUND",
-        Value = {
-            Layer = "OVERLAY",
-            FontName = "Montserrat Italic22",
-            Point = { "BOTTOM", nil, "BOTTOM" },
-            Tag = "[powercolor][missingpp]"
-        }
+        --Value = {
+        --    Layer = "OVERLAY",
+        --    FontName = "Montserrat Italic22",
+        --    Point = { "BOTTOM", nil, "BOTTOM" },
+        --    Tag = "[powercolor][missingpp]"
+        --}
     },
     PowerPrediction = {
         Textures ={
@@ -110,49 +91,35 @@ local Config = {
                 "Border", "OVERLAY"
             }
         },
-        Size =  { 235, 10 },
+        Size =  { 145, 4 },
         --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
         SlantSettings = {
             ["IgnoreBackground"] = true,
-            ["FillInverse"] = true,
-            ["Inverse"] = true
+            ["FillInverse"] = true
         }
     },
     Portrait = {
         Type = "3D",
-        Size = {49, 49},
-        Point = {"TOPRIGHT", nil, "TOPRIGHT" },
+        Size = {31, 31},
+        Point = {"TOPLEFT", nil, "TOPLEFT" },
         ModelDrawLayer = "BACKGROUND",
         PostUpdate =
         {
-            Position = { 0.1, 0, 0 },
-            Rotation = -math.pi/5,
+            Position = { 0.2, 0, 0 },
+            Rotation = - math.pi/5,
             CamDistance = 2
         }
     },
-    ClassIndicator = {
-        Size = {16, 16},
-        Point = { "TOPRIGHT", nil, "TOPLEFT", 4, -2 },
-        Texture = "ClassIcon",
-        TexCoord = select(2, UnitClass("player"))
-    },
     RaidIndicator = {
         Size = { 16, 16 },
-        Point = { "RIGHT", nil, "RIGHT", -10, 0 },
+        Point = { "LEFT", nil, "LEFT", 10, 0 },
         Texture = "RaidIcon"
-    },
-    LeaderIndicator = {
-        Size = { 64/4, 53/4 },
-        Point = { "LEFT", nil, "RIGHT" },
-        Texture = "GlobalIcon",
-        TexCoord = "LEADER",
-        VertexColor = { 163/255, 220/255, 255/255 }
     },
     Name = {
         Layer = "OVERLAY",
         FontName = "Montserrat14",
-        Point = { "TOPRIGHT", nil, "BOTTOMRIGHT", -20, 10 },
-        Tag = "[level][difficulty] [name] [classification]"
+        Point = { "TOPLEFT", nil, "BOTTOMLEFT", 23, 10 },
+        Tag = "[classification] [name] [difficulty][level]"
     },
     --CastBar = {
     --    Textures = {
@@ -166,20 +133,20 @@ local Config = {
     --            "Border", "OVERLAY"
     --        }
     --    },
-    --    Size =  { 300, 20 },
+    --    Size =  { 190, 16 },
     --    Point =  { "TOP", nil, "BOTTOM", 0, -2 },
     --    StatusBarColor = { 0, 0.5, 1, 1 },
     --    Spark = {
     --        Layer = "OVERLAY",
-    --        Size = { 20, 20 },
+    --        Size = { 16, 16 },
     --        BlendMode = "ADD",
     --        CastSettings = {
     --            AtlasName = 'Muzzle',
-    --            Point = {'LEFT', nil, 'LEFT', 5, 0},
+    --            Point = {'RIGHT', nil, 'RIGHT', 5, 0},
     --        },
     --        ChannelSettings = {
     --            AtlasName = 'Spark',
-    --            Point = { 'CENTER', nil, 'LEFT', 0, 0 },
+    --            Point = { 'CENTER', nil, 'RIGHT', 0, 0 },
     --        }
     --    },
     --    Time = {
@@ -193,26 +160,24 @@ local Config = {
     --        Point = {'CENTER', nil}
     --    },
     --    Icon = {
-    --        Size = {20, 20},
-    --        Point = {'TOPRIGHT', nil, 'TOPRIGHT'}
-    --    },
-    --    Shield = {
-    --        Texture = 'GlobalIcon',
-    --        TexCoord = 'DEFENSE',
-    --        VertexColor = { 163/255, 220/255, 255/255 },
     --        Size = {16, 16},
-    --        Point = {'LEFT', nil}
+    --        Point = {'TOPLEFT', nil, 'TOPLEFT'}
     --    },
+    --    --Shield = {
+    --    --    Texture = 'GlobalIcon',
+    --    --    TexCoord = 'DEFENSE',
+    --    --    Size = {10, 10},
+    --    --    Point = {'CENTER', nil}
+    --    --},
     --    SafeZone = {
     --        Layer = "OVERLAY",
     --        BlendMode = "ADD",
     --        VertexColor = {255/255, 246/255, 0, 0.75}
-    --    },
-    --    ReverseFill = true
+    --    }
     --}
 }
 
-function UnitFrames:Target()
+function UnitFrames:Pet()
 
     self:RegisterForClicks("AnyUp")
     self:SetScript("OnEnter", UnitFrame_OnEnter)
@@ -225,21 +190,9 @@ function UnitFrames:Target()
     Frame.background:SetColorTexture( 33/255, 44/255, 79/255, 0.75 )
 
     --[[
-       ABSORB SLANTED STATUSBAR
-   --]]
-    Config.Absorb.Point[2] = Frame
-    local Absorb = UnitFrames:CreateSlantedStatusBar(Frame,
-            Config.Absorb.Textures,
-            Config.Absorb.Size,
-            Config.Absorb.Point,
-            Config.Absorb.SlantSettings,
-            Config.Absorb.StaticLayer)
-    Absorb.Override = UnitFrames.UpdateAbsorbOverride
-
-    --[[
         HEALTH SLANTED STATUSBAR
     --]]
-    Config.Health.Point[2] = Absorb
+    Config.Health.Point[2] = Absorb or Frame
     local Health = UnitFrames:CreateSlantedStatusBar(Frame,
             Config.Health.Textures,
             Config.Health.Size,
@@ -323,8 +276,8 @@ function UnitFrames:Target()
 
     if Config.Absorb.Value then
         Config.Absorb.Value.Point[2] = Health
-        Absorb.Value = UnitFrames:CreateFontString(Frame, Config.Absorb.Value)
-        self:Tag(Absorb.Value, Config.Absorb.Value.Tag)
+        AbsorbValue = UnitFrames:CreateFontString(Frame, Config.Absorb.Value)
+        self:Tag(AbsorbValue, Config.Absorb.Value.Tag)
     end
 
     --[[
@@ -339,10 +292,7 @@ function UnitFrames:Target()
     --]]
     if Config.ClassIndicator then
         Config.ClassIndicator.Point[2] = self.Portrait or Frame
-        local indicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ClassIndicator)
-        indicator.AtlasName = Config.ClassIndicator.Texture
-        indicator.Override = UnitFrames.UpdateClassOverride
-        self.ClassIndicator = indicator
+        self.ClassIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ClassIndicator)
     end
 
     --[[
@@ -362,6 +312,21 @@ function UnitFrames:Target()
     end
 
     --[[
+    RESTING ICON
+    ]]--
+    if Config.RestingIndicator then
+        self.RestingIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.RestingIndicator)
+    end
+
+    --[[
+    COMBAT ICON
+    ]]--
+    if Config.CombatIndicator then
+        Config.CombatIndicator.Point[2] = self.RestingIndicator or Frame
+        self.CombatIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.CombatIndicator)
+    end
+
+    --[[
     CASTBAR
     ]]--
     if Config.CastBar then
@@ -369,8 +334,6 @@ function UnitFrames:Target()
     end
 
     -- Register with oUF
-    self.Absorb = Absorb
-    self.Absorb.bg = Absorb.background
     self.Health = Health
     self.Health.bg = Health.background
     self.Power = Power
@@ -393,5 +356,6 @@ function UnitFrames:Target()
 
     self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
     self:HookScript("OnLeave", UnitFrames.MouseOnPlayer)
+
 
 end

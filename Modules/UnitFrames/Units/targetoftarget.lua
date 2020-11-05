@@ -3,7 +3,7 @@ local V, C, L = select(2, ...):unpack()
 local UnitFrames = V["UnitFrames"]
 
 --[[
-    Target Configuration
+    TargetTarget Configuration
 ]]--
 local Config = {
     Absorb = {
@@ -15,7 +15,7 @@ local Config = {
                 {0,0,0,1}, "BACKGROUND", 1
             }
         },
-        Size = { 232, 8 },
+        Size = { 145, 4 },
         Point = { "TOPLEFT", "Frame", "TOPLEFT", 0, 0 },
         SlantSettings = {
             ["IgnoreBackground"] = true,
@@ -42,8 +42,8 @@ local Config = {
                 "Border", "OVERLAY"
             }
         },
-        Size =  { 256, 32 },
-        Point =  { "TOPLEFT", "Absorb", "BOTTOMLEFT", 8, 0 },
+        Size =  { 156, 16 },
+        Point =  { "TOPLEFT", "Absorb", "BOTTOMLEFT", 4, 0 },
         SlantSettings = {
             ["IgnoreBackground"] = true,
             ["Inverse"] = true
@@ -57,7 +57,7 @@ local Config = {
         },
         Percent = {
             Layer = "OVERLAY",
-            FontName = "Montserrat Italic30",
+            FontName = "Montserrat Italic22",
             Point = { "BOTTOMLEFT", nil, "BOTTOMLEFT" },
             Tag = "[Vorkui:HealthColor(true)][Vorkui:PerHP]"
         }
@@ -71,56 +71,56 @@ local Config = {
                 "Border", "OVERLAY"
             }
         },
-        Size =  { 256, 32 },
+        Size =  { 156, 16 },
         --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
         SlantSettings = {
             ["IgnoreBackground"] = true,
             ["Inverse"] = true
         }
     },
-    Power = {
-        Textures ={
-            {
-                "Default", "ARTWORK"
-            },
-            {
-                "Border", "BACKGROUND", 1
-            }
-        },
-        Size =  { 235, 10 },
-        Point =  { "TOPRIGHT", "Health", "BOTTOMRIGHT", 10, 0 },
-        SlantSettings = {
-            ["IgnoreBackground"] = true,
-            ["Inverse"] = true
-        },
-        StaticLayer = "BACKGROUND",
-        Value = {
-            Layer = "OVERLAY",
-            FontName = "Montserrat Italic22",
-            Point = { "BOTTOM", nil, "BOTTOM" },
-            Tag = "[powercolor][missingpp]"
-        }
-    },
-    PowerPrediction = {
-        Textures ={
-            {
-                "Default", "ARTWORK", 1
-            },
-            {
-                "Border", "OVERLAY"
-            }
-        },
-        Size =  { 235, 10 },
-        --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
-        SlantSettings = {
-            ["IgnoreBackground"] = true,
-            ["FillInverse"] = true,
-            ["Inverse"] = true
-        }
-    },
+    --Power = {
+    --    Textures ={
+    --        {
+    --            "Default", "ARTWORK"
+    --        },
+    --        {
+    --            "Border", "BACKGROUND", 1
+    --        }
+    --    },
+    --    Size =  { 146, 6 },
+    --    Point =  { "TOPRIGHT", "Health", "BOTTOMRIGHT", 5, 0 },
+    --    SlantSettings = {
+    --        ["IgnoreBackground"] = true,
+    --        ["Inverse"] = true
+    --    },
+    --    StaticLayer = "BACKGROUND",
+    --    Value = {
+    --        Layer = "OVERLAY",
+    --        FontName = "Montserrat Italic22",
+    --        Point = { "BOTTOM", nil, "BOTTOM" },
+    --        Tag = "[powercolor][missingpp]"
+    --    }
+    --},
+    --PowerPrediction = {
+    --    Textures ={
+    --        {
+    --            "Default", "ARTWORK", 1
+    --        },
+    --        {
+    --            "Border", "OVERLAY"
+    --        }
+    --    },
+    --    Size =  { 135, 8 },
+    --    --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
+    --    SlantSettings = {
+    --        ["IgnoreBackground"] = true,
+    --        ["FillInverse"] = true,
+    --        ["Inverse"] = true
+    --    }
+    --},
     Portrait = {
         Type = "3D",
-        Size = {49, 49},
+        Size = {31, 31},
         Point = {"TOPRIGHT", nil, "TOPRIGHT" },
         ModelDrawLayer = "BACKGROUND",
         PostUpdate =
@@ -141,78 +141,15 @@ local Config = {
         Point = { "RIGHT", nil, "RIGHT", -10, 0 },
         Texture = "RaidIcon"
     },
-    LeaderIndicator = {
-        Size = { 64/4, 53/4 },
-        Point = { "LEFT", nil, "RIGHT" },
-        Texture = "GlobalIcon",
-        TexCoord = "LEADER",
-        VertexColor = { 163/255, 220/255, 255/255 }
-    },
     Name = {
         Layer = "OVERLAY",
         FontName = "Montserrat14",
         Point = { "TOPRIGHT", nil, "BOTTOMRIGHT", -20, 10 },
         Tag = "[level][difficulty] [name] [classification]"
     },
-    --CastBar = {
-    --    Textures = {
-    --        {
-    --            "Default", "ARTWORK"
-    --        },
-    --        {
-    --            "Background", "BACKGROUND", 1
-    --        },
-    --        {
-    --            "Border", "OVERLAY"
-    --        }
-    --    },
-    --    Size =  { 300, 20 },
-    --    Point =  { "TOP", nil, "BOTTOM", 0, -2 },
-    --    StatusBarColor = { 0, 0.5, 1, 1 },
-    --    Spark = {
-    --        Layer = "OVERLAY",
-    --        Size = { 20, 20 },
-    --        BlendMode = "ADD",
-    --        CastSettings = {
-    --            AtlasName = 'Muzzle',
-    --            Point = {'LEFT', nil, 'LEFT', 5, 0},
-    --        },
-    --        ChannelSettings = {
-    --            AtlasName = 'Spark',
-    --            Point = { 'CENTER', nil, 'LEFT', 0, 0 },
-    --        }
-    --    },
-    --    Time = {
-    --        Layer = "OVERLAY",
-    --        FontName = 'Montserrat10',
-    --        Point = {'RIGHT', nil}
-    --    },
-    --    Text = {
-    --        Layer = "OVERLAY",
-    --        FontName = 'Montserrat10',
-    --        Point = {'CENTER', nil}
-    --    },
-    --    Icon = {
-    --        Size = {20, 20},
-    --        Point = {'TOPRIGHT', nil, 'TOPRIGHT'}
-    --    },
-    --    Shield = {
-    --        Texture = 'GlobalIcon',
-    --        TexCoord = 'DEFENSE',
-    --        VertexColor = { 163/255, 220/255, 255/255 },
-    --        Size = {16, 16},
-    --        Point = {'LEFT', nil}
-    --    },
-    --    SafeZone = {
-    --        Layer = "OVERLAY",
-    --        BlendMode = "ADD",
-    --        VertexColor = {255/255, 246/255, 0, 0.75}
-    --    },
-    --    ReverseFill = true
-    --}
 }
 
-function UnitFrames:Target()
+function UnitFrames:TargetOftarget()
 
     self:RegisterForClicks("AnyUp")
     self:SetScript("OnEnter", UnitFrame_OnEnter)
@@ -272,29 +209,45 @@ function UnitFrames:Target()
     --[[
         POWER SLANTED STATUSBAR
     --]]
-    Config.Power.Point[2] = Health
-    local Power = UnitFrames:CreateSlantedStatusBar(Frame,
-            Config.Power.Textures,
-            Config.Power.Size,
-            Config.Power.Point,
-            Config.Power.SlantSettings,
-            Config.Power.StaticLayer)
+    if Config.Power then
+        Config.Power.Point[2] = Health
+        local Power = UnitFrames:CreateSlantedStatusBar(Frame,
+                Config.Power.Textures,
+                Config.Power.Size,
+                Config.Power.Point,
+                Config.Power.SlantSettings,
+                Config.Power.StaticLayer)
 
-    Power.colorPower = true
-    Power.frequentUpdates=true
-    Power.Override = UnitFrames.UpdatePowerOverride
-    Power.UpdateColor = UnitFrames.UpdatePowerColorOverride
+        Power.colorPower = true
+        Power.frequentUpdates=true
+        Power.Override = UnitFrames.UpdatePowerOverride
+        Power.UpdateColor = UnitFrames.UpdatePowerColorOverride
 
-    --[[
-        POWER PREDICTION SLANTED STATUSBAR
-    --]]
-    local PowerPrediction = UnitFrames:CreateSlantedStatusBar(Frame,
-            Config.PowerPrediction.Textures,
-            Config.PowerPrediction.Size,
-            Config.PowerPrediction.Point,
-            Config.PowerPrediction.SlantSettings,
-            Config.PowerPrediction.StaticLayer)
-    PowerPrediction:SetBlendMode("ADD")
+        --[[
+            POWER PREDICTION SLANTED STATUSBAR
+        --]]
+        local PowerPrediction = UnitFrames:CreateSlantedStatusBar(Frame,
+                Config.PowerPrediction.Textures,
+                Config.PowerPrediction.Size,
+                Config.PowerPrediction.Point,
+                Config.PowerPrediction.SlantSettings,
+                Config.PowerPrediction.StaticLayer)
+        PowerPrediction:SetBlendMode("ADD")
+
+        if Config.Power.Value then
+            Config.Power.Value.Point[2] = Power
+            Power.Value = UnitFrames:CreateFontString(Frame, Config.Power.Value)
+            self:Tag(Power.Value, Config.Power.Value.Tag)
+        end
+
+        self.Power = Power
+        self.Power.bg = Power.background
+        self.PowerPrediction = {
+            mainBar = PowerPrediction,
+            --altBar = AltPowerPrediction,
+            Override = UnitFrames.UpdatePowerPredictionOverride
+        }
+    end
 
     --[[
         FONT
@@ -313,12 +266,6 @@ function UnitFrames:Target()
     if Config.Health.Percent then
         Health.Percent = UnitFrames:CreateFontString(Frame, Config.Health.Percent)
         self:Tag(Health.Percent, Config.Health.Percent.Tag)
-    end
-
-    if Config.Power.Value then
-        Config.Power.Value.Point[2] = Power
-        Power.Value = UnitFrames:CreateFontString(Frame, Config.Power.Value)
-        self:Tag(Power.Value, Config.Power.Value.Tag)
     end
 
     if Config.Absorb.Value then
@@ -361,31 +308,19 @@ function UnitFrames:Target()
         self.LeaderIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.LeaderIndicator)
     end
 
-    --[[
-    CASTBAR
-    ]]--
-    if Config.CastBar then
-        self.Castbar = UnitFrames:CreateCastBar(Frame, Config.CastBar)
-    end
-
     -- Register with oUF
     self.Absorb = Absorb
     self.Absorb.bg = Absorb.background
     self.Health = Health
     self.Health.bg = Health.background
-    self.Power = Power
-    self.Power.bg = Power.background
+
     self.HealthPrediction = {
         myBar = HealthPrediction,
         otherBar = OtherHealthPrediction,
         maxOverflow = 1,
         Override = UnitFrames.UpdatePredictionOverride
     }
-    self.PowerPrediction = {
-        mainBar = PowerPrediction,
-        --altBar = AltPowerPrediction,
-        Override = UnitFrames.UpdatePowerPredictionOverride
-    }
+
 
     --affect same frame level for PlayerModel than the PlayerFrame
     self.Portrait:SetFrameLevel(Frame:GetFrameLevel())

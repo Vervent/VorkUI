@@ -248,7 +248,8 @@ function UnitFrames:CastBarOnUpdate(elapsed)
 end
 
 function UnitFrames:CreateCastBar(frame, config)
-    local castbar = CreateFrame("StatusBar", nil, frame)
+
+    local castbar = CreateFrame("StatusBar", frame:GetName().."Castbar", frame)
     local textures = config.Textures
     local sparkSettings = config.Spark
 
@@ -1145,6 +1146,10 @@ function UnitFrames:Style(unit)
         UnitFrames.Player(self)
     elseif (unit == "target") then
         UnitFrames.Target(self)
+    elseif (unit == "targettarget") then
+        UnitFrames.TargetOftarget(self)
+    elseif (unit == "pet") then
+        UnitFrames.Pet(self)
     end
 
     return self
@@ -1153,16 +1158,25 @@ end
 function UnitFrames:CreateUnits()
 
     local Player = oUF:Spawn("player", "VorkuiPlayerFrame")
-    Player:SetPoint("CENTER", nil, "CENTER", -235, 0)
+    Player:SetPoint("CENTER", UIParent, "CENTER", -400, -250)
     Player:SetSize(300, 62)
 
+    local Pet = oUF:Spawn("pet", "VorkuiPetFrame")
+    Pet:SetPoint("TOPLEFT", Player, "BOTTOMLEFT", 0, -25)
+    Pet:SetSize(190, 31)
+
     local Target = oUF:Spawn("target", "VorkuiTargetFrame")
-    Target:SetPoint("CENTER", nil, "CENTER", 235, 0)
+    Target:SetPoint("CENTER", UIParent, "CENTER", 400, -250)
     Target:SetSize(300, 62)
+
+    local TargetOftarget = oUF:Spawn("targettarget", "VorkuiTargetTargetFrame")
+    TargetOftarget:SetPoint("LEFT", Target, "RIGHT", 20, 0)
+    TargetOftarget:SetSize(200, 31)
 
     self.Units.Player = Player
     self.Units.Target = Target
-
+    self.Units.TargetOftarget = TargetOftarget
+    self.Units.Pet = Pet
 end
 
 function UnitFrames:Enable()

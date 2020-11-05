@@ -2,4 +2,6 @@
 	<Script file="UnitFrames\core.lua"/>
 	<Script file="UnitFrames\Units\player.lua"/>
 	<Script file="UnitFrames\Units\target.lua"/>
+	<Script file="UnitFrames\Units\targetoftarget.lua"/>
+	<Script file="UnitFrames\Units\pet.lua"/>
 </Ui>
