@@ -3,11 +3,11 @@ local V, C, L = select(2, ...):unpack()
 local UnitFrames = V["UnitFrames"]
 
 --[[
-    Configuration
+    TargetTarget Configuration
 ]]--
-local Config = V.Themes.Default.UnitFrames.Player.Config or { }
+local Config = V.Themes.Default.UnitFrames.FocusTarget.Config or { }
 
-function UnitFrames:Player()
+function UnitFrames:FocusTarget()
 
     self:RegisterForClicks("AnyUp")
     self:SetScript("OnEnter", UnitFrame_OnEnter)
@@ -67,29 +67,45 @@ function UnitFrames:Player()
     --[[
         POWER SLANTED STATUSBAR
     --]]
-    Config.Power.Point[2] = Health
-    local Power = UnitFrames:CreateSlantedStatusBar(Frame,
-            Config.Power.Textures,
-            Config.Power.Size,
-            Config.Power.Point,
-            Config.Power.SlantSettings,
-            Config.Power.StaticLayer)
+    if Config.Power then
+        Config.Power.Point[2] = Health
+        local Power = UnitFrames:CreateSlantedStatusBar(Frame,
+                Config.Power.Textures,
+                Config.Power.Size,
+                Config.Power.Point,
+                Config.Power.SlantSettings,
+                Config.Power.StaticLayer)
 
-    Power.colorPower = true
-    Power.frequentUpdates=true
-    Power.Override = UnitFrames.UpdatePowerOverride
-    Power.UpdateColor = UnitFrames.UpdatePowerColorOverride
+        Power.colorPower = true
+        Power.frequentUpdates=true
+        Power.Override = UnitFrames.UpdatePowerOverride
+        Power.UpdateColor = UnitFrames.UpdatePowerColorOverride
 
-    --[[
-        POWER PREDICTION SLANTED STATUSBAR
-    --]]
-    local PowerPrediction = UnitFrames:CreateSlantedStatusBar(Frame,
-            Config.PowerPrediction.Textures,
-            Config.PowerPrediction.Size,
-            Config.PowerPrediction.Point,
-            Config.PowerPrediction.SlantSettings,
-            Config.PowerPrediction.StaticLayer)
-    PowerPrediction:SetBlendMode("ADD")
+        --[[
+            POWER PREDICTION SLANTED STATUSBAR
+        --]]
+        local PowerPrediction = UnitFrames:CreateSlantedStatusBar(Frame,
+                Config.PowerPrediction.Textures,
+                Config.PowerPrediction.Size,
+                Config.PowerPrediction.Point,
+                Config.PowerPrediction.SlantSettings,
+                Config.PowerPrediction.StaticLayer)
+        PowerPrediction:SetBlendMode("ADD")
+
+        if Config.Power.Value then
+            Config.Power.Value.Point[2] = Power
+            Power.Value = UnitFrames:CreateFontString(Frame, Config.Power.Value)
+            self:Tag(Power.Value, Config.Power.Value.Tag)
+        end
+
+        self.Power = Power
+        self.Power.bg = Power.background
+        self.PowerPrediction = {
+            mainBar = PowerPrediction,
+            --altBar = AltPowerPrediction,
+            Override = UnitFrames.UpdatePowerPredictionOverride
+        }
+    end
 
     --[[
         FONT
@@ -110,12 +126,6 @@ function UnitFrames:Player()
         self:Tag(Health.Percent, Config.Health.Percent.Tag)
     end
 
-    if Config.Power.Value then
-        Config.Power.Value.Point[2] = Power
-        Power.Value = UnitFrames:CreateFontString(Frame, Config.Power.Value)
-        self:Tag(Power.Value, Config.Power.Value.Tag)
-    end
-
     if Config.Absorb.Value then
         Config.Absorb.Value.Point[2] = Health
         Absorb.Value = UnitFrames:CreateFontString(Frame, Config.Absorb.Value)
@@ -134,7 +144,10 @@ function UnitFrames:Player()
     --]]
     if Config.ClassIndicator then
         Config.ClassIndicator.Point[2] = self.Portrait or Frame
-        self.ClassIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ClassIndicator)
+        local indicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ClassIndicator)
+        indicator.AtlasName = Config.ClassIndicator.Texture
+        indicator.Override = UnitFrames.UpdateClassOverride
+        self.ClassIndicator = indicator
     end
 
     --[[
@@ -153,46 +166,19 @@ function UnitFrames:Player()
         self.LeaderIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.LeaderIndicator)
     end
 
-    --[[
-    RESTING ICON
-    ]]--
-    if Config.RestingIndicator then
-        self.RestingIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.RestingIndicator)
-    end
-
-    --[[
-    COMBAT ICON
-    ]]--
-    if Config.CombatIndicator then
-        Config.CombatIndicator.Point[2] = self.RestingIndicator or Frame
-        self.CombatIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.CombatIndicator)
-    end
-
-    --[[
-    CASTBAR
-    ]]--
-    if Config.CastBar then
-        self.Castbar = UnitFrames:CreateCastBar(Frame, Config.CastBar)
-    end
-
     -- Register with oUF
     self.Absorb = Absorb
     self.Absorb.bg = Absorb.background
     self.Health = Health
     self.Health.bg = Health.background
-    self.Power = Power
-    self.Power.bg = Power.background
+
     self.HealthPrediction = {
         myBar = HealthPrediction,
         otherBar = OtherHealthPrediction,
         maxOverflow = 1,
         Override = UnitFrames.UpdatePredictionOverride
     }
-    self.PowerPrediction = {
-        mainBar = PowerPrediction,
-        --altBar = AltPowerPrediction,
-        Override = UnitFrames.UpdatePowerPredictionOverride
-    }
+
 
     --affect same frame level for PlayerModel than the PlayerFrame
     self.Portrait:SetFrameLevel(Frame:GetFrameLevel())
@@ -200,6 +186,5 @@ function UnitFrames:Player()
 
     self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
     self:HookScript("OnLeave", UnitFrames.MouseOnPlayer)
-
 
 end

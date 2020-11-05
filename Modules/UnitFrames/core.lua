@@ -7,12 +7,15 @@ local AddOn, Plugin = ...
 local oUF = Plugin.oUF or oUF
 local Noop = function() end
 local UnitFrames = V["UnitFrames"]
+local Config = V["Themes"].Default.UnitFrames
+
 local Medias = V["Medias"]
 local LibSlant = LibStub:GetLibrary("LibSlant")
 local LibAtlas = Medias:GetLibAtlas()
 
 -- Lib globals
 local strfind = strfind
+local strlower = strlower
 local format = format
 local floor = floor
 local max = max
@@ -249,7 +252,7 @@ end
 
 function UnitFrames:CreateCastBar(frame, config)
 
-    local castbar = CreateFrame("StatusBar", frame:GetName().."Castbar", frame)
+    local castbar = CreateFrame("StatusBar", frame:GetParent():GetName().."Castbar", frame)
     local textures = config.Textures
     local sparkSettings = config.Spark
 
@@ -1147,9 +1150,13 @@ function UnitFrames:Style(unit)
     elseif (unit == "target") then
         UnitFrames.Target(self)
     elseif (unit == "targettarget") then
-        UnitFrames.TargetOftarget(self)
+        UnitFrames.TargetTarget(self)
     elseif (unit == "pet") then
         UnitFrames.Pet(self)
+    elseif (unit == "focus") then
+        UnitFrames.Focus(self)
+    elseif (unit == "focustarget") then
+        UnitFrames.FocusTarget(self)
     end
 
     return self
@@ -1157,26 +1164,45 @@ end
 
 function UnitFrames:CreateUnits()
 
-    local Player = oUF:Spawn("player", "VorkuiPlayerFrame")
-    Player:SetPoint("CENTER", UIParent, "CENTER", -400, -250)
-    Player:SetSize(300, 62)
+    for k, v in pairs (Config) do
+        if v.Enable == true then
+            local unit = oUF:Spawn(strlower(k), "Vorkui"..k.."Frame")
+            unit:SetPoint( unpack(v.Point) )
+            unit:SetSize( unpack(v.Size) )
+            self.Units[k] = unit
+        end
+    end
 
-    local Pet = oUF:Spawn("pet", "VorkuiPetFrame")
-    Pet:SetPoint("TOPLEFT", Player, "BOTTOMLEFT", 0, -25)
-    Pet:SetSize(190, 31)
-
-    local Target = oUF:Spawn("target", "VorkuiTargetFrame")
-    Target:SetPoint("CENTER", UIParent, "CENTER", 400, -250)
-    Target:SetSize(300, 62)
-
-    local TargetOftarget = oUF:Spawn("targettarget", "VorkuiTargetTargetFrame")
-    TargetOftarget:SetPoint("LEFT", Target, "RIGHT", 20, 0)
-    TargetOftarget:SetSize(200, 31)
-
-    self.Units.Player = Player
-    self.Units.Target = Target
-    self.Units.TargetOftarget = TargetOftarget
-    self.Units.Pet = Pet
+    --local Player = oUF:Spawn("player", "VorkuiPlayerFrame")
+    --Player:SetPoint("CENTER", UIParent, "CENTER", -400, -250)
+    --Player:SetSize(300, 62)
+    --
+    --local Pet = oUF:Spawn("pet", "VorkuiPetFrame")
+    --Pet:SetPoint("TOPLEFT", Player, "BOTTOMLEFT", 0, -25)
+    --Pet:SetSize(190, 31)
+    --
+    --local Target = oUF:Spawn("target", "VorkuiTargetFrame")
+    --Target:SetPoint("CENTER", UIParent, "CENTER", 400, -250)
+    --Target:SetSize(300, 62)
+    --
+    --local TargetOfTarget = oUF:Spawn("targettarget", "VorkuiTargetTargetFrame")
+    --TargetOfTarget:SetPoint("LEFT", Target, "RIGHT", 20, 0)
+    --TargetOfTarget:SetSize(200, 31)
+    --
+    --local Focus = oUF:Spawn("focus", "VorkuiFocusFrame")
+    --Focus:SetPoint("CENTER", UIParent, "CENTER", -400, 0)
+    --Focus:SetSize(300, 62)
+    --
+    --local TargetOfFocus = oUF:Spawn("focustarget", "VorkuiFocusTargetFrame")
+    --TargetOfFocus:SetPoint("TOPLEFT", Focus, "TOPRIGHT", 10, 0)
+    --TargetOfFocus:SetSize(200, 31)
+    --
+    --self.Units.Player = Player
+    --self.Units.Target = Target
+    --self.Units.TargetOfTarget = TargetOfTarget
+    --self.Units.Pet = Pet
+    --self.Units.Focus = Focus
+    --self.Units.TargetOfFocus = TargetOfFocus
 end
 
 function UnitFrames:Enable()

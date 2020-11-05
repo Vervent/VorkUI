@@ -3,11 +3,11 @@ local V, C, L = select(2, ...):unpack()
 local UnitFrames = V["UnitFrames"]
 
 --[[
-    Configuration
+    Focus Configuration
 ]]--
-local Config = V.Themes.Default.UnitFrames.Player.Config or { }
+local Config = V.Themes.Default.UnitFrames.Focus.Config or { }
 
-function UnitFrames:Player()
+function UnitFrames:Focus()
 
     self:RegisterForClicks("AnyUp")
     self:SetScript("OnEnter", UnitFrame_OnEnter)
@@ -134,7 +134,10 @@ function UnitFrames:Player()
     --]]
     if Config.ClassIndicator then
         Config.ClassIndicator.Point[2] = self.Portrait or Frame
-        self.ClassIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ClassIndicator)
+        local indicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ClassIndicator)
+        indicator.AtlasName = Config.ClassIndicator.Texture
+        indicator.Override = UnitFrames.UpdateClassOverride
+        self.ClassIndicator = indicator
     end
 
     --[[
@@ -151,21 +154,6 @@ function UnitFrames:Player()
     if Config.LeaderIndicator then
         Config.LeaderIndicator.Point[2] = Frame.Name or Frame
         self.LeaderIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.LeaderIndicator)
-    end
-
-    --[[
-    RESTING ICON
-    ]]--
-    if Config.RestingIndicator then
-        self.RestingIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.RestingIndicator)
-    end
-
-    --[[
-    COMBAT ICON
-    ]]--
-    if Config.CombatIndicator then
-        Config.CombatIndicator.Point[2] = self.RestingIndicator or Frame
-        self.CombatIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.CombatIndicator)
     end
 
     --[[
@@ -200,6 +188,5 @@ function UnitFrames:Player()
 
     self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
     self:HookScript("OnLeave", UnitFrames.MouseOnPlayer)
-
 
 end
