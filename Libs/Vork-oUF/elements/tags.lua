@@ -89,3 +89,14 @@ oUF.Tags.Methods['Vorkui:Deficit:Curhp-Max'] = function(unit)
     end
 
 end
+
+oUF.Tags.Methods['Vorkui:Name'] = function(unit, realUnit, ...)
+    local name = _TAGS['name'](unit, realUnit)
+    local length = tonumber(...)
+    if(length) then
+        return name:sub(1, length) -- please note, this code doesn't support UTF-8 chars
+    else
+        return name
+    end
+end
+oUF.Tags.Events['Vorkui:Name'] = 'UNIT_NAME_UPDATE'
