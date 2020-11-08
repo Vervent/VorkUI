@@ -129,7 +129,9 @@ local function CastBarResetAttribute(self)
         self.rotation = nil
         self.Spark:SetTexture(LibAtlas:GetPath(self.Spark.castSettings.texture))
         self.Spark:ClearAllPoints()
-        self.Spark:SetPoint( unpack(self.Spark.castSettings.point) )
+        local point = self.Spark.castSettings.point
+        point[2] = self.Spark.castbar:GetStatusBarTexture()
+        self.Spark:SetPoint( unpack(point) )
     end
 end
 
@@ -151,7 +153,6 @@ local function CastBarUpdateSpark(self)
 
     local atlasID = floor(self.duration / self.max * frequency + 0.5) % spriteCount + 1
     spark:SetTexCoord(LibAtlas:GetTexCoord( atlasName , atlasID, self.rotation or self:GetReverseFill() ))
-
 
 end
 
@@ -182,7 +183,10 @@ function UnitFrames:CastBarStart(unit)
 
         self.Spark:SetTexture(LibAtlas:GetPath(self.Spark.channelSettings.texture))
         self.Spark:ClearAllPoints()
-        self.Spark:SetPoint( unpack(self.Spark.channelSettings.point) )
+
+        local point = self.Spark.channelSettings.point
+        point[2] = self.Spark.castbar:GetStatusBarTexture()
+        self.Spark:SetPoint( unpack(point) )
 
     end
 end
@@ -275,19 +279,25 @@ function UnitFrames:CreateCastBar(frame, config)
         spark:SetBlendMode(sparkSettings.BlendMode)
         spark:SetTexture(LibAtlas:GetPath(sparkSettings.CastSettings.AtlasName))
 
-        sparkSettings.CastSettings.Point[2] = castbar:GetStatusBarTexture()
-        sparkSettings.ChannelSettings.Point[2] = castbar:GetStatusBarTexture()
-        spark:SetPoint( unpack (sparkSettings.CastSettings.Point) )
+        local parentSpark = castbar:GetStatusBarTexture()
+
+        local castingSparkPoint = sparkSettings.CastSettings.Point
+        castingSparkPoint[2] = parentSpark
+        local channelingSparkPoint = sparkSettings.ChannelSettings.Point
+        channelingSparkPoint[2] = parentSpark
+
+        spark:SetPoint( unpack (channelingSparkPoint) )
         spark.castSettings = {
             texture = sparkSettings.CastSettings.AtlasName,
-            point = sparkSettings.CastSettings.Point,
+            point = castingSparkPoint,
             spriteCount = LibAtlas:GetSpriteCount(sparkSettings.CastSettings.AtlasName)
         }
         spark.channelSettings = {
             texture = sparkSettings.ChannelSettings.AtlasName,
-            point = sparkSettings.ChannelSettings.Point,
+            point = channelingSparkPoint,
             spriteCount = LibAtlas:GetSpriteCount(sparkSettings.ChannelSettings.AtlasName)
         }
+        spark.castbar = castbar
         castbar.Spark = spark
     end
 
@@ -356,9 +366,26 @@ end
 function UnitFrames:UpdatePortraitOverride(unit)
     if(self.unit == unit) then return end
 
-    self:SetPosition( unpack(self.PostUpdateConfig.Position) )
-    self:SetCamDistanceScale( self.PostUpdateConfig.CamDistance )
-    self:SetRotation( self.PostUpdateConfig.Rotation )
+    local guid = UnitGUID(unit)
+    local isAvailable = UnitIsConnected(unit) and UnitIsVisible(unit)
+
+    if(not isAvailable) then
+        self:SetCamDistanceScale(0.25)
+        self:SetPortraitZoom(0)
+        self:SetPosition(0, 0, 0.25)
+        self:ClearModel()
+        self:SetModel([[Interface\Buttons\TalkToMeQuestionMark.m2]])
+    else
+        self:SetPosition( unpack(self.PostUpdateConfig.Position) )
+        self:SetCamDistanceScale( self.PostUpdateConfig.CamDistance )
+        self:SetRotation( self.PostUpdateConfig.Rotation )
+        self:SetPortraitZoom(1)
+        self:ClearModel()
+        self:SetUnit(unit)
+    end
+    self.guid = guid
+    self.state = isAvailable
+
 end
 
 function UnitFrames:Create3DPortrait(template, parent, config)
@@ -1105,9 +1132,16 @@ function UnitFrames:UpdateTotemOverride(event, slot)
 
 end
 
-function UnitFrames:GetPartyFramesAttributes()
-    return
-   ""
+function UnitFrames:GetPartyFramesAttributes( config )
+
+    local attributes = {}
+    for attribName, attribValue in pairs ( config ) do
+        attributes[#attributes + 1] = tostring(attribName)
+        attributes[#attributes + 1] = attribValue
+    end
+
+    return attributes
+
 end
 
 function UnitFrames:GetPetPartyFramesAttributes()
@@ -1157,6 +1191,20 @@ function UnitFrames:Style(unit)
         UnitFrames.Focus(self)
     elseif (unit == "focustarget") then
         UnitFrames.FocusTarget(self)
+    elseif (unit == "party") then
+        --TODO USE CONFIG LAYOUT HERE
+        UnitFrames.Party(self, "Compact")
+    elseif (unit == "raid" ) then
+        --TODO USE CONFIG LAYOUT HERE
+        UnitFrames.Raid(self, "Compact")
+    elseif (unit:find("raid")) or (unit:find("raidpet")) then
+        if Parent:match("Party") then
+            --TODO USE CONFIG LAYOUT HERE
+            UnitFrames.Party(self, "Compact")
+        else
+            --TODO USE CONFIG LAYOUT HERE
+            UnitFrames.Party(self, "Compact")
+        end
     end
 
     return self
@@ -1165,7 +1213,37 @@ end
 function UnitFrames:CreateUnits()
 
     for k, v in pairs (Config) do
-        if v.Enable == true then
+        if k == "Party" and v.Enable == true then
+
+            local header = v.Config.Header
+
+            --TODO USE CONFIG LAYOUT HERE
+            local party = oUF:SpawnHeader( header.Name, header.Template, header.Visibility,
+                    "oUF-initialConfigFunction", header.InitialConfigFunction,
+                    unpack( UnitFrames:GetPartyFramesAttributes( v.Config.Compact.Attributes ) )
+            )
+            party:SetPoint("LEFT", UIParent, "LEFT")
+
+            self.Headers.Party = party
+        elseif k == "Raid" and v.Enable == true then
+
+            local header = v.Config.Header
+
+            --TODO USE CONFIG LAYOUT HERE
+            local raid = oUF:SpawnHeader( header.Name, header.Template, header.Visibility,
+                    "oUF-initialConfigFunction", header.InitialConfigFunction,
+                    unpack( UnitFrames:GetPartyFramesAttributes( v.Config.Compact.Attributes ) )
+            )
+            raid:SetPoint("BOTTOM", UIParent, "BOTTOM", -300, 120)
+
+            --TO TEST AREA
+            --local background = raid:CreateTexture(nil, "BACKGROUND")
+            --background:SetSize(128*4,24*10)
+            --background:SetPoint("BOTTOMLEFT", raid, "BOTTOMLEFT")
+            --background:SetColorTexture(0,0,0,1)
+
+            self.Headers.Raid = raid
+        elseif v.Enable == true then
             local unit = oUF:Spawn(strlower(k), "Vorkui"..k.."Frame")
             unit:SetPoint( unpack(v.Point) )
             unit:SetSize( unpack(v.Size) )
@@ -1173,36 +1251,6 @@ function UnitFrames:CreateUnits()
         end
     end
 
-    --local Player = oUF:Spawn("player", "VorkuiPlayerFrame")
-    --Player:SetPoint("CENTER", UIParent, "CENTER", -400, -250)
-    --Player:SetSize(300, 62)
-    --
-    --local Pet = oUF:Spawn("pet", "VorkuiPetFrame")
-    --Pet:SetPoint("TOPLEFT", Player, "BOTTOMLEFT", 0, -25)
-    --Pet:SetSize(190, 31)
-    --
-    --local Target = oUF:Spawn("target", "VorkuiTargetFrame")
-    --Target:SetPoint("CENTER", UIParent, "CENTER", 400, -250)
-    --Target:SetSize(300, 62)
-    --
-    --local TargetOfTarget = oUF:Spawn("targettarget", "VorkuiTargetTargetFrame")
-    --TargetOfTarget:SetPoint("LEFT", Target, "RIGHT", 20, 0)
-    --TargetOfTarget:SetSize(200, 31)
-    --
-    --local Focus = oUF:Spawn("focus", "VorkuiFocusFrame")
-    --Focus:SetPoint("CENTER", UIParent, "CENTER", -400, 0)
-    --Focus:SetSize(300, 62)
-    --
-    --local TargetOfFocus = oUF:Spawn("focustarget", "VorkuiFocusTargetFrame")
-    --TargetOfFocus:SetPoint("TOPLEFT", Focus, "TOPRIGHT", 10, 0)
-    --TargetOfFocus:SetSize(200, 31)
-    --
-    --self.Units.Player = Player
-    --self.Units.Target = Target
-    --self.Units.TargetOfTarget = TargetOfTarget
-    --self.Units.Pet = Pet
-    --self.Units.Focus = Focus
-    --self.Units.TargetOfFocus = TargetOfFocus
 end
 
 function UnitFrames:Enable()
