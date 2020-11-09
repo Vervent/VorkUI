@@ -2,5 +2,6 @@
 	<Script file='colors.lua'/>
 	<Script file='elements\absorb.lua'/>
 	<Script file='elements\classindicator.lua'/>
+	<Script file='elements\deadorghostindicator.lua'/>
 	<Script file='elements\tags.lua'/>
 </Ui>

@@ -46,6 +46,7 @@ local function Update(self, event, unit)
 	end
 
 	local status = C_IncomingSummon.IncomingSummonStatus(unit)
+
 	if(status ~= SUMMON_STATUS_NONE) then
 		if(status == SUMMON_STATUS_PENDING) then
 			element:SetAtlas('Raid-Icon-SummonPending')

@@ -16,7 +16,12 @@ oUF.Tags.Methods['Vorkui:PerHP'] = function(unit)
     elseif cur == max then
         return ''
     else
-        return math.floor(cur / max * 100 + .5)
+        local result = math.floor(cur / max * 100 + .5)
+        if result > 0 then
+            return result
+        else
+            return ''
+        end
     end
 end
 
@@ -63,8 +68,9 @@ oUF.Tags.Methods['Vorkui:Deficit:Curhp'] = function(unit)
     if not UnitIsFriend("player", unit) == true then
         return UnitHealth(unit)
     else
-        local deficit = UnitHealthMax(unit) - UnitHealth(unit)
-        if deficit > 0 then
+        local max = UnitHealthMax(unit)
+        local deficit = max - UnitHealth(unit)
+        if deficit > 0 and deficit < max-1 then
             return deficit
         else
             return ""
@@ -76,6 +82,10 @@ end
 oUF.Tags.Events['Vorkui:Deficit:Curhp-Max'] = 'UNIT_HEALTH UNIT_MAXHEALTH'
 oUF.Tags.Methods['Vorkui:Deficit:Curhp-Max'] = function(unit)
     local cur, max = UnitHealth(unit), UnitHealthMax(unit)
+
+    if cur == 0 then
+        return ""
+    end
 
     if not UnitIsFriend("player", unit) == true then
         return cur.." | "..max
