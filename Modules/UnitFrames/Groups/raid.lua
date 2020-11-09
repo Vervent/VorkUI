@@ -8,7 +8,6 @@ local UnitFrames = V["UnitFrames"]
 
 function UnitFrames:Raid(layout)
 
-    print (layout)
     local Config = V.Themes.Default.UnitFrames.Raid.Config[layout].Unit
 
     self:RegisterForClicks("AnyUp")
@@ -59,7 +58,7 @@ function UnitFrames:Raid(layout)
     --]]
     local HealthPrediction = UnitFrames:CreateSlantedStatusBar(Frame,
             Config.HealthPrediction.Textures,
-            Config.HealthPrediction.Size,
+            Config.Health.Size,
             Config.HealthPrediction.Point,
             Config.HealthPrediction.SlantSettings,
             Config.HealthPrediction.StaticLayer)
@@ -67,11 +66,20 @@ function UnitFrames:Raid(layout)
 
     local OtherHealthPrediction = UnitFrames:CreateSlantedStatusBar(Frame,
             Config.HealthPrediction.Textures,
-            Config.HealthPrediction.Size,
+            Config.Health.Size,
             Config.HealthPrediction.Point,
             Config.HealthPrediction.SlantSettings,
             Config.HealthPrediction.StaticLayer)
     OtherHealthPrediction:SetBlendMode("ADD")
+    self.Health = Health
+    self.Health.bg = Health.background
+
+    self.HealthPrediction = {
+        myBar = HealthPrediction,
+        otherBar = OtherHealthPrediction,
+        maxOverflow = 1,
+        Override = UnitFrames.UpdatePredictionOverride
+    }
 
     --[[
         POWER SLANTED STATUSBAR
@@ -95,7 +103,7 @@ function UnitFrames:Raid(layout)
         --]]
         local PowerPrediction = UnitFrames:CreateSlantedStatusBar(Frame,
                 Config.PowerPrediction.Textures,
-                Config.PowerPrediction.Size,
+                Config.Power.Size,
                 Config.PowerPrediction.Point,
                 Config.PowerPrediction.SlantSettings,
                 Config.PowerPrediction.StaticLayer)
@@ -109,6 +117,11 @@ function UnitFrames:Raid(layout)
 
         self.Power = Power
         self.Power.bg = Power.background
+        self.PowerPrediction = {
+            mainBar = PowerPrediction,
+            --altBar = AltPowerPrediction,
+            Override = UnitFrames.UpdatePowerPredictionOverride
+        }
     end
 
     --[[
@@ -158,13 +171,17 @@ function UnitFrames:Raid(layout)
     RAID ICON
     ]]--
     if Config.RaidIndicator then
-        Config.RaidIndicator.Point[2] = Frame.Name or Frame
+        Config.RaidIndicator.Point[2] = Frame
         self.RaidTargetIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.RaidIndicator)
     end
 
     --[[
     LEADER ICON
     ]]--
+    if Config.LeaderIndicator then
+        Config.LeaderIndicator.Point[2] = self.ClassIndicator or Frame
+        self.LeaderIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.LeaderIndicator)
+    end
     if Config.LeaderIndicator then
         Config.LeaderIndicator.Point[2] = self.ClassIndicator or Frame
         self.LeaderIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.LeaderIndicator)
@@ -207,21 +224,6 @@ function UnitFrames:Raid(layout)
     end
 
     -- Register with oUF
-
-    self.Health = Health
-    self.Health.bg = Health.background
-
-    self.HealthPrediction = {
-        myBar = HealthPrediction,
-        otherBar = OtherHealthPrediction,
-        maxOverflow = 1,
-        Override = UnitFrames.UpdatePredictionOverride
-    }
-    self.PowerPrediction = {
-        mainBar = PowerPrediction,
-        --altBar = AltPowerPrediction,
-        Override = UnitFrames.UpdatePowerPredictionOverride
-    }
     self.Frame = Frame
 
     self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)

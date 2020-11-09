@@ -1239,7 +1239,7 @@ function UnitFrames:CreateUnits()
 
             --TO TEST AREA
             --local background = raid:CreateTexture(nil, "BACKGROUND")
-            --background:SetSize(128*4,24*10)
+            --background:SetSize(150*4,46*5)
             --background:SetPoint("BOTTOMLEFT", raid, "BOTTOMLEFT")
             --background:SetColorTexture(0,0,0,1)
 
