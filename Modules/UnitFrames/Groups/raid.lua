@@ -171,27 +171,11 @@ function UnitFrames:Raid(layout)
     end
 
     --[[
-    STATUS ICON
-    ]]--
-    if Config.StatusIndicator then
-        Config.StatusIndicator.Point[2] = Frame
-        self.StatusIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.StatusIndicator)
-    end
-
-    --[[
     GROUP ROLE ICON
     ]]--
     if Config.GroupRoleIndicator then
         Config.GroupRoleIndicator.Point[2] = Frame
         self.GroupRoleIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.GroupRoleIndicator)
-    end
-
-    --[[
-    PHASE ICON
-    ]]--
-    if Config.PhaseIndicator then
-        Config.PhaseIndicator.Point[2] = Frame
-        self.PhaseIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.PhaseIndicator)
     end
 
     --[[
@@ -202,20 +186,24 @@ function UnitFrames:Raid(layout)
         self.ReadyCheckIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ReadyCheckIndicator)
     end
 
-    --[[
-    RESURRECT ICON
-    ]]--
-    if Config.StatusIndicator then
-        Config.ResurrectIndicator.Point[2] = Frame
-        self.ResurrectIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ResurrectIndicator)
+    if Config.DeadOrGhostIndicator then
+        Config.DeadOrGhostIndicator.Point[2] = self.Health
+        self.DeadOrGhostIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", 7, Config.DeadOrGhostIndicator)
     end
 
-    --[[
-    SUMMON ICON
-    ]]--
+    if Config.ResurrectIndicator then
+        Config.ResurrectIndicator.Point[2] = self.Health
+        self.ResurrectIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", 7, Config.ResurrectIndicator)
+    end
+
     if Config.SummonIndicator then
-        Config.SummonIndicator.Point[2] = Frame
-        self.SummonIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.SummonIndicator)
+        Config.SummonIndicator.Point[2] = self.Health
+        self.SummonIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", 7, Config.SummonIndicator)
+    end
+
+    if Config.PhaseIndicator then
+        Config.PhaseIndicator.Point[2] = self.Health
+        self.PhaseIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", 7, Config.PhaseIndicator)
     end
 
     -- Register with oUF

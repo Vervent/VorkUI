@@ -175,6 +175,26 @@ function UnitFrames:Player()
         self.Castbar = UnitFrames:CreateCastBar(Frame, Config.CastBar)
     end
 
+    if Config.DeadOrGhostIndicator then
+        Config.DeadOrGhostIndicator.Point[2] = Frame
+        self.DeadOrGhostIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.DeadOrGhostIndicator)
+    end
+
+    if Config.ResurrectIndicator then
+        Config.ResurrectIndicator.Point[2] = Frame
+        self.ResurrectIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ResurrectIndicator)
+    end
+
+    if Config.SummonIndicator then
+        Config.SummonIndicator.Point[2] = self.Health
+        self.SummonIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", 7, Config.SummonIndicator)
+    end
+
+    if Config.PhaseIndicator then
+        Config.PhaseIndicator.Point[2] = self.Health
+        self.PhaseIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", 7, Config.PhaseIndicator)
+    end
+
     -- Register with oUF
     self.Absorb = Absorb
     self.Absorb.bg = Absorb.background

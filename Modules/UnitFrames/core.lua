@@ -520,6 +520,7 @@ end
 --[[------------------------------------------------------------------
 -- OUF UPDATE OVERRIDE
 --]]------------------------------------------------------------------
+
 function UnitFrames:UpdatePowerPredictionOverride(event, unit)
     if(self.unit ~= unit) then return end
 
@@ -1203,7 +1204,7 @@ function UnitFrames:Style(unit)
             UnitFrames.Party(self, "Compact")
         else
             --TODO USE CONFIG LAYOUT HERE
-            UnitFrames.Party(self, "Compact")
+            UnitFrames.Raid(self, "Compact")
         end
     end
 

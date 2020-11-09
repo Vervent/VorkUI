@@ -120,7 +120,9 @@ local AtlasAdress = {
     { [[Atlas\muzzle.tga]], 'Muzzle' },
     { [[Atlas\flame.tga]], 'Flame' },
     { [[Atlas\spark.tga]], 'Spark' },
-    { [[Atlas\dirt.tga]], 'Dirt' }
+    { [[Atlas\dirt.tga]], 'Dirt' },
+    { [[Atlas\status.tga]], 'Status' },
+    { [[Atlas\phasing.tga]], 'Phasing' },
 }
 local AtlasSettings = {
     ["ClassIcon"] = {
@@ -207,7 +209,19 @@ local AtlasSettings = {
         [2] = {64, 128, 0, 64},
         [3] = {0, 64, 64, 128},
         [4] = {64, 128, 64, 128},
-    }
+    },
+    ["Status"] = {
+        width = 128,
+        height = 64,
+        ["DIED"] = {0, 64, 0, 64},
+        ["RESURRECT"] = {64, 128, 0, 64},
+    },
+    ["Phasing"] = {
+        width = 128,
+        height = 64,
+        ["PHASE"] = {0, 64, 0, 64},
+        ["SUMMON"] = {64, 128, 0, 64},
+    },
 }
 
 local ParticlesAdress = {

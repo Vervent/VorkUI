@@ -72,6 +72,16 @@ function UnitFrames:Party(layout)
             Config.HealthPrediction.StaticLayer)
     OtherHealthPrediction:SetBlendMode("ADD")
 
+    self.Health = Health
+    self.Health.bg = Health.background
+
+    self.HealthPrediction = {
+        myBar = HealthPrediction,
+        otherBar = OtherHealthPrediction,
+        maxOverflow = 1,
+        Override = UnitFrames.UpdatePredictionOverride
+    }
+
     --[[
         POWER SLANTED STATUSBAR
     --]]
@@ -108,6 +118,11 @@ function UnitFrames:Party(layout)
 
         self.Power = Power
         self.Power.bg = Power.background
+        self.PowerPrediction = {
+            mainBar = PowerPrediction,
+            --altBar = AltPowerPrediction,
+            Override = UnitFrames.UpdatePowerPredictionOverride
+        }
     end
 
     --[[
@@ -173,27 +188,11 @@ function UnitFrames:Party(layout)
     end
 
     --[[
-    STATUS ICON
-    ]]--
-    if Config.StatusIndicator then
-        Config.StatusIndicator.Point[2] = Frame
-        self.StatusIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.StatusIndicator)
-    end
-
-    --[[
     GROUP ROLE ICON
     ]]--
     if Config.GroupRoleIndicator then
         Config.GroupRoleIndicator.Point[2] = Frame
         self.GroupRoleIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.GroupRoleIndicator)
-    end
-
-    --[[
-    PHASE ICON
-    ]]--
-    if Config.PhaseIndicator then
-    Config.PhaseIndicator.Point[2] = Frame
-    self.PhaseIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.PhaseIndicator)
     end
 
     --[[
@@ -204,20 +203,24 @@ function UnitFrames:Party(layout)
         self.ReadyCheckIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ReadyCheckIndicator)
     end
 
-    --[[
-    RESURRECT ICON
-    ]]--
-    if Config.StatusIndicator then
-        Config.ResurrectIndicator.Point[2] = Frame
-        self.ResurrectIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ResurrectIndicator)
+    if Config.DeadOrGhostIndicator then
+        Config.DeadOrGhostIndicator.Point[2] = Frame
+        self.DeadOrGhostIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", 7, Config.DeadOrGhostIndicator)
     end
 
-    --[[
-    SUMMON ICON
-    ]]--
+    if Config.ResurrectIndicator then
+        Config.ResurrectIndicator.Point[2] = Frame
+        self.ResurrectIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", 7, Config.ResurrectIndicator)
+    end
+
     if Config.SummonIndicator then
         Config.SummonIndicator.Point[2] = Frame
-        self.SummonIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.SummonIndicator)
+        self.SummonIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", 7, Config.SummonIndicator)
+    end
+
+    if Config.PhaseIndicator then
+        Config.PhaseIndicator.Point[2] = Frame
+        self.PhaseIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", 2, Config.PhaseIndicator)
     end
 
     --[[
@@ -229,21 +232,6 @@ function UnitFrames:Party(layout)
     end
 
     -- Register with oUF
-
-    self.Health = Health
-    self.Health.bg = Health.background
-
-    self.HealthPrediction = {
-        myBar = HealthPrediction,
-        otherBar = OtherHealthPrediction,
-        maxOverflow = 1,
-        Override = UnitFrames.UpdatePredictionOverride
-    }
-    self.PowerPrediction = {
-        mainBar = PowerPrediction,
-        --altBar = AltPowerPrediction,
-        Override = UnitFrames.UpdatePowerPredictionOverride
-    }
 
     --affect same frame level for PlayerModel than the PlayerFrame
     if self.Portrait then

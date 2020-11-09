@@ -58,7 +58,7 @@ Themes.Default = {
                         Layer = "OVERLAY",
                         FontName = "Montserrat Italic14",
                         Point = { "TOPRIGHT", nil, "TOP" },
-                        Tag = "[Vorkui:HealthColor(false)][missinghp]"
+                        Tag = "[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp]"
                     },
                     Percent = {
                         Layer = "OVERLAY",
@@ -165,6 +165,35 @@ Themes.Default = {
                     TexCoord = "MAELSTROM",
                     GradientAlpha = { "VERTICAL", 255/255, 246/255, 0/255, 0.75, 255/255, 50/255, 0/255, 1 },
                     BlendMode = "ADD"
+                },
+                DeadOrGhostIndicator = {
+                    Size = { 40, 40 },
+                    Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT" },
+                    Texture = "Status",
+                    TexCoord = "DIED",
+                    VertexColor = { 255/255, 68/255, 91/255 }
+                },
+                ResurrectIndicator = {
+                    Size = { 40, 40 },
+                    Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT"},
+                    Texture = "Status",
+                    TexCoord = "RESURRECT",
+                    VertexColor = { 30/255, 223/255, 100/255 }
+                },
+                SummonIndicator = {
+                    Size = { 32, 32 },
+                    Point = { "CENTER", nil, "CENTER"},
+                    Texture = "Phasing",
+                    TexCoord = "SUMMON",
+                    VertexColor = { 38/255, 43/255, 250/255 }
+                },
+                PhaseIndicator = {
+                    Size = { 32, 32 },
+                    Point = { "CENTER", nil, "CENTER" },
+                    Texture = "Phasing",
+                    TexCoord = "PHASE",
+                    VertexColor = { 38/255, 43/255, 250/255 }
+                    --VertexColor = { 38/255, 177/255, 217/255 }
                 },
                 Name = {
                     Layer = "OVERLAY",
@@ -550,6 +579,34 @@ Themes.Default = {
                     Texture = "GlobalIcon",
                     TexCoord = "LEADER",
                     VertexColor = { 163/255, 220/255, 255/255 }
+                },
+                DeadOrGhostIndicator = {
+                    Size = { 40, 40 },
+                    Point = { "BOTTOMLEFT", nil, "BOTTOMLEFT" },
+                    Texture = "Status",
+                    TexCoord = "DIED",
+                    VertexColor = { 255/255, 68/255, 91/255 }
+                },
+                ResurrectIndicator = {
+                    Size = { 40, 40 },
+                    Point = { "BOTTOMLEFT", nil, "BOTTOMLEFT"},
+                    Texture = "Status",
+                    TexCoord = "RESURRECT",
+                    VertexColor = { 30/255, 223/255, 100/255 }
+                },
+                SummonIndicator = {
+                    Size = { 32, 32 },
+                    Point = { "CENTER", nil, "CENTER"},
+                    Texture = "Phasing",
+                    TexCoord = "SUMMON",
+                    VertexColor = { 38/255, 43/255, 250/255 }
+                },
+                PhaseIndicator = {
+                    Size = { 32, 32 },
+                    Point = { "CENTER", nil, "CENTER" },
+                    Texture = "Phasing",
+                    TexCoord = "PHASE",
+                    VertexColor = { 38/255, 43/255, 250/255 }
                 },
                 Name = {
                     Layer = "OVERLAY",
@@ -1052,10 +1109,10 @@ Themes.Default = {
                     Attributes = {
                         ["initial-width"] = 190,
                         ["initial-height"] = 58,
-                        showRaid = false,
-                        showParty = true,
-                        showPlayer = true,
-                        showSolo = false,
+                        showRaid = false, --false
+                        showParty = true, --true
+                        showPlayer = true, --true
+                        showSolo = false, --false
                         groupFilter = "1,2,3,4,5,6,7,8",
                         point = "LEFT",
                         xOffset = 2,
@@ -1202,6 +1259,35 @@ Themes.Default = {
                             Texture = "GlobalIcon",
                             TexCoord = "LEADER",
                             VertexColor = { 163/255, 220/255, 255/255 }
+                        },
+                        DeadOrGhostIndicator = {
+                            Size = { 28, 28 },
+                            Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT" },
+                            Texture = "Status",
+                            TexCoord = "DIED",
+                            VertexColor = { 255/255, 68/255, 91/255 }
+                        },
+                        ResurrectIndicator = {
+                            Size = { 28, 28 },
+                            Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT"},
+                            Texture = "Status",
+                            TexCoord = "RESURRECT",
+                            VertexColor = { 30/255, 223/255, 100/255 }
+                        },
+                        SummonIndicator = {
+                            Size = { 28, 28 },
+                            Point = { "BOTTOM", nil, "BOTTOM"},
+                            Texture = "Phasing",
+                            TexCoord = "SUMMON",
+                            VertexColor = { 38/255, 43/255, 250/255 }
+                        },
+                        PhaseIndicator = {
+                            Size = { 28, 28 },
+                            Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT" },
+                            Texture = "Phasing",
+                            TexCoord = "PHASE",
+                            VertexColor = { 255/255, 255/255, 255/255 }
+                            --VertexColor = { 200/255, 200/255, 200/255 }
                         },
                         Name = {
                             Layer = "OVERLAY",
@@ -1402,6 +1488,35 @@ Themes.Default = {
                             TexCoord = "LEADER",
                             VertexColor = { 163/255, 220/255, 255/255 }
                         },
+                        DeadOrGhostIndicator = {
+                            Size = { 20, 20 },
+                            Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT" },
+                            Texture = "Status",
+                            TexCoord = "DIED",
+                            VertexColor = { 255/255, 68/255, 91/255 }
+                        },
+                        ResurrectIndicator = {
+                            Size = { 20, 20 },
+                            Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT"},
+                            Texture = "Status",
+                            TexCoord = "RESURRECT",
+                            VertexColor = { 30/255, 223/255, 100/255 }
+                        },
+                        SummonIndicator = {
+                            Size = { 20, 20 },
+                            Point = { "BOTTOM", nil, "BOTTOM"},
+                            Texture = "Phasing",
+                            TexCoord = "SUMMON",
+                            VertexColor = { 38/255, 43/255, 250/255 }
+                        },
+                        PhaseIndicator = {
+                            Size = { 20, 20 },
+                            Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT" },
+                            Texture = "Phasing",
+                            TexCoord = "PHASE",
+                            VertexColor = { 255/255, 255/255, 255/255 }
+                            --VertexColor = { 200/255, 200/255, 200/255 }
+                        },
                         Name = {
                             Layer = "OVERLAY",
                             FontName = "Montserrat Medium12",
@@ -1545,6 +1660,35 @@ Themes.Default = {
                             Texture = "GlobalIcon",
                             TexCoord = "LEADER",
                             VertexColor = { 163/255, 220/255, 255/255 }
+                        },
+                        DeadOrGhostIndicator = {
+                            Size = { 20, 20 },
+                            Point = { "CENTER", nil, "CENTER" },
+                            Texture = "Status",
+                            TexCoord = "DIED",
+                            VertexColor = { 255/255, 68/255, 91/255 }
+                        },
+                        ResurrectIndicator = {
+                            Size = { 20, 20 },
+                            Point = { "CENTER", nil, "CENTER"},
+                            Texture = "Status",
+                            TexCoord = "RESURRECT",
+                            VertexColor = { 30/255, 223/255, 100/255 }
+                        },
+                        SummonIndicator = {
+                            Size = { 16, 16 },
+                            Point = { "CENTER", nil, "CENTER"},
+                            Texture = "Phasing",
+                            TexCoord = "SUMMON",
+                            VertexColor = { 38/255, 43/255, 250/255 }
+                        },
+                        PhaseIndicator = {
+                            Size = { 16, 16 },
+                            Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT" },
+                            Texture = "Phasing",
+                            TexCoord = "PHASE",
+                            VertexColor = { 255/255, 255/255, 255/255 }
+                            --VertexColor = { 200/255, 200/255, 200/255 }
                         },
                         Name = {
                             Layer = "OVERLAY",
