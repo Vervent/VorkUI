@@ -76,8 +76,6 @@ Themes.Default = {
                             "Border", "OVERLAY"
                         }
                     },
-                    Size =  { 256, 32 },
-                    --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                     SlantSettings = {
                         ["IgnoreBackground"] = true,
                     }
@@ -113,8 +111,6 @@ Themes.Default = {
                             "Border", "OVERLAY"
                         }
                     },
-                    Size =  { 235, 10 },
-                    --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                     SlantSettings = {
                         ["IgnoreBackground"] = true,
                         ["FillInverse"] = true
@@ -310,8 +306,6 @@ Themes.Default = {
                             "Border", "OVERLAY"
                         }
                     },
-                    Size =  { 156, 16 },
-                    --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                     SlantSettings = {
                         ["IgnoreBackground"] = true,
                     }
@@ -347,8 +341,6 @@ Themes.Default = {
                             "Border", "OVERLAY"
                         }
                     },
-                    Size =  { 145, 4 },
-                    --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                     SlantSettings = {
                         ["IgnoreBackground"] = true,
                         ["FillInverse"] = true
@@ -503,8 +495,6 @@ Themes.Default = {
                             "Border", "OVERLAY"
                         }
                     },
-                    Size =  { 256, 32 },
-                    --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                     SlantSettings = {
                         ["IgnoreBackground"] = true,
                         ["Inverse"] = true
@@ -542,8 +532,6 @@ Themes.Default = {
                             "Border", "OVERLAY"
                         }
                     },
-                    Size =  { 235, 10 },
-                    --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                     SlantSettings = {
                         ["IgnoreBackground"] = true,
                         ["FillInverse"] = true,
@@ -742,8 +730,6 @@ Themes.Default = {
                             "Border", "OVERLAY"
                         }
                     },
-                    Size =  { 156, 16 },
-                    --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                     SlantSettings = {
                         ["IgnoreBackground"] = true,
                         ["Inverse"] = true
@@ -848,8 +834,6 @@ Themes.Default = {
                             "Border", "OVERLAY"
                         }
                     },
-                    Size =  { 256, 32 },
-                    --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                     SlantSettings = {
                         ["IgnoreBackground"] = true,
                     }
@@ -885,8 +869,6 @@ Themes.Default = {
                             "Border", "OVERLAY"
                         }
                     },
-                    Size =  { 235, 10 },
-                    --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                     SlantSettings = {
                         ["IgnoreBackground"] = true,
                         ["FillInverse"] = true,
@@ -1054,8 +1036,6 @@ Themes.Default = {
                             "Border", "OVERLAY"
                         }
                     },
-                    Size =  { 156, 16 },
-                    --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                     SlantSettings = {
                         ["IgnoreBackground"] = true,
                         ["Inverse"] = true
@@ -1186,8 +1166,6 @@ Themes.Default = {
                                     "Border", "OVERLAY"
                                 }
                             },
-                            Size =  { 128, 24 },
-                            --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                             SlantSettings = {
                                 ["IgnoreBackground"] = true,
                             }
@@ -1223,8 +1201,6 @@ Themes.Default = {
                                     "Border", "OVERLAY"
                                 }
                             },
-                            Size =  { 117, 12 },
-                            --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                             SlantSettings = {
                                 ["IgnoreBackground"] = true,
                                 ["FillInverse"] = true
@@ -1432,8 +1408,6 @@ Themes.Default = {
                                     "Border", "OVERLAY"
                                 }
                             },
-                            Size =  { 126, 16 },
-                            --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                             SlantSettings = {
                                 ["IgnoreBackground"] = true,
                             }
@@ -1463,8 +1437,6 @@ Themes.Default = {
                                     "Border", "OVERLAY"
                                 }
                             },
-                            Size =  { 118, 8 },
-                            --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                             SlantSettings = {
                                 ["IgnoreBackground"] = true,
                                 ["FillInverse"] = true
@@ -1637,8 +1609,6 @@ Themes.Default = {
                                     "Border", "OVERLAY"
                                 }
                             },
-                            Size =  { 128, 24 },
-                            --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                             SlantSettings = {
                                 ["IgnoreBackground"] = true,
                             }
@@ -1797,8 +1767,6 @@ Themes.Default = {
                                     "Border", "OVERLAY"
                                 }
                             },
-                            Size =  { 126, 16 },
-                            --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                             SlantSettings = {
                                 ["IgnoreBackground"] = true,
                             }
@@ -1828,8 +1796,6 @@ Themes.Default = {
                                     "Border", "OVERLAY"
                                 }
                             },
-                            Size =  { 118, 8 },
-                            --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                             SlantSettings = {
                                 ["IgnoreBackground"] = true,
                                 ["FillInverse"] = true
@@ -1968,8 +1934,6 @@ Themes.Default = {
                                     "Border", "OVERLAY"
                                 }
                             },
-                            Size =  { 94, 12 },
-                            --Point =  { "TOPRIGHT", nil, "BOTTOMRIGHT", -8, 0 },
                             SlantSettings = {
                                 ["IgnoreBackground"] = true,
                             }

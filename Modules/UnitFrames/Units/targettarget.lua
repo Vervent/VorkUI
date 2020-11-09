@@ -50,7 +50,7 @@ function UnitFrames:TargetTarget()
     --]]
     local HealthPrediction = UnitFrames:CreateSlantedStatusBar(Frame,
             Config.HealthPrediction.Textures,
-            Config.HealthPrediction.Size,
+            Config.Health.Size,
             Config.HealthPrediction.Point,
             Config.HealthPrediction.SlantSettings,
             Config.HealthPrediction.StaticLayer)
@@ -58,7 +58,7 @@ function UnitFrames:TargetTarget()
 
     local OtherHealthPrediction = UnitFrames:CreateSlantedStatusBar(Frame,
             Config.HealthPrediction.Textures,
-            Config.HealthPrediction.Size,
+            Config.Health.Size,
             Config.HealthPrediction.Point,
             Config.HealthPrediction.SlantSettings,
             Config.HealthPrediction.StaticLayer)
@@ -86,7 +86,7 @@ function UnitFrames:TargetTarget()
         --]]
         local PowerPrediction = UnitFrames:CreateSlantedStatusBar(Frame,
                 Config.PowerPrediction.Textures,
-                Config.PowerPrediction.Size,
+                Config.Power.Size,
                 Config.PowerPrediction.Point,
                 Config.PowerPrediction.SlantSettings,
                 Config.PowerPrediction.StaticLayer)
