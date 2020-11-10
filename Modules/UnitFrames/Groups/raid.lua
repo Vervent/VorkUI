@@ -214,13 +214,13 @@ function UnitFrames:Raid(layout)
     end
 
     if Config.SummonIndicator then
-        Config.SummonIndicator.Point[2] = self.Health
-        self.SummonIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", 7, Config.SummonIndicator)
+        Config.SummonIndicator.Point[2] = self.Power or self.Health
+        self.SummonIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", 3, Config.SummonIndicator)
     end
 
     if Config.PhaseIndicator then
-        Config.PhaseIndicator.Point[2] = self.Health
-        self.PhaseIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", 7, Config.PhaseIndicator)
+        Config.PhaseIndicator.Point[2] = self.Power or self.Health
+        self.PhaseIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", 2, Config.PhaseIndicator)
     end
 
     -- Register with oUF

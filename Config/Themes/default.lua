@@ -181,14 +181,14 @@ Themes.Default = {
                     Point = { "CENTER", nil, "CENTER"},
                     Texture = "Phasing",
                     TexCoord = "SUMMON",
-                    VertexColor = { 38/255, 43/255, 250/255 }
+                    VertexColor = { 0/255, 204/255, 255/255 }
                 },
                 PhaseIndicator = {
                     Size = { 32, 32 },
                     Point = { "CENTER", nil, "CENTER" },
                     Texture = "Phasing",
                     TexCoord = "PHASE",
-                    VertexColor = { 38/255, 43/255, 250/255 }
+                    VertexColor = { 0/255, 204/255, 255/255 }
                     --VertexColor = { 38/255, 177/255, 217/255 }
                 },
                 Name = {
@@ -587,14 +587,14 @@ Themes.Default = {
                     Point = { "CENTER", nil, "CENTER"},
                     Texture = "Phasing",
                     TexCoord = "SUMMON",
-                    VertexColor = { 38/255, 43/255, 250/255 }
+                    VertexColor = { 0/255, 204/255, 255/255 }
                 },
                 PhaseIndicator = {
                     Size = { 32, 32 },
                     Point = { "CENTER", nil, "CENTER" },
                     Texture = "Phasing",
                     TexCoord = "PHASE",
-                    VertexColor = { 38/255, 43/255, 250/255 }
+                    VertexColor = { 0/255, 204/255, 255/255 }
                 },
                 Name = {
                     Layer = "OVERLAY",
@@ -1255,14 +1255,14 @@ Themes.Default = {
                             Point = { "BOTTOM", nil, "BOTTOM"},
                             Texture = "Phasing",
                             TexCoord = "SUMMON",
-                            VertexColor = { 38/255, 43/255, 250/255 }
+                            VertexColor = { 0/255, 204/255, 255/255 }
                         },
                         PhaseIndicator = {
                             Size = { 28, 28 },
                             Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT" },
                             Texture = "Phasing",
                             TexCoord = "PHASE",
-                            VertexColor = { 255/255, 255/255, 255/255 }
+                            VertexColor = { 0/255, 204/255, 255/255 }
                             --VertexColor = { 200/255, 200/255, 200/255 }
                         },
                         Name = {
@@ -1479,14 +1479,14 @@ Themes.Default = {
                             Point = { "BOTTOM", nil, "BOTTOM"},
                             Texture = "Phasing",
                             TexCoord = "SUMMON",
-                            VertexColor = { 38/255, 43/255, 250/255 }
+                            VertexColor = { 0/255, 204/255, 255/255 }
                         },
                         PhaseIndicator = {
                             Size = { 20, 20 },
                             Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT" },
                             Texture = "Phasing",
                             TexCoord = "PHASE",
-                            VertexColor = { 255/255, 255/255, 255/255 }
+                            VertexColor = { 0/255, 204/255, 255/255 }
                             --VertexColor = { 200/255, 200/255, 200/255 }
                         },
                         Name = {
@@ -1650,14 +1650,14 @@ Themes.Default = {
                             Point = { "CENTER", nil, "CENTER"},
                             Texture = "Phasing",
                             TexCoord = "SUMMON",
-                            VertexColor = { 38/255, 43/255, 250/255 }
+                            VertexColor = { 0/255, 204/255, 255/255 }
                         },
                         PhaseIndicator = {
                             Size = { 16, 16 },
                             Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT" },
                             Texture = "Phasing",
                             TexCoord = "PHASE",
-                            VertexColor = { 255/255, 255/255, 255/255 }
+                            VertexColor = { 0/255, 204/255, 255/255 }
                             --VertexColor = { 200/255, 200/255, 200/255 }
                         },
                         Name = {
@@ -1676,7 +1676,7 @@ Themes.Default = {
                 Header = {
                     Name = "VorkuiRaid",
                     Template = nil,
-                    Visibility = "custom [@raid6,exists] show; hide",
+                    Visibility = "custom [@raid6,exists] hide; show",
                     InitialConfigFunction = [[
                     local header = self:GetParent()
                     self:SetWidth(header:GetAttribute("initial-width"))
@@ -1834,18 +1834,18 @@ Themes.Default = {
                             VertexColor = { 30/255, 223/255, 100/255 }
                         },
                         SummonIndicator = {
-                            Size = { 20, 20 },
+                            Size = { 28, 28 },
                             Point = { "BOTTOM", nil, "BOTTOM"},
                             Texture = "Phasing",
                             TexCoord = "SUMMON",
-                            VertexColor = { 38/255, 43/255, 250/255 }
+                            VertexColor = { 0/255, 204/255, 255/255 }
                         },
                         PhaseIndicator = {
-                            Size = { 20, 20 },
-                            Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT" },
+                            Size = { 28, 28 },
+                            Point = { "BOTTOM", nil, "BOTTOM" },
                             Texture = "Phasing",
                             TexCoord = "PHASE",
-                            VertexColor = { 255/255, 255/255, 255/255 }
+                            VertexColor = { 0/255, 204/255, 255/255 }
                             --VertexColor = { 200/255, 200/255, 200/255 }
                         },
                         Name = {
@@ -1975,14 +1975,14 @@ Themes.Default = {
                             Point = { "CENTER", nil, "CENTER"},
                             Texture = "Phasing",
                             TexCoord = "SUMMON",
-                            VertexColor = { 38/255, 43/255, 250/255 }
+                            VertexColor = { 0/255, 204/255, 255/255 }
                         },
                         PhaseIndicator = {
                             Size = { 16, 16 },
                             Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT" },
                             Texture = "Phasing",
                             TexCoord = "PHASE",
-                            VertexColor = { 255/255, 255/255, 255/255 }
+                            VertexColor = { 0/255, 204/255, 255/255 }
                             --VertexColor = { 200/255, 200/255, 200/255 }
                         },
                         Name = {

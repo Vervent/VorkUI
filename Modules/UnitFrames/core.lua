@@ -1197,14 +1197,14 @@ function UnitFrames:Style(unit)
         UnitFrames.Party(self, "Compact")
     elseif (unit == "raid" ) then
         --TODO USE CONFIG LAYOUT HERE
-        UnitFrames.Raid(self, "Compact")
+        UnitFrames.Raid(self, "Minimalist")
     elseif (unit:find("raid")) or (unit:find("raidpet")) then
         if Parent:match("Party") then
             --TODO USE CONFIG LAYOUT HERE
             UnitFrames.Party(self, "Compact")
         else
             --TODO USE CONFIG LAYOUT HERE
-            UnitFrames.Raid(self, "Compact")
+            UnitFrames.Raid(self, "Minimalist")
         end
     end
 
@@ -1233,7 +1233,7 @@ function UnitFrames:CreateUnits()
             --TODO USE CONFIG LAYOUT HERE
             local raid = oUF:SpawnHeader( header.Name, header.Template, header.Visibility,
                     "oUF-initialConfigFunction", header.InitialConfigFunction,
-                    unpack( UnitFrames:GetPartyFramesAttributes( v.Config.Compact.Attributes ) )
+                    unpack( UnitFrames:GetPartyFramesAttributes( v.Config.Minimalist.Attributes ) )
             )
             raid:SetPoint("BOTTOM", UIParent, "BOTTOM", -300, 120)
 
