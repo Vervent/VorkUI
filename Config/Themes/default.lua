@@ -147,7 +147,7 @@ Themes.Default = {
                     VertexColor = { 163/255, 220/255, 255/255 }
                 },
                 RestingIndicator = {
-                    Size = { 64/3, 60/3 },
+                    Size = { 64/2, 60/2 },
                     Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT" },
                     Texture = "GlobalIcon",
                     TexCoord = "RESTING",
