@@ -2,10 +2,23 @@
 ## Author: VorkaPal@Archimonde-EU
 ## Title: |cff1700aaVorkUI|r
 ## X-oUF: VorkUF
+## SavedVariables: VorkuiDB
+## SavedVariablesPerCharacter: VorkuiCharacterDB
 
-Core\init.lua
+#Load libs
 Libs\load.xml
-Core\load.xml
+
+#Init the Engine
+Core\init.lua
+
+#Load Themes
 Config\load.xml
+
+#Load all systems
+Core\load.xml
+
+#Load all medias
 Medias\load.xml
+
+#Load all modules
 Modules\load.xml

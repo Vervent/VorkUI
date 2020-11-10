@@ -4,7 +4,7 @@ if not V.Themes then
     V.Themes = {}
 end
 
-local Themes = V["Themes"]
+local Themes = V.Themes
 
 Themes.Default = {
     UnitFrames = {
