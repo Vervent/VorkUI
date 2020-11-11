@@ -7,9 +7,9 @@ local Windowed = Display_DisplayModeDropDown:windowedmode()
 local Fullscreen = Display_DisplayModeDropDown:fullscreenmode()
 
 Engine[1] = CreateFrame("Frame")
-Engine[2] = {}
-Engine[3] = {}
-Engine[4] = {}
+Engine[2] = {} --Config
+Engine[3] = {} --Profile
+Engine[4] = {} --Global
 
 function Engine:unpack()
     return self[1], self[2], self[3], self[4]
