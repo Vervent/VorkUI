@@ -7,7 +7,7 @@ local AddOn, Plugin = ...
 local oUF = Plugin.oUF or oUF
 local Noop = function() end
 local UnitFrames = V["UnitFrames"]
-local Config = V["Themes"].Default.UnitFrames
+--local Config = V["Themes"].Default.UnitFrames
 
 local Medias = V["Medias"]
 local LibSlant = LibStub:GetLibrary("LibSlant")
@@ -1178,33 +1178,35 @@ function UnitFrames:Style(unit)
         return
     end
 
+    local style = V.Themes[ C.Theme ].UnitFrames
+
     local Parent = self:GetParent():GetName()
 
     if (unit == "player") then
-        UnitFrames.Player(self)
+        UnitFrames.Player(self, style.Player.Config)
     elseif (unit == "target") then
-        UnitFrames.Target(self)
+        UnitFrames.Target(self, style.Target.Config)
     elseif (unit == "targettarget") then
-        UnitFrames.TargetTarget(self)
+        UnitFrames.TargetTarget(self, style.TargetTarget.Config)
     elseif (unit == "pet") then
-        UnitFrames.Pet(self)
+        UnitFrames.Pet(self, style.Pet.Config)
     elseif (unit == "focus") then
-        UnitFrames.Focus(self)
+        UnitFrames.Focus(self, style.Focus.Config)
     elseif (unit == "focustarget") then
-        UnitFrames.FocusTarget(self)
+        UnitFrames.FocusTarget(self, style.FocusTarget.Config)
     elseif (unit == "party") then
         --TODO USE CONFIG LAYOUT HERE
-        UnitFrames.Party(self, "Compact")
+        UnitFrames.Party(self, style.Party.Config[C.PartyLayout].Unit )
     elseif (unit == "raid" ) then
         --TODO USE CONFIG LAYOUT HERE
-        UnitFrames.Raid(self, "Minimalist")
+        UnitFrames.Raid(self, style.Raid.Config[C.RaidLayout].Unit)
     elseif (unit:find("raid")) or (unit:find("raidpet")) then
         if Parent:match("Party") then
             --TODO USE CONFIG LAYOUT HERE
-            UnitFrames.Party(self, "Compact")
+            UnitFrames.Party(self, style.Party.Config[C.PartyLayout].Unit)
         else
             --TODO USE CONFIG LAYOUT HERE
-            UnitFrames.Raid(self, "Minimalist")
+            UnitFrames.Raid(self, style.Raid.Config[C.RaidLayout].Unit)
         end
     end
 
@@ -1213,15 +1215,19 @@ end
 
 function UnitFrames:CreateUnits()
 
+    local themeName = C.Theme
+    local Config = V.Themes[themeName].UnitFrames
+
     for k, v in pairs (Config) do
         if k == "Party" and v.Enable == true then
 
             local header = v.Config.Header
+            local layout = C.PartyLayout
 
             --TODO USE CONFIG LAYOUT HERE
             local party = oUF:SpawnHeader( header.Name, header.Template, header.Visibility,
                     "oUF-initialConfigFunction", header.InitialConfigFunction,
-                    unpack( UnitFrames:GetPartyFramesAttributes( v.Config.Compact.Attributes ) )
+                    unpack( UnitFrames:GetPartyFramesAttributes( v.Config[layout].Attributes ) )
             )
             party:SetPoint("LEFT", UIParent, "LEFT")
 
@@ -1229,11 +1235,12 @@ function UnitFrames:CreateUnits()
         elseif k == "Raid" and v.Enable == true then
 
             local header = v.Config.Header
+            local layout = C.RaidLayout
 
             --TODO USE CONFIG LAYOUT HERE
             local raid = oUF:SpawnHeader( header.Name, header.Template, header.Visibility,
                     "oUF-initialConfigFunction", header.InitialConfigFunction,
-                    unpack( UnitFrames:GetPartyFramesAttributes( v.Config.Minimalist.Attributes ) )
+                    unpack( UnitFrames:GetPartyFramesAttributes( v.Config[layout].Attributes ) )
             )
             raid:SetPoint("BOTTOM", UIParent, "BOTTOM", -300, 120)
 
@@ -1260,4 +1267,5 @@ function UnitFrames:Enable()
     oUF:SetActiveStyle("Vorkui")
 
     self:CreateUnits()
+
 end

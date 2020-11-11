@@ -1,13 +1,8 @@
-local V, C, L = select(2, ...):unpack()
+local V = select(2, ...):unpack()
 
 local UnitFrames = V["UnitFrames"]
 
---[[
-    Focus Configuration
-]]--
-local Config = V.Themes.Default.UnitFrames.Focus.Config or { }
-
-function UnitFrames:Focus()
+function UnitFrames:Focus(Config)
 
     self:RegisterForClicks("AnyUp")
     self:SetScript("OnEnter", UnitFrame_OnEnter)
