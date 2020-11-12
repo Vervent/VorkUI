@@ -15,6 +15,7 @@ local AddOn = ...
 local V, C = select(2, ...):unpack()
 
 local Profiles = CreateFrame("Frame")
+local Install = V.Install
 
 local db
 
@@ -37,10 +38,12 @@ end
 --]]
 local function InitializeProfile(self)
 
+    Install:RegisterOptions()
+
     if not VorkuiDB then
         VorkuiDB = { }
         -- TODO Launch INSTALL SYSTEM
-        V.Install:Launch(VorkuiDB)
+        Install:Launch(VorkuiDB)
     else
         -- TODO PUSH CHANGES IN RIGHT THEMES BEFORE UF GENERATION
         ApplyTheme(VorkuiDB)
