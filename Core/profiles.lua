@@ -11,8 +11,10 @@
 ---     - adapt usertweak
 ---
 
-local AddOn = ...
+local AddOn, Plugin = ...
 local V, C = select(2, ...):unpack()
+
+local LibGUI = Plugin.LibGUI
 
 local Profiles = CreateFrame("Frame")
 local Install = V.Install
@@ -31,6 +33,17 @@ local function ApplyTheme(db)
         end
     end
 
+    if LibGUI then
+        local widget = LibGUI:AddWidget(nil, 'frame', {
+            name = "VorkuiConfig",
+            size = {500, 500},
+            point = {"CENTER"},
+        })
+        local child = LibGUI:AddWidget(widget, 'frame', nil)
+
+        --widget.frame:Show()
+        Install.ConfigUI = widget
+    end
 end
 
 --[[

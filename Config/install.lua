@@ -1,4 +1,4 @@
-local AddOn = ...
+local AddOn, Plugin = ...
 local V = select(2, ...):unpack()
 
 local Install = CreateFrame("Frame")
@@ -19,4 +19,15 @@ end
 function Install:Launch(db)
     GenerateInstallFrame(self, db)
 end
+
+function Install:OnEvent(event, ...)
+    if event == "PLAYER_LOGIN" then
+        print ("PLAYER_LOGIN", Install.ConfigUI.frame, Install.ConfigUI.frame:GetObjectType())
+        Install.ConfigUI.frame:Show()
+    end
+end
+
+Install:RegisterEvent('PLAYER_LOGIN')
+Install:SetScript('OnEvent', Install.OnEvent)
+
 V.Install = Install

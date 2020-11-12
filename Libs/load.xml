@@ -21,5 +21,8 @@
 	<!-- LSM -->
 	<Include file='LibSharedMedia\lib.xml'/>
 
+	<!-- LibGUI -->
+	<Include file='LibGUI\LibGUI.xml'/>
+
 
 </Ui>
