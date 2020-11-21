@@ -2,13 +2,8 @@ local AddOn, Plugin = ...
 
 local LibGUI = {}
 
---local LibGUI = LibStub:NewLibrary("LibGUI", 1)
---
---if not LibGUI then
---    return
---end
-
-LibGUI.CreateWidget = {}
+local widgets = {}
+local containers = {}
 
 local debug = true
 local colors = {
@@ -18,182 +13,96 @@ local colors = {
     white = "FFFFFFFF"
 }
 
-local function Print(self, msg, color)
-    print("|c"..(color or colors.white), msg, "|r")
-end
-
-local function GetData(self)
-    return self.data
-end
-
-local function AddChild(self, child)
-    tinsert(self.widgets, child)
-    if debug then
-        self:Print("--- ADD CHILD ---", colors.green)
-        self:Print("pos: "..#self.widgets)
-        self:Print(child)
-    end
-end
-
-local function Release(self)
-    if debug then
-        self:Print("--- RELEASE " .. self .. " ---", colors.red)
+function LibGUI:RegisterContainer(t, createFct, enableFct, disableFct, bindFct)
+    if containers[t] then
+        print ("A CONTAINER WITH THIS TYPE EXISTS")
+        return
     end
 
-    --TODO release the widget, clean all data, unbind all callback
-    for i, v in ipairs(self.widgets) do
-        if debug then
-            self:Print("--- CHILD " .. i .. " ---", colors.blue)
-        end
-        v:Release()
-    end
-
-    for k, v in pairs(self.callbacks) do
-        if debug then
-            self:Print("--- UNBIND Callback " .. k .. " ---", colors.blue)
-        end
-        v = Noop
-    end
-
-    for k,v in pairs(self.data) do
-        if debug then
-            self:Print("--- Clean Data " .. k .. " ---", colors.blue)
-        end
-        if type(v) == 'table' then
-            wipe(v)
-        end
-        v = nil
-    end
-end
-
-local function RemoveChild(self, table)
-    --TODO search child widget from key ID, release it then remove from widget table
-    if not table then
-        return false
-    end
-
-    for i, v in ipairs(self.widgets) do
-        if v == table then
-            v:Release()
-            tremove(self.widgets, i)
-            return true
-        end
-    end
-
-    return false
-end
-
-local ElementMetatable = {
-    --[[
-        DATA
-    --]]
-    widgets = {},
-    callbacks = {},
-    data = {},
-    frame = nil,
-
-    Print = function(self, msg, color)
-        print("|c"..(color or colors.white), msg, "|r")
-    end,
-
-    GetData = function(self)
-        return self.data
-    end,
-
-    SetData = nil,
-
-    AddChild = function (self, child)
-        tinsert(self.widgets, child)
-        if debug then
-            self:Print("--- ADD CHILD ---", colors.green)
-            self:Print("pos: "..#self.widgets)
-            self:Print(child)
-        end
-    end,
-
-    Release = function (self)
-        if debug then
-            self:Print("--- RELEASE " .. self .. " ---", colors.red)
-        end
-
-        --TODO release the widget, clean all data, unbind all callback
-        for i, v in ipairs(self.widgets) do
-            if debug then
-                self:Print("--- CHILD " .. i .. " ---", colors.blue)
-            end
-            v:Release()
-        end
-
-        for k, v in pairs(self.callbacks) do
-            if debug then
-                self:Print("--- UNBIND Callback " .. k .. " ---", colors.blue)
-            end
-            v = Noop
-        end
-
-        for k,v in pairs(self.data) do
-            if debug then
-                self:Print("--- Clean Data " .. k .. " ---", colors.blue)
-            end
-            if type(v) == 'table' then
-                wipe(v)
-            end
-            v = nil
-        end
-    end,
-
-    RemoveChild = function (self, table)
-        --TODO search child widget from key ID, release it then remove from widget table
-        if not table then
-            return false
-        end
-
-        for i, v in ipairs(self.widgets) do
-            if v == table then
-                v:Release()
-                tremove(self.widgets, i)
-                return true
-            end
-        end
-
-        return false
-    end
-}
-
-function LibGUI:AddWidget(parent, type, data)
-
-    local widget = {
-        widgets = {},
-        callbacks = {},
-        data = data,
-        frame = nil,
-        RemoveChild = RemoveChild,
-        Release = Release,
-        AddChild = AddChild,
-        GetData = GetData,
-        Print = Print,
+    containers[t] = {
+        Create = createFct or function() end,
+        Enable = enableFct or function() end,
+        Disable = disableFct or function() end,
+        Bind = bindFct or function() end
     }
+end
 
-    --widget.RemoveChild = RemoveChild
-    --widget.Release = Release
-    --widget.AddChild = AddChild
-    --widget.GetData = GetData
-    --widget.Print = Print
-
-    --setmetatable(widget, { __index = ElementMetatable })
-
-    self.CreateWidget[type](widget, parent, data)
-
-    if not parent then
-        -- NEW WIDGET
-        return widget
-    else
-        if widget then
-            parent:AddChild(widget)
-        end
+function LibGUI:RegisterWidget(t, createFct, enableFct, disableFct, updateFct)
+    if widgets[t] then
+        print ("A WIDGET WITH THIS TYPE EXISTS")
+        return
     end
 
-    return widget
+    widgets[t] = {
+        Create = createFct or function() end,
+        Enable = enableFct or function() end,
+        Disable = disableFct or function() end,
+        Update = updateFct or function() end
+    }
+end
+
+local function isValidWidget(w)
+    return w and widgets[w.type]
+end
+
+local function isValidContainer(c)
+    return c and containers[c.type]
+end
+
+--[[
+    This function bind a script handler to the container
+        container to handle the script
+        event the script event to handle ( 'OnEvent', 'OnClick', ...), take care to bind a supported script
+        fct the callback to execute
+]]--
+function LibGUI:BindScript(container, event, fct)
+    if isValidContainer(container) and containers[container.type].Bind then
+        containers[container.type].Bind(container, event, fct)
+    end
+end
+
+--[[
+    This function create a new container
+        t type of container
+        parent the parent of the container. The parent can be UIParent, nil, or Another Frame. If
+parent is a frame created by LibGUI, the system will handle it and add the new container as a child of parent
+        name the name of the frame
+        ... contains data used by the container for initiatlisation. For more information look directly on
+the right container code
+]]--
+function LibGUI:NewContainer(t, parent, name, ...)
+    if containers[t] then
+
+        local frame = containers[t].Create(parent, name, ...)
+        frame.type = t
+        frame:SetScript("OnShow", containers[t].Enable)
+        frame:SetScript("OnHide", containers[t].Disable)
+        frame:Hide()
+
+        if isValidContainer(parent) then
+            tinsert(parent.Childs, frame)
+        end
+
+        return frame
+    end
+
+    return nil
+end
+
+function LibGUI:NewWidget(t, container, point, name, layer, ...)
+    if widgets[t] then
+
+        local w = widgets[t].Create(container, point, name, layer, ...)
+        w.type = t
+
+        if isValidContainer(container) then
+            tinsert(container.Widgets, w)
+        end
+
+        return w
+    end
+
+    return nil
 end
 
 Plugin.LibGUI = LibGUI

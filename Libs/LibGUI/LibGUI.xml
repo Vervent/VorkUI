@@ -1,5 +1,8 @@
 <Ui xmlns='http://www.blizzard.com/wow/ui/'>
 	<Script file='LibGUI.lua'/>
 
-	<Script file='Widgets\frame.lua'/>
+	<Script file='Containers\empty.lua'/>
+	<Script file='Containers\frame.lua'/>
+
+	<Script file='Widgets\label.lua'/>
 </Ui>
