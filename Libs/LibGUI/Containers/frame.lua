@@ -8,8 +8,6 @@
     .Widgets as table of widgets
     .Events as table of event binded
 
-    Skin Data :
-    .bg as texture if not BackdropTemplate
 ]]--
 local _, Plugin = ...
 
@@ -18,20 +16,6 @@ local LibGUI = Plugin.LibGUI
 local function create(parent, name, size, point, template)
 
     local frame = CreateFrame('Frame', name, parent, template)
-
-    if template ~= 'BackdropTemplate' then
-        frame.bg = frame:CreateTexture(nil, 'BACKGROUND')
-        frame.bg:SetAllPoints()
-        frame.bg:SetColorTexture(0, 0, 0, 0.25)
-    else
-        frame:SetBackdrop({
-            bgFile = "Interface/Tooltips/UI-Tooltip-Background",
-            edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-            edgeSize = 16,
-            insets = { left = 4, right = 4, top = 4, bottom = 4 },
-        })
-        frame:SetBackdropColor(0, 0, 1, 1)
-    end
 
     frame.Childs = {}
     frame.Widgets = {}
@@ -53,7 +37,6 @@ local function enable(self)
     end
 
     for e, f in pairs(self.Scripts) do
-        print (e, f)
         self:SetScript(e, f)
     end
 
@@ -85,7 +68,6 @@ local function disable(self)
 end
 
 local function bindScript(self, event, fct)
-    print (self.type, event, fct)
 
     if self.type ~= 'frame' then
         return

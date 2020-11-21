@@ -58,6 +58,8 @@ end
 function LibGUI:BindScript(container, event, fct)
     if isValidContainer(container) and containers[container.type].Bind then
         containers[container.type].Bind(container, event, fct)
+    else
+        print ("INVALID CONTAINER, CANNOT BIND SCRIPT ", event)
     end
 end
 
@@ -89,13 +91,13 @@ function LibGUI:NewContainer(t, parent, name, ...)
     return nil
 end
 
-function LibGUI:NewWidget(t, container, point, name, layer, ...)
+function LibGUI:NewWidget(t, container, name, point, ...)
     if widgets[t] then
 
-        local w = widgets[t].Create(container, point, name, layer, ...)
+        local w = widgets[t].Create(container, name, point,...)
         w.type = t
 
-        if isValidContainer(container) then
+        if isValidContainer(container) and containers.Widgets then
             tinsert(container.Widgets, w)
         end
 

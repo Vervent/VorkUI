@@ -6,6 +6,11 @@
     .text
 
     Widget Methods :
+    Update (self, dataTable)
+        dataTable as table to update internal system
+            layer
+            text
+            font
     ChangeText (self, text)
         text as new text to show
     ChangeFont (self, font)
@@ -19,6 +24,14 @@ local LibGUI = Plugin.LibGUI
 
 local Methods = {
 
+    --TODO UPDATE THIS FUNC FOR MORE DATA
+    Update = function (self, dataTable)
+        local layer, font, text = unpack(dataTable)
+        self:SetDrawLayer(layer or 'ARTWORK')
+        self:ChangeFont(font)
+        self:ChangeText(text or '')
+    end,
+
     ChangeText = function(self, text)
         self.text = text
         self:SetText(text)
@@ -31,6 +44,8 @@ local Methods = {
             else
                 self:SetFont(unpack(font))
             end
+        elseif type(font) == 'string' then
+            self:SetFontObject(font)
         end
     end,
 
@@ -39,34 +54,23 @@ local Methods = {
     end
 }
 
-local function create(container, point, name, layer, ...)
+local function create(container, name, point, size, layer, ...)
    local label = container:CreateFontString(name, layer, ...)
 
     if point then
         label:SetPoint( unpack(point) )
     end
 
-    label:SetSize(200, 20)
+    if size then
+        label:SetSize( unpack(size) )
+    end
+
     label.text = ""
 
     --push our internal Methods in the metatable, if it taints, need to wrap this
     setmetatable(label, { __index = setmetatable(Methods, getmetatable(label))})
 
     return label
-end
-
-local function update(self, text, font)
-
-    if self.type ~= 'label' then
-        return
-    end
-
-    if font and self:GetFont() ~= font[1] then
-        self.SetFont(unpack(font))
-    end
-
-    self.SetText(text)
-
 end
 
 local function enable(self)
@@ -77,4 +81,4 @@ local function disable(self)
 
 end
 
-LibGUI:RegisterWidget('label', create, enable, disable, update )
+LibGUI:RegisterWidget('label', create, enable, disable )

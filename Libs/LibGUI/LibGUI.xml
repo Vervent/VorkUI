@@ -2,7 +2,10 @@
 	<Script file='LibGUI.lua'/>
 
 	<Script file='Containers\empty.lua'/>
+	<Script file='Containers\scrolluniformlist.lua'/>
 	<Script file='Containers\frame.lua'/>
 
+	<Script file='Widgets\button.lua'/>
 	<Script file='Widgets\label.lua'/>
+	<Script file='Widgets\icon.lua'/>
 </Ui>
