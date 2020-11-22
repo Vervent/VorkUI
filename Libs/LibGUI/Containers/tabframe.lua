@@ -48,7 +48,7 @@ local Methods = {
             header.Widgets[1]:SetPoint("TOPLEFT", 2, -2)
 
             --Update container height to not overflaw frame
-            self.Childs[2]:SetHeight(self.Childs[2]:GetHeight() - (newHeight - maxHeight) )
+            self.Childs[2]:SetHeight(self.Childs[2]:GetHeight() - (newHeight - maxHeight))
         end
 
     end,
@@ -88,17 +88,15 @@ local Methods = {
         )
         pageContent:SetAllPoints()
 
-        pageHeader:Update(
-                {
-                    pageName,
-                    function()
-                        if self.currentPage then
-                            self.currentPage:Hide()
-                        end
-                        self.currentPage = pageContent
-                        pageContent:Show()
+        pageHeader:Bind('OnClick',
+                function()
+                    if self.currentPage then
+                        self.currentPage:Hide()
                     end
-                })
+                    self.currentPage = pageContent
+                    pageContent:Show()
+                end
+        )
 
         if self.currentPage == nil then
             self.currentPage = pageContent

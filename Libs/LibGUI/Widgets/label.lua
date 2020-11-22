@@ -55,6 +55,7 @@ local Methods = {
 }
 
 local function create(container, name, point, size, layer, ...)
+
    local label = container:CreateFontString(name, layer, ...)
 
     if point then

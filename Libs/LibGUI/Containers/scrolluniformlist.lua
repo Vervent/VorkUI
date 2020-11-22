@@ -17,13 +17,13 @@ local LibGUI = Plugin.LibGUI
 local function scrollUpdate(self)
     local offset = FauxScrollFrame_GetOffset(self)
 
-    if (#self.ChildData > #self.Childs) then
-        FauxScrollFrame_Update(self, #self.ChildData, #self.Childs, self.ChildHeight)
+    if (#self.WidgetData > #self.Widgets) then
+        FauxScrollFrame_Update(self, #self.WidgetData, #self.Widgets, self.ChildHeight)
     end
 
-    for line = 1, #self.Childs do
-        self.Childs[line]:Update(self.ChildData[line + offset])
-        self.Childs[line]:Show()
+    for line = 1, #self.Widgets do
+        self.Widgets[line]:Update(self.WidgetData[line + offset])
+        self.Widgets[line]:Show()
     end
 end
 
@@ -32,48 +32,49 @@ local function onVerticalScroll(self, offset)
 end
 
 local Methods = {
-    AddChild = function(self, type, subtype, size, childData, ...)
-        if #self.Childs > 0 and self.ChildType ~= type and self.ChildSubType ~= subtype then
+    AddWidget = function(self, type, subtype, size, widgetData, ...)
+        if #self.Widgets > 0 and self.WidgetType ~= type and self.WidgetSubType ~= subtype then
             print("YOU CAN'T ADD NON UNIFORM CHILD IN THE 'scrollUniformList'")
             return
         end
-        self.ChildType = type
-        self.ChildSubType = subtype
-        if size[1] > self.ChildWidth then
-            self.ChildWidth = size[1]
+        self.WidgetType = type
+        self.WidgetSubType = subtype
+        if size[1] > self.WidgetWidth then
+            self.WidgetWidth = size[1]
         end
-        if size[2] > self.ChildHeight then
-            self.ChildHeight = size[2]
+        if size[2] > self.WidgetHeight then
+            self.WidgetHeight = size[2]
         end
-        tinsert(self.ChildData, childData)
 
-        self.Others = ...
+        tinsert(self.WidgetData, widgetData)
+
+        self.Data = ...
     end,
 
-    RemoveChild = function(self, index)
+    RemoveWidget = function(self, index)
         tremove(self.ChildData, index)
     end,
 
-    CreateChilds = function(self)
-        local childHeight = self.ChildHeight
-        local childCount = math.min(math.floor(self:GetHeight() / childHeight + 0.5) - 1, #self.ChildData)
-        local t = self.ChildType
-        local name = (self:GetName() or "") .. self.ChildSubType
+    CreateWidgets = function(self)
+        local wHeight = self.WidgetHeight
+        local wCount = math.min(math.floor(self:GetHeight() / wHeight + 0.5) - 1, #self.WidgetData)
+        local t = self.WidgetType
+        local name = (self:GetName() or '') .. self.WidgetSubType
 
         local w
-        for i = 1, childCount do
+        for i = 1, wCount do
             if t == 'widget' then
                 w = LibGUI:NewWidget(
-                        self.ChildSubType,
+                        self.WidgetSubType,
                         self,
                         name .. i,
-                        { "TOPLEFT", 0, -i * childHeight },
-                        {self.ChildWidth, self.ChildHeight},
-                        self.Others
+                        { "TOPLEFT", 0, -i * wHeight },
+                        {self.WidgetWidth, self.WidgetHeight},
+                        self.Data
                 )
-                tinsert(self.Childs, w)
             elseif t == 'container' then
-                LibGUI:NewContainer(self.ChildSubType, self, name .. i, {self.ChildWidth, childHeight}, { "TOPLEFT", 0, -i * childHeight }, self.Others)
+                print ("scrolluniformlist.lua want to add container as widget")
+                --LibGUI:NewContainer(self.WidgetSubType, self, name .. i, { self.WidgetWidth, wHeight }, { "TOPLEFT", 0, -i * wHeight }, self.Data)
             end
         end
     end
@@ -82,17 +83,17 @@ local Methods = {
 local function create(parent, name, size, point)
 
     local scrollframe = CreateFrame('ScrollFrame', name, parent, 'FauxScrollFrameTemplate')
-    scrollframe.ChildData = {}
-    scrollframe.Childs = {}
-    scrollframe.ChildType = ''
-    scrollframe.ChildSubType = ''
-    scrollframe.ChildWidth = 0
-    scrollframe.ChildHeight = 0
+    scrollframe.WidgetData = {}
+    scrollframe.Widgets = {}
+    scrollframe.WidgetType = ''
+    scrollframe.WidgetSubType = ''
+    scrollframe.WidgetWidth = 0
+    scrollframe.WidgetHeight = 0
 
     scrollframe.Scripts = {}
     scrollframe.Scripts['OnVerticalScroll'] = onVerticalScroll
 
-    scrollframe.enableAllChilds = true
+    scrollframe.enableAllWidgets = true
 
     if point then
         scrollframe:SetPoint(unpack(point))
@@ -124,8 +125,8 @@ local function enable(self)
         self:SetScript(e, f)
     end
 
-    if self.enableAllChilds then
-        for _, c in ipairs(self.Childs) do
+    if self.enableAllWidgets then
+        for _, c in ipairs(self.Widgets) do
             c:Show()
         end
     end
@@ -144,7 +145,7 @@ local function disable(self)
         end)
     end
 
-    for i, c in pairs(self.Childs) do
+    for i, c in ipairs(self.Widgets) do
         c:Hide()
     end
 end
