@@ -36,9 +36,18 @@ local Methods = {
         self:SetScript('OnClick', onClick)
     end,
 
+    UpdateSize = function(self)
+        local xPadding = 10
+        local yPadding = 4
+        self:SetSize(self:GetFontString():GetWrappedWidth() + xPadding*2, self:GetFontString():GetStringHeight() + yPadding*2)
+    end,
+
     ChangeText = function(self, text)
         self.text = text
         self:SetText(text)
+        if self.autoResize then
+            self:UpdateSize()
+        end
     end,
 
     ChangeTexture = function(self, normalTexture, disabledTexture, highlightTexture, pushedTexture)
@@ -102,6 +111,7 @@ local function create(parent, name, point, size, template)
     button:SetScript("OnShow", enable)
     button:SetScript("OnHide", disable)
     button.Scripts = {}
+    button.autoResize = false
 
     if point then
         button:SetPoint(unpack(point))

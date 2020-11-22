@@ -17,7 +17,36 @@ local Methods = {
 
     UpdateHeaderLayout = function(self)
         local header = self.Childs[1]
+        local maxWidth, maxHeight = header:GetWidth(), header:GetHeight()
 
+        local width = 0
+        local height = 0
+        local firstItem = 1
+        local lineCount = 1
+        local newWidth = 0
+        local newHeight = 0
+        for i, w in ipairs(header.Widgets) do
+            height = max(height, w:GetHeight())
+            newWidth = width + w:GetWidth()
+            if newWidth > maxWidth then
+                --cut to index i to end
+                w:ClearAllPoints()
+                w:SetPoint("TOPLEFT", header.Widgets[firstItem], "BOTTOMLEFT", 0, -2)
+                firstItem = i
+                lineCount = lineCount + 1
+                width = newWidth - width
+            else
+                width = newWidth
+            end
+        end
+
+        newHeight = height * lineCount + 4
+        if newHeight > maxHeight then
+            header:SetHeight(newHeight)
+            header.Widgets[1]:ClearAllPoints()
+            header.Widgets[1]:SetPoint("TOPLEFT", 2, -2)
+            self.Childs[2]:SetHeight(self.Childs[2]:GetHeight() - (newHeight - maxHeight) )
+        end
 
     end,
 
@@ -30,14 +59,14 @@ local Methods = {
         return LibGUI:NewWidget(t, page, name, point, ...)
     end,
 
-    AddEmptyPage = function(self, pageName)
+    AddEmptyPage = function(self, pageName, buttonSize)
         local header = self.Childs[1]
         local container = self.Childs[2]
 
         local anchor
 
         if #header.Widgets > 0 then
-            anchor = { 'LEFT', header.Widgets[#header.Widgets], 'RIGHT' }
+            anchor = { 'LEFT', header.Widgets[#header.Widgets], 'RIGHT', 2, 0 }
         else
             anchor = { 'LEFT', header, 'LEFT' }
         end
@@ -46,7 +75,7 @@ local Methods = {
                 header,
                 header:GetName() .. pageName,
                 anchor,
-                nil,
+                buttonSize,
                 'UIPanelButtonTemplate'
         )
 
@@ -72,6 +101,8 @@ local Methods = {
             self.currentPage = pageContent
         end
 
+        self:UpdateHeaderLayout()
+
         return pageHeader, pageContent
     end,
 
@@ -94,12 +125,12 @@ local function create(parent, name, size, point, headerTemplate, containerTempla
     if size then
         local width, height = unpack(size)
         frame:SetSize(width, height)
-        header:SetSize(width, 50)
-        container:SetSize(width, height - 50)
+        header:SetSize(width - 10, 20)
+        container:SetSize(width - 10, height - 20)
     end
 
-    header:SetPoint("TOPLEFT", frame, "TOPLEFT")
-    container:SetPoint("TOPLEFT", header, "BOTTOMLEFT")
+    header:SetPoint("TOPLEFT", frame, "TOPLEFT", 5, 2)
+    container:SetPoint("TOPLEFT", header, "BOTTOMLEFT", 0, -10)
 
     --push our internal Methods in the metatable, if it taints, need to wrap this
     setmetatable(frame, { __index = setmetatable(Methods, getmetatable(frame)) })
