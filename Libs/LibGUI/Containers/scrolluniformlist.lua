@@ -92,6 +92,8 @@ local function create(parent, name, size, point)
     scrollframe.Scripts = {}
     scrollframe.Scripts['OnVerticalScroll'] = onVerticalScroll
 
+    scrollframe.enableAllChilds = true
+
     if point then
         scrollframe:SetPoint(unpack(point))
     end
@@ -122,8 +124,10 @@ local function enable(self)
         self:SetScript(e, f)
     end
 
-    for _, c in ipairs(self.Childs) do
-        c:Show()
+    if self.enableAllChilds then
+        for _, c in ipairs(self.Childs) do
+            c:Show()
+        end
     end
 
     scrollUpdate(self)

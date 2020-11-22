@@ -81,7 +81,7 @@ function LibGUI:NewContainer(t, parent, name, ...)
         frame:SetScript("OnHide", containers[t].Disable)
         frame:Hide()
 
-        if isValidContainer(parent) then
+        if isValidContainer(parent) and parent.Childs then
             tinsert(parent.Childs, frame)
         end
 
@@ -93,11 +93,10 @@ end
 
 function LibGUI:NewWidget(t, container, name, point, ...)
     if widgets[t] then
-
         local w = widgets[t].Create(container, name, point,...)
         w.type = t
 
-        if isValidContainer(container) and containers.Widgets then
+        if isValidContainer(container) and container.Widgets then
             tinsert(container.Widgets, w)
         end
 

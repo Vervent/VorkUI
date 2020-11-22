@@ -15,6 +15,7 @@ local function create(parent, name, size, point)
     local frame = CreateFrame('Frame', name, parent)
     frame.Childs = {}
     frame.Widgets = {}
+    frame.enableAllChilds = true
 
     if point then
         frame:SetPoint(unpack(point))
@@ -30,12 +31,14 @@ local function enable(self)
         return
     end
 
-    for _, c in ipairs(self.Widgets) do
-        c:Show()
+    for _, w in ipairs(self.Widgets) do
+        w:Show()
     end
 
-    for _, c in ipairs(self.Childs) do
-        c:Show()
+    if self.enableAllChilds then
+        for _, c in ipairs(self.Childs) do
+            c:Show()
+        end
     end
 end
 

@@ -25,6 +25,10 @@ local LibGUI = Plugin.LibGUI
 
 local Methods = {
 
+    Bind = function(self, event, fct)
+        self:SetScript(event, fct)
+    end,
+
     --TODO UPDATE THIS FUNC FOR MORE DATA
     Update = function (self, dataTable)
         local text, onClick = unpack(dataTable)

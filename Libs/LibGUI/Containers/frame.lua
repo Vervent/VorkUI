@@ -20,6 +20,7 @@ local function create(parent, name, size, point, template)
     frame.Childs = {}
     frame.Widgets = {}
     frame.Scripts = {}
+    frame.enableAllChilds = true
 
     if point then
         frame:SetPoint(unpack(point))
@@ -40,12 +41,14 @@ local function enable(self)
         self:SetScript(e, f)
     end
 
-    for _, c in ipairs(self.Widgets) do
-        c:Show()
+    for _, w in ipairs(self.Widgets) do
+        w:Show()
     end
 
-    for _, c in ipairs(self.Childs) do
-        c:Show()
+    if self.enableAllChilds then
+        for _, c in ipairs(self.Childs) do
+            c:Show()
+        end
     end
 end
 
