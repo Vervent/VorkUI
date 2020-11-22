@@ -1,29 +1,111 @@
 --[[
-    This widget is a classic button
+    This widget is a dropdownmenu
 
     Widget Data :
     .type as internal kind of frame
-    .text
+    .Data as menu descriptor
 
     Widget Methods :
-    Update (self, dataTable)
-        dataTable as table to update internal system
-            text
-            event handler
-            texture
-            font
-    ChangeText (self, text)
-        text as new text to show
-    ChangeFont (self, normalFont, disabledFont, hightlightFont)
-        font as table. Can be an existing FontObject or new Font
-    ChangeFontColor (self, color)
-        color as colortable
+    AddItem (self, data)
+        data as entry of the menu
+    AddNestedItem (self, parentKey, data)
+        parentKey as table to iterate
+            {
+                level of nested add,
+                index,
+                menuList = {
+                    index,
+                    menuList = {...}
+                }
+            }
+        data as entry of the menu
+    RemoveItem (self,index)
+        remove Data from index
+    RemoveNestedItem (self, parentKey, index)
+        parentKey as table to iterate
+            {
+                level of nested add,
+                index,
+                menuList = {
+                    index,
+                    menuList = {...}
+                }
+            }
+        index of the nested item to remove
 ]]--
 local _, Plugin = ...
 
 local LibGUI = Plugin.LibGUI
 
 local Methods = {
+
+    AddItem = function(self, data)
+        if data then
+            tinsert(self.Data, data)
+        end
+    end,
+
+    AddNestedItem = function(self, parentKey, data)
+
+        if parentKey == nil then
+            return
+        end
+
+        --iterate through self.Data to find good parent
+        local level = 1
+        local iterator = parentKey
+        local table = self.Data
+        while level < parentKey.level do
+            if table[iterator.index] then
+                table = self.Data[interator.index]
+                iterator = iterator.menuList
+                if iterator == nil then
+                    return
+                end
+                level = level + 1
+            end
+        end
+
+        if table == nil then
+            return
+        else
+            tinsert(table, data)
+        end
+    end,
+
+    RemoveItem = function (self, index)
+        if index > 0 and index < #self.Data then
+            tremove(self.Data, index)
+        end
+    end,
+
+    RemoveNestedItem = function(self, parentKey, index)
+
+        if parentKey == nil then
+            return
+        end
+
+        --iterate through self.Data to find good parent
+        local level = 1
+        local iterator = parentKey
+        local table = self.Data
+        while level < parentKey.level do
+            if table[iterator.index] then
+                table = self.Data[interator.index]
+                iterator = iterator.menuList
+                if iterator == nil then
+                    return
+                end
+                level = level + 1
+            end
+        end
+
+        if table == nil then
+            return
+        else
+            tremove(table, index)
+        end
+    end,
 
     --TODO UPDATE THIS FUNC FOR MORE DATA
     Update = function(self, dataTable)
@@ -71,37 +153,6 @@ local function initialize(self, level, menuList)
     end
 
     local info = UIDropDownMenu_CreateInfo()
-
-    --local data = {
-    --    "option1",
-    --    "option2",
-    --    "option3",
-    --    "option4",
-    --    "option5",
-    --}
-    --
-    --for _,v in ipairs(data) do
-    --    info.text = v
-    --    info.checked = self.value == v
-    --    info.func = setValue
-    --    UIDropDownMenu_AddButton(info)
-    --end
-
-    --local data = {
-    --    { text = "option1" },
-    --    { text = "option2" },
-    --    { text = "option3" },
-    --    { text = "option4" },
-    --    { text = "option5" },
-    --    { text = "option6",
-    --      menuList = {
-    --          text = "option6 suboption",
-    --      }
-    --    },
-    --}
-
-
-
     local data = menuList or self.Data
 
     for i, v in ipairs(data) do
