@@ -118,9 +118,6 @@ local function enable(self)
         return
     end
 
-    for e, f in pairs(self.Scripts) do
-        print(e, f)
-    end
 end
 
 local function disable(self)
@@ -136,10 +133,6 @@ local function disable(self)
 end
 
 local function setValue(button, arg1, arg2, checked)
-
-    if checked then
-        print(button:GetText())
-    end
 
     local dropdown = button:GetParent().dropdown
     dropdown.value = button:GetText()
@@ -188,8 +181,6 @@ local function create(parent, name, point, size, data)
     if size then
         UIDropDownMenu_SetWidth(menu, size[1])
     end
-
-    print(menu:GetName())
 
     menu.value = "Choose option"
 

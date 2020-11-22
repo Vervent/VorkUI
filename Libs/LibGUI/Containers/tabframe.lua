@@ -24,7 +24,7 @@ local Methods = {
         local firstItem = 1
         local lineCount = 1
         local newWidth = 0
-        local newHeight = 0
+
         for i, w in ipairs(header.Widgets) do
             height = max(height, w:GetHeight())
             newWidth = width + w:GetWidth()
@@ -40,11 +40,14 @@ local Methods = {
             end
         end
 
-        newHeight = height * lineCount + 4
+        local newHeight = height * lineCount + 4
         if newHeight > maxHeight then
             header:SetHeight(newHeight)
+            --We change header height, so we need to replace first item as every other button are anchored on it
             header.Widgets[1]:ClearAllPoints()
             header.Widgets[1]:SetPoint("TOPLEFT", 2, -2)
+
+            --Update container height to not overflaw frame
             self.Childs[2]:SetHeight(self.Childs[2]:GetHeight() - (newHeight - maxHeight) )
         end
 
