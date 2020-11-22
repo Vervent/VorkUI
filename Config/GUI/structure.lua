@@ -44,17 +44,20 @@ local mainPage = {
         {
             type = 'label',
             params = {
-                size = { 400, 25 },
+                size = { 400, 50 },
                 point = { 'BOTTOM', 0, 10 },
             },
             data = {
                 'OVERLAY',
                 'Game15Font',
-                'Thank you everyone, special thanks to Keivamp for his help :)'
+                [[Thank you everyone, special thanks to Keivamp for his help and All Nasa's Family :)]]
             },
         }
     },
 }
+
+
+
 
 local modulePage = {
     params = {
@@ -74,9 +77,23 @@ local modulePage = {
                 'GameFontNormal',
                 'Active or Disable Modules'
             },
+        },
+        {
+            type = 'checkbox',
+            params = {
+                name = 'CHECKBOX',
+                --size = { 25, 25 },
+                point = {'CENTER'},
+                template = 'UICheckButtonTemplate',
+            },
+            data = {
+                'Unit Frame',
+            },
         }
     },
 }
+
+--UICheckButtonTemplate
 
 local unitFramePage = {
     params = {
@@ -212,7 +229,7 @@ local function parseScrollUniformList(parent, scrollconfig)
                 w.subtype,
                 w.params.size,
                 w.data,
-                w.params.template
+                w.params.layer or w.params.template
         )
     end
     scroll:CreateWidgets()
@@ -226,7 +243,7 @@ local function parsePage(tabParent, page)
 
     if page.widgets then
         for _, w in ipairs(page.widgets) do
-            item = tabParent:AddWidgetToPage(content, w.type, w.params.name, w.params.point, w.params.size)
+            item = tabParent:AddWidgetToPage(content, w.type, w.params.name, w.params.point, w.params.size, w.params.layer or w.params.template)
             if w.data then
                 item:Update(w.data)
             end
@@ -325,5 +342,9 @@ end
     UIPanelScrollFrameTemplate
     UIPanelScrollFrameCodeTemplate
 
+    CHECKBOX
+    UIRadioButtonTemplate
+    UICheckButtonTemplate
+    ResizeCheckButtonTemplate
 
 ]]--
