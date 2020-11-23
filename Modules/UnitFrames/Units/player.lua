@@ -87,6 +87,24 @@ function UnitFrames:Player(Config)
     PowerPrediction:SetBlendMode("ADD")
 
     --[[
+        BUFF/DEBUFF
+    --]]
+    local Buffs = CreateFrame('Frame', nil, Frame)
+    Buffs:SetPoint('BOTTOMLEFT', Frame, 'BOTTOMRIGHT', 2, 0)
+    Buffs:SetSize(20 * 2, 3 * 20)
+    Buffs.size = 18
+    Buffs.onlyShowPlayer = true
+    Buffs.num = 6
+    Buffs.spacing = 2
+
+    local Debuffs = CreateFrame('Frame', nil, Frame)
+    Debuffs:SetPoint('BOTTOMLEFT', Frame, 'TOPLEFT', 0, 2)
+    Debuffs:SetSize(50 * 6, 1 * 50)
+    Debuffs.size = 48
+    Debuffs.num = 6
+    Debuffs.spacing = 2
+
+    --[[
         FONT
     --]]
     if Config.Name then
@@ -211,7 +229,11 @@ function UnitFrames:Player(Config)
 
     --affect same frame level for PlayerModel than the PlayerFrame
     self.Portrait:SetFrameLevel(Frame:GetFrameLevel())
+    self.Buffs = Buffs
+    self.Debuffs = Debuffs
+
     self.Frame = Frame
+
 
     self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
     self:HookScript("OnLeave", UnitFrames.MouseOnPlayer)
