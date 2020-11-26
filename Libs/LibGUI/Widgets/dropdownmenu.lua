@@ -36,6 +36,7 @@
 local _, Plugin = ...
 
 local LibGUI = Plugin.LibGUI
+local profile
 
 local Methods = {
 
@@ -109,7 +110,7 @@ local Methods = {
 
     --TODO UPDATE THIS FUNC FOR MORE DATA
     Update = function(self, dataTable)
-
+        self.Data = dataTable
     end,
 }
 
@@ -136,6 +137,11 @@ local function setValue(button, arg1, arg2, checked)
 
     local dropdown = button:GetParent().dropdown
     dropdown.value = button:GetText()
+
+    if dropdown.DBOption then
+        profile:UpdateOption( dropdown.DBOption, dropdown.value )
+    end
+
     UIDropDownMenu_SetSelectedValue(dropdown, button:GetText(), true)
     CloseDropDownMenus()
 end
@@ -167,13 +173,16 @@ local function initialize(self, level, menuList)
     end
 end
 
-local function create(parent, name, point, size, data)
+local function create(parent, name, point, size, data, dboption)
+
+    profile = LibGUI:GetProfile()
     local menu = CreateFrame('Frame', name or "DropDown", parent, 'UIDropDownMenuTemplate')
 
     menu:SetScript("OnShow", enable)
     menu:SetScript("OnHide", disable)
     menu.Scripts = {}
     menu.Data = data
+    menu.DBOption = dboption
 
     if point then
         menu:SetPoint(unpack(point))
@@ -182,7 +191,7 @@ local function create(parent, name, point, size, data)
         UIDropDownMenu_SetWidth(menu, size[1])
     end
 
-    menu.value = "Choose option"
+    menu.value = profile:GetValue( dboption ) or "Choose option"
 
     --push our internal Methods in the metatable, if it taints, need to wrap this
     setmetatable(menu, { __index = setmetatable(Methods, getmetatable(menu)) })
