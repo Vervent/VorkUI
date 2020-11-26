@@ -13,6 +13,16 @@ local colors = {
     white = "FFFFFFFF"
 }
 
+local profile = nil
+
+function LibGUI:GetProfile()
+    return profile
+end
+
+function LibGUI:RegisterProfile(p)
+    profile = p
+end
+
 function LibGUI:RegisterContainer(t, createFct, enableFct, disableFct, bindFct)
     if containers[t] then
         print ("A CONTAINER WITH THIS TYPE EXISTS")
