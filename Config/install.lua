@@ -9,7 +9,11 @@ local function GenerateInstallFrame(self, db)
     db.Profile = {
         Theme = "Default",
         PartyLayout = "Expanded",
-        RaidLayout = "Minimalist"
+        RaidLayout = "Minimalist",
+        PlayerLayout = {
+            Size = { 300, 62 },
+            Point = { "CENTER", 'UIParent', "CENTER", -450, -350 },
+        },
     }
 
     Install.Frame = frame

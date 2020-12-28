@@ -5,6 +5,21 @@ local Install = V.Install
 
 local LibGUI = Plugin.LibGUI
 
+local scrollButtonClick = function(self)
+    local container = self:GetParent()
+    local parent = container:GetParent()
+    local txt = self:GetText()..'Settings' or ''
+    for i, c in ipairs(parent.Childs) do
+        if i > 1 then
+            if c:GetName() == txt then
+                c:Show()
+            else
+                c:Hide()
+            end
+        end
+    end
+end
+
 local mainPage = {
     params = {
         name = 'MainPage',
@@ -97,6 +112,14 @@ local unitFramePage = {
         name = 'UnitFramePage',
         title = 'Unit Frame',
         headerSize = { 100, 25 },
+        enableAllChilds = false,
+        AfterEnable = function(self)
+            for i, f in ipairs(self.Childs) do
+                if i < 3 then
+                    f:Show()
+                end
+            end
+        end
     },
     widgets = {
         {
@@ -129,10 +152,8 @@ local unitFramePage = {
                         template = 'UIPanelButtonTemplate',
                     },
                     data = {
-                        'player',
-                        function(self)
-                            print(self)
-                        end
+                        'Player',
+                        scrollButtonClick
                     },
                 },
                 {
@@ -143,12 +164,22 @@ local unitFramePage = {
                         template = 'UIPanelButtonTemplate',
                     },
                     data = {
-                        'party',
-                        function(self)
-                            print(self)
-                        end
+                        'Party',
+                        scrollButtonClick
                     },
-                }
+                },
+                {
+                    type = 'widget',
+                    subtype = 'button',
+                    params = {
+                        size = { 100, 25 },
+                        template = 'UIPanelButtonTemplate',
+                    },
+                    data = {
+                        'Raid',
+                        scrollButtonClick
+                    },
+                },
             }
         },
         {
@@ -170,10 +201,79 @@ local unitFramePage = {
                         'GameFontNormal',
                         'Player Settings'
                     },
-                }
+                },
+
             },
             childs = {
+                {
+                    type = 'empty',
+                    params = {
+                        name = 'PlayerSettingsSize',
+                        size = { 210, 90},
+                        point = { 'TOPLEFT', 10, -30 }
+                    },
+                    widgets = {
+                        {
+                            type = 'label',
+                            params = {
+                                size = { 200, 25 },
+                                point = { 'TOP' }
+                            },
+                            data = {
+                                'OVERLAY',
+                                'GameFontNormal',
+                                'Global Options'
+                            }
+                        },
+                        {
+                            type = 'label',
+                            params = {
+                                size = { 100, 25 },
+                                point = { 'TOPLEFT', 0, -30 }
+                            },
+                            data = {
+                                'OVERLAY',
+                                'GameFontNormal',
+                                'Width'
+                            }
+                        },
+                        {
+                            type = 'editbox',
+                            params = {
+                                size = { 50, 25 },
+                                point = { 'TOPLEFT', 110, -30 },
+                                template = 'NumericInputSpinnerTemplate',
+                                dboption = { 'PlayerLayout', 'Size', 1 }
+                            },
+                            data = { nil, nil, nil, {0, 500} }
+                        },
+                        {
+                            type = 'label',
+                            params = {
+                                size = { 100, 25 },
+                                point = { 'TOPLEFT', 0, -60 }
+                            },
+                            data = {
+                                'OVERLAY',
+                                'GameFontNormal',
+                                'Height'
+                            }
+                        },
+                        {
+                            type = 'editbox',
+                            params = {
+                                size = { 50, 25 },
+                                point = { 'TOPLEFT', 110, -60 },
+                                template = 'NumericInputSpinnerTemplate',
+                                dboption = { 'PlayerLayout', 'Size', 2 }
+                            },
+                            data = { nil, nil, nil, {0, 500} }
+                        },
+                    },
+                    childs = {
 
+                    }
+                }
             }
         },
         {
@@ -213,7 +313,45 @@ local unitFramePage = {
             childs = {
 
             }
-        }
+        },
+        {
+            type = 'empty',
+            params = {
+                name = 'RaidSettings',
+                size = { 500, 490 },
+                point = { 'TOPRIGHT', -2, -30 },
+            },
+            widgets = {
+                {
+                    type = 'label',
+                    params = {
+                        size = { 200, 25 },
+                        point = { 'TOP' },
+                    },
+                    data = {
+                        'OVERLAY',
+                        'GameFontNormal',
+                        'Raid Settings'
+                    },
+                },
+                {
+                    type = 'dropdownmenu',
+                    params = {
+                        size = { 200, 25 },
+                        point = { 'TOP', 0, -50 },
+                        dboption = 'RaidLayout'
+                    },
+                    data = {
+                        { text = 'Expanded' },
+                        { text = 'Minimalist' },
+                        { text = 'Compact' },
+                    },
+                }
+            },
+            childs = {
+
+            }
+        },
     }
 }
 
@@ -255,11 +393,30 @@ local function parseEmpty(parent, frameconfig)
             frameconfig.params.point
     )
 
+    if frameconfig.params.enableAllChilds ~= nil then
+        frame.enableAllChilds = frameconfig.params.enableAllChilds
+    end
+
+    if frameconfig.params.AfterEnable then
+        frame.AfterEnable = frameconfig.params.AfterEnable
+    end
+
     local item
     for _, w in ipairs(frameconfig.widgets) do
         item = LibGUI:NewWidget(w.type, frame, w.params.name, w.params.point, w.params.size, w.params.layer or w.params.template, w.params.dboption or nil)
-        item:Update(w.data)
+        if w.data then
+            item:Update(w.data)
+        end
     end
+
+    for _, c in ipairs(frameconfig.childs) do
+        if c.type == 'scrolluniformlist' then
+            parseScrollUniformList(content, c)
+        elseif c.type == 'empty' then
+            parseEmpty(frame, c)
+        end
+    end
+
 end
 
 local function parseScrollUniformList(parent, scrollconfig)
@@ -289,6 +446,14 @@ local function parsePage(tabParent, page)
     local header, content = tabParent:AddEmptyPage(page.params.name, page.params.headerSize)
     header:ChangeText(page.params.title)
     local item
+
+    if page.params.enableAllChilds ~= nil then
+        content.enableAllChilds = page.params.enableAllChilds
+    end
+
+    if page.params.AfterEnable then
+        content.AfterEnable = page.params.AfterEnable
+    end
 
     if page.widgets then
         for _, w in ipairs(page.widgets) do

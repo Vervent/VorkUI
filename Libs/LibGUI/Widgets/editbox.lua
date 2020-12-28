@@ -21,13 +21,27 @@
 local _, Plugin = ...
 
 local LibGUI = Plugin.LibGUI
+local profile
 
 local Methods = {
 
     --TODO UPDATE THIS FUNC FOR MORE DATA
     Update = function (self, dataTable)
-        local text, _ = unpack(dataTable)
-        self:ChangeText(text)
+        local text, font, color, minmax = unpack(dataTable)
+        if text then
+            self:ChangeText(text)
+        end
+
+        self:ChangeFont(font)
+
+        if color then
+            self:ChangeFontColor(color)
+        end
+
+        if minmax then
+            print (minmax)
+            self:SetMinMaxValues(unpack(minmax))
+        end
     end,
 
     ChangeText = function(self, text)
@@ -36,9 +50,10 @@ local Methods = {
     end,
 
     TextChanged = function(self)
-        if self:HasFocus() == false then
-            return
-        end
+
+        --if self:HasFocus() == false then
+        --    return
+        --end
 
         if self:IsNumeric() then
             self.text = self:GetNumber()
@@ -46,7 +61,9 @@ local Methods = {
             self.text = self:GetText()
         end
 
-        print (self, self.text)
+        if self.DBOption then
+            profile:UpdateOption( self.DBOption, self.text )
+        end
 
         return self.text
     end,
@@ -97,7 +114,9 @@ local function bindScript(self, event, fct)
     self.Scripts[event] = fct
 end
 
-local function create(parent, name, point, size, template)
+local function create(parent, name, point, size, template, dboption)
+
+    profile = LibGUI:GetProfile()
     local edit = CreateFrame('Editbox', name, parent, template)
 
     edit:SetScript("OnShow", enable)
@@ -105,6 +124,7 @@ local function create(parent, name, point, size, template)
     edit:SetAutoFocus(false)
     edit:ClearFocus()
     edit.Scripts = {}
+    edit.DBOption = dboption
 
     if point then
         edit:SetPoint(unpack(point))
@@ -118,6 +138,16 @@ local function create(parent, name, point, size, template)
 
     edit.Scripts['OnTextChanged'] = edit.TextChanged
     edit.Scripts['OnEnterPressed'] = edit.ClearFocus
+    edit.Scripts['OnEscapePressed'] = edit.ClearFocus
+
+    local initialVal = profile:GetValue( dboption ) or ''
+
+    if template == 'NumericInputSpinnerTemplate' then
+        edit:SetValue( tonumber(initialVal ) or 0 )
+        edit.text = edit.currentValue
+    else
+        edit:ChangeText( initialVal )
+    end
 
     return edit
 end

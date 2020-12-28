@@ -40,11 +40,19 @@ local function enable(self)
             c:Show()
         end
     end
+
+    if self.AfterEnable then
+        self:AfterEnable()
+    end
 end
 
 local function disable(self)
     if self.type ~= 'empty' then
         return
+    end
+
+    if self.BeforeDisable then
+        self:BeforeDisable()
     end
 
     for i, c in pairs(self.Widgets) do

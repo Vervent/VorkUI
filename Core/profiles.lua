@@ -153,18 +153,51 @@ local function InitializeProfile(self)
 
 end
 
+local function GetOptionPath(option)
+    local path = db.Profile
+    if type(option) == 'table' then
+        for i=1, #option-1 do
+            path = path[option[i]]
+        end
+        return path, option[#option]
+    else
+        return path, option
+    end
+end
+
 function Profiles:GetValue(optionName)
-    return db.Profile[optionName] or nil
+    --local val = db.Profile
+    --if type(optionName) == 'table' then
+    --    for i=1, #optionName do
+    --        val = val[optionName[i]]
+    --    end
+    --    return val or nil
+    --else
+    --    return val[optionName] or nil
+    --end
+
+    local path, opt = GetOptionPath(optionName)
+    return path[opt]
+
+    --return db.Profile[optionName] or nil
 end
 
 function Profiles:UpdateOption(optionName, value)
 
-    if db.Profile[optionName] then
+    local path, opt = GetOptionPath(optionName)
+    if path[opt] then
         print ("|cFF10FF10Update|r", optionName, value)
-        db.Profile[optionName] = value
+        path[opt] = value
     else
         print ("|cFFFF1010ERROR|r", optionName, value)
     end
+
+    --if db.Profile[optionName] then
+    --    print ("|cFF10FF10Update|r", optionName, value)
+    --    db.Profile[optionName] = value
+    --else
+    --    print ("|cFFFF1010ERROR|r", optionName, value)
+    --end
 end
 
 function Profiles:OnEvent(event, addonName)

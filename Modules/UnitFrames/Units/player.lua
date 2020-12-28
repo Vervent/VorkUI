@@ -1,4 +1,4 @@
-local V = select(2, ...):unpack()
+local V, C = select(2, ...):unpack()
 
 local UnitFrames = V["UnitFrames"]
 
