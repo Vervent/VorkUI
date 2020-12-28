@@ -99,7 +99,7 @@ function UnitFrames:Target(Config)
 
     local Debuffs = CreateFrame('Frame', nil, Frame)
     Debuffs:SetPoint('BOTTOMLEFT', Frame, 'TOPLEFT', 0, 2)
-    Debuffs:SetSize(50 * 6, 1 * 50)
+    Debuffs:SetSize(50 * 3, 2 * 50)
     Debuffs.onlyShowPlayer = true
     Debuffs.size = 48
     Debuffs.num = 6

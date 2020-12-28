@@ -11,7 +11,7 @@ Themes.Default = {
         Player = {
             Enable = true,
             Size = { 300, 62 },
-            Point = { "CENTER", UIParent, "CENTER", -400, -250 },
+            Point = { "CENTER", UIParent, "CENTER", -450, -350 },
             Config = {
                 Absorb = {
                     Textures ={
@@ -56,13 +56,13 @@ Themes.Default = {
                     StaticLayer = "BACKGROUND",
                     Value = {
                         Layer = "OVERLAY",
-                        FontName = "Montserrat Italic14",
+                        FontName = "Montserrat Medium Italic14",
                         Point = { "TOPRIGHT", nil, "TOP" },
                         Tag = "[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp]"
                     },
                     Percent = {
                         Layer = "OVERLAY",
-                        FontName = "Montserrat Italic30",
+                        FontName = "Montserrat SemiBold Italic26",
                         Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT" },
                         Tag = "[Vorkui:HealthColor(true)][Vorkui:PerHP]"
                     }
@@ -97,7 +97,7 @@ Themes.Default = {
                     StaticLayer = "BACKGROUND",
                     Value = {
                         Layer = "OVERLAY",
-                        FontName = "Montserrat Italic22",
+                        FontName = "Montserrat Medium Italic22",
                         Point = { "BOTTOM", nil, "BOTTOM" },
                         Tag = "[powercolor][missingpp]"
                     }
@@ -193,8 +193,8 @@ Themes.Default = {
                 },
                 Name = {
                     Layer = "OVERLAY",
-                    FontName = "Montserrat14",
-                    Point = { "TOPLEFT", nil, "BOTTOMLEFT", 20, 10 },
+                    FontName = "Montserrat SemiBold22",
+                    Point = { "BOTTOMLEFT", nil, "TOPLEFT", 0, 2 },
                     Tag = "[classification] [name] [difficulty][level]"
                 },
                 CastBar = {
@@ -365,7 +365,7 @@ Themes.Default = {
                 },
                 Name = {
                     Layer = "OVERLAY",
-                    FontName = "Montserrat14",
+                    FontName = "Montserrat22",
                     Point = { "TOPLEFT", nil, "BOTTOMLEFT", 23, 10 },
                     Tag = "[classification] [name] [difficulty][level]"
                 },
@@ -428,7 +428,7 @@ Themes.Default = {
         Target = {
             Enable = true,
             Size = { 300, 62 },
-            Point = { "CENTER", UIParent, "CENTER", 400, -250 },
+            Point = { "CENTER", UIParent, "CENTER", 450, -350 },
             Config = {
                 Absorb = {
                     Textures ={
@@ -475,13 +475,13 @@ Themes.Default = {
                     StaticLayer = "BACKGROUND",
                     Value = {
                         Layer = "OVERLAY",
-                        FontName = "Montserrat Italic14",
+                        FontName = "Montserrat Medium Italic14",
                         Point = { "TOPLEFT", nil, "TOP" },
                         Tag = "[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp-Max]"
                     },
                     Percent = {
                         Layer = "OVERLAY",
-                        FontName = "Montserrat Italic30",
+                        FontName = "Montserrat SemiBold Italic26",
                         Point = { "BOTTOMLEFT", nil, "BOTTOMLEFT" },
                         Tag = "[Vorkui:HealthColor(true)][Vorkui:PerHP]"
                     }
@@ -518,7 +518,7 @@ Themes.Default = {
                     StaticLayer = "BACKGROUND",
                     Value = {
                         Layer = "OVERLAY",
-                        FontName = "Montserrat Italic22",
+                        FontName = "Montserrat Medium Italic22",
                         Point = { "BOTTOM", nil, "BOTTOM" },
                         Tag = "[powercolor][missingpp]"
                     }
@@ -598,9 +598,9 @@ Themes.Default = {
                 },
                 Name = {
                     Layer = "OVERLAY",
-                    FontName = "Montserrat14",
-                    Point = { "TOPRIGHT", nil, "BOTTOMRIGHT", -20, 10 },
-                    Tag = "[level][difficulty] [name] [classification]"
+                    FontName = "Montserrat SemiBold22",
+                    Point = { "BOTTOMRIGHT", nil, "TOPRIGHT", 0, 2 },
+                    Tag = "[difficulty][level] [Vorkui:Name(8)] [classification]"
                 },
                 CastBar = {
                     Textures = {
@@ -1095,7 +1095,7 @@ Themes.Default = {
                         showSolo = false, --false
                         groupFilter = "1,2,3,4,5,6,7,8",
                         point = "LEFT",
-                        xOffset = 2,
+                        xOffset = 5,
                         yOffset = 0,
                         sortMethod = "INDEX",
                         sortDir = "ASC",
@@ -1324,6 +1324,14 @@ Themes.Default = {
                                 BlendMode = "ADD",
                                 VertexColor = { 255 / 255, 246 / 255, 0, 0.75 }
                             }
+                        },
+                        Buffs = {
+                            Point = {'BOTTOMLEFT', 'Frame', 'TOPLEFT', 0, 2},
+                            Size = {26 * 6, 1 * 24},
+                            ButtonSize = 24,
+                            ButtonCount = 6,
+                            ButtonSpacing = 2,
+                            OnlyShowPlayer = true,
                         }
                     }
                 },
@@ -1553,7 +1561,7 @@ Themes.Default = {
                 },
                 Compact = {
                     Attributes = {
-                        ["initial-width"] = 128,
+                        ["initial-width"] = 156,
                         ["initial-height"] = 24,
                         showRaid = false,
                         showParty = true,
@@ -1562,7 +1570,7 @@ Themes.Default = {
                         groupFilter = "1,2,3,4,5,6,7,8",
                         point = "TOP",
                         xOffset = 1,
-                        yOffset = -1,
+                        yOffset = -26,
                         sortMethod = "INDEX",
                         sortDir = "ASC",
                         groupBy = "GROUP",
@@ -1581,7 +1589,7 @@ Themes.Default = {
                                     "Border", "OVERLAY"
                                 }
                             },
-                            Size =  { 128, 24 },
+                            Size =  { 156, 24 },
                             Point =  { "TOPRIGHT", "Absorb", "TOPRIGHT", 0, 0 },
                             SlantSettings = {
                                 ["IgnoreBackground"] = true,
@@ -1615,7 +1623,7 @@ Themes.Default = {
                         },
                         ClassIndicator = {
                             Size = {16, 16},
-                            Point = { "LEFT", nil, "LEFT" },
+                            Point = { "TOPLEFT", nil, "TOPLEFT" },
                             Texture = "ClassIcon",
                             TexCoord = select(2, UnitClass("player"))
                         },
@@ -1662,10 +1670,17 @@ Themes.Default = {
                         },
                         Name = {
                             Layer = "OVERLAY",
-                            FontName = "Montserrat Medium12",
+                            FontName = "Montserrat Medium14",
                             Point = { "LEFT", nil, "RIGHT", 20, 0 },
                             Tag = "[classification] [name] [difficulty][level]"
                         },
+                        Debuffs = {
+                            Point = {'TOPLEFT', 'Frame', 'BOTTOMLEFT'},
+                            Size = {26 * 6, 1 * 24},
+                            ButtonSize = 24,
+                            ButtonCount = 6,
+                            ButtonSpacing = 2,
+                        }
                     }
                 }
             }

@@ -37,4 +37,9 @@ Engine[1].Hider = CreateFrame("Frame", nil, UIParent)
 SLASH_RELOADUI1 = "/rl"
 SlashCmdList.RELOADUI = ReloadUI
 
+SLASH_VORKUI1, SLASH_VORKUI2 = "/vorkui", "/vkui"
+SlashCmdList.VORKUI = function ()
+    Engine[1].Install.ConfigUI:Show()
+end
+
 Vorkui = Engine

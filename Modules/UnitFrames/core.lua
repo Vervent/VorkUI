@@ -1229,7 +1229,7 @@ function UnitFrames:CreateUnits()
                     "oUF-initialConfigFunction", header.InitialConfigFunction,
                     unpack( UnitFrames:GetPartyFramesAttributes( v.Config[layout].Attributes ) )
             )
-            party:SetPoint("LEFT", UIParent, "LEFT")
+            party:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 60)
 
             self.Headers.Party = party
         elseif k == "Raid" and v.Enable == true then

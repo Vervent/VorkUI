@@ -8,7 +8,7 @@ local function GenerateInstallFrame(self, db)
 
     db.Profile = {
         Theme = "Default",
-        PartyLayout = "Compact",
+        PartyLayout = "Expanded",
         RaidLayout = "Minimalist"
     }
 
@@ -22,8 +22,8 @@ end
 
 function Install:OnEvent(event, ...)
     if event == "PLAYER_LOGIN" then
-        print ("PLAYER_LOGIN", Install.ConfigUI.frame, Install.ConfigUI.frame:GetObjectType())
-        Install.ConfigUI.frame:Show()
+        print ("PLAYER_LOGIN", Install.ConfigUI:GetName(), Install.ConfigUI:GetObjectType())
+        --Install.ConfigUI.Frame:Show()
     end
 end
 

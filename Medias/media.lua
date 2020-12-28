@@ -85,11 +85,11 @@ local FontSettings = {
         "OUTLINE"
     },
     ["Montserrat Medium"] = {
-        { 10, 12 },
+        { 10, 12, 14 },
         "OUTLINE"
     },
     ["Montserrat Medium Italic"] = {
-        { 10, 16, 22 },
+        { 10, 14, 16, 22 },
         "OUTLINE"
     },
     ["Montserrat"] = {
@@ -97,11 +97,11 @@ local FontSettings = {
         "OUTLINE"
     },
     ["Montserrat SemiBold"] = {
-        {},
+        { 22 },
         "OUTLINE"
     },
     ["Montserrat SemiBold Italic"] = {
-        { 10, 22 },
+        { 10, 22, 26 },
         "OUTLINE"
     },
     ["Montserrat Thin"] = {

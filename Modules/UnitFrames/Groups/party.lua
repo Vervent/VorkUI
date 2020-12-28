@@ -119,6 +119,30 @@ function UnitFrames:Party(Config)
         }
     end
 
+    if Config.Buffs then
+        local Buffs = CreateFrame('Frame', nil, Frame)
+        Config.Buffs.Point[2] = Frame
+        Buffs:SetPoint(unpack(Config.Buffs.Point))
+        Buffs:SetSize(unpack(Config.Buffs.Size))
+        Buffs.size = Config.Buffs.ButtonSize or 32
+        Buffs.onlyShowPlayer = Config.Buffs.OnlyShowPlayer or false
+        Buffs.num = Config.Buffs.ButtonCount or 32
+        Buffs.spacing = Config.Buffs.ButtonSpacing or 0
+        self.Buffs = Buffs
+    end
+
+    if Config.Debuffs then
+        local Debuffs = CreateFrame('Frame', nil, Frame)
+        Config.Debuffs.Point[2] = Frame
+        Debuffs:SetPoint(unpack(Config.Debuffs.Point))
+        Debuffs:SetSize(unpack(Config.Debuffs.Size))
+        Debuffs.size = Config.Debuffs.ButtonSize or 32
+        Debuffs.onlyShowPlayer = Config.Debuffs.OnlyShowPlayer or false
+        Debuffs.num = Config.Debuffs.ButtonCount or 32
+        Debuffs.spacing = Config.Debuffs.ButtonSpacing or 0
+        self.Debuffs = Debuffs
+    end
+
     --[[
         FONT
     --]]

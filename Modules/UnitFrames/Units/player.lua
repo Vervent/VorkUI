@@ -12,7 +12,7 @@ function UnitFrames:Player(Config)
     Frame:SetAllPoints()
     Frame.background = Frame:CreateTexture(nil, "BACKGROUND")
     Frame.background:SetAllPoints()
-    Frame.background:SetColorTexture( 33/255, 44/255, 79/255, 0.75 )
+    Frame.background:SetColorTexture(33 / 255, 44 / 255, 79 / 255, 0.75)
 
     --[[
        ABSORB SLANTED STATUSBAR
@@ -71,7 +71,7 @@ function UnitFrames:Player(Config)
             Config.Power.StaticLayer)
 
     Power.colorPower = true
-    Power.frequentUpdates=true
+    Power.frequentUpdates = true
     Power.Override = UnitFrames.UpdatePowerOverride
     Power.UpdateColor = UnitFrames.UpdatePowerColorOverride
 
@@ -98,11 +98,13 @@ function UnitFrames:Player(Config)
     Buffs.spacing = 2
 
     local Debuffs = CreateFrame('Frame', nil, Frame)
-    Debuffs:SetPoint('BOTTOMLEFT', Frame, 'TOPLEFT', 0, 2)
-    Debuffs:SetSize(50 * 6, 1 * 50)
+    Debuffs:SetPoint('BOTTOMRIGHT', Frame, 'TOPRIGHT', 0, 2)
+    Debuffs:SetSize(50 * 3, 2 * 50)
     Debuffs.size = 48
     Debuffs.num = 6
     Debuffs.spacing = 2
+    Debuffs['growth-x'] = 'LEFT'
+    Debuffs.initialAnchor = 'BOTTOMRIGHT'
 
     --[[
         FONT
@@ -233,7 +235,6 @@ function UnitFrames:Player(Config)
     self.Debuffs = Debuffs
 
     self.Frame = Frame
-
 
     self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
     self:HookScript("OnLeave", UnitFrames.MouseOnPlayer)

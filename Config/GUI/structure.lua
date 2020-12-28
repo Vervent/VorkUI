@@ -56,9 +56,6 @@ local mainPage = {
     },
 }
 
-
-
-
 local modulePage = {
     params = {
         name = 'ModulePage',
@@ -83,7 +80,7 @@ local modulePage = {
             params = {
                 name = 'CHECKBOX',
                 --size = { 25, 25 },
-                point = {'CENTER'},
+                point = { 'CENTER' },
                 template = 'UICheckButtonTemplate',
             },
             data = {
@@ -137,6 +134,20 @@ local unitFramePage = {
                             print(self)
                         end
                     },
+                },
+                {
+                    type = 'widget',
+                    subtype = 'button',
+                    params = {
+                        size = { 100, 25 },
+                        template = 'UIPanelButtonTemplate',
+                    },
+                    data = {
+                        'party',
+                        function(self)
+                            print(self)
+                        end
+                    },
                 }
             }
         },
@@ -158,6 +169,44 @@ local unitFramePage = {
                         'OVERLAY',
                         'GameFontNormal',
                         'Player Settings'
+                    },
+                }
+            },
+            childs = {
+
+            }
+        },
+        {
+            type = 'empty',
+            params = {
+                name = 'PartySettings',
+                size = { 500, 490 },
+                point = { 'TOPRIGHT', -2, -30 },
+            },
+            widgets = {
+                {
+                    type = 'label',
+                    params = {
+                        size = { 200, 25 },
+                        point = { 'TOP' },
+                    },
+                    data = {
+                        'OVERLAY',
+                        'GameFontNormal',
+                        'Party Settings'
+                    },
+                },
+                {
+                    type = 'dropdownmenu',
+                    params = {
+                        size = { 200, 25 },
+                        point = { 'TOP', 0, -50 },
+                        dboption = 'PartyLayout'
+                    },
+                    data = {
+                        { text = 'Expanded' },
+                        { text = 'Minimalist' },
+                        { text = 'Compact' },
                     },
                 }
             },
@@ -208,7 +257,7 @@ local function parseEmpty(parent, frameconfig)
 
     local item
     for _, w in ipairs(frameconfig.widgets) do
-        item = LibGUI:NewWidget(w.type, frame, w.params.name, w.params.point, w.params.size, w.params.layer or w.params.template)
+        item = LibGUI:NewWidget(w.type, frame, w.params.name, w.params.point, w.params.size, w.params.layer or w.params.template, w.params.dboption or nil)
         item:Update(w.data)
     end
 end
