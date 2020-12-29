@@ -172,7 +172,7 @@ Utils.API.UpdateWidgetsLayout = function (self, firstItemIndex)
     for i = firstItem, #self.Widgets do
         w = self.Widgets[i]
         if w:IsObjectType('Frame') and w.text then
-            width = max(width, w:GetWidth() + w.text:GetWrappedWidth() + 4 )
+            width = max(width, w:GetWidth() + w.text:GetWrappedWidth() + 20 )
             height = max(height, w:GetHeight(), w.text:GetStringHeight())
         else
             width = max(width, w:GetWidth() + 4 )
