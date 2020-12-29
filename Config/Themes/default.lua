@@ -31,7 +31,7 @@ Themes.Default = {
                     StaticLayer = "BACKGROUND",
                     Value = {
                         Layer = "OVERLAY",
-                        FontName = "Montserrat Italic14",
+                        FontName = "ValueFont",
                         Point = { "TOPLEFT", nil, "TOP" },
                         Tag = "[Vorkui:HealthColor][Vorkui:Absorb]"
                     },
@@ -56,13 +56,13 @@ Themes.Default = {
                     StaticLayer = "BACKGROUND",
                     Value = {
                         Layer = "OVERLAY",
-                        FontName = "Montserrat Medium Italic14",
+                        FontName = "ValueFont",
                         Point = { "TOPRIGHT", nil, "TOP" },
                         Tag = "[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp]"
                     },
                     Percent = {
                         Layer = "OVERLAY",
-                        FontName = "Montserrat SemiBold Italic26",
+                        FontName = "BigValueFont",
                         Point = { "BOTTOMRIGHT", nil, "BOTTOMRIGHT" },
                         Tag = "[Vorkui:HealthColor(true)][Vorkui:PerHP]"
                     }
@@ -97,7 +97,7 @@ Themes.Default = {
                     StaticLayer = "BACKGROUND",
                     Value = {
                         Layer = "OVERLAY",
-                        FontName = "Montserrat Medium Italic22",
+                        FontName = "StackFont",
                         Point = { "BOTTOM", nil, "BOTTOM" },
                         Tag = "[powercolor][missingpp]"
                     }
@@ -193,7 +193,7 @@ Themes.Default = {
                 },
                 Name = {
                     Layer = "OVERLAY",
-                    FontName = "Montserrat SemiBold22",
+                    FontName = "NameFont",
                     Point = { "BOTTOMLEFT", nil, "TOPLEFT", 0, 2 },
                     Tag = "[classification] [name] [difficulty][level]"
                 },
@@ -227,12 +227,12 @@ Themes.Default = {
                     },
                     Time = {
                         Layer = "OVERLAY",
-                        FontName = 'Montserrat Medium10',
+                        FontName = 'DurationFont',
                         Point = {'RIGHT', nil}
                     },
                     Text = {
                         Layer = "OVERLAY",
-                        FontName = 'Montserrat Medium10',
+                        FontName = 'NormalFont',
                         Point = {'CENTER', nil}
                     },
                     Icon = {

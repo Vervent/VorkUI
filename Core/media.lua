@@ -21,6 +21,16 @@ function Medias:GetLSM()
     return LibSharedMedia
 end
 
+function Medias:GetLSMDropDown(mediatype)
+    local data = {}
+
+    for _, m in ipairs(LibSharedMedia:List(mediatype)) do
+        tinsert(data, { text = m })
+    end
+
+    return data
+end
+
 function Medias:PushFontObject(name, adress, size, ...)
     if type(size) == 'table' then
         for _, s in ipairs(size) do

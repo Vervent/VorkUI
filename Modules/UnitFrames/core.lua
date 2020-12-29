@@ -254,7 +254,7 @@ function UnitFrames:CastBarOnUpdate(elapsed)
     end
 end
 
-function UnitFrames:CreateCastBar(frame, config)
+function UnitFrames:CreateCastBar(frame, config, unit)
 
     local castbar = CreateFrame("StatusBar", frame:GetParent():GetName().."Castbar", frame)
     local textures = config.Textures
@@ -303,12 +303,12 @@ function UnitFrames:CreateCastBar(frame, config)
 
     -- Add a timer
     if config.Time then
-        castbar.Time = UnitFrames:CreateFontString(castbar, config.Time)
+        castbar.Time = UnitFrames:CreateFontString(castbar, config.Time, unit)
     end
 
     -- Add spell text
     if config.Text then
-        castbar.Text = UnitFrames:CreateFontString(castbar, config.Text)
+        castbar.Text = UnitFrames:CreateFontString(castbar, config.Text, unit)
     end
 
     -- Add spell icon
@@ -350,6 +350,25 @@ function UnitFrames:CreateFontString(frame, config)
 
     local font = frame:CreateFontString(nil, config.Layer)
     font:SetFontObject( Medias:GetFont( config.FontName ) )
+
+    if config.Point[2] == nil then
+        config.Point[2] = frame
+    end
+    font:SetPoint( unpack(config.Point) )
+
+    return font
+end
+
+function UnitFrames:CreateFontString(frame, config, unit)
+
+    local font = frame:CreateFontString(nil, config.Layer)
+    if unit == 'Player' then
+        local fontObject = C.PlayerLayout[config.FontName]
+        print (fontObject, fontObject[1], fontObject[2])
+        font:SetFontObject( Medias:GetFont( fontObject[1]..fontObject[2] ) )
+    else
+        font:SetFontObject( Medias:GetFont( config.FontName ) )
+    end
 
     if config.Point[2] == nil then
         config.Point[2] = frame

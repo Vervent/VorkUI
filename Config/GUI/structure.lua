@@ -455,6 +455,10 @@ local function parseEmpty(parent, frameconfig)
     local item
     for _, w in ipairs(frameconfig.widgets) do
         item = LibGUI:NewWidget(w.type, frame, w.params.name, w.params.point, w.params.size, w.params.layer or w.params.template, w.params.dboption or nil)
+        if w.type == 'dropdownmenu' and (w.data == nil or #w.data == 0) then
+            w.data = V.Medias:GetLSMDropDown(w.params.mediatype)
+        end
+
         if w.data then
             item:Update(w.data)
         end
@@ -567,9 +571,8 @@ local function parseConfig()
 
 end
 
-function Install:RegisterOptions()
+function Install:GenerateConfigFrame()
     parseConfig()
-
 end
 
 function Install:RegisterModule(name, page)

@@ -110,30 +110,30 @@ function UnitFrames:Player(Config)
         FONT
     --]]
     if Config.Name then
-        Frame.Name = UnitFrames:CreateFontString(Frame, Config.Name)
+        Frame.Name = UnitFrames:CreateFontString(Frame, Config.Name, 'Player')
         self:Tag(Frame.Name, Config.Name.Tag)
     end
 
     if Config.Health.Value then
         Config.Health.Value.Point[2] = Health
-        Health.Value = UnitFrames:CreateFontString(Frame, Config.Health.Value)
+        Health.Value = UnitFrames:CreateFontString(Frame, Config.Health.Value, 'Player')
         self:Tag(Health.Value, Config.Health.Value.Tag)
     end
 
     if Config.Health.Percent then
-        Health.Percent = UnitFrames:CreateFontString(Frame, Config.Health.Percent)
+        Health.Percent = UnitFrames:CreateFontString(Frame, Config.Health.Percent, 'Player')
         self:Tag(Health.Percent, Config.Health.Percent.Tag)
     end
 
     if Config.Power.Value then
         Config.Power.Value.Point[2] = Power
-        Power.Value = UnitFrames:CreateFontString(Frame, Config.Power.Value)
+        Power.Value = UnitFrames:CreateFontString(Frame, Config.Power.Value, 'Player')
         self:Tag(Power.Value, Config.Power.Value.Tag)
     end
 
     if Config.Absorb.Value then
         Config.Absorb.Value.Point[2] = Health
-        Absorb.Value = UnitFrames:CreateFontString(Frame, Config.Absorb.Value)
+        Absorb.Value = UnitFrames:CreateFontString(Frame, Config.Absorb.Value, 'Player')
         self:Tag(Absorb.Value, Config.Absorb.Value.Tag)
     end
 
@@ -187,7 +187,7 @@ function UnitFrames:Player(Config)
     CASTBAR
     ]]--
     if Config.CastBar then
-        self.Castbar = UnitFrames:CreateCastBar(Frame, Config.CastBar)
+        self.Castbar = UnitFrames:CreateCastBar(Frame, Config.CastBar, 'Player')
     end
 
     if Config.DeadOrGhostIndicator then

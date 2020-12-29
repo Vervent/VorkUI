@@ -17,13 +17,20 @@ local dropdownAnchorData = {
     { text = 'LEFT' }
 }
 
+local dropdownFontFlagData = {
+    { text = "NONE"},
+    { text = "OUTLINE"},
+    { text = "THICKOUTLINE"},
+    { text = "MONOCHROME" }
+}
+
 local scrollButtonClick = function(self)
     local container = self:GetParent()
     local parent = container:GetParent()
-    local txt = self:GetText()..'Settings' or ''
+    local txt = self:GetText() or ''
     for i, c in ipairs(parent.Childs) do
         if i > 1 then
-            if c:GetName() == txt then
+            if string.match(c:GetName(), txt)  then
                 c:Show()
             else
                 c:Hide()
@@ -77,7 +84,7 @@ local page = {
             type = 'scrolluniformlist',
             params = {
                 name = 'PlayerPageScrollList',
-                size = { 100, 490 },
+                size = { 200, 490 },
                 point = { 'TOPLEFT', 2, -30 },
             },
             widgets = {
@@ -89,8 +96,8 @@ local page = {
 local generalEntry = {
     type = 'empty',
     params = {
-        name = 'GeneralSettings',
-        size = { 654, 490 },
+        name = 'PlayerFrameGeneralSettings',
+        size = { 554, 490 },
         point = { 'TOPRIGHT', -2, -30 },
     },
     widgets = {},
@@ -167,8 +174,8 @@ local generalEntry = {
             type = 'empty',
             params = {
                 name = 'PlayerFramePosition',
-                size = { 435, 90},
-                point = { 'TOPLEFT', 210, -30 },
+                size = { 500, 90},
+                point = { 'TOPLEFT', 0, -140 },
                 border = { borderSize, borderColor },
             }, --SUBFRAME PARAMS
             widgets = {
@@ -187,7 +194,7 @@ local generalEntry = {
                 {
                     type = 'label',
                     params = {
-                        size = { 105, 25 },
+                        size = { 125, 25 },
                         point = { 'TOPLEFT', 10, -15 }
                     },
                     data = {
@@ -199,8 +206,8 @@ local generalEntry = {
                 {
                     type = 'dropdownmenu',
                     params = {
-                        size = { 100, 25 },
-                        point = { 'TOPLEFT', 110, -15 },
+                        size = { 125, 25 },
+                        point = { 'TOPLEFT', 130, -15 },
                         dboption = getPath('Point', 1)
                     },
                     data = dropdownAnchorData,
@@ -208,7 +215,7 @@ local generalEntry = {
                 {
                     type = 'label',
                     params = {
-                        size = { 105, 25 },
+                        size = { 125, 25 },
                         point = { 'TOPLEFT', 10, -45 }
                     },
                     data = {
@@ -220,8 +227,8 @@ local generalEntry = {
                 {
                     type = 'dropdownmenu',
                     params = {
-                        size = { 100, 25 },
-                        point = { 'TOPLEFT', 110, -45 },
+                        size = { 125, 25 },
+                        point = { 'TOPLEFT', 130, -45 },
                         dboption = getPath('Point', 3)
                     },
                     data = dropdownAnchorData,
@@ -230,7 +237,7 @@ local generalEntry = {
                     type = 'label',
                     params = {
                         size = { 100, 25 },
-                        point = { 'TOPLEFT', 235, -15 }
+                        point = { 'TOPLEFT', 290, -15 }
                     },
                     data = {
                         'OVERLAY',
@@ -242,17 +249,17 @@ local generalEntry = {
                     type = 'editbox',
                     params = {
                         size = { 50, 25 },
-                        point = { 'TOPLEFT', 345, -15 },
+                        point = { 'TOPLEFT', 400, -15 },
                         template = 'NumericInputSpinnerTemplate',
                         dboption = getPath('Point', 4)
                     },
-                    data = { nil, nil, nil, {-250, 250} }
+                    data = { nil, nil, nil, {-500, 500} }
                 }, --X-OFFSET EDITBOX
                 {
                     type = 'label',
                     params = {
                         size = { 100, 25 },
-                        point = { 'TOPLEFT', 235, -45 }
+                        point = { 'TOPLEFT', 290, -45 }
                     },
                     data = {
                         'OVERLAY',
@@ -264,11 +271,11 @@ local generalEntry = {
                     type = 'editbox',
                     params = {
                         size = { 50, 25 },
-                        point = { 'TOPLEFT', 345, -45 },
+                        point = { 'TOPLEFT', 400, -45 },
                         template = 'NumericInputSpinnerTemplate',
                         dboption = getPath('Point', 5)
                     },
-                    data = { nil, nil, nil, {-250, 250} }
+                    data = { nil, nil, nil, {-500, 500} }
                 }, --Y-OFFSET EDITBOX
             },
             childs = {}
@@ -277,8 +284,8 @@ local generalEntry = {
             type = 'empty',
             params = {
                 name = 'PlayerSubmodule',
-                size = { 645, 250},
-                point = { 'TOPLEFT', 0, -132 },
+                size = { 545, 150},
+                point = { 'TOPLEFT', 0, -250 },
                 border = { borderSize, borderColor },
                 updateWidgetsLayout = 2,
             },
@@ -300,6 +307,197 @@ local generalEntry = {
         }
     }
 }
+
+local fontEntry = {
+    type = 'empty',
+    params = {
+        name = 'PlayerFrameFontSettings',
+        size = { 554, 490 },
+        point = { 'TOPRIGHT', -2, -30 },
+    },
+    widgets = {},
+    childs = {
+        --{
+        --    type = "empty",
+        --    params = {
+        --        name = "PlayerFrameNameFont",
+        --        size = { 545, 70 },
+        --        point = { "TOPLEFT", 0, -30 },
+        --        border = { borderSize, borderColor },
+        --    },
+        --    widgets = {
+        --        {
+        --            type = 'label',
+        --            params = {
+        --                size = { 400, 30 },
+        --                point = { 'TOP', 0, 15 }
+        --            },
+        --            data = {
+        --                nil,
+        --                nil,
+        --                'Name Font'
+        --            }
+        --        }, --SECTION LABEL
+        --        {
+        --            type = 'label',
+        --            params = {
+        --                size = { 100, 25 },
+        --                point = { 'TOPLEFT', 20, -10 }
+        --            },
+        --            data = {
+        --                nil,
+        --                'GameFontNormal',
+        --                'Font Object'
+        --            }
+        --        }, --FONT OBJECT LABEL
+        --        {
+        --            type = 'dropdownmenu',
+        --            params = {
+        --                size = { 200, 25 },
+        --                point = { 'TOPLEFT', 5, -30 },
+        --                dboption = getPath( 'NameFont' , 1),
+        --                mediatype = 'font'
+        --            },
+        --            data = { },
+        --        }, --FONT OBJECT DROPDOWN
+        --        {
+        --            type = 'label',
+        --            params = {
+        --                size = { 100, 25 },
+        --                point = { 'TOPLEFT', 255, -10 }
+        --            },
+        --            data = {
+        --                nil,
+        --                'GameFontNormal',
+        --                'Font Flag'
+        --            }
+        --        }, --FONT FLAG LABEL
+        --        {
+        --            type = 'dropdownmenu',
+        --            params = {
+        --                size = { 125, 25 },
+        --                point = { 'TOPLEFT', 250, -30 },
+        --                dboption = getPath( 'NameFont' , 3),
+        --            },
+        --            data = dropdownFontFlagData,
+        --        }, --FONT FLAG DROPDOWN
+        --        {
+        --            type = 'label',
+        --            params = {
+        --                size = { 100, 25 },
+        --                point = { 'TOPLEFT', 430, -10 }
+        --            },
+        --            data = {
+        --                nil,
+        --                'GameFontNormal',
+        --                'Font Size'
+        --            }
+        --        }, --FONT SIZE LABEL
+        --        {
+        --            type = 'editbox',
+        --            params = {
+        --                size = { 40, 25 },
+        --                point = { 'TOPLEFT', 460, -30 },
+        --                template = 'NumericInputSpinnerTemplate',
+        --                dboption = getPath( 'NameFont' , 2),
+        --            },
+        --            data = { nil, nil, nil, {8, 36} },
+        --        }, --FONT SIZE EDITBOX
+        --    },
+        --    childs = {}
+        --}, --SUBFRAME NAME
+        --{
+        --    type = "empty",
+        --    params = {
+        --        name = "PlayerFrameNormalFont",
+        --        size = { 545, 70 },
+        --        point = { "TOPLEFT", 0, -30 },
+        --        border = { borderSize, borderColor },
+        --    },
+        --    widgets = {
+        --        {
+        --            type = 'label',
+        --            params = {
+        --                size = { 400, 30 },
+        --                point = { 'TOP', 0, 15 }
+        --            },
+        --            data = {
+        --                nil,
+        --                nil,
+        --                'Normal Font'
+        --            }
+        --        }, --SECTION LABEL
+        --        {
+        --            type = 'label',
+        --            params = {
+        --                size = { 100, 25 },
+        --                point = { 'TOPLEFT', 20, -10 }
+        --            },
+        --            data = {
+        --                nil,
+        --                'GameFontNormal',
+        --                'Font Object'
+        --            }
+        --        }, --FONT OBJECT LABEL
+        --        {
+        --            type = 'dropdownmenu',
+        --            params = {
+        --                size = { 200, 25 },
+        --                point = { 'TOPLEFT', 5, -30 },
+        --                dboption = getPath( 'NormalFont' , 1),
+        --                mediatype = 'font'
+        --            },
+        --            data = { },
+        --        }, --FONT OBJECT DROPDOWN
+        --        {
+        --            type = 'label',
+        --            params = {
+        --                size = { 100, 25 },
+        --                point = { 'TOPLEFT', 255, -10 }
+        --            },
+        --            data = {
+        --                nil,
+        --                'GameFontNormal',
+        --                'Font Flag'
+        --            }
+        --        }, --FONT FLAG LABEL
+        --        {
+        --            type = 'dropdownmenu',
+        --            params = {
+        --                size = { 125, 25 },
+        --                point = { 'TOPLEFT', 250, -30 },
+        --                dboption = getPath( 'NormalFont' , 3),
+        --            },
+        --            data = dropdownFontFlagData,
+        --        }, --FONT FLAG DROPDOWN
+        --        {
+        --            type = 'label',
+        --            params = {
+        --                size = { 100, 25 },
+        --                point = { 'TOPLEFT', 430, -10 }
+        --            },
+        --            data = {
+        --                nil,
+        --                'GameFontNormal',
+        --                'Font Size'
+        --            }
+        --        }, --FONT SIZE LABEL
+        --        {
+        --            type = 'editbox',
+        --            params = {
+        --                size = { 40, 25 },
+        --                point = { 'TOPLEFT', 460, -30 },
+        --                template = 'NumericInputSpinnerTemplate',
+        --                dboption = getPath( 'NormalFont' , 2),
+        --            },
+        --            data = { nil, nil, nil, {8, 36} },
+        --        }, --FONT SIZE EDITBOX
+        --    },
+        --    childs = {}
+        --}, --SUBFRAME NormalFont
+    }
+}
+
 local healthEntry = {
     type = 'empty',
     params = {
@@ -391,9 +589,113 @@ local subModules = {
     'ResurrectIndicator',
     'SummonIndicator',
     'CastBar',
-    'Name',
+    'Buffs',
+    'Debuffs',
     --'RôleIndicator', --TODO ADD ROLEINDICATOR
 }
+local playerFonts = {
+    "NameFont",
+    "NormalFont",
+    "ValueFont",
+    "BigValueFont",
+    "DurationFont",
+    "StackFont",
+}
+
+local function addFontSubFrame(name)
+
+    local anchor = { "TOPLEFT", 0, -20 + -80 * #fontEntry.childs }
+    local subframe = {
+        type = "empty",
+        params = {
+            name = "PlayerFrame"..name,
+            size = { 545, 70 },
+            point = anchor,
+            border = { borderSize, borderColor },
+        },
+        widgets = {
+            {
+                type = 'label',
+                params = {
+                    size = { 400, 30 },
+                    point = { 'TOP', 0, 15 }
+                },
+                data = {
+                    nil,
+                    nil,
+                    name
+                }
+            }, --SECTION LABEL
+            {
+                type = 'label',
+                params = {
+                    size = { 100, 25 },
+                    point = { 'TOPLEFT', 20, -10 }
+                },
+                data = {
+                    nil,
+                    'GameFontNormal',
+                    'Font Object'
+                }
+            }, --FONT OBJECT LABEL
+            {
+                type = 'dropdownmenu',
+                params = {
+                    size = { 200, 25 },
+                    point = { 'TOPLEFT', 5, -30 },
+                    dboption = getPath( name , 1),
+                    mediatype = 'font'
+                },
+                data = { },
+            }, --FONT OBJECT DROPDOWN
+            {
+                type = 'label',
+                params = {
+                    size = { 100, 25 },
+                    point = { 'TOPLEFT', 255, -10 }
+                },
+                data = {
+                    nil,
+                    'GameFontNormal',
+                    'Font Flag'
+                }
+            }, --FONT FLAG LABEL
+            {
+                type = 'dropdownmenu',
+                params = {
+                    size = { 125, 25 },
+                    point = { 'TOPLEFT', 250, -30 },
+                    dboption = getPath( name , 3),
+                },
+                data = dropdownFontFlagData,
+            }, --FONT FLAG DROPDOWN
+            {
+                type = 'label',
+                params = {
+                    size = { 100, 25 },
+                    point = { 'TOPLEFT', 430, -10 }
+                },
+                data = {
+                    nil,
+                    'GameFontNormal',
+                    'Font Size'
+                }
+            }, --FONT SIZE LABEL
+            {
+                type = 'editbox',
+                params = {
+                    size = { 40, 25 },
+                    point = { 'TOPLEFT', 460, -30 },
+                    template = 'NumericInputSpinnerTemplate',
+                    dboption = getPath( name , 2),
+                },
+                data = { nil, nil, nil, {8, 36} },
+            }, --FONT SIZE EDITBOX
+        },
+        childs = {}
+    }
+    tinsert(fontEntry.childs, subframe)
+end
 
 local function addCheckBox(parent, name)
 
@@ -404,7 +706,7 @@ local function addCheckBox(parent, name)
             size = { 25, 25 },
             point = { "TOPLEFT", 2, -2 },
             template = 'UICheckButtonTemplate',
-            dboption = getPath(name..'Submodule')
+            dboption = getPath('Submodules', name)
         },
         data = { name },
     }
@@ -422,7 +724,7 @@ local function addEntryToScroll(name, entry)
         type = 'widget',
         subtype = 'button',
         params = {
-            size = { 100, 25 },
+            size = { 200, 25 },
             point = {"TOP"},
             template = 'UIPanelButtonTemplate',
         },
@@ -436,10 +738,19 @@ local function addEntryToScroll(name, entry)
 end
 
 addEntryToScroll('General', generalEntry)
-addCheckboxTo(generalEntry.childs[3], subModules)
+addCheckboxTo(generalEntry.childs[ #generalEntry.childs ], subModules)
 
-addEntryToScroll('Fonts', healthEntry)
+addEntryToScroll('Font', fontEntry)
+addEntryToScroll('Tags', healthEntry)
 addEntryToScroll('Health', healthEntry)
-addEntryToScroll('Power', powerEntry)
+
+for _, mod in ipairs(subModules) do
+    addEntryToScroll(mod, nil)
+end
+
+for _, f in ipairs(playerFonts) do
+    addFontSubFrame(f)
+end
+--addEntryToScroll('Power', powerEntry)
 
 Install:RegisterModule('Player', page)

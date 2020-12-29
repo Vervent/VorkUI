@@ -11,14 +11,14 @@ Libs\load.xml
 #Init the Engine
 Core\init.lua
 
-#Load Themes
-Config\load.xml
-
 #Load all systems
 Core\load.xml
 
 #Load all medias
 Medias\load.xml
+
+#Load Themes
+Config\load.xml
 
 #Load all modules
 Modules\load.xml

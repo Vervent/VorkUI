@@ -14,6 +14,12 @@ function Load:OnEvent(event)
     if (event == "PLAYER_LOGIN") then
         V["Medias"]:Enable()
         V["UnitFrames"]:Enable()
+        --Now that all systems and medias are loaded, we can generate config frame
+        if not V["Profiles"]:IsReady() then
+            V["Install"]:Launch(VorkuiDB)
+        else
+            V["Install"]:GenerateConfigFrame()
+        end
     end
 end
 

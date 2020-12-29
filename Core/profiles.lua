@@ -20,6 +20,8 @@ local LSM = LibStub:GetLibrary("LibSharedMedia-3.0")
 local Profiles = CreateFrame("Frame")
 local Install = V.Install
 
+local isReady = false
+
 local db = {}
 
 local defaults = {
@@ -140,16 +142,16 @@ local function InitializeProfile(self)
     if not VorkuiDB then
         VorkuiDB = { }
         -- TODO Launch INSTALL SYSTEM
-        Install:Launch(VorkuiDB)
+        --Install:Launch(VorkuiDB)
     else
         db = VorkuiDB
+        isReady = true
         -- TODO PUSH CHANGES IN RIGHT THEMES BEFORE UF GENERATION
         ApplyTheme(VorkuiDB)
 
     end
 
     LibGUI:RegisterProfile(self)
-    Install:RegisterOptions()
 
 end
 
@@ -163,6 +165,10 @@ local function GetOptionPath(option)
     else
         return path, option
     end
+end
+
+function Profiles:IsReady()
+    return isReady
 end
 
 function Profiles:GetValue(optionName)

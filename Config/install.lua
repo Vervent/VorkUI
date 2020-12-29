@@ -7,13 +7,13 @@ local Install = CreateFrame("Frame")
 local function GenerateInstallFrame(self, db)
 
     db.Profile = {
-        Theme = "Default",
-        PartyLayout = "Expanded",
-        RaidLayout = "Minimalist",
-        PlayerLayout = {
-            Size = { 300, 62 },
-            Point = { "CENTER", "UIParent", "CENTER", -450, -350 },
-            Submodules = {
+        ["Theme"] = "Default",
+        ["PartyLayout"] = "Expanded",
+        ["RaidLayout"] = "Minimalist",
+        ["PlayerLayout"] = {
+            ["Size"] = { 300, 62 },
+            ["Point"] = { "CENTER", "UIParent", "CENTER", -450, -350 },
+            ["Submodules"] = {
                 ["Power"] = true,
                 ["Absorb"] = true,
                 ["Portrait"] = true,
@@ -27,8 +27,15 @@ local function GenerateInstallFrame(self, db)
                 ["ResurrectIndicator"] = true,
                 ["SummonIndicator"] = true,
                 ["CastBar"] = true,
-                ["Name"] = true,
-            }
+                ["Buffs"] = true,
+                ["Debuffs"] = true,
+            },
+            ["NameFont"] = { 'Montserrat Medium', 18, 'OUTLINE' },
+            ["NormalFont"] = { 'Montserrat Medium', 12, 'OUTLINE' },
+            ["ValueFont"] = { 'Montserrat Medium Italic', 14, 'OUTLINE' },
+            ["BigValueFont"] = { 'Montserrat Medium Italic', 18, 'OUTLINE' },
+            ["DurationFont"] = { 'Montserrat Medium', 12, 'OUTLINE' },
+            ["StackFont"] = { 'Montserrat Medium Italic', 16, 'OUTLINE' },
         },
     }
 
@@ -38,6 +45,8 @@ end
 
 function Install:Launch(db)
     GenerateInstallFrame(self, db)
+
+    self:GenerateConfigFrame()
 end
 
 function Install:OnEvent(event, ...)

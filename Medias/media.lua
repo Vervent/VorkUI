@@ -57,7 +57,7 @@ local FontSettings = {
         "OUTLINE"
     },
     ["Montserrat Extra Bold"] = {
-        {},
+        {  },
         "OUTLINE"
     },
     ["Montserrat Extra Bold Italic"] = {
@@ -65,7 +65,7 @@ local FontSettings = {
         "OUTLINE"
     },
     ["Montserrat Extra Light"] = {
-        {},
+        { },
         "OUTLINE"
     },
     ["Montserrat Extra Light Italic"] = {
@@ -85,15 +85,15 @@ local FontSettings = {
         "OUTLINE"
     },
     ["Montserrat Medium"] = {
-        { 10, 12, 14 },
+        { 10, 12, 14, 20 },
         "OUTLINE"
     },
     ["Montserrat Medium Italic"] = {
-        { 10, 14, 16, 22 },
+        { 10, 14, 16, 18, 22 },
         "OUTLINE"
     },
     ["Montserrat"] = {
-        { 10, 14 },
+        { 10, 14, 22 },
         "OUTLINE"
     },
     ["Montserrat SemiBold"] = {
