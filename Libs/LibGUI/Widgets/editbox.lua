@@ -38,8 +38,7 @@ local Methods = {
             self:ChangeFontColor(color)
         end
 
-        if minmax then
-            print (minmax)
+        if self.SetMinMaxValues then
             self:SetMinMaxValues(unpack(minmax))
         end
     end,
@@ -49,21 +48,22 @@ local Methods = {
         self:SetText(text)
     end,
 
-    TextChanged = function(self)
+    TextChanged = function(self, userinput)
 
-        --if self:HasFocus() == false then
-        --    return
-        --end
+        if self:HasFocus() == false then
+            return
+        end
+        self.text = self:GetNumber()
 
-        if self:IsNumeric() then
-            self.text = self:GetNumber()
-        else
-            self.text = self:GetText()
+        if self.SetValue then
+            self:SetValue( tonumber( self.text ) or 0)
         end
 
         if self.DBOption then
             profile:UpdateOption( self.DBOption, self.text )
         end
+
+        self:ChangeText(self.text)
 
         return self.text
     end,
@@ -132,19 +132,20 @@ local function create(parent, name, point, size, template, dboption)
     if size then
         edit:SetSize(unpack(size))
     end
-
     --push our internal Methods in the metatable, if it taints, need to wrap this
     setmetatable(edit, { __index = setmetatable(Methods, getmetatable(edit))})
 
     edit.Scripts['OnTextChanged'] = edit.TextChanged
-    edit.Scripts['OnEnterPressed'] = edit.ClearFocus
+    edit.Scripts['OnEnterPressed'] = edit.TextChanged
     edit.Scripts['OnEscapePressed'] = edit.ClearFocus
 
     local initialVal = profile:GetValue( dboption ) or ''
 
-    if template == 'NumericInputSpinnerTemplate' then
-        edit:SetValue( tonumber(initialVal ) or 0 )
-        edit.text = edit.currentValue
+    if edit.SetValue then
+        edit:SetNumeric(false)
+        edit:SetMaxLetters(5)
+
+        edit:SetValue(tonumber(initialVal) or 0)
     else
         edit:ChangeText( initialVal )
     end
