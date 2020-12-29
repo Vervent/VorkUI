@@ -12,7 +12,23 @@ local function GenerateInstallFrame(self, db)
         RaidLayout = "Minimalist",
         PlayerLayout = {
             Size = { 300, 62 },
-            Point = { "CENTER", 'UIParent', "CENTER", -450, -350 },
+            Point = { "CENTER", "UIParent", "CENTER", -450, -350 },
+            Submodules = {
+                ["Power"] = true,
+                ["Absorb"] = true,
+                ["Portrait"] = true,
+                ["ClassIndicator"] = true,
+                ["RaidIndicator"] = true,
+                ["LeaderIndicator"] = true,
+                ["FightIndicator"] = true,
+                ["RestingIndicator"] = true,
+                ["CombatIndicator"] = true,
+                ["DeadOrGhostIndicator"] = true,
+                ["ResurrectIndicator"] = true,
+                ["SummonIndicator"] = true,
+                ["CastBar"] = true,
+                ["Name"] = true,
+            }
         },
     }
 
