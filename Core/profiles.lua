@@ -185,11 +185,11 @@ end
 function Profiles:UpdateOption(optionName, value)
 
     local path, opt = GetOptionPath(optionName)
-    if path[opt] then
+    if path[opt] ~= nil then
         print ("|cFF10FF10Update|r", optionName, value)
         path[opt] = value
     else
-        print ("|cFFFF1010ERROR|r", optionName, value)
+        print ("|cFFFF1010ERROR|r", optionName, value, opt)
     end
 
     --if db.Profile[optionName] then
