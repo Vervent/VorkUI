@@ -88,10 +88,10 @@ local function disable(self)
 end
 
 local function onClick(self)
-    self.isChecked = self:GetChecked()
+    --self.isChecked = self:GetChecked()
 
     if self.DBOption then
-        profile:UpdateOption( self.DBOption, self.isChecked )
+        profile:UpdateOption( self.DBOption, self:GetChecked() )
     end
 end
 
@@ -104,8 +104,10 @@ local function create(parent, name, point, size, template, dboption)
     checkbutton:SetScript("OnHide", disable)
     checkbutton:SetScript("OnClick", onClick)
     checkbutton.Scripts = {}
-    checkbutton.isChecked = profile:GetValue( dboption ) or false
     checkbutton.DBOption = dboption
+
+    checkbutton:SetChecked(profile:GetValue( dboption ) or false)
+    --checkbutton.isChecked = profile:GetValue( dboption ) or false
 
     if point then
         checkbutton:SetPoint(unpack(point))
