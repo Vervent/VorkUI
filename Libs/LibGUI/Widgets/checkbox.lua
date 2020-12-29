@@ -22,6 +22,7 @@
 local _, Plugin = ...
 
 local LibGUI = Plugin.LibGUI
+local profile
 
 local Methods = {
 
@@ -88,16 +89,23 @@ end
 
 local function onClick(self)
     self.isChecked = self:GetChecked()
+
+    if self.DBOption then
+        profile:UpdateOption( self.DBOption, self.isChecked )
+    end
 end
 
-local function create(parent, name, point, size, template)
+local function create(parent, name, point, size, template, dboption)
+
+    profile = LibGUI:GetProfile()
     local checkbutton = CreateFrame('CheckButton', name, parent, template)
 
     checkbutton:SetScript("OnShow", enable)
     checkbutton:SetScript("OnHide", disable)
     checkbutton:SetScript("OnClick", onClick)
     checkbutton.Scripts = {}
-    checkbutton.isChecked = false
+    checkbutton.isChecked = profile:GetValue( dboption ) or false
+    checkbutton.DBOption = dboption
 
     if point then
         checkbutton:SetPoint(unpack(point))
