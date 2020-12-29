@@ -1253,11 +1253,12 @@ function UnitFrames:CreateUnits()
             self.Headers.Raid = raid
         elseif v.Enable == true then
             local unit = oUF:Spawn(strlower(k), "Vorkui"..k.."Frame")
-            unit:SetPoint( unpack(v.Point) )
             if k == 'Player' then
                 unit:SetSize( unpack(C.PlayerLayout.Size) )
+                unit:SetPoint( unpack(C.PlayerLayout.Point) )
             else
                 unit:SetSize( unpack(v.Size) )
+                unit:SetPoint( unpack(v.Point) )
             end
             self.Units[k] = unit
         end
