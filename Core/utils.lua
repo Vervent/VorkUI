@@ -96,7 +96,7 @@ V.Utils = Utils
 -- API func
 ---------------------------------------------------
 
-Utils.API.CreateBorder = function( self, size )
+Utils.API.CreateBorder = function( self, size, color )
     self.Borders = {}
 
     local top = self:CreateTexture(nil, "BORDER", nil, 1)
@@ -123,12 +123,82 @@ Utils.API.CreateBorder = function( self, size )
     tinsert(self.Borders, bottom)
     tinsert(self.Borders, left)
     tinsert(self.Borders, right)
+
+    if color then
+        self:SetBorderColor(color)
+    end
 end
 
 Utils.API.SetBorderColor = function (self, color )
     if self.Borders and type(self.Borders) == 'table' then
         for _, b in ipairs(self.Borders) do
             b:SetColorTexture(unpack(color))
+        end
+    end
+end
+
+Utils.API.GetRealSize = function(self)
+    local childs = { self:GetRegions() }
+
+    local width = self:GetWidth()
+    local height = self:GetHeight()
+
+    if self.text then
+        width = width + self.text:GetWrappedWidth()
+        height = height + self.text:GetStringHeight()
+    end
+
+    for _, child in ipairs(childs) do
+        local w, h = child:GetRealSize()
+        width = width + w
+        height = height + h
+    end
+
+    return width, height
+end
+
+--Grid aligned
+Utils.API.UpdateWidgetsLayout = function (self, firstItemIndex)
+    local maxWidth, maxHeight = self:GetWidth(), self:GetHeight()
+    local width = 0
+    local height = 0
+    local firstItem = firstItemIndex or 1
+    local lineCount = 0
+    local nbItemPerLine = 0
+
+    local w
+    local nbItem = 0
+
+    for i = firstItem, #self.Widgets do
+        w = self.Widgets[i]
+        if w:IsObjectType('Frame') and w.text then
+            width = max(width, w:GetWidth() + w.text:GetWrappedWidth() + 4 )
+            height = max(height, w:GetHeight(), w.text:GetStringHeight())
+        else
+            width = max(width, w:GetWidth() + 4 )
+            height = max(height, w:GetHeight())
+        end
+    end
+
+    nbItemPerLine = math.floor( maxWidth / width )
+    lineCount = math.floor((#self.Widgets - firstItemIndex + 1)/nbItemPerLine) + 1
+
+    for i = firstItem, #self.Widgets do
+        w = self.Widgets[i]
+        if nbItem < nbItemPerLine then
+            if i-1 >= firstItemIndex then
+                w:ClearAllPoints()
+                w:SetPoint("TOPLEFT", self.Widgets[i-1], "TOPLEFT", width + 2, 0)
+            else
+                w:ClearAllPoints()
+                w:SetPoint("TOPLEFT", 2, -10)
+            end
+            nbItem = nbItem + 1
+        else
+            w:ClearAllPoints()
+            w:SetPoint("TOPLEFT", self.Widgets[firstItem], "BOTTOMLEFT", 0, -2)
+            firstItem = i
+            nbItem = 1
         end
     end
 end
