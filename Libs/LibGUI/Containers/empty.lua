@@ -18,7 +18,11 @@ local function create(parent, name, size, point)
     frame.enableAllChilds = true
 
     if point then
-        frame:SetPoint(unpack(point))
+        if type(point) == 'table' then
+            frame:SetPoint(unpack(point))
+        else
+            frame:SetAllPoints()
+        end
     end
     if size then
         frame:SetSize(unpack(size))

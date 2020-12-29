@@ -28,7 +28,7 @@ local Methods = {
     Update = function (self, dataTable)
         local layer, font, text = unpack(dataTable)
         self:SetDrawLayer(layer or 'ARTWORK')
-        self:ChangeFont(font)
+        self:ChangeFont(font or 'Game11Font')
         self:ChangeText(text or '')
     end,
 

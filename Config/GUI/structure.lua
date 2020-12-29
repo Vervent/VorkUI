@@ -99,7 +99,7 @@ local modulePage = {
                 template = 'UICheckButtonTemplate',
             },
             data = {
-                'Unit Frame',
+                'UnitFrame',
             },
         }
     },
@@ -362,7 +362,7 @@ local config = {
             parent = UIParent,
             name = 'VorkuiConfigUI',
             title = 'Vorkui Options',
-            size = { 600, 600 },
+            size = { 800, 600 },
             point = { 'CENTER' },
         },
         childs = {
@@ -370,7 +370,7 @@ local config = {
                 type = 'tabframe',
                 params = {
                     name = 'TabFrame',
-                    size = { 600, 570 },
+                    size = { 800, 570 },
                     point = { 'TOP', 0, -30 }
                 },
                 pages = {
@@ -382,6 +382,48 @@ local config = {
         }
     }
 }
+
+local function addModule(moduleName)
+    local name = moduleName or 'BADMODULENAME'
+
+    local module = {
+        type = 'checkbox',
+        params = {
+            name = name..'checkbox',
+            point = { 'CENTER' },
+            template = 'UICheckButtonTemplate',
+        },
+        data = {
+            name,
+        },
+    }
+
+    tinsert(modulePage.widgets, module)
+end
+
+local function addPage(page)
+    if page then
+        tinsert(config.root.childs[1].pages, page)
+    end
+end
+
+local function removeModule(moduleName)
+    --Remove module -> remove page
+    local pages = config.root.childs[1].pages
+    local modules = modulePage.widgets
+
+    for i, p in ipairs(modules) do
+        if p.params.name == moduleName..'checkbox' then
+            tremove(modules, i)
+        end
+    end
+    for i, p in ipairs(pages) do
+        if p.name == moduleName..'Page' then
+            tremove(pages, i)
+        end
+    end
+    --TODO We probably need to remove all data from DB too
+end
 
 local function parseEmpty(parent, frameconfig)
 
@@ -401,6 +443,15 @@ local function parseEmpty(parent, frameconfig)
         frame.AfterEnable = frameconfig.params.AfterEnable
     end
 
+    if frameconfig.params.border then
+        if type(frameconfig.params.border) == 'table' then
+            frame:CreateBorder(frameconfig.params.border[1] or 1)
+            frame:SetBorderColor(frameconfig.params.border[2] or nil)
+        else
+            frame:CreateBorder(1, { 1, 1, 1, 1})
+        end
+    end
+
     local item
     for _, w in ipairs(frameconfig.widgets) do
         item = LibGUI:NewWidget(w.type, frame, w.params.name, w.params.point, w.params.size, w.params.layer or w.params.template, w.params.dboption or nil)
@@ -415,6 +466,10 @@ local function parseEmpty(parent, frameconfig)
         elseif c.type == 'empty' then
             parseEmpty(frame, c)
         end
+    end
+
+    if frameconfig.params.updateWidgetsLayout then
+        frame:UpdateWidgetsLayout( frameconfig.params.updateWidgetsLayout )
     end
 
 end
@@ -515,6 +570,38 @@ end
 function Install:RegisterOptions()
     parseConfig()
 
+end
+
+function Install:RegisterModule(name, page)
+    print ('REGISTER MODULE', name, page)
+    addModule(name)
+    addPage(page)
+end
+
+function Install:DisableModule(name)
+   --TODO
+    --[[
+        Find module in checkbox list
+            disable it
+        Find page in tabPage
+            hide it or disable it
+            reorder page if needed (sort by active and index)
+    ]]--
+end
+
+function Install:EnableModule(name)
+    --TODO
+    --[[
+       Find module in checkbox list (to be sure it exists)
+           enable it
+       Find page in tabPage
+           show it or enable it
+           reorder page if needed (sort by active and index)
+   ]]--
+end
+
+function Install:EraseModule(name)
+    removeModule(name)
 end
 
 function Install:GetStructure()

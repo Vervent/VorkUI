@@ -99,7 +99,6 @@ local function create(parent, name, point, size, template)
     checkbutton.Scripts = {}
     checkbutton.isChecked = false
 
-
     if point then
         checkbutton:SetPoint(unpack(point))
     end
