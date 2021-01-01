@@ -1,5 +1,5 @@
-local _G=_G
-local unpack=unpack
+local _G = _G
+local unpack = unpack
 
 local AddOn, Engine = ...
 local Resolution = select(1, GetPhysicalScreenSize()).."x"..select(2, GetPhysicalScreenSize())

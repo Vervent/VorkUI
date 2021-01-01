@@ -4,7 +4,7 @@
 --- DateTime: 20/10/2020 00:11
 ---
 
-local V,C,L = select(2,...):unpack()
+local V, C, L = select(2,...):unpack()
 
 local CreateFrame = CreateFrame
 
@@ -13,14 +13,18 @@ local Load = CreateFrame("Frame")
 function Load:OnEvent(event)
     if (event == "PLAYER_LOGIN") then
         V["Medias"]:Enable()
-        V["UnitFrames"]:Enable()
         --Now that all systems and medias are loaded, we can generate config frame
         if not V["Profiles"]:IsReady() then
-            V["Themes"]:RegisterTheme("Default")
-            V["Install"]:Launch(VorkuiDB)
+            --print ("REGISTER DATA")
+            --V["Themes"]:RegisterTheme("Default")
+            --print ("LAUNCH INSTALLER")
+            --V["Install"]:Launch(VorkuiDB)
         else
+            print ("GENERATE CONFIG FRAME")
             V["Install"]:GenerateConfigFrame()
         end
+        V["UnitFrames"]:Enable()
+
     end
 end
 

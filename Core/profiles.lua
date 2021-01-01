@@ -142,8 +142,8 @@ end
 local function InitializeProfile(self)
 
     if not VorkuiDB then
-        VorkuiDB = { }
         -- TODO Launch INSTALL SYSTEM
+        V["Themes"]:RegisterTheme("Default")
         --Install:Launch(VorkuiDB)
     else
         db = VorkuiDB
@@ -174,20 +174,14 @@ function Profiles:IsReady()
 end
 
 function Profiles:GetValue(optionName)
-    --local val = db.Profile
-    --if type(optionName) == 'table' then
-    --    for i=1, #optionName do
-    --        val = val[optionName[i]]
-    --    end
-    --    return val or nil
-    --else
-    --    return val[optionName] or nil
-    --end
+    if optionName == nil then
+        print ('|cFFFF1010 PROFILE GET VALUE ERROR|r')
+        return
+    end
 
     local path, opt = GetOptionPath(optionName)
     return path[opt]
 
-    --return db.Profile[optionName] or nil
 end
 
 function Profiles:UpdateOption(optionName, value)
@@ -200,16 +194,25 @@ function Profiles:UpdateOption(optionName, value)
         print ("|cFFFF1010ERROR|r", optionName, value, opt)
     end
 
-    --if db.Profile[optionName] then
-    --    print ("|cFF10FF10Update|r", optionName, value)
-    --    db.Profile[optionName] = value
-    --else
-    --    print ("|cFFFF1010ERROR|r", optionName, value)
-    --end
 end
 
 function Profiles:UpdateDB()
-    VorkuiDB.Profile = defaults.profile
+    db.Profile = defaults.profile
+    VorkuiDB = db
+    isReady = true
+    ApplyTheme(VorkuiDB)
+    print ("DB IS NOW INITIALIZED AND READY")
+end
+
+function Profiles:WipeInDB(namePath)
+    local path, opt = GetOptionPath(namePath)
+
+    if path and path[opt]~= nil then
+        path[opt] = {}
+        return true
+    else
+        return false
+    end
 end
 
 function Profiles:OnEvent(event, addonName)
@@ -226,8 +229,6 @@ function Profiles:RegisterModule(db, name)
     db[name] = {
         ["Enable"] = false,
     }
-    --registry[name] = {}
-    --tinsert(registry[name], { ["Enable"] = false, } )
 end
 
 function Profiles:RegisterSubModule(db, moduleName, name)
@@ -242,8 +243,6 @@ function Profiles:RegisterSubModule(db, moduleName, name)
     db[moduleName][name] = {
         ["Enable"] = false,
     }
-    --registry[moduleName][name] = {}
-    --tinsert(registry[moduleName][name], { ["Enable"] = false, } )
 end
 
 function Profiles:RegisterOption(module, submodule, object, component, optionName, ...)

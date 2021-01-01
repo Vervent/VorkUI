@@ -301,7 +301,7 @@ local unitFramePage = {
                     params = {
                         size = { 200, 25 },
                         point = { 'TOP', 0, -50 },
-                        dboption = { 'PartyLayout', 'Layout' }
+                        dboption = { 'UnitFrames', 'PartyLayout', 'Layout' }
                     },
                     data = {
                         { text = 'Expanded' },
@@ -339,7 +339,7 @@ local unitFramePage = {
                     params = {
                         size = { 200, 25 },
                         point = { 'TOP', 0, -50 },
-                        dboption = { 'RaidLayout', 'Layout' }
+                        dboption = { 'UnitFrames', 'RaidLayout', 'Layout' }
                     },
                     data = {
                         { text = 'Expanded' },
@@ -426,7 +426,6 @@ local function removeModule(moduleName)
 end
 
 local function parseEmpty(parent, frameconfig)
-
     local frame = LibGUI:NewContainer(
             frameconfig.type,
             parent,

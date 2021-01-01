@@ -1215,17 +1215,17 @@ function UnitFrames:Style(unit)
         UnitFrames.FocusTarget(self, style.FocusTarget.Config)
     elseif (unit == "party") then
         --TODO USE CONFIG LAYOUT HERE
-        UnitFrames.Party(self, style.Party.Config[C.PartyLayout.Layout].Unit )
+        UnitFrames.Party(self, style.Party.Config[C.UnitFrames.PartyLayout.Layout].Unit )
     elseif (unit == "raid" ) then
         --TODO USE CONFIG LAYOUT HERE
-        UnitFrames.Raid(self, style.Raid.Config[C.RaidLayout.Layout].Unit)
+        UnitFrames.Raid(self, style.Raid.Config[C.UnitFrames.RaidLayout.Layout].Unit)
     elseif (unit:find("raid")) or (unit:find("raidpet")) then
         if Parent:match("Party") then
             --TODO USE CONFIG LAYOUT HERE
-            UnitFrames.Party(self, style.Party.Config[C.PartyLayout.Layout].Unit)
+            UnitFrames.Party(self, style.Party.Config[C.UnitFrames.PartyLayout.Layout].Unit)
         else
             --TODO USE CONFIG LAYOUT HERE
-            UnitFrames.Raid(self, style.Raid.Config[C.RaidLayout.Layout].Unit)
+            UnitFrames.Raid(self, style.Raid.Config[C.UnitFrames.RaidLayout.Layout].Unit)
         end
     end
 
@@ -1234,6 +1234,8 @@ end
 
 function UnitFrames:CreateUnits()
 
+    print ("|cFF10FF10CreateUnits|r", C, C.Theme, C.Theme.Name)
+
     local themeName = C.Theme.Name
     local Config = V.Themes['default'].UnitFrames
 
@@ -1241,11 +1243,16 @@ function UnitFrames:CreateUnits()
         if k == "Party" and v.Enable == true then
 
             local header = v.Config.Header
-            local layout = C.PartyLayout.Layout
+            local layout = C.UnitFrames.PartyLayout.Layout
+            local initialConfigFunction = [[
+                    local header = self:GetParent()
+                    self:SetWidth(header:GetAttribute("initial-width"))
+                    self:SetHeight(header:GetAttribute("initial-height"))
+                    ]]
 
             --TODO USE CONFIG LAYOUT HERE
             local party = oUF:SpawnHeader( header.Name, header.Template, header.Visibility,
-                    "oUF-initialConfigFunction", header.InitialConfigFunction,
+                    "oUF-initialConfigFunction", initialConfigFunction,
                     unpack( UnitFrames:GetPartyFramesAttributes( v.Config[layout].Attributes ) )
             )
             party:SetPoint("LEFT", UIParent, "LEFT", 0, 0)
@@ -1254,11 +1261,16 @@ function UnitFrames:CreateUnits()
         elseif k == "Raid" and v.Enable == true then
 
             local header = v.Config.Header
-            local layout = C.RaidLayout.Layout
+            local layout = C.UnitFrames.RaidLayout.Layout
+            local initialConfigFunction = [[
+                    local header = self:GetParent()
+                    self:SetWidth(header:GetAttribute("initial-width"))
+                    self:SetHeight(header:GetAttribute("initial-height"))
+                    ]]
 
             --TODO USE CONFIG LAYOUT HERE
             local raid = oUF:SpawnHeader( header.Name, header.Template, header.Visibility,
-                    "oUF-initialConfigFunction", header.InitialConfigFunction,
+                    "oUF-initialConfigFunction", initialConfigFunction,
                     unpack( UnitFrames:GetPartyFramesAttributes( v.Config[layout].Attributes ) )
             )
             raid:SetPoint("BOTTOM", UIParent, "BOTTOM", -300, 120)
