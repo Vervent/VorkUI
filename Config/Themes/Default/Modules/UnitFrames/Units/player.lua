@@ -17,23 +17,23 @@ end
 
 local function absorbOption(module, submodule)
     local data = {
-        { nil, 'boolean', 'Enable', true },
+        { nil, 'Enable', true },
         --TRANSFORM
-        { nil, 'table', 'Size', 232, 8  },
-        { nil, 'table', 'Point', 'TOPRIGHT', nil, 'TOPRIGHT' },
+        { nil, 'Size', 232, 8 },
+        { nil, 'Point', 'TOPRIGHT', nil, 'TOPRIGHT' },
         ----SLANT
-        { 'SlantingSettings', 'boolean', 'Enable', true },
-        { 'SlantingSettings', 'boolean', 'IgnoreBackground', true},
-        { 'SlantingSettings', 'boolean', 'FillInverse', true },
-        { 'SlantingSettings', 'layer', 'StaticLayer', 'BACKGROUND' },
+        { 'SlantingSettings', 'Enable', true },
+        { 'SlantingSettings', 'IgnoreBackground', true },
+        { 'SlantingSettings', 'FillInverse', true },
+        { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
-        { 'Rendering', 'texture', nil, 'VorkuiBubbles', 'ARTWORK' },
-        { 'Rendering', 'color', nil, { 0, 0, 0, 1 }, 'BACKGROUND', 1 },
+        { 'Rendering', nil, 'VorkuiBubbles', 'ARTWORK' },
+        { 'Rendering', nil, { 0, 0, 0, 1 }, 'BACKGROUND', 1 },
         --TAGS
-        { 'Value', 'layer', 'Layer', 'OVERLAY' },
-        { 'Value', 'font', 'Font', 'ValueFont' },
-        { 'Value', 'table', 'Point', "TOPLEFT", nil, "TOP" },
-        { 'Value', 'string', 'Tag', '[Vorkui:HealthColor][Vorkui:Absorb]' },
+        { 'Value', 'Layer', 'OVERLAY' },
+        { 'Value', 'Font', 'ValueFont' },
+        { 'Value', 'Point', "TOPLEFT", nil, "TOP" },
+        { 'Value', 'Tag', '[Vorkui:HealthColor][Vorkui:Absorb]' },
     }
 
     registers(module, submodule, 'Absorb', data)
@@ -43,26 +43,26 @@ end
 local function healthOption(module, submodule)
     local data = {
         --TRANSFORM
-        { nil, 'table', 'Size',  256, 32  },
-        { nil, 'table', 'Point',  'TOPRIGHT', 'Absorb', 'BOTTOMRIGHT', -8, 0  },
+        { nil, 'Size', 256, 32 },
+        { nil, 'Point', 'TOPRIGHT', 'Absorb', 'BOTTOMRIGHT', -8, 0 },
         ----SLANT
-        { 'SlantingSettings', 'boolean', 'Enable', true },
-        { 'SlantingSettings', 'boolean', 'IgnoreBackground', true},
-        { 'SlantingSettings', 'layer', 'StaticLayer', 'BACKGROUND' },
+        { 'SlantingSettings', 'Enable', true },
+        { 'SlantingSettings', 'IgnoreBackground', true },
+        { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
-        { 'Rendering', 'texture', nil, 'VorkuiDefault', 'ARTWORK' },
-        { 'Rendering', 'texture', nil, 'VorkuiBackground', 'BACKGROUND', 1 },
-        { 'Rendering', 'texture', nil, 'VorkuiBorder', 'OVERLAY' },
+        { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
+        { 'Rendering', nil, 'VorkuiBackground', 'BACKGROUND', 1 },
+        { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
         --TAGS
-        { 'Value', 'layer', 'Layer', 'OVERLAY' },
-        { 'Value', 'font', 'Font', 'ValueFont' },
-        { 'Value', 'table', 'Point', 'TOPRIGHT', nil, 'TOP'  },
-        { 'Value', 'string', 'Tag', '[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp]' },
+        { 'Value', 'Layer', 'OVERLAY' },
+        { 'Value', 'Font', 'ValueFont' },
+        { 'Value', 'Point', 'TOPRIGHT', nil, 'TOP' },
+        { 'Value', 'Tag', '[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp]' },
 
-        { 'Percent', 'layer', 'Layer', 'OVERLAY' },
-        { 'Percent', 'font', 'Font', 'BigValueFont' },
-        { 'Percent', 'table', 'Point', 'BOTTOMRIGHT', nil, 'BOTTOMRIGHT' },
-        { 'Percent', 'string', 'Tag', '[Vorkui:HealthColor(true)][Vorkui:PerHP]' },
+        { 'Percent', 'Layer', 'OVERLAY' },
+        { 'Percent', 'Font', 'BigValueFont' },
+        { 'Percent', 'Point', 'BOTTOMRIGHT', nil, 'BOTTOMRIGHT' },
+        { 'Percent', 'Tag', '[Vorkui:HealthColor(true)][Vorkui:PerHP]' },
     }
 
     registers(module, submodule, 'Health', data)
@@ -72,11 +72,11 @@ end
 local function healthPredictionOption(module, submodule)
     local data = {
         ----SLANT
-        { 'SlantingSettings', 'boolean', 'Enable', true },
-        { 'SlantingSettings', 'boolean', 'IgnoreBackground', true},
+        { 'SlantingSettings', 'Enable', true },
+        { 'SlantingSettings', 'IgnoreBackground', true },
         --RENDERING
-        { 'Rendering', 'texture', nil, 'VorkuiDefault', 'ARTWORK', 1 },
-        { 'Rendering', 'texture', nil, 'VorkuiBorder', 'OVERLAY' },
+        { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK', 1 },
+        { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
     }
 
     registers(module, submodule, 'HealthPrediction', data)
@@ -86,44 +86,44 @@ end
 local function castbarOption(module, submodule)
     local data = {
         --TRANSFORM
-        { nil, 'table', 'Size', 300, 20 },
-        { nil, 'table', 'Point', 'TOP', nil, 'BOTTOM', 0, -2 },
-        { nil, 'color', 'StatusBarColor', { 0, 0.5, 1, 1 }  },
+        { nil, 'Size', 300, 20 },
+        { nil, 'Point', 'TOP', nil, 'BOTTOM', 0, -2 },
+        { nil, 'StatusBarColor', { 0, 0.5, 1, 1 } },
         --RENDERING
-        { 'Rendering', 'texture', nil, 'VorkuiDefault', 'ARTWORK' },
-        { 'Rendering', 'texture', nil, 'VorkuiBackground', 'BACKGROUND', 1 },
-        { 'Rendering', 'texture', nil, 'VorkuiBorder', 'OVERLAY' },
+        { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
+        { 'Rendering', nil, 'VorkuiBackground', 'BACKGROUND', 1 },
+        { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
         --SPARK
-        { 'Spark', 'layer', 'Layer', 'OVERLAY' },
-        { 'Spark', 'table', 'Size', 20, 20 },
-        { 'Spark', 'blend', 'BlendMode', 'ADD' },
-        { 'CastSettings', 'texture', 'AtlasName', 'Muzzle' },
-        { 'CastSettings', 'table', 'Point', 'RIGHT', nil, 'RIGHT', 5, 0 },
-        { 'ChannelSettings', 'texture', 'AtlasName', 'Spark' },
-        { 'ChannelSettings', 'table', 'Point', 'CENTER', nil, 'RIGHT' },
+        { 'Spark', 'Layer', 'OVERLAY' },
+        { 'Spark', 'Size', 20, 20 },
+        { 'Spark', 'BlendMode', 'ADD' },
+        { 'CastSettings', 'AtlasName', 'Muzzle' },
+        { 'CastSettings', 'Point', 'RIGHT', nil, 'RIGHT', 5, 0 },
+        { 'ChannelSettings', 'AtlasName', 'Spark' },
+        { 'ChannelSettings', 'Point', 'CENTER', nil, 'RIGHT' },
         --TAGS
-        { 'Time', 'layer', 'Layer', 'OVERLAY' },
-        { 'Time', 'font', 'Font', 'DurationFont' },
-        { 'Time', 'table', 'Point', 'RIGHT' },
+        { 'Time', 'Layer', 'OVERLAY' },
+        { 'Time', 'Font', 'DurationFont' },
+        { 'Time', 'Point', 'RIGHT' },
 
-        { 'Text', 'layer', 'Layer', 'OVERLAY' },
-        { 'Text', 'font', 'Font', 'NormalFont' },
-        { 'Text', 'table', 'Point', 'CENTER' },
+        { 'Text', 'Layer', 'OVERLAY' },
+        { 'Text', 'Font', 'NormalFont' },
+        { 'Text', 'Point', 'CENTER' },
 
         --ICON
-        { 'Icon', 'table', 'Size', 20, 20 },
-        { 'Icon', 'table', 'Point', 'TOPLEFT' },
+        { 'Icon', 'Size', 20, 20 },
+        { 'Icon', 'Point', 'TOPLEFT' },
 
         --SHIELD
-        { 'Shield', 'table', 'Size', 20, 20 },
-        { 'Shield', 'table', 'Point', 'LEFT', 'Text' },
-        { 'Shield', 'texture', 'Texture', 'GlobalIcon' },
-        { 'Shield', 'string', 'TexCoord', 'DEFENSE' },
+        { 'Shield', 'Size', 20, 20 },
+        { 'Shield', 'Point', 'LEFT', 'Text' },
+        { 'Shield', 'Texture', 'GlobalIcon' },
+        { 'Shield', 'TexCoord', 'DEFENSE' },
 
         --SAFEZONE
-        { 'SafeZone', 'layer', 'Layer', 'OVERLAY' },
-        { 'SafeZone', 'blend', 'BlendMode', 'ADD' },
-        { 'SafeZone', 'color', 'VertexColor', { 255/255, 246/255, 0, 0.75 } },
+        { 'SafeZone', 'Layer', 'OVERLAY' },
+        { 'SafeZone', 'BlendMode', 'ADD' },
+        { 'SafeZone', 'VertexColor', { 255 / 255, 246 / 255, 0, 0.75 } },
     }
 
     registers(module, submodule, 'CastBar', data)
@@ -132,12 +132,12 @@ end
 
 local function nameOption(module, submodule)
     local data = {
-        { nil, 'boolean', 'Enable', true },
+        { nil, 'Enable', true },
         --TAGS
-        { nil, 'layer', 'Layer', 'OVERLAY' },
-        { nil, 'font', 'Font', 'NameFont' },
-        { nil, 'table', 'Point', 'BOTTOMLEFT', nil, 'TOPLEFT', 0, 2 },
-        { nil, 'string', 'Tag', '[classification] [name] [difficulty][level]' },
+        { nil, 'Layer', 'OVERLAY' },
+        { nil, 'Font', 'NameFont' },
+        { nil, 'Point', 'BOTTOMLEFT', nil, 'TOPLEFT', 0, 2 },
+        { nil, 'Tag', '[classification] [name] [difficulty][level]' },
     }
 
     registers(module, submodule, 'Name', data)
@@ -145,22 +145,22 @@ end
 
 local function powerOption(module, submodule)
     local data = {
-        { nil, 'boolean', 'Enable', true },
+        { nil, 'Enable', true },
         --TRANSFORM
-        { nil, 'table', 'Size', 235, 10 },
-        { nil, 'table', 'Point', 'TOPLEFT', 'Health', 'BOTTOMLEFT', -10, 0 },
+        { nil, 'Size', 235, 10 },
+        { nil, 'Point', 'TOPLEFT', 'Health', 'BOTTOMLEFT', -10, 0 },
         ----SLANT
-        { 'SlantingSettings', 'boolean', 'Enable', true },
-        { 'SlantingSettings', 'boolean', 'IgnoreBackground', true},
-        { 'SlantingSettings', 'layer', 'StaticLayer', 'BACKGROUND' },
+        { 'SlantingSettings', 'Enable', true },
+        { 'SlantingSettings', 'IgnoreBackground', true },
+        { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
-        { 'Rendering', 'texture', nil, 'VorkuiDefault', 'ARTWORK' },
-        { 'Rendering', 'texture', nil, 'VorkuiBorder', 'OVERLAY' },
+        { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
+        { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
         --TAGS
-        { 'Value', 'layer', 'Layer', 'OVERLAY' },
-        { 'Value', 'font', 'Font', 'StackFont' },
-        { 'Value', 'table', 'Point', 'BOTTOM' },
-        { 'Value', 'string', 'Tag', '[powercolor][missingpp]' },
+        { 'Value', 'Layer', 'OVERLAY' },
+        { 'Value', 'Font', 'StackFont' },
+        { 'Value', 'Point', 'BOTTOM' },
+        { 'Value', 'Tag', '[powercolor][missingpp]' },
     }
 
     registers(module, submodule, 'Power', data)
@@ -170,12 +170,12 @@ end
 local function powerPredictionOption(module, submodule)
     local data = {
         ----SLANT
-        { 'SlantingSettings', 'boolean', 'Enable', true },
-        { 'SlantingSettings', 'boolean', 'IgnoreBackground', true},
-        { 'SlantingSettings', 'boolean', 'FillInverse', true },
+        { 'SlantingSettings', 'Enable', true },
+        { 'SlantingSettings', 'IgnoreBackground', true },
+        { 'SlantingSettings', 'FillInverse', true },
         --RENDERING
-        { 'Rendering', 'texture', nil, 'VorkuiDefault', 'ARTWORK', 1 },
-        { 'Rendering', 'texture', nil, 'VorkuiBorder', 'OVERLAY' },
+        { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK', 1 },
+        { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
     }
 
     registers(module, submodule, 'PowerPrediction', data)
@@ -184,16 +184,16 @@ end
 
 local function portraitOption(module, submodule)
     local data = {
-        { nil, 'boolean', 'Enable', true },
+        { nil, 'Enable', true },
         --TRANSFORM
-        { nil, 'table', 'Size', 49, 49 },
-        { nil, 'table', 'Point', 'TOPLEFT', nil, 'TOPLEFT' },
-        { nil, 'string', 'Type', '3D' },
-        { nil, 'layer', 'ModelDrawLayer', 'BACKGROUND' },
+        { nil, 'Size', 49, 49 },
+        { nil, 'Point', 'TOPLEFT', nil, 'TOPLEFT' },
+        { nil, 'Type', '3D' },
+        { nil, 'ModelDrawLayer', 'BACKGROUND' },
 
-        { 'PostUpdate', 'table', 'Position', { 0.2, 0, 0 } },
-        { 'PostUpdate', 'number', 'Rotation', - math.pi/5 },
-        { 'PostUpdate', 'number', 'CamDistance', 2 },
+        { 'PostUpdate', 'Position', { 0.2, 0, 0 } },
+        { 'PostUpdate', 'Rotation', -math.pi / 5 },
+        { 'PostUpdate', 'CamDistance', 2 },
     }
 
     registers(module, submodule, 'Portrait', data)
@@ -202,13 +202,13 @@ end
 
 local function indicatorOption(module, submodule, indicator, size, point, texture, texcoord, vertexcolor, gradientalpha, blendmode)
     local data = {
-        { nil, 'table', 'Size', unpack(size) },
-        { nil, 'table', 'Point', unpack(point) },
-        { nil, 'texture', 'Texture', texture },
-        { nil, 'string', 'TexCoord', texcoord },
-        { nil, 'color', 'VertexColor', vertexcolor },
-        { nil, 'table', 'GradientAlpha', gradientalpha },
-        { nil, 'blend', 'BlendMode', blendmode },
+        { nil, 'Size', unpack(size) },
+        { nil, 'Point', unpack(point) },
+        { nil, 'Texture', texture },
+        { nil, 'TexCoord', texcoord },
+        { nil, 'VertexColor', vertexcolor },
+        { nil, 'GradientAlpha', gradientalpha },
+        { nil, 'BlendMode', blendmode },
     }
 
     registers(module, submodule, indicator, data)
@@ -221,8 +221,8 @@ Themes["Default"].SetPlayerProfile = function()
     local submodule = 'PlayerLayout'
 
     --Global OPTION
-    Profiles:RegisterOption(module, submodule, nil, nil, 'table', 'Size', 300, 62)
-    Profiles:RegisterOption(module, submodule, nil, nil, 'table', 'Point', "CENTER", 'UIParent', "CENTER", -450, -350)
+    Profiles:RegisterOption(module, submodule, nil, nil, 'Size', 300, 62)
+    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', "CENTER", 'UIParent', "CENTER", -450, -350)
     --HEALTH OPTION
     healthOption(module, submodule)
     healthPredictionOption(module, submodule)
@@ -232,17 +232,17 @@ Themes["Default"].SetPlayerProfile = function()
     portraitOption(module, submodule)
 
     indicatorOption(module, submodule, 'ClassIndicator',
-            {16, 16},
+            { 16, 16 },
             { 'TOPLEFT', 'Frame', 'TOPRIGHT', -4, -2 },
             'ClassIcon',
-             select(2, UnitClass("player")),
-             nil,
+            select(2, UnitClass("player")),
+            nil,
             nil,
             nil
     )
 
     indicatorOption(module, submodule, 'RaidIndicator',
-            {16, 16},
+            { 16, 16 },
             { 'LEFT', 'Health', 'LEFT', 10, 0 },
             'RaidIcon',
             nil,
@@ -252,32 +252,32 @@ Themes["Default"].SetPlayerProfile = function()
     )
 
     indicatorOption(module, submodule, 'LeaderIndicator',
-            { 64/4, 53/4 },
+            { 64 / 4, 53 / 4 },
             { 'RIGHT', 'Frame', 'LEFT' },
             'GlobalIcon',
             'LEADER',
-            { 163/255, 220/255, 255/255 },
+            { 163 / 255, 220 / 255, 255 / 255 },
             nil,
             nil
     )
 
     indicatorOption(module, submodule, 'RestingIndicator',
-            { 64/2, 60/2 },
+            { 64 / 2, 60 / 2 },
             { 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT' },
             'GlobalIcon',
             'RESTING',
             nil,
-            { "VERTICAL", 163/255, 220/255, 255/255, 0.75, 0, 0, 0, 1 },
+            { "VERTICAL", 163 / 255, 220 / 255, 255 / 255, 0.75, 0, 0, 0, 1 },
             'ADD'
     )
 
     indicatorOption(module, submodule, 'CombatIndicator',
-            { 39/3, 64/3 },
+            { 39 / 3, 64 / 3 },
             { 'BOTTOMRIGHT', 'Frame', 'TOPRIGHT' },
             'GlobalIcon',
             'MAELSTROM',
             nil,
-            { "VERTICAL", 255/255, 246/255, 0/255, 0.75, 255/255, 50/255, 0/255, 1 },
+            { "VERTICAL", 255 / 255, 246 / 255, 0 / 255, 0.75, 255 / 255, 50 / 255, 0 / 255, 1 },
             'ADD'
     )
 
@@ -286,7 +286,7 @@ Themes["Default"].SetPlayerProfile = function()
             { 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT' },
             'Status',
             'DIED',
-            { 255/255, 68/255, 91/255 },
+            { 255 / 255, 68 / 255, 91 / 255 },
             nil,
             nil
     )
@@ -296,7 +296,7 @@ Themes["Default"].SetPlayerProfile = function()
             { 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT', 0, 0 },
             'Status',
             'RESURRECT',
-            { 30/255, 223/255, 100/255 },
+            { 30 / 255, 223 / 255, 100 / 255 },
             nil,
             nil
     )
@@ -306,7 +306,7 @@ Themes["Default"].SetPlayerProfile = function()
             { 'CENTER', 'Health', 'CENTER' },
             'Phasing',
             'SUMMON',
-            { 0/255, 204/255, 255/255 },
+            { 0 / 255, 204 / 255, 255 / 255 },
             nil,
             nil
     )
@@ -316,7 +316,7 @@ Themes["Default"].SetPlayerProfile = function()
             { 'CENTER', 'Health', 'CENTER' },
             'Phasing',
             'PHASE',
-            { 0/255, 204/255, 255/255 },
+            { 0 / 255, 204 / 255, 255 / 255 },
             nil,
             nil
     )

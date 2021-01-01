@@ -248,9 +248,10 @@ function Profiles:RegisterSubModule(moduleName, name)
     --tinsert(registry[moduleName][name], { ["Enable"] = false, } )
 end
 
-function Profiles:RegisterOption(module, submodule, object, component, typeOption, optionName, ...)
+function Profiles:RegisterOption(module, submodule, object, component, optionName, ...)
+    local sizeArg = select('#', ...)
 
-    if typeOption == nil then
+    if sizeArg == 0 then
         return
     end
 
@@ -295,7 +296,7 @@ function Profiles:RegisterOption(module, submodule, object, component, typeOptio
             optionSize = #tab[optionName]
         end
 
-        for i=1, select('#',...) do
+        for i=1, sizeArg do
             va_arg = select(i, ...)
             tab[optionName][optionSize + 1] = va_arg
             optionSize = optionSize + 1
