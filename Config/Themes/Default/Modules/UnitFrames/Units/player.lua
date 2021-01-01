@@ -20,19 +20,15 @@ local function absorbOption(module, submodule)
         { nil, 'boolean', 'Enable', true },
         --TRANSFORM
         { nil, 'table', 'Size', 232, 8  },
-        { nil, 'table', 'Point', 'TOPRIGHT', 'Frame', 'TOPRIGHT', 0, 0 },
+        { nil, 'table', 'Point', 'TOPRIGHT', nil, 'TOPRIGHT' },
         ----SLANT
         { 'SlantingSettings', 'boolean', 'Enable', true },
         { 'SlantingSettings', 'boolean', 'IgnoreBackground', true},
         { 'SlantingSettings', 'boolean', 'FillInverse', true },
         { 'SlantingSettings', 'layer', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
-        { 'Rendering', 'color', 'Background', 0,0,0,1 },
-        { 'Rendering', 'layer', 'Background', 'BACKGROUND' },
-        { 'Rendering', 'sublayer', 'Background', 1 },
-
-        { 'Rendering', 'texture', 'Main', 'VorkuiBubbles' },
-        { 'Rendering', 'layer', 'Main', 'ARTWORK' },
+        { 'Rendering', 'texture', nil, 'VorkuiBubbles', 'ARTWORK' },
+        { 'Rendering', 'color', nil, { 0, 0, 0, 1 }, 'BACKGROUND', 1 },
         --TAGS
         { 'Value', 'layer', 'Layer', 'OVERLAY' },
         { 'Value', 'font', 'Font', 'ValueFont' },
@@ -54,15 +50,9 @@ local function healthOption(module, submodule)
         { 'SlantingSettings', 'boolean', 'IgnoreBackground', true},
         { 'SlantingSettings', 'layer', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
-        { 'Rendering', 'texture', 'Background', 'VorkuiBackground' },
-        { 'Rendering', 'layer', 'Background', 'BACKGROUND' },
-        { 'Rendering', 'sublayer', 'Background', 1 },
-
-        { 'Rendering', 'texture', 'Main', 'VorkuiDefault' },
-        { 'Rendering', 'layer', 'Main', 'ARTWORK' },
-
-        { 'Rendering', 'texture', 'Border', 'VorkuiBorder' },
-        { 'Rendering', 'layer', 'Border', 'OVERLAY' },
+        { 'Rendering', 'texture', nil, 'VorkuiDefault', 'ARTWORK' },
+        { 'Rendering', 'texture', nil, 'VorkuiBackground', 'BACKGROUND', 1 },
+        { 'Rendering', 'texture', nil, 'VorkuiBorder', 'OVERLAY' },
         --TAGS
         { 'Value', 'layer', 'Layer', 'OVERLAY' },
         { 'Value', 'font', 'Font', 'ValueFont' },
@@ -85,12 +75,8 @@ local function healthPredictionOption(module, submodule)
         { 'SlantingSettings', 'boolean', 'Enable', true },
         { 'SlantingSettings', 'boolean', 'IgnoreBackground', true},
         --RENDERING
-        { 'Rendering', 'texture', 'Main', 'VorkuiDefault' },
-        { 'Rendering', 'layer', 'Main', 'ARTWORK' },
-        { 'Rendering', 'sublayer', 'Main', 1 },
-
-        { 'Rendering', 'texture', 'Border', 'VorkuiBorder' },
-        { 'Rendering', 'layer', 'Border', 'OVERLAY' },
+        { 'Rendering', 'texture', nil, 'VorkuiDefault', 'ARTWORK', 1 },
+        { 'Rendering', 'texture', nil, 'VorkuiBorder', 'OVERLAY' },
     }
 
     registers(module, submodule, 'HealthPrediction', data)
@@ -102,17 +88,11 @@ local function castbarOption(module, submodule)
         --TRANSFORM
         { nil, 'table', 'Size', 300, 20 },
         { nil, 'table', 'Point', 'TOP', nil, 'BOTTOM', 0, -2 },
-        { nil, 'color', 'StatusBarColor', 0, 0.5, 1, 1  },
+        { nil, 'color', 'StatusBarColor', { 0, 0.5, 1, 1 }  },
         --RENDERING
-        { 'Rendering', 'texture', 'Background', 'VorkuiBackground' },
-        { 'Rendering', 'layer', 'Background', 'BACKGROUND' },
-        { 'Rendering', 'sublayer', 'Background', 1 },
-
-        { 'Rendering', 'texture', 'Main', 'VorkuiDefault' },
-        { 'Rendering', 'layer', 'Main', 'ARTWORK' },
-
-        { 'Rendering', 'texture', 'Border', 'VorkuiBorder' },
-        { 'Rendering', 'layer', 'Border', 'OVERLAY' },
+        { 'Rendering', 'texture', nil, 'VorkuiDefault', 'ARTWORK' },
+        { 'Rendering', 'texture', nil, 'VorkuiBackground', 'BACKGROUND', 1 },
+        { 'Rendering', 'texture', nil, 'VorkuiBorder', 'OVERLAY' },
         --SPARK
         { 'Spark', 'layer', 'Layer', 'OVERLAY' },
         { 'Spark', 'table', 'Size', 20, 20 },
@@ -131,19 +111,19 @@ local function castbarOption(module, submodule)
         { 'Text', 'table', 'Point', 'CENTER' },
 
         --ICON
-        { Icon, 'table', 'Size', 20, 20 },
-        { Icon, 'table', 'Point', 'TOPLEFT' },
+        { 'Icon', 'table', 'Size', 20, 20 },
+        { 'Icon', 'table', 'Point', 'TOPLEFT' },
 
         --SHIELD
-        { Shield, 'table', 'Size', 20, 20 },
-        { Shield, 'table', 'Point', 'LEFT', 'Text' },
-        { Shield, 'texture', 'Texture', 'GlobalIcon' },
-        { Shield, 'string', 'TexCoord', 'DEFENSE' },
+        { 'Shield', 'table', 'Size', 20, 20 },
+        { 'Shield', 'table', 'Point', 'LEFT', 'Text' },
+        { 'Shield', 'texture', 'Texture', 'GlobalIcon' },
+        { 'Shield', 'string', 'TexCoord', 'DEFENSE' },
 
         --SAFEZONE
-        { SafeZone, 'layer', 'Layer', 'OVERLAY' },
-        { SafeZone, 'blend', 'BlendMode', 'ADD' },
-        { SafeZone, 'color', 'VertexColor', 255/255, 246/255, 0, 0.75 },
+        { 'SafeZone', 'layer', 'Layer', 'OVERLAY' },
+        { 'SafeZone', 'blend', 'BlendMode', 'ADD' },
+        { 'SafeZone', 'color', 'VertexColor', { 255/255, 246/255, 0, 0.75 } },
     }
 
     registers(module, submodule, 'CastBar', data)
@@ -174,11 +154,8 @@ local function powerOption(module, submodule)
         { 'SlantingSettings', 'boolean', 'IgnoreBackground', true},
         { 'SlantingSettings', 'layer', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
-        { 'Rendering', 'texture', 'Main', 'VorkuiDefault' },
-        { 'Rendering', 'layer', 'Main', 'ARTWORK' },
-
-        { 'Rendering', 'texture', 'Border', 'VorkuiBorder' },
-        { 'Rendering', 'layer', 'Border', 'OVERLAY' },
+        { 'Rendering', 'texture', nil, 'VorkuiDefault', 'ARTWORK' },
+        { 'Rendering', 'texture', nil, 'VorkuiBorder', 'OVERLAY' },
         --TAGS
         { 'Value', 'layer', 'Layer', 'OVERLAY' },
         { 'Value', 'font', 'Font', 'StackFont' },
@@ -197,12 +174,8 @@ local function powerPredictionOption(module, submodule)
         { 'SlantingSettings', 'boolean', 'IgnoreBackground', true},
         { 'SlantingSettings', 'boolean', 'FillInverse', true },
         --RENDERING
-        { 'Rendering', 'texture', 'Main', 'VorkuiDefault' },
-        { 'Rendering', 'layer', 'Main', 'ARTWORK' },
-        { 'Rendering', 'sublayer', 'Main', 1 },
-
-        { 'Rendering', 'texture', 'Border', 'VorkuiBorder' },
-        { 'Rendering', 'layer', 'Border', 'OVERLAY' },
+        { 'Rendering', 'texture', nil, 'VorkuiDefault', 'ARTWORK', 1 },
+        { 'Rendering', 'texture', nil, 'VorkuiBorder', 'OVERLAY' },
     }
 
     registers(module, submodule, 'PowerPrediction', data)
@@ -218,7 +191,7 @@ local function portraitOption(module, submodule)
         { nil, 'string', 'Type', '3D' },
         { nil, 'layer', 'ModelDrawLayer', 'BACKGROUND' },
 
-        { 'PostUpdate', 'table', 'Position', 0.2, 0, 0 },
+        { 'PostUpdate', 'table', 'Position', { 0.2, 0, 0 } },
         { 'PostUpdate', 'number', 'Rotation', - math.pi/5 },
         { 'PostUpdate', 'number', 'CamDistance', 2 },
     }
@@ -233,8 +206,8 @@ local function indicatorOption(module, submodule, indicator, size, point, textur
         { nil, 'table', 'Point', unpack(point) },
         { nil, 'texture', 'Texture', texture },
         { nil, 'string', 'TexCoord', texcoord },
-        { nil, 'color', 'VertexColor', unpack(vertexcolor or { }) },
-        { nil, 'table', 'GradientAlpha', unpack(gradientalpha or { })},
+        { nil, 'color', 'VertexColor', vertexcolor },
+        { nil, 'table', 'GradientAlpha', gradientalpha },
         { nil, 'blend', 'BlendMode', blendmode },
     }
 
@@ -260,7 +233,7 @@ Themes["Default"].SetPlayerProfile = function()
 
     indicatorOption(module, submodule, 'ClassIndicator',
             {16, 16},
-            { 'TOPLEFT', nil, 'TOPRIGHT', -4, -2 },
+            { 'TOPLEFT', 'Frame', 'TOPRIGHT', -4, -2 },
             'ClassIcon',
              select(2, UnitClass("player")),
              nil,
@@ -270,7 +243,7 @@ Themes["Default"].SetPlayerProfile = function()
 
     indicatorOption(module, submodule, 'RaidIndicator',
             {16, 16},
-            { 'LEFT', nil, 'LEFT', 10, 0 },
+            { 'LEFT', 'Health', 'LEFT', 10, 0 },
             'RaidIcon',
             nil,
             nil,
@@ -280,7 +253,7 @@ Themes["Default"].SetPlayerProfile = function()
 
     indicatorOption(module, submodule, 'LeaderIndicator',
             { 64/4, 53/4 },
-            { 'RIGHT', nil, 'LEFT' },
+            { 'RIGHT', 'Frame', 'LEFT' },
             'GlobalIcon',
             'LEADER',
             { 163/255, 220/255, 255/255 },
@@ -290,7 +263,7 @@ Themes["Default"].SetPlayerProfile = function()
 
     indicatorOption(module, submodule, 'RestingIndicator',
             { 64/2, 60/2 },
-            { 'BOTTOMRIGHT', nil, 'BOTTOMRIGHT' },
+            { 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT' },
             'GlobalIcon',
             'RESTING',
             nil,
@@ -300,7 +273,7 @@ Themes["Default"].SetPlayerProfile = function()
 
     indicatorOption(module, submodule, 'CombatIndicator',
             { 39/3, 64/3 },
-            { 'BOTTOMRIGHT', nil, 'TOPRIGHT' },
+            { 'BOTTOMRIGHT', 'Frame', 'TOPRIGHT' },
             'GlobalIcon',
             'MAELSTROM',
             nil,
@@ -310,7 +283,7 @@ Themes["Default"].SetPlayerProfile = function()
 
     indicatorOption(module, submodule, 'DeadOrGhostIndicator',
             { 40, 40 },
-            { 'BOTTOMRIGHT', nil, 'BOTTOMRIGHT' },
+            { 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT' },
             'Status',
             'DIED',
             { 255/255, 68/255, 91/255 },
@@ -320,7 +293,7 @@ Themes["Default"].SetPlayerProfile = function()
 
     indicatorOption(module, submodule, 'ResurrectIndicator',
             { 40, 40 },
-            { 'BOTTOMRIGHT', nil, 'BOTTOMRIGHT' },
+            { 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT', 0, 0 },
             'Status',
             'RESURRECT',
             { 30/255, 223/255, 100/255 },
@@ -330,7 +303,7 @@ Themes["Default"].SetPlayerProfile = function()
 
     indicatorOption(module, submodule, 'SummonIndicator',
             { 32, 32 },
-            { 'CENTER', nil, 'CENTER' },
+            { 'CENTER', 'Health', 'CENTER' },
             'Phasing',
             'SUMMON',
             { 0/255, 204/255, 255/255 },
@@ -340,7 +313,7 @@ Themes["Default"].SetPlayerProfile = function()
 
     indicatorOption(module, submodule, 'PhaseIndicator',
             { 32, 32 },
-            { 'CENTER', nil, 'CENTER' },
+            { 'CENTER', 'Health', 'CENTER' },
             'Phasing',
             'PHASE',
             { 0/255, 204/255, 255/255 },

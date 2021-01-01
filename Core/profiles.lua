@@ -250,16 +250,9 @@ end
 
 function Profiles:RegisterOption(module, submodule, object, component, typeOption, optionName, ...)
 
-    if typeOption == nil or optionName == nil then
+    if typeOption == nil then
         return
     end
-
-    print ("|cFF00AFFF Register Option|r")
-
-    local field = {
-        ['type'] = typeOption,
-        [optionName] = ...,
-    }
 
     local debug = ''
     local tab
@@ -289,62 +282,27 @@ function Profiles:RegisterOption(module, submodule, object, component, typeOptio
         tab = tab[component]
         debug = debug..tostring(component)..'\\'
     end
-    print("|cFFFFDD00".. debug.."|r", unpack(field))
-    --tinsert(tab, field)
+    --print("|cFFFFDD00".. debug.."|r", ...)
 
-    if not tab[optionName] then
-        tab[optionName] = {}
-    end
+    local optionSize --manage manually the size instead of iterative call to #
+    local va_arg
+    if optionName ~= nil then
 
-    tab[optionName][#tab[optionName]+1] = {
-        ['type'] = typeOption,
-        ...
-    }
-
-    --self:RegisterProfileOption(module, submodule, object, optionName, defaultValue)
-end
-
-function Profiles:RegisterProfileOption(module, submodule, object, optionName, defaultValue)
-    if not defaults.profile[module] then
-        defaults.profile[module] =  {}
-    end
-
-    print ("|cFF00AFFF Register Profile Option|r")
-
-    local debug = ''
-    local tab
-
-    if submodule then
-        if not defaults.profile[module][submodule] then
-            defaults.profile[module][submodule] = {}
-        end
-        tab = defaults.profile[module][submodule]
-        debug = tostring(module)..'\\'..tostring(submodule)..'\\'
-    else
-        tab = defaults.profile[module]
-        debug = tostring(module)..'\\'
-    end
-
-    if object and not tab[object] then
-        tab[object] = {}
-        tab = tab[object]
-        debug = debug..tostring(object)..'\\'
-    end
-
-    print("|cFFFFDD00".. debug.."|r", optionName, defaultValue)
-
-    if tab[optionName] then
-        if type(tab[optionName]) == 'table' then
-            tab[optionName][#tab[optionName]+1] = defaultValue
-        else --if not table we need to push a table and insert old field then new field
-            local field = tab[optionName]
-            tab[optionName] = {
-                field, defaultValue
-            }
+        if not tab[optionName] then
+            tab[optionName] = {}
+            optionSize = 0
+        else
+            optionSize = #tab[optionName]
         end
 
+        for i=1, select('#',...) do
+            va_arg = select(i, ...)
+            tab[optionName][optionSize + 1] = va_arg
+            optionSize = optionSize + 1
+        end
     else
-        tab[optionName] = defaultValue
+        optionSize = #tab
+        tinsert(tab, { ... })
     end
 
 end
