@@ -42,8 +42,8 @@ end
 
 local function healthOption(module, submodule)
     local data = {
-        { nil, 'Enable', true },
         --TRANSFORM
+        { nil, 'Enable', true },
         { nil, 'Size', 256, 32 },
         { nil, 'Point', 'TOPRIGHT', 'Absorb', 'BOTTOMRIGHT', -8, 0 },
         ----SLANT
@@ -58,11 +58,11 @@ local function healthOption(module, submodule)
         { 'Value', 'Layer', 'OVERLAY' },
         { 'Value', 'Font', 'ValueFont' },
         { 'Value', 'Point', 'TOPRIGHT', 'Health', 'TOP' },
-        { 'Value', 'Tag', '[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp]' },
+        { 'Value', 'Tag', '[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp-Max]' },
 
         { 'Percent', 'Layer', 'OVERLAY' },
         { 'Percent', 'Font', 'BigValueFont' },
-        { 'Percent', 'Point', 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT' },
+        { 'Percent', 'Point', 'BOTTOMLEFT', 'Frame', 'BOTTOMLEFT' },
         { 'Percent', 'Tag', '[Vorkui:HealthColor(true)][Vorkui:PerHP]' },
     }
 
@@ -139,8 +139,8 @@ local function nameOption(module, submodule)
         --TAGS
         { nil, 'Layer', 'OVERLAY' },
         { nil, 'Font', 'NameFont' },
-        { nil, 'Point', 'BOTTOMLEFT', nil, 'TOPLEFT', 0, 2 },
-        { nil, 'Tag', '[classification] [name] [difficulty][level]' },
+        { nil, 'Point', 'TOPLEFT', nil, 'BOTTOMLEFT', 0, 2 },
+        { nil, 'Tag', '[level][difficulty] [name] [classification]' },
     }
 
     registers(module, submodule, 'Name', data)
@@ -195,7 +195,7 @@ local function portraitOption(module, submodule)
         { nil, 'Type', '3D' },
         { nil, 'ModelDrawLayer', 'BACKGROUND' },
 
-        { 'PostUpdate', 'Position', { 0.2, 0, 0 } },
+        { 'PostUpdate', 'Position', { 0.1, 0, 0 } },
         { 'PostUpdate', 'Rotation', -math.pi / 5 },
         { 'PostUpdate', 'CamDistance', 2 },
     }
@@ -220,14 +220,14 @@ local function indicatorOption(module, submodule, indicator, size, point, textur
 end
 
 --(module, submodule, object, component, type, optionName, defaultValue)
-Themes["Default"].SetPlayerProfile = function()
+Themes["Default"].SetFocusProfile = function()
 
     local module = 'UnitFrames'
-    local submodule = 'PlayerLayout'
+    local submodule = 'FocusLayout'
 
     --Global OPTION
     Profiles:RegisterOption(module, submodule, nil, nil, 'Size', 300, 62)
-    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', "CENTER", 'UIParent', "CENTER", -450, -350)
+    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', "CENTER", 'UIParent', "CENTER", -400, 0)
     --HEALTH OPTION
     healthOption(module, submodule)
     healthPredictionOption(module, submodule)
@@ -262,66 +262,6 @@ Themes["Default"].SetPlayerProfile = function()
             'GlobalIcon',
             'LEADER',
             { 163 / 255, 220 / 255, 255 / 255 },
-            nil,
-            nil
-    )
-
-    indicatorOption(module, submodule, 'RestingIndicator',
-            { 64 / 2, 60 / 2 },
-            { 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT' },
-            'GlobalIcon',
-            'RESTING',
-            nil,
-            { "VERTICAL", 163 / 255, 220 / 255, 255 / 255, 0.75, 0, 0, 0, 1 },
-            'ADD'
-    )
-
-    indicatorOption(module, submodule, 'CombatIndicator',
-            { 39 / 3, 64 / 3 },
-            { 'BOTTOMRIGHT', 'Frame', 'TOPRIGHT' },
-            'GlobalIcon',
-            'MAELSTROM',
-            nil,
-            { "VERTICAL", 255 / 255, 246 / 255, 0 / 255, 0.75, 255 / 255, 50 / 255, 0 / 255, 1 },
-            'ADD'
-    )
-
-    indicatorOption(module, submodule, 'DeadOrGhostIndicator',
-            { 40, 40 },
-            { 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT' },
-            'Status',
-            'DIED',
-            { 255 / 255, 68 / 255, 91 / 255 },
-            nil,
-            nil
-    )
-
-    indicatorOption(module, submodule, 'ResurrectIndicator',
-            { 40, 40 },
-            { 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT', 0, 0 },
-            'Status',
-            'RESURRECT',
-            { 30 / 255, 223 / 255, 100 / 255 },
-            nil,
-            nil
-    )
-
-    indicatorOption(module, submodule, 'SummonIndicator',
-            { 32, 32 },
-            { 'CENTER', 'Health', 'CENTER' },
-            'Phasing',
-            'SUMMON',
-            { 0 / 255, 204 / 255, 255 / 255 },
-            nil,
-            nil
-    )
-
-    indicatorOption(module, submodule, 'PhaseIndicator',
-            { 32, 32 },
-            { 'CENTER', 'Health', 'CENTER' },
-            'Phasing',
-            'PHASE',
-            { 0 / 255, 204 / 255, 255 / 255 },
             nil,
             nil
     )
@@ -386,29 +326,5 @@ Themes["Default"].SetPlayerProfile = function()
     Profiles:RegisterOption(module, submodule, nil, nil, 'DurationFont', 'Montserrat Medium', 12, 'OUTLINE')
     Profiles:RegisterOption(module, submodule, nil, nil, 'BigValueFont', 'Montserrat Medium Italic', 18, 'OUTLINE')
     Profiles:RegisterOption(module, submodule, nil, nil, 'ValueFont', 'Montserrat Medium Italic', 14, 'OUTLINE')
-
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Absorb', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Portrait', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Power', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'LeaderIndicator', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Debuffs', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'ResurrectIndicator', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'SummonIndicator', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'CastBar', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'RestingIndicator', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'CombatIndicator', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'ClassIndicator', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'DeadOrGhostIndicator', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Buffs', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'FightIndicator', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'RaidIndicator', true)
-
-
-    --["Theme"] = "default",
-    Profiles:RegisterOption('Theme', nil, nil, nil, 'Name', 'default')
-    --Profiles:RegisterOption('PartyLayout', nil, nil, nil, 'Layout', 'Expanded')
-    --Profiles:RegisterOption('RaidLayout', nil, nil, nil, 'Layout', 'Minimalist')
-    --["PartyLayout"] = "Expanded",
-    --["RaidLayout"] = "Minimalist",
 
 end

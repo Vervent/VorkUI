@@ -15,13 +15,16 @@ local function registers(module, submodule, object, table)
     end
 end
 
-local function absorbOption(module, submodule)
+local function absorbOption(layout, module, submodule)
+
+    local enable = true
+
+    if layout == 'Compact' then
+        enable = false
+    end
+
     local data = {
-        { nil, 'Enable', true },
-        --TRANSFORM
-        { nil, 'Size', 232, 8 },
-        { nil, 'Point', 'TOPRIGHT', 'Frame', 'TOPRIGHT' },
-        ----SLANT
+        { nil, 'Enable', enable },
         { 'SlantingSettings', 'Enable', true },
         { 'SlantingSettings', 'IgnoreBackground', true },
         { 'SlantingSettings', 'FillInverse', true },
@@ -34,18 +37,33 @@ local function absorbOption(module, submodule)
         { 'Value', 'Font', 'ValueFont' },
         { 'Value', 'Point', "TOPLEFT", 'Health', "TOP" },
         { 'Value', 'Tag', '[Vorkui:HealthColor][Vorkui:Absorb]' },
+
     }
+
+    --if layout == 'Expanded' then
+    --elseif layout == 'Minimalist' then
+    --elseif layout == 'Compact' then
+    --  print ('|cFFFF1010 BAD PARTY LAYOUT |r')
+    --end
+
+    local size = #data
+
+    if layout == 'Expanded' then
+        data[size + 1] = { nil, 'Size', 114, 6 }
+        data[size + 2] = { nil, 'Point', 'TOPRIGHT', 'Frame', 'TOPRIGHT', 0, -16 }
+    elseif layout == 'Minimalist' then
+        data[size + 1] = { nil, 'Size', 116, 6 }
+        data[size + 2] = { nil, 'Point', 'TOPRIGHT', 'Frame', 'TOPRIGHT', 0, -10 }
+    end
 
     registers(module, submodule, 'Absorb', data)
 
 end
 
-local function healthOption(module, submodule)
+local function healthOption(layout, module, submodule)
     local data = {
-        { nil, 'Enable', true },
         --TRANSFORM
-        { nil, 'Size', 256, 32 },
-        { nil, 'Point', 'TOPRIGHT', 'Absorb', 'BOTTOMRIGHT', -8, 0 },
+        { nil, 'Enable', enable },
         ----SLANT
         { 'SlantingSettings', 'Enable', true },
         { 'SlantingSettings', 'IgnoreBackground', true },
@@ -57,7 +75,6 @@ local function healthOption(module, submodule)
         --TAGS
         { 'Value', 'Layer', 'OVERLAY' },
         { 'Value', 'Font', 'ValueFont' },
-        { 'Value', 'Point', 'TOPRIGHT', 'Health', 'TOP' },
         { 'Value', 'Tag', '[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp]' },
 
         { 'Percent', 'Layer', 'OVERLAY' },
@@ -66,14 +83,32 @@ local function healthOption(module, submodule)
         { 'Percent', 'Tag', '[Vorkui:HealthColor(true)][Vorkui:PerHP]' },
     }
 
+    local size = #data
+
+    if layout == 'Expanded' then
+        data[size + 1] = { nil, 'Size', 128, 24 }
+        data[size + 2] = { nil, 'Point', 'TOPRIGHT', 'Absorb', 'BOTTOMRIGHT', -8, 0 }
+        data[size + 3] = { 'Value', 'Point', 'TOPRIGHT', 'Health', 'TOP' }
+    elseif layout == 'Minimalist' then
+        data[size + 1] = { nil, 'Size', 126, 16 }
+        data[size + 2] = { nil, 'Point', 'TOPRIGHT', 'Absorb', 'TOPRIGHT', -4, 0 }
+        data[size + 3] = { 'Value', 'Point', 'TOPRIGHT', 'Health', 'TOP' }
+    elseif layout == 'Compact' then
+        data[size + 1] = { nil, 'Size', 156, 24 }
+        data[size + 2] = { nil, 'Point', 'TOPRIGHT', 'Absorb', 'TOPRIGHT', 0, 0 }
+        data[size + 3] = { 'Value', 'Point', 'CENTER', 'Health', 'CENTER' }
+    else
+        print ('|cFFFF1010 BAD PARTY LAYOUT |r')
+    end
+
     registers(module, submodule, 'Health', data)
 
 end
 
-local function healthPredictionOption(module, submodule)
+local function healthPredictionOption(layout, module, submodule)
     local data = {
-        { nil, 'Enable', true },
         ----SLANT
+        { nil, 'Enable', enable },
         { 'SlantingSettings', 'Enable', true },
         { 'SlantingSettings', 'IgnoreBackground', true },
         --RENDERING
@@ -85,11 +120,17 @@ local function healthPredictionOption(module, submodule)
 
 end
 
-local function castbarOption(module, submodule)
+local function castbarOption(layout, module, submodule)
+
+    local enable = true
+
+    if layout == 'Compact' then
+        enable = false
+    end
+
     local data = {
-        { nil, 'Enable', true },
+        { nil, 'Enable', enable },
         --TRANSFORM
-        { nil, 'Size', 300, 20 },
         { nil, 'Point', 'TOP', 'Frame', 'BOTTOM', 0, -2 },
         { nil, 'StatusBarColor', { 0, 0.5, 1, 1 } },
         --RENDERING
@@ -129,29 +170,50 @@ local function castbarOption(module, submodule)
         { 'SafeZone', 'VertexColor', { 255 / 255, 246 / 255, 0, 0.75 } },
     }
 
+    if layout == 'Expanded' then
+        data[#data + 1] = { nil, 'Size', 190, 20 }
+    elseif layout == 'Minimalist' then
+        data[#data + 1] = { nil, 'Size', 150, 20 }
+    else
+        print("|cFFFF1010 BAD PARTY LAYOUT |r")
+    end
+
     registers(module, submodule, 'CastBar', data)
 
 end
 
-local function nameOption(module, submodule)
+local function nameOption(layout, module, submodule)
     local data = {
         { nil, 'Enable', true },
         --TAGS
         { nil, 'Layer', 'OVERLAY' },
         { nil, 'Font', 'NameFont' },
-        { nil, 'Point', 'BOTTOMLEFT', nil, 'TOPLEFT', 0, 2 },
         { nil, 'Tag', '[classification] [name] [difficulty][level]' },
     }
+
+    if layout == 'Expanded' then
+        data[#data + 1] = { nil, 'Point', 'TOPRIGHT', nil, 'TOPRIGHT', -20, 0 }
+    elseif layout == 'Minimalist' then
+        data[#data + 1] = { nil, 'Point', 'TOPRIGHT', nil, 'TOPRIGHT', -20, 0 }
+    elseif layout == 'Compact' then
+        data[#data + 1] = { nil, 'Point', 'LEFT', nil, 'RIGHT', 20, 0 }
+    else
+        print ("|cFFFF1010 BAD PARTY LAYOUT |r")
+    end
 
     registers(module, submodule, 'Name', data)
 end
 
-local function powerOption(module, submodule)
+local function powerOption(layout, module, submodule)
+    local enable = true
+
+    if layout == 'Compact' then
+        enable = false
+    end
+
     local data = {
-        { nil, 'Enable', true },
-        --TRANSFORM
-        { nil, 'Size', 235, 10 },
-        { nil, 'Point', 'TOPLEFT', 'Health', 'BOTTOMLEFT', -10, 0 },
+        { nil, 'Enable', enable },
+        { nil, 'Point', 'TOPLEFT', 'Health', 'BOTTOMLEFT', -8, 0 },
         ----SLANT
         { 'SlantingSettings', 'Enable', true },
         { 'SlantingSettings', 'IgnoreBackground', true },
@@ -160,19 +222,33 @@ local function powerOption(module, submodule)
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
         { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
         --TAGS
-        { 'Value', 'Layer', 'OVERLAY' },
-        { 'Value', 'Font', 'StackFont' },
-        { 'Value', 'Point', 'BOTTOM' },
-        { 'Value', 'Tag', '[powercolor][missingpp]' },
     }
+
+    local size = #data
+
+    if layout == 'Expanded' then
+        data[size + 1] = { nil, 'Size', 117, 12 }
+        data[size + 2] = { 'Value', 'Layer', 'OVERLAY' }
+        data[size + 3] = { 'Value', 'Font', 'StackFont' }
+        data[size + 4] = { 'Value', 'Point', 'BOTTOM' }
+        data[size + 5] = { 'Value', 'Tag', '[powercolor][missingpp]' }
+    elseif layout == 'Minimalist' then
+        data[size + 1] = { nil, 'Size', 118, 8 }
+    end
 
     registers(module, submodule, 'Power', data)
 
 end
 
-local function powerPredictionOption(module, submodule)
+local function powerPredictionOption(layout, module, submodule)
+    local enable = true
+
+    if layout == 'Compact' then
+        enable = false
+    end
+
     local data = {
-        { nil, 'Enable', true },
+        { nil, 'Enable', enable },
         ----SLANT
         { 'SlantingSettings', 'Enable', true },
         { 'SlantingSettings', 'IgnoreBackground', true },
@@ -186,11 +262,17 @@ local function powerPredictionOption(module, submodule)
 
 end
 
-local function portraitOption(module, submodule)
+local function portraitOption(layout, module, submodule)
+    local enable = true
+
+    if layout ~= 'Expanded' then
+        enable = false
+    end
+
     local data = {
-        { nil, 'Enable', true },
+        { nil, 'Enable', enable },
         --TRANSFORM
-        { nil, 'Size', 49, 49 },
+        { nil, 'Size', 58, 58 },
         { nil, 'Point', 'TOPLEFT', 'Frame', 'TOPLEFT' },
         { nil, 'Type', '3D' },
         { nil, 'ModelDrawLayer', 'BACKGROUND' },
@@ -204,9 +286,54 @@ local function portraitOption(module, submodule)
 
 end
 
+local function buffOption(layout, module, submodule)
+
+    local enable = true
+
+    if layout ~= 'Expanded' then
+        enable = false
+    end
+
+    local data = {
+        { nil, 'Enable', enable },
+        --TRANSFORM
+        { nil, 'Size', 24*6 + 2*5, 24 },
+        { nil, 'Point', 'BOTTOMLEFT', 'Frame', 'TOPLEFT', 0, 2 },
+        { nil, 'ButtonSize', 24 },
+        { nil, 'ButtonCount', 6 },
+        { nil, 'ButtonSpacing', 2 },
+        { nil, 'OnlyShowPlayer', true },
+    }
+
+    registers(module, submodule, 'Buffs', data)
+
+end
+
+local function debuffOption(layout, module, submodule)
+
+    local enable = true
+
+    if layout ~= 'Compact' then
+        enable = false
+    end
+
+    local data = {
+        { nil, 'Enable', enable },
+        --TRANSFORM
+        { nil, 'Size', 24*6 + 2*5, 24 },
+        { nil, 'Point', 'TOPLEFT', 'Frame', 'BOTTOMLEFT', 0, 2 },
+        { nil, 'ButtonSize', 24 },
+        { nil, 'ButtonCount', 6 },
+        { nil, 'ButtonSpacing', 2 },
+    }
+
+    registers(module, submodule, 'Debuffs', data)
+
+end
+
 local function indicatorOption(module, submodule, indicator, size, point, texture, texcoord, vertexcolor, gradientalpha, blendmode)
     local data = {
-        { nil, 'Enable', true },
+        { nil, 'Enable', enable },
         { nil, 'Size', unpack(size) },
         { nil, 'Point', unpack(point) },
         { nil, 'Texture', texture },
@@ -219,26 +346,75 @@ local function indicatorOption(module, submodule, indicator, size, point, textur
     registers(module, submodule, indicator, data)
 end
 
+local function headerOption(module, submodule)
+    Profiles:RegisterOption(module, submodule, nil, 'Header', 'Name', 'VorkuiParty')
+    Profiles:RegisterOption(module, submodule, nil, 'Header', 'Template', nil)
+    Profiles:RegisterOption(module, submodule, nil, 'Header', 'Visibility', 'custom [@raid6,exists] hide;show')
+end
+
+local function  attributesOption (layout, module, submodule)
+
+    Profiles:RegisterOption(module, submodule, nil, nil, 'Layout', layout)
+
+    if layout == 'Expanded' then
+        Profiles:RegisterOption(module, submodule, nil, nil, 'Size', 195, 5*58+4*30)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'point', 'TOP')
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-width', 190)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-height', 58)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'xOffset', 5)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'yOffset', -30)
+    elseif layout == 'Minimalist' then
+        Profiles:RegisterOption(module, submodule, nil, nil, 'Size', 150, 5*44+4*25)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'point', 'TOP')
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-width', 150)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-height', 44)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'xOffset', 1)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'yOffset', -25)
+    elseif layout == 'Compact' then
+        Profiles:RegisterOption(module, submodule, nil, nil, 'Size', 156, 5*24+4*26)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'point', 'TOP')
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-width', 156)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-height', 24)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'xOffset', 1)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'yOffset', -26)
+    else
+        print ("|cFFFF1010 BAD PARTY LAYOUT |r")
+    end
+    Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'groupFilter', '1,2,3,4,5,6,7,8')
+    Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'showRaid', false)
+    Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'showParty', true)
+    Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'showPlayer', true)
+    Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'showSolo', false)
+    Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'sortMethod', 'INDEX')
+    Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'sortDir', 'ASC')
+    Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'groupBy', 'GROUP')
+    Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'groupingOrder', '1,2,3,4,5,6,7,8')
+end
+
 --(module, submodule, object, component, type, optionName, defaultValue)
-Themes["Default"].SetPlayerProfile = function()
+Themes["Default"].SetPartyProfile = function(layout)
 
     local module = 'UnitFrames'
-    local submodule = 'PlayerLayout'
+    local submodule = 'PartyLayout'
 
     --Global OPTION
-    Profiles:RegisterOption(module, submodule, nil, nil, 'Size', 300, 62)
-    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', "CENTER", 'UIParent', "CENTER", -450, -350)
-    --HEALTH OPTION
-    healthOption(module, submodule)
-    healthPredictionOption(module, submodule)
-    absorbOption(module, submodule)
-    powerOption(module, submodule)
-    powerPredictionOption(module, submodule)
-    portraitOption(module, submodule)
+    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', 'CENTER', 'UIParent', 'CENTER', -450, -350)
+
+    headerOption(module, submodule)
+
+    attributesOption(layout, module, submodule)
+
+    --Unit OPTION
+    healthOption(layout, module, submodule)
+    healthPredictionOption(layout, module, submodule)
+    absorbOption(layout, module, submodule)
+    powerOption(layout, module, submodule)
+    powerPredictionOption(layout, module, submodule)
+    portraitOption(layout, module, submodule)
 
     indicatorOption(module, submodule, 'ClassIndicator',
             { 16, 16 },
-            { 'TOPLEFT', 'Frame', 'TOPRIGHT', -4, -2 },
+            { 'TOPLEFT', 'Frame', 'TOPLEFT', -4, -2 },
             'ClassIcon',
             select(2, UnitClass("player")),
             nil,
@@ -248,7 +424,7 @@ Themes["Default"].SetPlayerProfile = function()
 
     indicatorOption(module, submodule, 'RaidIndicator',
             { 16, 16 },
-            { 'LEFT', 'Health', 'LEFT', 10, 0 },
+            { 'LEFT', 'Health', 'RIGHT', 0, 0 },
             'RaidIcon',
             nil,
             nil,
@@ -258,7 +434,7 @@ Themes["Default"].SetPlayerProfile = function()
 
     indicatorOption(module, submodule, 'LeaderIndicator',
             { 64 / 4, 53 / 4 },
-            { 'RIGHT', 'Frame', 'LEFT' },
+            { 'TOPRIGHT', 'Frame', 'TOPRIGHT' },
             'GlobalIcon',
             'LEADER',
             { 163 / 255, 220 / 255, 255 / 255 },
@@ -266,29 +442,9 @@ Themes["Default"].SetPlayerProfile = function()
             nil
     )
 
-    indicatorOption(module, submodule, 'RestingIndicator',
-            { 64 / 2, 60 / 2 },
-            { 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT' },
-            'GlobalIcon',
-            'RESTING',
-            nil,
-            { "VERTICAL", 163 / 255, 220 / 255, 255 / 255, 0.75, 0, 0, 0, 1 },
-            'ADD'
-    )
-
-    indicatorOption(module, submodule, 'CombatIndicator',
-            { 39 / 3, 64 / 3 },
-            { 'BOTTOMRIGHT', 'Frame', 'TOPRIGHT' },
-            'GlobalIcon',
-            'MAELSTROM',
-            nil,
-            { "VERTICAL", 255 / 255, 246 / 255, 0 / 255, 0.75, 255 / 255, 50 / 255, 0 / 255, 1 },
-            'ADD'
-    )
-
     indicatorOption(module, submodule, 'DeadOrGhostIndicator',
-            { 40, 40 },
-            { 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT' },
+            { 20, 20 },
+            { 'CENTER', 'Frame', 'CENTER' },
             'Status',
             'DIED',
             { 255 / 255, 68 / 255, 91 / 255 },
@@ -297,8 +453,8 @@ Themes["Default"].SetPlayerProfile = function()
     )
 
     indicatorOption(module, submodule, 'ResurrectIndicator',
-            { 40, 40 },
-            { 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT', 0, 0 },
+            { 20, 20 },
+            { 'CENTER', 'Frame', 'CENTER', 0, 0 },
             'Status',
             'RESURRECT',
             { 30 / 255, 223 / 255, 100 / 255 },
@@ -307,7 +463,7 @@ Themes["Default"].SetPlayerProfile = function()
     )
 
     indicatorOption(module, submodule, 'SummonIndicator',
-            { 32, 32 },
+            { 20, 20 },
             { 'CENTER', 'Health', 'CENTER' },
             'Phasing',
             'SUMMON',
@@ -317,7 +473,7 @@ Themes["Default"].SetPlayerProfile = function()
     )
 
     indicatorOption(module, submodule, 'PhaseIndicator',
-            { 32, 32 },
+            { 20, 20 },
             { 'CENTER', 'Health', 'CENTER' },
             'Phasing',
             'PHASE',
@@ -326,8 +482,10 @@ Themes["Default"].SetPlayerProfile = function()
             nil
     )
 
-    nameOption(module, submodule)
-    castbarOption(module, submodule)
+    nameOption(layout, module, submodule)
+    castbarOption(layout, module, submodule)
+    buffOption(layout, module, submodule)
+    debuffOption(layout, module, submodule)
 
     --[[ TODO TEMPORARY FONT TO KEEP COMPATIBILTY WITH OLD EDITOR
     ["NameFont"] = {
@@ -386,29 +544,5 @@ Themes["Default"].SetPlayerProfile = function()
     Profiles:RegisterOption(module, submodule, nil, nil, 'DurationFont', 'Montserrat Medium', 12, 'OUTLINE')
     Profiles:RegisterOption(module, submodule, nil, nil, 'BigValueFont', 'Montserrat Medium Italic', 18, 'OUTLINE')
     Profiles:RegisterOption(module, submodule, nil, nil, 'ValueFont', 'Montserrat Medium Italic', 14, 'OUTLINE')
-
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Absorb', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Portrait', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Power', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'LeaderIndicator', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Debuffs', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'ResurrectIndicator', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'SummonIndicator', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'CastBar', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'RestingIndicator', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'CombatIndicator', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'ClassIndicator', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'DeadOrGhostIndicator', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Buffs', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'FightIndicator', true)
-    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'RaidIndicator', true)
-
-
-    --["Theme"] = "default",
-    Profiles:RegisterOption('Theme', nil, nil, nil, 'Name', 'default')
-    --Profiles:RegisterOption('PartyLayout', nil, nil, nil, 'Layout', 'Expanded')
-    --Profiles:RegisterOption('RaidLayout', nil, nil, nil, 'Layout', 'Minimalist')
-    --["PartyLayout"] = "Expanded",
-    --["RaidLayout"] = "Minimalist",
 
 end

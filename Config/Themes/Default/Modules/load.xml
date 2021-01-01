@@ -1,0 +1,10 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="UnitFrames\Units\player.lua"/>
+    <Script file="UnitFrames\Units\target.lua"/>
+    <Script file="UnitFrames\Units\targettarget.lua"/>+
+    <Script file="UnitFrames\Units\focus.lua"/>
+    <Script file="UnitFrames\Units\focustarget.lua"/>
+
+    <Script file="UnitFrames\Groups\party.lua"/>
+    <Script file="UnitFrames\Groups\raid.lua"/>
+</Ui>
