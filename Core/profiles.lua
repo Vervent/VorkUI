@@ -209,10 +209,7 @@ function Profiles:UpdateOption(optionName, value)
 end
 
 function Profiles:UpdateDB()
-    VorkuiDB.tmp = {}
-    VorkuiDB.tmp = registry
-
-    VorkuiDB.tmp2 = self:ShallowCopyTableRecursivelyIgnoring(registry, 1, 10, "type")
+    VorkuiDB.Profile = defaults.profile
 end
 
 function Profiles:OnEvent(event, addonName)
@@ -221,27 +218,28 @@ function Profiles:OnEvent(event, addonName)
     end
 end
 
-function Profiles:RegisterModule(name)
-    if registry[name] then
+function Profiles:RegisterModule(db, name)
+    if db[name] then
         return
     end
-    registry[name] = {
+
+    db[name] = {
         ["Enable"] = false,
     }
     --registry[name] = {}
     --tinsert(registry[name], { ["Enable"] = false, } )
 end
 
-function Profiles:RegisterSubModule(moduleName, name)
-    if registry[moduleName] and registry[moduleName][name] then
+function Profiles:RegisterSubModule(db, moduleName, name)
+    if db[moduleName] and db[moduleName][name] then
         return
     end
 
-    if not registry[moduleName] then
-        self:RegisterModule(moduleName)
+    if not db[moduleName] then
+        self:RegisterModule(db, moduleName)
     end
 
-    registry[moduleName][name] = {
+    db[moduleName][name] = {
         ["Enable"] = false,
     }
     --registry[moduleName][name] = {}
@@ -259,12 +257,12 @@ function Profiles:RegisterOption(module, submodule, object, component, optionNam
     local tab
 
     if submodule then
-        self:RegisterSubModule(module, submodule)
-        tab = registry[module][submodule]
+        self:RegisterSubModule(defaults.profile, module, submodule)
+        tab = defaults.profile[module][submodule]
         debug = tostring(module)..'\\'..tostring(submodule)..'\\'
     elseif module then
-        self:RegisterModule(module)
-        tab = registry[module]
+        self:RegisterModule(defaults.profile, module)
+        tab = defaults.profile[module]
         debug = tostring(module)..'\\'
     end
 
@@ -288,10 +286,15 @@ function Profiles:RegisterOption(module, submodule, object, component, optionNam
     local optionSize --manage manually the size instead of iterative call to #
     local va_arg
     if optionName ~= nil then
-
-        if not tab[optionName] then
+        if sizeArg == 1 then
+            tab[optionName] = ...
+            return
+        elseif not tab[optionName] then
             tab[optionName] = {}
             optionSize = 0
+        elseif type(tab[optionName]) ~= 'table' then
+            tab[optionName] = { tab[optionName] }
+            optionSize = 1
         else
             optionSize = #tab[optionName]
         end
@@ -302,8 +305,12 @@ function Profiles:RegisterOption(module, submodule, object, component, optionNam
             optionSize = optionSize + 1
         end
     else
-        optionSize = #tab
-        tinsert(tab, { ... })
+        if sizeArg == 1 then
+            tab = ...
+        else
+            optionSize = #tab
+            tinsert(tab, { ... })
+        end
     end
 
 end

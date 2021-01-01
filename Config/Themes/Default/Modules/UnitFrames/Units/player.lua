@@ -20,7 +20,7 @@ local function absorbOption(module, submodule)
         { nil, 'Enable', true },
         --TRANSFORM
         { nil, 'Size', 232, 8 },
-        { nil, 'Point', 'TOPRIGHT', nil, 'TOPRIGHT' },
+        { nil, 'Point', 'TOPRIGHT', 'Frame', 'TOPRIGHT' },
         ----SLANT
         { 'SlantingSettings', 'Enable', true },
         { 'SlantingSettings', 'IgnoreBackground', true },
@@ -32,7 +32,7 @@ local function absorbOption(module, submodule)
         --TAGS
         { 'Value', 'Layer', 'OVERLAY' },
         { 'Value', 'Font', 'ValueFont' },
-        { 'Value', 'Point', "TOPLEFT", nil, "TOP" },
+        { 'Value', 'Point', "TOPLEFT", 'Health', "TOP" },
         { 'Value', 'Tag', '[Vorkui:HealthColor][Vorkui:Absorb]' },
     }
 
@@ -56,12 +56,12 @@ local function healthOption(module, submodule)
         --TAGS
         { 'Value', 'Layer', 'OVERLAY' },
         { 'Value', 'Font', 'ValueFont' },
-        { 'Value', 'Point', 'TOPRIGHT', nil, 'TOP' },
+        { 'Value', 'Point', 'TOPRIGHT', 'Health', 'TOP' },
         { 'Value', 'Tag', '[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp]' },
 
         { 'Percent', 'Layer', 'OVERLAY' },
         { 'Percent', 'Font', 'BigValueFont' },
-        { 'Percent', 'Point', 'BOTTOMRIGHT', nil, 'BOTTOMRIGHT' },
+        { 'Percent', 'Point', 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT' },
         { 'Percent', 'Tag', '[Vorkui:HealthColor(true)][Vorkui:PerHP]' },
     }
 
@@ -87,7 +87,7 @@ local function castbarOption(module, submodule)
     local data = {
         --TRANSFORM
         { nil, 'Size', 300, 20 },
-        { nil, 'Point', 'TOP', nil, 'BOTTOM', 0, -2 },
+        { nil, 'Point', 'TOP', 'Frame', 'BOTTOM', 0, -2 },
         { nil, 'StatusBarColor', { 0, 0.5, 1, 1 } },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
@@ -187,7 +187,7 @@ local function portraitOption(module, submodule)
         { nil, 'Enable', true },
         --TRANSFORM
         { nil, 'Size', 49, 49 },
-        { nil, 'Point', 'TOPLEFT', nil, 'TOPLEFT' },
+        { nil, 'Point', 'TOPLEFT', 'Frame', 'TOPLEFT' },
         { nil, 'Type', '3D' },
         { nil, 'ModelDrawLayer', 'BACKGROUND' },
 
@@ -324,14 +324,88 @@ Themes["Default"].SetPlayerProfile = function()
     nameOption(module, submodule)
     castbarOption(module, submodule)
 
-    --Profiles:PrintProfile()
+    --[[ TODO TEMPORARY FONT TO KEEP COMPATIBILTY WITH OLD EDITOR
+    ["NameFont"] = {
+				"Montserrat Medium", -- [1]
+				20, -- [2]
+				"OUTLINE", -- [3]
+			},
+    ["NormalFont"] = {
+				"Montserrat Medium", -- [1]
+				12, -- [2]
+				"OUTLINE", -- [3]
+			},
+    ["StackFont"] = {
+				"Montserrat Medium Italic", -- [1]
+				16, -- [2]
+				"OUTLINE", -- [3]
+			},
+	["DurationFont"] = {
+				"Montserrat Medium", -- [1]
+				12, -- [2]
+				"OUTLINE", -- [3]
+			},
+	["BigValueFont"] = {
+				"Montserrat Medium Italic", -- [1]
+				18, -- [2]
+				"OUTLINE", -- [3]
+			},
+	["ValueFont"] = {
+				"Montserrat Medium Italic", -- [1]
+				14, -- [2]
+				"OUTLINE", -- [3]
+			},
+
+	["Submodules"] = {
+				["Absorb"] = true,
+				["Portrait"] = true,
+				["Power"] = true,
+				["LeaderIndicator"] = true,
+				["Debuffs"] = true,
+				["ResurrectIndicator"] = true,
+				["SummonIndicator"] = true,
+				["CastBar"] = true,
+				["RestingIndicator"] = true,
+				["CombatIndicator"] = true,
+				["ClassIndicator"] = true,
+				["DeadOrGhostIndicator"] = true,
+				["Buffs"] = true,
+				["FightIndicator"] = true,
+				["RaidIndicator"] = true,
+			},
+    ]]--
+
+    Profiles:RegisterOption(module, submodule, nil, nil, 'NameFont', 'Montserrat Medium', 20, 'OUTLINE')
+    Profiles:RegisterOption(module, submodule, nil, nil, 'NormalFont', 'Montserrat Medium', 12, 'OUTLINE')
+    Profiles:RegisterOption(module, submodule, nil, nil, 'StackFont', 'Montserrat Medium Italic', 16, 'OUTLINE')
+    Profiles:RegisterOption(module, submodule, nil, nil, 'DurationFont', 'Montserrat Medium', 12, 'OUTLINE')
+    Profiles:RegisterOption(module, submodule, nil, nil, 'BigValueFont', 'Montserrat Medium Italic', 18, 'OUTLINE')
+    Profiles:RegisterOption(module, submodule, nil, nil, 'ValueFont', 'Montserrat Medium Italic', 14, 'OUTLINE')
+
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Absorb', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Portrait', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Power', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'LeaderIndicator', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Debuffs', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'ResurrectIndicator', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'SummonIndicator', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'CastBar', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'RestingIndicator', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'CombatIndicator', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'ClassIndicator', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'DeadOrGhostIndicator', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Buffs', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'FightIndicator', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'RaidIndicator', true)
+
+
+    --["Theme"] = "default",
+    Profiles:RegisterOption('Theme', nil, nil, nil, 'Name', 'default')
+    Profiles:RegisterOption('PartyLayout', nil, nil, nil, 'Layout', 'Expanded')
+    Profiles:RegisterOption('RaidLayout', nil, nil, nil, 'Layout', 'Minimalist')
+    --["PartyLayout"] = "Expanded",
+    --["RaidLayout"] = "Minimalist",
+
     Profiles:UpdateDB()
-    --ABSORB OPTION
-    --POWER OPTION
-    --PORTRAIT OPTION
-    --INDICATORS OPTION
-    --CASTBAR OPTION
-    --TAGS OPTION
-    --FONT OPTION
 
 end

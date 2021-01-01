@@ -363,8 +363,8 @@ function UnitFrames:CreateFontString(frame, config, unit)
 
     local font = frame:CreateFontString(nil, config.Layer)
     if unit == 'Player' then
-        local fontObject = C.PlayerLayout[config.FontName]
-        print (fontObject, fontObject[1], fontObject[2])
+        local fontObject = C.UnitFrames.PlayerLayout[config.FontName]
+        --print (fontObject, fontObject[1], fontObject[2])
         font:SetFontObject( Medias:GetFont( fontObject[1]..fontObject[2] ) )
     else
         font:SetFontObject( Medias:GetFont( config.FontName ) )
@@ -1197,7 +1197,7 @@ function UnitFrames:Style(unit)
         return
     end
 
-    local style = V.Themes[ C.Theme ].UnitFrames
+    local style = V.Themes[ 'default' ].UnitFrames
 
     local Parent = self:GetParent():GetName()
 
@@ -1215,17 +1215,17 @@ function UnitFrames:Style(unit)
         UnitFrames.FocusTarget(self, style.FocusTarget.Config)
     elseif (unit == "party") then
         --TODO USE CONFIG LAYOUT HERE
-        UnitFrames.Party(self, style.Party.Config[C.PartyLayout].Unit )
+        UnitFrames.Party(self, style.Party.Config[C.PartyLayout.Layout].Unit )
     elseif (unit == "raid" ) then
         --TODO USE CONFIG LAYOUT HERE
-        UnitFrames.Raid(self, style.Raid.Config[C.RaidLayout].Unit)
+        UnitFrames.Raid(self, style.Raid.Config[C.RaidLayout.Layout].Unit)
     elseif (unit:find("raid")) or (unit:find("raidpet")) then
         if Parent:match("Party") then
             --TODO USE CONFIG LAYOUT HERE
-            UnitFrames.Party(self, style.Party.Config[C.PartyLayout].Unit)
+            UnitFrames.Party(self, style.Party.Config[C.PartyLayout.Layout].Unit)
         else
             --TODO USE CONFIG LAYOUT HERE
-            UnitFrames.Raid(self, style.Raid.Config[C.RaidLayout].Unit)
+            UnitFrames.Raid(self, style.Raid.Config[C.RaidLayout.Layout].Unit)
         end
     end
 
@@ -1234,14 +1234,14 @@ end
 
 function UnitFrames:CreateUnits()
 
-    local themeName = C.Theme
-    local Config = V.Themes[themeName].UnitFrames
+    local themeName = C.Theme.Name
+    local Config = V.Themes['default'].UnitFrames
 
     for k, v in pairs (Config) do
         if k == "Party" and v.Enable == true then
 
             local header = v.Config.Header
-            local layout = C.PartyLayout
+            local layout = C.PartyLayout.Layout
 
             --TODO USE CONFIG LAYOUT HERE
             local party = oUF:SpawnHeader( header.Name, header.Template, header.Visibility,
@@ -1254,7 +1254,7 @@ function UnitFrames:CreateUnits()
         elseif k == "Raid" and v.Enable == true then
 
             local header = v.Config.Header
-            local layout = C.RaidLayout
+            local layout = C.RaidLayout.Layout
 
             --TODO USE CONFIG LAYOUT HERE
             local raid = oUF:SpawnHeader( header.Name, header.Template, header.Visibility,
@@ -1273,8 +1273,8 @@ function UnitFrames:CreateUnits()
         elseif v.Enable == true then
             local unit = oUF:Spawn(strlower(k), "Vorkui"..k.."Frame")
             if k == 'Player' then
-                unit:SetSize( unpack(C.PlayerLayout.Size) )
-                unit:SetPoint( unpack(C.PlayerLayout.Point) )
+                unit:SetSize( unpack(C.UnitFrames.PlayerLayout.Size) )
+                unit:SetPoint( unpack(C.UnitFrames.PlayerLayout.Point) )
             else
                 unit:SetSize( unpack(v.Size) )
                 unit:SetPoint( unpack(v.Point) )

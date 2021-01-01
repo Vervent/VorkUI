@@ -41,6 +41,7 @@ end
 
 local function getPath(...)
     local res = {
+        'UnitFrames',
         'PlayerLayout'
     }
 

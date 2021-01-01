@@ -243,7 +243,7 @@ local unitFramePage = {
                                 size = { 50, 25 },
                                 point = { 'TOPLEFT', 110, -30 },
                                 template = 'NumericInputSpinnerTemplate',
-                                dboption = { 'PlayerLayout', 'Size', 1 }
+                                dboption = { 'UnitFrames', 'PlayerLayout', 'Size', 1 }
                             },
                             data = { nil, nil, nil, {0, 500} }
                         },
@@ -265,7 +265,7 @@ local unitFramePage = {
                                 size = { 50, 25 },
                                 point = { 'TOPLEFT', 110, -60 },
                                 template = 'NumericInputSpinnerTemplate',
-                                dboption = { 'PlayerLayout', 'Size', 2 }
+                                dboption = { 'UnitFrames', 'PlayerLayout', 'Size', 2 }
                             },
                             data = { nil, nil, nil, {0, 500} }
                         },
@@ -301,7 +301,7 @@ local unitFramePage = {
                     params = {
                         size = { 200, 25 },
                         point = { 'TOP', 0, -50 },
-                        dboption = 'PartyLayout'
+                        dboption = { 'PartyLayout', 'Layout' }
                     },
                     data = {
                         { text = 'Expanded' },
@@ -339,7 +339,7 @@ local unitFramePage = {
                     params = {
                         size = { 200, 25 },
                         point = { 'TOP', 0, -50 },
-                        dboption = 'RaidLayout'
+                        dboption = { 'RaidLayout', 'Layout' }
                     },
                     data = {
                         { text = 'Expanded' },

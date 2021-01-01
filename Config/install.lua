@@ -53,7 +53,7 @@ end
 
 function Install:Launch(db)
     print("INSTALL LAUNCH")
-    GenerateInstallFrame(self, db)
+    --GenerateInstallFrame(self, db)
 
     self:GenerateConfigFrame()
 end
