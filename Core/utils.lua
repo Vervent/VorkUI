@@ -202,3 +202,62 @@ Utils.API.UpdateWidgetsLayout = function (self, firstItemIndex)
         end
     end
 end
+
+Utils.API.ShallowCopyTableRecursivelyIgnoring = function(self, orig, degree, degreeMax, ignoreField)
+
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' and degree <= degreeMax then
+        copy = {}
+        for orig_key, orig_value in pairs(orig) do
+            --if type(orig_key) == 'number' then
+            --    copy = self:ShallowCopyTableRecursivelyIgnoring(orig_value, degree + 1, degreeMax, ignoreField)
+            --else
+                if type(orig_value) == 'table' then
+                copy[orig_key] = self:ShallowCopyTableRecursivelyIgnoring(orig_value, degree + 1, degreeMax, ignoreField)
+            else
+                if type(ignoreField) == 'string' and orig_key ~= ignoreField then
+                    copy[orig_key] = orig_value
+                elseif type(ignoreField) == 'table' and ignoreField[orig_key] == nil then
+                    copy[orig_key] = orig_value
+                end
+            end
+        end
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
+Utils.API.ShallowCopyTableRecursively = function(self, orig, degree, degreeMax)
+
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' and degree <= degreeMax then
+        copy = {}
+        for orig_key, orig_value in pairs(orig) do
+            if type(orig_value) == 'table' then
+                copy[orig_key] = self:ShallowCopyTableRecursively(orig_value, degree + 1, degreeMax)
+            else
+                copy[orig_key] = orig_value
+            end
+        end
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
+Utils.API.ShallowCopyTable = function(self, orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in pairs(orig) do
+            copy[orig_key] = orig_value
+        end
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end

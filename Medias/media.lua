@@ -49,7 +49,7 @@ local FontSettings = {
         "OUTLINE"
     },
     ["Montserrat Bold"] = {
-        {},
+        { 16 },
         "OUTLINE"
     },
     ["Montserrat Bold Italic"] = {
@@ -97,7 +97,7 @@ local FontSettings = {
         "OUTLINE"
     },
     ["Montserrat SemiBold"] = {
-        { 22 },
+        { 16, 22 },
         "OUTLINE"
     },
     ["Montserrat SemiBold Italic"] = {

@@ -6,7 +6,7 @@ end
 
 local Themes = V.Themes
 
-Themes.Default = {
+Themes.default = {
     UnitFrames = {
         Player = {
             Enable = true,
@@ -428,7 +428,7 @@ Themes.Default = {
         Target = {
             Enable = true,
             Size = { 300, 62 },
-            Point = { "CENTER", UIParent, "CENTER", 450, -350 },
+            Point = { "CENTER", UIParent, "CENTER", 400, -200 },
             Config = {
                 Absorb = {
                     Textures ={
@@ -1094,9 +1094,9 @@ Themes.Default = {
                         showPlayer = true, --true
                         showSolo = false, --false
                         groupFilter = "1,2,3,4,5,6,7,8",
-                        point = "LEFT",
+                        point = "TOP",
                         xOffset = 5,
-                        yOffset = 0,
+                        yOffset = -30,
                         sortMethod = "INDEX",
                         sortDir = "ASC",
                         groupBy = "GROUP",

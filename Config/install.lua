@@ -36,6 +36,14 @@ local function GenerateInstallFrame(self, db)
             ["BigValueFont"] = { 'Montserrat Medium Italic', 18, 'OUTLINE' },
             ["DurationFont"] = { 'Montserrat Medium', 12, 'OUTLINE' },
             ["StackFont"] = { 'Montserrat Medium Italic', 16, 'OUTLINE' },
+            ["TMP"] = {
+                ["TMP2"] = {
+                    ["TATA"] = true,
+                },
+                ["TMP3"] = {
+                    ["TOTO"] = 1,
+                }
+            }
         },
     }
 
@@ -44,6 +52,7 @@ local function GenerateInstallFrame(self, db)
 end
 
 function Install:Launch(db)
+    print("INSTALL LAUNCH")
     GenerateInstallFrame(self, db)
 
     self:GenerateConfigFrame()

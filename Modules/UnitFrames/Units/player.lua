@@ -239,5 +239,4 @@ function UnitFrames:Player(Config)
     self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
     self:HookScript("OnLeave", UnitFrames.MouseOnPlayer)
 
-
 end

@@ -2,6 +2,6 @@
 	<Script file="install.lua"/>
 
 	<Include file='GUI\load.xml'/>
+	<Include file='Themes\load.xml'/>
 
-	<Script file="Themes\default.lua"/>
 </Ui>

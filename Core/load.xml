@@ -2,6 +2,7 @@
 	<Script file="load.lua"/>
 	<Script file="utils.lua"/>
 	<Script file="media.lua"/>
+	<Script file="themes.lua"/>
 	<Script file="profiles.lua"/>
 	<Script file="modules.lua"/>
 </Ui>

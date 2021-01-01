@@ -15,6 +15,7 @@ function Load:OnEvent(event)
         V["Medias"]:Enable()
         V["UnitFrames"]:Enable()
         --Now that all systems and medias are loaded, we can generate config frame
+        V["Themes"]:RegisterTheme("Default")
         if not V["Profiles"]:IsReady() then
             V["Install"]:Launch(VorkuiDB)
         else
