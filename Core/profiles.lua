@@ -227,7 +227,7 @@ function Profiles:RegisterModule(db, name)
     end
 
     db[name] = {
-        ["Enable"] = false,
+        ["Enable"] = true,
     }
 end
 
@@ -241,7 +241,7 @@ function Profiles:RegisterSubModule(db, moduleName, name)
     end
 
     db[moduleName][name] = {
-        ["Enable"] = false,
+        ["Enable"] = true,
     }
 end
 

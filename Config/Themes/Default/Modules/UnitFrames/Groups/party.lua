@@ -142,21 +142,21 @@ local function castbarOption(layout, module, submodule)
         { 'Spark', 'Size', 20, 20 },
         { 'Spark', 'BlendMode', 'ADD' },
         { 'CastSettings', 'AtlasName', 'Muzzle' },
-        { 'CastSettings', 'Point', 'RIGHT', nil, 'RIGHT', 5, 0 },
+        { 'CastSettings', 'Point', 'RIGHT', 'Castbar', 'RIGHT', 5, 0 },
         { 'ChannelSettings', 'AtlasName', 'Spark' },
-        { 'ChannelSettings', 'Point', 'CENTER', nil, 'RIGHT', 0, 0 },
+        { 'ChannelSettings', 'Point', 'CENTER', 'Castbar', 'RIGHT', 0, 0 },
         --TAGS
         { 'Time', 'Layer', 'OVERLAY' },
         { 'Time', 'Font', 'DurationFont' },
-        { 'Time', 'Point', 'RIGHT' },
+        { 'Time', 'Point', 'RIGHT', 'Castbar' },
 
         { 'Text', 'Layer', 'OVERLAY' },
         { 'Text', 'Font', 'NormalFont' },
-        { 'Text', 'Point', 'CENTER' },
+        { 'Text', 'Point', 'CENTER', 'Castbar' },
 
         --ICON
         { 'Icon', 'Size', 20, 20 },
-        { 'Icon', 'Point', 'TOPLEFT' },
+        { 'Icon', 'Point', 'TOPLEFT', 'Castbar' },
 
         --SHIELD
         { 'Shield', 'Size', 20, 20 },
@@ -192,11 +192,11 @@ local function nameOption(layout, module, submodule)
     }
 
     if layout == 'Expanded' then
-        data[#data + 1] = { nil, 'Point', 'TOPRIGHT', nil, 'TOPRIGHT', -20, 0 }
+        data[#data + 1] = { nil, 'Point', 'TOPRIGHT', 'Frame', 'TOPRIGHT', -20, 0 }
     elseif layout == 'Minimalist' then
-        data[#data + 1] = { nil, 'Point', 'TOPRIGHT', nil, 'TOPRIGHT', -20, 0 }
+        data[#data + 1] = { nil, 'Point', 'TOPRIGHT', 'Frame', 'TOPRIGHT', -20, 0 }
     elseif layout == 'Compact' then
-        data[#data + 1] = { nil, 'Point', 'LEFT', nil, 'RIGHT', 20, 0 }
+        data[#data + 1] = { nil, 'Point', 'LEFT', 'Frame', 'RIGHT', 20, 0 }
     else
         print ("|cFFFF1010 BAD PARTY LAYOUT |r")
     end
@@ -230,7 +230,7 @@ local function powerOption(layout, module, submodule)
         data[size + 1] = { nil, 'Size', 117, 12 }
         data[size + 2] = { 'Value', 'Layer', 'OVERLAY' }
         data[size + 3] = { 'Value', 'Font', 'StackFont' }
-        data[size + 4] = { 'Value', 'Point', 'BOTTOM' }
+        data[size + 4] = { 'Value', 'Point', 'BOTTOM', 'Frame' }
         data[size + 5] = { 'Value', 'Tag', '[powercolor][missingpp]' }
     elseif layout == 'Minimalist' then
         data[size + 1] = { nil, 'Size', 118, 8 }

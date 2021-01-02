@@ -14,10 +14,10 @@ Medias.MediaPath = {
 }
 
 local StatusBarAdress = {
-    {[[StatusBar\bubbles.tga]], 'Bubbles'},
-    {[[StatusBar\default.tga]], 'Default'},
-    {[[StatusBar\background.tga]], 'Background'},
-    {[[StatusBar\border.tga]], 'Border'},
+    {[[StatusBar\bubbles.tga]], 'VorkuiBubbles'},
+    {[[StatusBar\default.tga]], 'VorkuiDefault'},
+    {[[StatusBar\background.tga]], 'VorkuiBackground'},
+    {[[StatusBar\border.tga]], 'VorkuiBorder'},
 }
 local FontAdress = {
     {'Montserrat-Black.ttf', 'Montserrat Black'},

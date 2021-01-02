@@ -107,15 +107,15 @@ local function castbarOption(module, submodule)
         --TAGS
         { 'Time', 'Layer', 'OVERLAY' },
         { 'Time', 'Font', 'DurationFont' },
-        { 'Time', 'Point', 'RIGHT' },
+        { 'Time', 'Point', 'RIGHT', 'Castbar' },
 
         { 'Text', 'Layer', 'OVERLAY' },
         { 'Text', 'Font', 'NormalFont' },
-        { 'Text', 'Point', 'CENTER' },
+        { 'Text', 'Point', 'CENTER', 'Castbar' },
 
         --ICON
         { 'Icon', 'Size', 20, 20 },
-        { 'Icon', 'Point', 'TOPLEFT' },
+        { 'Icon', 'Point', 'TOPLEFT', 'Castbar' },
 
         --SHIELD
         { 'Shield', 'Size', 20, 20 },
@@ -162,7 +162,7 @@ local function powerOption(module, submodule)
         --TAGS
         { 'Value', 'Layer', 'OVERLAY' },
         { 'Value', 'Font', 'StackFont' },
-        { 'Value', 'Point', 'BOTTOM' },
+        { 'Value', 'Point', 'BOTTOM', 'Frame' },
         { 'Value', 'Tag', '[powercolor][missingpp]' },
     }
 

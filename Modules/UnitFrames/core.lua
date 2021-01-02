@@ -254,19 +254,27 @@ function UnitFrames:CastBarOnUpdate(elapsed)
     end
 end
 
-function UnitFrames:CreateCastBar(frame, config, unit)
+function UnitFrames:CreateCastBar(frame, config, baseConfig)
 
     local castbar = CreateFrame("StatusBar", frame:GetParent():GetName().."Castbar", frame)
-    local textures = config.Textures
+    local textures = config.Rendering
     local sparkSettings = config.Spark
 
     castbar:SetSize(unpack(config.Size))
     castbar:SetStatusBarTexture(Medias:GetStatusBar(textures[1][1]))
     castbar:SetStatusBarColor(unpack(config.StatusBarColor))
     castbar:SetReverseFill(config.ReverseFill or false)
+    --local point = config.Point
+    --
+    --if point[2] == nil then
+    --    point[2] = frame
+    --elseif type(config.Point[2]) == 'string' then
+    --    point = { self:GetPoint(point) }
+    --end
+    --
+    --castbar:SetPoint(unpack(point))
 
-    config.Point[2] = frame
-    castbar:SetPoint(unpack(config.Point))
+    castbar:Point(config.Point)
 
     -- Add a background
     local background = castbar:CreateTexture(nil, textures[2][2], textures[2][3])
@@ -277,25 +285,23 @@ function UnitFrames:CreateCastBar(frame, config, unit)
         local spark = castbar:CreateTexture(nil, sparkSettings.Layer)
         spark:SetSize( unpack(sparkSettings.Size) )
         spark:SetBlendMode(sparkSettings.BlendMode)
-        spark:SetTexture(LibAtlas:GetPath(sparkSettings.CastSettings.AtlasName))
+        spark:SetTexture(LibAtlas:GetPath(config.CastSettings.AtlasName))
 
         local parentSpark = castbar:GetStatusBarTexture()
 
-        local castingSparkPoint = sparkSettings.CastSettings.Point
-        castingSparkPoint[2] = parentSpark
-        local channelingSparkPoint = sparkSettings.ChannelSettings.Point
-        channelingSparkPoint[2] = parentSpark
+        local anchorCast, _, relativeAnchorCast, xOffCast, yOffCast = unpack(config.CastSettings.Point)
+        local anchorChannel, _, relativeAnchorChannel, xOffChannel, yOffChannel = unpack(config.ChannelSettings.Point)
 
-        spark:SetPoint( unpack (channelingSparkPoint) )
+        spark:SetPoint( anchorChannel, parentSpark, relativeAnchorChannel, xOffChannel, yOffChannel )
         spark.castSettings = {
-            texture = sparkSettings.CastSettings.AtlasName,
-            point = castingSparkPoint,
-            spriteCount = LibAtlas:GetSpriteCount(sparkSettings.CastSettings.AtlasName)
+            texture = config.CastSettings.AtlasName,
+            point = { anchorCast, parentSpark, relativeAnchorCast, xOffCast, yOffCast },
+            spriteCount = LibAtlas:GetSpriteCount(config.CastSettings.AtlasName)
         }
         spark.channelSettings = {
-            texture = sparkSettings.ChannelSettings.AtlasName,
-            point = channelingSparkPoint,
-            spriteCount = LibAtlas:GetSpriteCount(sparkSettings.ChannelSettings.AtlasName)
+            texture = config.ChannelSettings.AtlasName,
+            point = { anchorChannel, parentSpark, relativeAnchorChannel, xOffChannel, yOffChannel },
+            spriteCount = LibAtlas:GetSpriteCount(config.ChannelSettings.AtlasName)
         }
         spark.castbar = castbar
         castbar.Spark = spark
@@ -303,12 +309,12 @@ function UnitFrames:CreateCastBar(frame, config, unit)
 
     -- Add a timer
     if config.Time then
-        castbar.Time = UnitFrames:CreateFontString(castbar, config.Time, unit)
+        castbar.Time = UnitFrames:CreateFontString(castbar, config.Time, baseConfig)
     end
 
     -- Add spell text
     if config.Text then
-        castbar.Text = UnitFrames:CreateFontString(castbar, config.Text, unit)
+        castbar.Text = UnitFrames:CreateFontString(castbar, config.Text, baseConfig)
     end
 
     -- Add spell icon
@@ -346,34 +352,12 @@ end
 --[[------------------------------------------------------------------
 -- CREATE FONT
 --]]------------------------------------------------------------------
-function UnitFrames:CreateFontString(frame, config)
+function UnitFrames:CreateFontString(frame, config, baseConfig)
 
     local font = frame:CreateFontString(nil, config.Layer)
-    font:SetFontObject( Medias:GetFont( config.FontName ) )
-
-    if config.Point[2] == nil then
-        config.Point[2] = frame
-    end
-    font:SetPoint( unpack(config.Point) )
-
-    return font
-end
-
-function UnitFrames:CreateFontString(frame, config, unit)
-
-    local font = frame:CreateFontString(nil, config.Layer)
-    if unit == 'Player' then
-        local fontObject = C.UnitFrames.PlayerLayout[config.FontName]
-        --print (fontObject, fontObject[1], fontObject[2])
-        font:SetFontObject( Medias:GetFont( fontObject[1]..fontObject[2] ) )
-    else
-        font:SetFontObject( Medias:GetFont( config.FontName ) )
-    end
-
-    if config.Point[2] == nil then
-        config.Point[2] = frame
-    end
-    font:SetPoint( unpack(config.Point) )
+    local fontObject = baseConfig[config.Font]
+    font:SetFontObject( Medias:GetFont( fontObject[1]..fontObject[2] ) )
+    font:Point(config.Point)
 
     return font
 end
@@ -411,10 +395,15 @@ function UnitFrames:Create3DPortrait(template, parent, config)
     local portrait = CreateFrame(template, nil, parent)
     portrait:SetModelDrawLayer( config.ModelDrawLayer )
     portrait:SetSize( unpack( config.Size ) )
-    if config.Point[2] == nil then
-        config.Point[2] = parent
-    end
-    portrait:SetPoint( unpack( config.Point ) )
+    --local point = config.Point
+    --if point[2] == nil then
+    --    point[2] = parent
+    --elseif type(config.Point[2]) == 'string' then
+    --    point = { self:GetPoint(point) }
+    --end
+    --portrait:SetPoint( unpack( point ) )
+    portrait:Point(config.Point)
+
     if config.PostUpdate then
         portrait.PostUpdateConfig = config.PostUpdate
         portrait.PostUpdate = UnitFrames.UpdatePortraitOverride
@@ -466,11 +455,15 @@ end
 function UnitFrames:CreateIndicator(frame, layer, sublayer, config)
     local indicator = frame:CreateTexture(nil, layer, sublayer)
     indicator:SetSize( unpack(config.Size) )
+    --local point = config.Point
+    --if point[2] == nil then
+    --    point[2] = frame
+    --elseif type(config.Point[2]) == 'string' then
+    --    point = {self:GetPoint(point)}
+    --end
+    --indicator:SetPoint( unpack(point) )
+    indicator:Point(config.Point)
 
-    if config.Point[2] == nil then
-        config.Point[2] = frame
-    end
-    indicator:SetPoint( unpack(config.Point) )
     indicator:SetTexture( LibAtlas:GetPath(config.Texture) )
     if config.TexCoord then
         indicator:SetTexCoord(LibAtlas:GetTexCoord( config.Texture ,config.TexCoord))
@@ -488,12 +481,23 @@ function UnitFrames:CreateIndicator(frame, layer, sublayer, config)
     return indicator
 end
 
+function UnitFrames:GetPoint(point)
+    if point == nil then
+        print ("||cFFFF1010 GET POINT ERROR|r", self)
+        return
+    end
+    local anchor, parent, relativeAnchor, xOff, yOff = unpack(point)
+    parent = self[parent]
+
+    return anchor, parent, relativeAnchor, xOff, yOff
+end
+
 --[[------------------------------------------------------------------
 -- SLANTED STATUSBAR SYSTEM
 -- * textures - table of this form { path or color, layer, sublayer }
 --]]------------------------------------------------------------------
 
-function UnitFrames:CreateSlantedStatusBar(frame, textures, size, point, slantSettings, staticLayer)
+function UnitFrames:CreateSlantedStatusBar(frame, textures, size, point, slantSettings)
     local slant = LibSlant:CreateSlant(frame)
     local result = nil
     local texture
@@ -503,7 +507,8 @@ function UnitFrames:CreateSlantedStatusBar(frame, textures, size, point, slantSe
 
         if result == nil then
             if point ~= nil then
-                texture:SetPoint(unpack(point))
+                --texture:SetPoint(unpack(point))
+                texture:Point(point, frame:GetParent())
             end
         else
             texture:SetAllPoints(result)
@@ -525,12 +530,14 @@ function UnitFrames:CreateSlantedStatusBar(frame, textures, size, point, slantSe
     end
 
     for k,v in pairs(slantSettings) do
-        slant[k]=v
+        if k ~= 'StaticLayer' then
+            slant[k]=v
+        end
     end
 
     slant:CalculateAutomaticSlant()
-    if staticLayer then
-        slant:StaticSlant(staticLayer)
+    if slantSettings.StaticLayer then
+        slant:StaticSlant(slantSettings.StaticLayer)
     end
     result.Slant = slant
     return result
@@ -1197,35 +1204,38 @@ function UnitFrames:Style(unit)
         return
     end
 
-    local style = V.Themes[ 'default' ].UnitFrames
+    --local style = C.UnitFrames
+
+    local style = C.UnitFrames
 
     local Parent = self:GetParent():GetName()
 
     if (unit == "player") then
-        UnitFrames.Player(self, style.Player.Config)
+        UnitFrames.Player(self, style.PlayerLayout)
     elseif (unit == "target") then
-        UnitFrames.Target(self, style.Target.Config)
+        UnitFrames.Target(self, style.TargetLayout)
     elseif (unit == "targettarget") then
-        UnitFrames.TargetTarget(self, style.TargetTarget.Config)
+        UnitFrames.TargetTarget(self, style.TargetTargetLayout)
     elseif (unit == "pet") then
-        UnitFrames.Pet(self, style.Pet.Config)
+        --TODO PET
+        --UnitFrames.Pet(self, style.Pet.Config)
     elseif (unit == "focus") then
-        UnitFrames.Focus(self, style.Focus.Config)
+        UnitFrames.Focus(self, style.FocusLayout)
     elseif (unit == "focustarget") then
-        UnitFrames.FocusTarget(self, style.FocusTarget.Config)
+        UnitFrames.FocusTarget(self, style.FocusTargetLayout)
     elseif (unit == "party") then
         --TODO USE CONFIG LAYOUT HERE
-        UnitFrames.Party(self, style.Party.Config[C.UnitFrames.PartyLayout.Layout].Unit )
+        UnitFrames.Party(self, style.PartyLayout )
     elseif (unit == "raid" ) then
         --TODO USE CONFIG LAYOUT HERE
-        UnitFrames.Raid(self, style.Raid.Config[C.UnitFrames.RaidLayout.Layout].Unit)
+        UnitFrames.Raid(self, style.RaidLayout)
     elseif (unit:find("raid")) or (unit:find("raidpet")) then
         if Parent:match("Party") then
             --TODO USE CONFIG LAYOUT HERE
-            UnitFrames.Party(self, style.Party.Config[C.UnitFrames.PartyLayout.Layout].Unit)
+            UnitFrames.Party(self, style.PartyLayout)
         else
             --TODO USE CONFIG LAYOUT HERE
-            UnitFrames.Raid(self, style.Raid.Config[C.UnitFrames.RaidLayout.Layout].Unit)
+            UnitFrames.Raid(self, style.RaidLayout)
         end
     end
 
@@ -1234,16 +1244,15 @@ end
 
 function UnitFrames:CreateUnits()
 
-    print ("|cFF10FF10CreateUnits|r", C, C.Theme, C.Theme.Name)
-
-    local themeName = C.Theme.Name
-    local Config = V.Themes['default'].UnitFrames
+    --local themeName = C.Theme.Name
+    --local Config = V.Themes['default'].UnitFrames
+    local Config = C.UnitFrames
 
     for k, v in pairs (Config) do
-        if k == "Party" and v.Enable == true then
+        if k == "PartyLayout" and v.Enable == true then
 
-            local header = v.Config.Header
-            local layout = C.UnitFrames.PartyLayout.Layout
+            local header = Config.PartyLayout.Header
+            local layout = Config.PartyLayout.Layout
             local initialConfigFunction = [[
                     local header = self:GetParent()
                     self:SetWidth(header:GetAttribute("initial-width"))
@@ -1251,17 +1260,17 @@ function UnitFrames:CreateUnits()
                     ]]
 
             --TODO USE CONFIG LAYOUT HERE
-            local party = oUF:SpawnHeader( header.Name, header.Template, header.Visibility,
+            local party = oUF:SpawnHeader( header.Name, header.Template or nil, header.Visibility,
                     "oUF-initialConfigFunction", initialConfigFunction,
-                    unpack( UnitFrames:GetPartyFramesAttributes( v.Config[layout].Attributes ) )
+                    unpack( UnitFrames:GetPartyFramesAttributes( Config.PartyLayout.Attributes ) )
             )
             party:SetPoint("LEFT", UIParent, "LEFT", 0, 0)
 
             self.Headers.Party = party
-        elseif k == "Raid" and v.Enable == true then
+        elseif k == "RaidLayout" and v.Enable == true then
 
-            local header = v.Config.Header
-            local layout = C.UnitFrames.RaidLayout.Layout
+            local header = Config.RaidLayout.Header
+            local layout = Config.RaidLayout.Layout
             local initialConfigFunction = [[
                     local header = self:GetParent()
                     self:SetWidth(header:GetAttribute("initial-width"))
@@ -1271,7 +1280,7 @@ function UnitFrames:CreateUnits()
             --TODO USE CONFIG LAYOUT HERE
             local raid = oUF:SpawnHeader( header.Name, header.Template, header.Visibility,
                     "oUF-initialConfigFunction", initialConfigFunction,
-                    unpack( UnitFrames:GetPartyFramesAttributes( v.Config[layout].Attributes ) )
+                    unpack( UnitFrames:GetPartyFramesAttributes( Config.RaidLayout.Attributes ) )
             )
             raid:SetPoint("BOTTOM", UIParent, "BOTTOM", -300, 120)
 
@@ -1282,15 +1291,11 @@ function UnitFrames:CreateUnits()
             --background:SetColorTexture(0,0,0,1)
 
             self.Headers.Raid = raid
-        elseif v.Enable == true then
-            local unit = oUF:Spawn(strlower(k), "Vorkui"..k.."Frame")
-            if k == 'Player' then
-                unit:SetSize( unpack(C.UnitFrames.PlayerLayout.Size) )
-                unit:SetPoint( unpack(C.UnitFrames.PlayerLayout.Point) )
-            else
-                unit:SetSize( unpack(v.Size) )
-                unit:SetPoint( unpack(v.Point) )
-            end
+        elseif type(v) == 'table' and v.Enable == true then
+            local unitName = gsub(k, 'Layout', '')
+            local unit = oUF:Spawn(strlower(unitName), "Vorkui"..unitName.."Frame")
+                unit:SetSize( unpack(Config[k].Size) )
+                unit:SetPoint( unpack(Config[k].Point) )
             self.Units[k] = unit
         end
     end
