@@ -1,18 +1,25 @@
+print ("UTILS.LUA")
+
 local V,C,L = select(2,...):unpack()
 
 local CreateFrame = CreateFrame
 
-local Utils = CreateFrame("Frame", "UTILS", UIParent)
+local Utils = CreateFrame("Frame")
 local strlower = strlower
 local tinsert = tinsert
+local EnumerateFrames = EnumerateFrames
 ---------------------------------------------------
 -- Basic Utils
 ---------------------------------------------------
+local Resolution = select(1, GetPhysicalScreenSize()).."x"..select(2, GetPhysicalScreenSize())
+local PixelPerfectScale = 768 / string.match(Resolution, "%d+x(%d+)")
 
 Utils.Settings = {}
 Utils.API = {}
 Utils.Functions = {}
-Utils.DefaultSettings = {}
+Utils.DefaultSettings = {
+    ["UIScale"] = PixelPerfectScale,
+}
 
 Utils.Functions.AddAPI = function(object)
     local mt = getmetatable(object).__index
@@ -24,14 +31,15 @@ end
 
 Utils.Functions.OnEvent = function(self, event, ...)
     if event == "PLAYER_LOGIN" then
-        --SetCVar("uiScale", self.Settings.UIScale)
-        --SetCVar("useUiScale", 1)
+        SetCVar("uiScale", self.Settings.UIScale)
+        SetCVar("useUiScale", 1)
 
-        -- Allow 4K and WQHD Resolution to have an UIScale lower than 0.64, which is
-        -- the lowest value of UIParent scale by default
-        --if (self.Settings.UIScale < 0.64) then
-        --    UIParent:SetScale(self.Settings.UIScale)
-        --end
+         --Allow 4K and WQHD Resolution to have an UIScale lower than 0.64, which is
+         --the lowest value of UIParent scale by default
+        if (self.Settings.UIScale < 0.64) then
+            UIParent:SetScale(self.Settings.UIScale)
+        end
+
     elseif event == "ADDON_LOADED" then
         local Addon = ...
 
@@ -89,6 +97,7 @@ end
 
 Utils:RegisterEvent("PLAYER_LOGIN")
 Utils:RegisterEvent("ADDON_LOADED")
+print ("|cFF10FF10 BIND UTILS EVENT|r")
 Utils:SetScript("OnEvent", Utils.Functions.OnEvent)
 
 V.Utils = Utils

@@ -10,7 +10,7 @@ local CreateFrame = CreateFrame
 
 local Load = CreateFrame("Frame")
 
-function Load:OnEvent(event)
+function Load:OnEvent(event, ...)
     if (event == "PLAYER_LOGIN") then
         V["Medias"]:Enable()
         --Now that all systems and medias are loaded, we can generate config frame
@@ -24,11 +24,11 @@ function Load:OnEvent(event)
             V["Install"]:GenerateConfigFrame()
         end
         V["UnitFrames"]:Enable()
-
     end
 end
 
 Load:RegisterEvent("PLAYER_LOGIN")
+Load:RegisterEvent("ADDON_LOADED")
 Load:SetScript("OnEvent", Load.OnEvent)
 
 V["Loading"] = Load

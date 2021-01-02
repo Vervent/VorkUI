@@ -405,7 +405,7 @@ Themes["Default"].SetPlayerProfile = function()
 
 
     --["Theme"] = "default",
-    Profiles:RegisterOption('Theme', nil, nil, nil, 'Name', 'default')
+    Profiles:RegisterOption('Theme', nil, nil, nil, 'Name', 'Default')
     --Profiles:RegisterOption('PartyLayout', nil, nil, nil, 'Layout', 'Expanded')
     --Profiles:RegisterOption('RaidLayout', nil, nil, nil, 'Layout', 'Minimalist')
     --["PartyLayout"] = "Expanded",
