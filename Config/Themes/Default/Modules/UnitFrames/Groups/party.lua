@@ -398,7 +398,7 @@ Themes["Default"].SetPartyProfile = function(layout)
     local submodule = 'PartyLayout'
 
     --Global OPTION
-    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', 'CENTER', 'UIParent', 'CENTER', -450, -350)
+    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', 'BOTTOM', 'UIParent', 'BOTTOM', 0, 10)
 
     headerOption(module, submodule)
 

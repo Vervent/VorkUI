@@ -274,7 +274,7 @@ function UnitFrames:CreateCastBar(frame, config, baseConfig)
     --
     --castbar:SetPoint(unpack(point))
 
-    castbar:Point(config.Point)
+    castbar:Point(config.Point, frame:GetParent())
 
     -- Add a background
     local background = castbar:CreateTexture(nil, textures[2][2], textures[2][3])
@@ -357,7 +357,7 @@ function UnitFrames:CreateFontString(frame, config, baseConfig)
     local font = frame:CreateFontString(nil, config.Layer)
     local fontObject = baseConfig[config.Font]
     font:SetFontObject( Medias:GetFont( fontObject[1]..fontObject[2] ) )
-    font:Point(config.Point)
+    font:Point(config.Point, frame:GetParent())
 
     return font
 end
@@ -1264,7 +1264,8 @@ function UnitFrames:CreateUnits()
                     "oUF-initialConfigFunction", initialConfigFunction,
                     unpack( UnitFrames:GetPartyFramesAttributes( Config.PartyLayout.Attributes ) )
             )
-            party:SetPoint("LEFT", UIParent, "LEFT", 0, 0)
+            party:Point(Config.PartyLayout.Point)
+            --party:SetPoint("LEFT", UIParent, "LEFT", 0, 0)
 
             self.Headers.Party = party
         elseif k == "RaidLayout" and v.Enable == true then
@@ -1282,7 +1283,8 @@ function UnitFrames:CreateUnits()
                     "oUF-initialConfigFunction", initialConfigFunction,
                     unpack( UnitFrames:GetPartyFramesAttributes( Config.RaidLayout.Attributes ) )
             )
-            raid:SetPoint("BOTTOM", UIParent, "BOTTOM", -300, 120)
+            raid:Point(Config.RaidLayout.Point)
+            --raid:SetPoint("BOTTOM", UIParent, "BOTTOM", -300, 120)
 
             --TO TEST AREA
             --local background = raid:CreateTexture(nil, "BACKGROUND")

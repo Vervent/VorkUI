@@ -1,6 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="install.lua"/>
+	<Include file='Editor\load.xml'/>
 
+	<Script file="install.lua"/>
 	<Include file='GUI\load.xml'/>
 	<Include file='Themes\load.xml'/>
 

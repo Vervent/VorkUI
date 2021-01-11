@@ -42,4 +42,9 @@ SlashCmdList.VORKUI = function ()
     Engine[1].Install.ConfigUI:Show()
 end
 
+SLASH_VORKUIEDITOR1, SLASH_VORKUIEDITOR2 = "/vorkeditor", "/vkeditor"
+SlashCmdList.VORKUIEDITOR = function ()
+    Engine[1].Editor:Show()
+end
+
 Vorkui = Engine
