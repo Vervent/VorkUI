@@ -24,8 +24,43 @@ end
 function Medias:GetLSMDropDown(mediatype)
     local data = {}
 
-    for _, m in ipairs(LibSharedMedia:List(mediatype)) do
-        tinsert(data, { text = m })
+    local list = LibSharedMedia:List(mediatype)
+
+    if #list > 20 then
+        --split list
+        local entry = {
+            '0-9', 'A-D', 'E-H', 'I-L', 'M-P', 'Q-T', 'U-X', 'Y-Z'
+        }
+
+        for _, e in ipairs(entry) do
+            tinsert(data, { text = e, menuList = {} })
+        end
+
+        local c
+        for _, m in ipairs(list) do
+            c = m:sub(1,1)
+            if c:match("[0-9]") then
+                tinsert(data[1].menuList, {text = m})
+            elseif c:match("[A-Da-d]") then
+                tinsert(data[2].menuList, {text = m})
+            elseif c:match("[E-He-h]") then
+                tinsert(data[3].menuList, {text = m})
+            elseif c:match("[I-Li-l]") then
+                tinsert(data[4].menuList, {text = m})
+            elseif c:match("[M-Pm-p]") then
+                tinsert(data[5].menuList, {text = m})
+            elseif c:match("[Q-Tq-t]") then
+                tinsert(data[6].menuList, {text = m})
+            elseif c:match("[U-Xu-x]") then
+                tinsert(data[7].menuList, {text = m})
+            elseif c:match("[Y-Zy-z]") then
+                tinsert(data[8].menuList, {text = m})
+            end
+        end
+    else
+        for _,m in ipairs(list) do
+            tinsert(data, { text = m })
+        end
     end
 
     return data

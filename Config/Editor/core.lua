@@ -6,10 +6,24 @@ local Editor = CreateFrame("Frame")
 local registry = {}
 
 --[[
+    LOCAL FUNCTION
+]]--
+local function HookRegisteredFrameClick(self)
+
+    for _, v in pairs(registry) do
+        v[1]:HookScript('OnClick', function()
+            self.Inspector:Inspect(v[1])
+        end )
+    end
+
+end
+
+
+--[[
     CORE FUNCTION
 ]]--
 
-function Editor:RegisterFrame(frame, config)
+function Editor:RegisterFrame(frame, config, module, submodule)
     if frame == nil then
         print ("|cFFFF1010 REGISTER FRAME ERROR|r")
         return
@@ -17,9 +31,9 @@ function Editor:RegisterFrame(frame, config)
 
     local name = frame:GetName()
     if name == nil then
-        tinsert(registry, { frame, config })
+        tinsert(registry, { frame, config, module, submodule })
     else
-        registry[name] = { frame, config }
+        registry[name] = { frame, config, module, submodule }
     end
 end
 
@@ -37,6 +51,10 @@ function Editor:GetFrameOptions(id)
 end
 
 function Editor:PrintFrameOptions(item)
+    if item == nil then
+        print ('|cFFFF1010PRINT FRAME OPTIONS ERROR|r')
+        return
+    end
     print ('FRAME ID', item[1])
     for k,v in pairs(item[2]) do
         print (k, v)
@@ -54,7 +72,7 @@ function Editor:GetFrameTable(id)
         return registry[id] or nil
     elseif type(id) == 'table' then
         for _, v in pairs (registry) do
-            if v[2] == id then
+            if v[1] == id then
                 return v
             end
         end
@@ -70,6 +88,7 @@ function Editor:CreateGUI()
 end
 
 function Editor:Enable()
+    HookRegisteredFrameClick(self)
     self.Inspector:Show()
 end
 

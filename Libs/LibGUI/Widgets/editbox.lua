@@ -53,10 +53,12 @@ local Methods = {
         if self:HasFocus() == false then
             return
         end
-        self.text = self:GetNumber()
 
         if self.SetValue then
+            self.text = self:GetNumber()
             self:SetValue( tonumber( self.text ) or 0)
+        else
+            self.text = self:GetText()
         end
 
         if self.DBOption then
@@ -123,6 +125,7 @@ local function create(parent, name, point, size, template, dboption)
     edit:SetScript("OnHide", disable)
     edit:SetAutoFocus(false)
     edit:ClearFocus()
+    edit:SetTextInsets(2, 2, 2, 2)
     edit.Scripts = {}
     edit.DBOption = dboption
 
@@ -132,6 +135,7 @@ local function create(parent, name, point, size, template, dboption)
     if size then
         edit:SetSize(unpack(size))
     end
+
     --push our internal Methods in the metatable, if it taints, need to wrap this
     setmetatable(edit, { __index = setmetatable(Methods, getmetatable(edit))})
 
@@ -147,7 +151,15 @@ local function create(parent, name, point, size, template, dboption)
 
         edit:SetValue(tonumber(initialVal) or 0)
     else
+        edit:SetMaxLetters(255)
         edit:ChangeText( initialVal )
+    end
+
+    if template == nil then
+        --add background
+        edit.bg = edit:CreateTexture(nil, "BACKGROUND")
+        edit.bg:SetAllPoints()
+        edit.bg:SetColorTexture(0, 0, 0, 0.5)
     end
 
     return edit

@@ -59,7 +59,13 @@ local function create(container, name, point, size, layer, ...)
    local label = container:CreateFontString(name, layer, ...)
 
     if point then
-        label:SetPoint( unpack(point) )
+        if type(point[1]) == 'table' then
+            for _, p in pairs(point) do
+                label:SetPoint(unpack(p))
+            end
+        else
+            label:SetPoint( unpack(point) )
+        end
     end
 
     if size then

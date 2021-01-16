@@ -18,7 +18,7 @@ local function scrollUpdate(self)
     local offset = FauxScrollFrame_GetOffset(self)
 
     if (#self.WidgetData > #self.Widgets) then
-        FauxScrollFrame_Update(self, #self.WidgetData, #self.Widgets, self.ChildHeight)
+        FauxScrollFrame_Update(self, #self.WidgetData, #self.Widgets, self.WidgetHeight)
     end
 
     for line = 1, #self.Widgets do
@@ -28,7 +28,7 @@ local function scrollUpdate(self)
 end
 
 local function onVerticalScroll(self, offset)
-    FauxScrollFrame_OnVerticalScroll(self, offset, self.ChildHeight, scrollUpdate)
+    FauxScrollFrame_OnVerticalScroll(self, offset, self.WidgetHeight, scrollUpdate)
 end
 
 local Methods = {
@@ -62,7 +62,7 @@ local Methods = {
         local name = (self:GetName() or '') .. self.WidgetSubType
 
         local w
-        for i = 1, wCount do
+        for i = 0, wCount do
             if t == 'widget' then
                 w = LibGUI:NewWidget(
                         self.WidgetSubType,
@@ -96,7 +96,19 @@ local function create(parent, name, size, point)
     scrollframe.enableAllWidgets = true
 
     if point then
-        scrollframe:SetPoint(unpack(point))
+        if type(point) == 'table' then
+            if type(point[1]) == 'table' then
+                --tricks to manage multi pointing anchor
+                for _, p in pairs(point) do
+                    scrollframe:SetPoint(unpack(p))
+                end
+            else
+                scrollframe:SetPoint(unpack(point))
+            end
+
+        else
+            scrollframe:SetAllPoints()
+        end
     end
     if size then
         scrollframe:SetSize(unpack(size))
@@ -112,7 +124,7 @@ local function bindScript(self, event, fct)
     if self.type ~= 'scrolluniformlist' then
         return
     end
-    print(event, fct)
+    --print(event, fct)
     self.Scripts[event] = fct
 end
 

@@ -1,6 +1,16 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
     <Script file="core.lua"/>
 
-    <Script file="Widgets\enable.lua"/>
-    <Script file="Widgets\rendering.lua"/>
+    <!-- Load Primary component -->
+    <Script file="Components\enable.lua"/>
+    <Script file="Components\texture.lua"/>
+    <Script file="Components\size.lua"/>
+    <Script file="Components\slanting.lua"/>
+    <Script file="Components\font.lua"/>
+    <Script file="Components\tag.lua"/>
+
+    <!-- Load Frame component -->
+    <Script file="Components\rendering.lua"/>
+    <Script file="Components\submodules.lua"/>
+    <Script file="Components\componentlist.lua"/>
 </Ui>

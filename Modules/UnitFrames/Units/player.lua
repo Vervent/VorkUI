@@ -236,7 +236,6 @@ function UnitFrames:Player(Config)
     self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
     self:HookScript("OnLeave", UnitFrames.MouseOnPlayer)
 
-    V.Editor:RegisterFrame(self, Config)
-    V.Editor:GetFrameOptions(Config)
+    V.Editor:RegisterFrame(self, Config, 'UnitFrames', 'PlayerLayout')
 
 end

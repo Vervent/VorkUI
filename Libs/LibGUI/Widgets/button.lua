@@ -31,7 +31,6 @@ local Methods = {
 
     --TODO UPDATE THIS FUNC FOR MORE DATA
     Update = function (self, dataTable)
-
         local text, onClick = unpack(dataTable)
         self:ChangeText(text)
         self:SetScript('OnClick', onClick)

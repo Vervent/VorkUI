@@ -190,6 +190,9 @@ Utils.API.UpdateWidgetsLayout = function (self, firstItemIndex)
         end
     end
 
+    print ('--UpdateWidgetsLayout--')
+    print (width, maxWidth)
+
     nbItemPerLine = math.floor( maxWidth / width )
     lineCount = math.floor((#self.Widgets - firstItemIndex + 1)/nbItemPerLine) + 1
 
@@ -201,16 +204,18 @@ Utils.API.UpdateWidgetsLayout = function (self, firstItemIndex)
                 w:SetPoint("TOPLEFT", self.Widgets[i-1], "TOPLEFT", width + 2, 0)
             else
                 w:ClearAllPoints()
-                w:SetPoint("TOPLEFT", 2, -10)
+                w:SetPoint("TOPLEFT", 0, 0)
             end
             nbItem = nbItem + 1
         else
             w:ClearAllPoints()
-            w:SetPoint("TOPLEFT", self.Widgets[firstItem], "BOTTOMLEFT", 0, -2)
+            w:SetPoint("TOPLEFT", self.Widgets[firstItem], "BOTTOMLEFT", 0, 0)
             firstItem = i
             nbItem = 1
         end
     end
+
+    return lineCount*height
 end
 
 Utils.API.ShallowCopyTableRecursivelyIgnoring = function(self, orig, degree, degreeMax, ignoreField)
