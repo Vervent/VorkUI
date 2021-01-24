@@ -59,6 +59,69 @@ local function isValidContainer(c)
     return c and containers[c.type]
 end
 
+local function checkBound(self, deltaX, deltaY)
+    if self.rect[1] < self.parentRect[1] then
+        deltaX = deltaX + self.parentRect[1]-self.rect[1]
+    elseif self.rect[1]+self.rect[3] > self.parentRect[1]+self.parentRect[3] then
+        deltaX = deltaX + (self.parentRect[1]+self.parentRect[3] - self.rect[1]-self.rect[3])
+    end
+
+    if self.rect[2] < self.parentRect[2] then
+        deltaY = deltaY + self.parentRect[2]-self.rect[2]
+    elseif self.rect[2]+self.rect[4] > self.parentRect[2]+self.parentRect[4] then
+        deltaY = deltaY + (self.parentRect[2]+self.parentRect[4] - self.rect[2]-self.rect[4])
+    end
+
+    return deltaX, deltaY
+end
+
+local function onDragStart(self, ...)
+    local x,y =  GetCursorPosition()
+    self.onDrag = true
+    self.point = { self:GetPoint() }
+    self.parentRect = { self.point[2]:GetScaledRect() }
+    self.uiScale = UIParent:GetEffectiveScale()
+    self.cursorPosition = { x / self.uiScale, y / self.uiScale } --init
+end
+
+local function onDragStop(self, ...)
+    self.onDrag = false
+
+    local deltaX, deltaY = checkBound(self, 0, 0)
+
+    self.point[4] = self.point[4] + deltaX
+    self.point[5] = self.point[5] + deltaY
+
+    self:ClearAllPoints()
+    self:SetPoint(unpack(self.point))
+end
+
+local function onDragUpdate(self, timestep)
+    if self.onDrag == true then
+        self.rect = { self:GetScaledRect() }
+
+        local x, y = GetCursorPosition()
+        local uiScale = self.uiScale
+        local cursorPosition = self.cursorPosition
+        x = x / uiScale
+        y = y / uiScale
+
+        local deltaX, deltaY = checkBound(self,
+                x - cursorPosition[1],
+                y - cursorPosition[2])
+
+        self.point[4] = self.point[4] + deltaX
+        self.point[5] = self.point[5] + deltaY
+
+        self:ClearAllPoints()
+        self:SetPoint(unpack(self.point))
+
+        self.cursorPosition[1] = x
+        self.cursorPosition[2] = y
+
+    end
+end
+
 --[[
     This function bind a script handler to the container
         container to handle the script
@@ -79,14 +142,21 @@ end
         event the script event to handle ( 'OnEvent', 'OnClick', ...), take care to bind a supported script
         fct the callback to execute
 ]]--
-function LibGUI:SetMovableContainer(container)
+function LibGUI:SetMovableContainer(container, isClampToScreen)
     if isValidContainer(container) and containers[container.type].Bind then
+        print ('SetMovableContainer', container)
         container:SetMovable(true)
         container:EnableMouse(true)
         container:RegisterForDrag("LeftButton")
-        container:SetClampedToScreen(true)
-        containers[container.type].Bind(container, 'OnDragStart', container.StartMoving)
-        containers[container.type].Bind(container, 'OnDragStop', container.StopMovingOrSizing)
+        if isClampToScreen then
+            container:SetClampedToScreen(true)
+            containers[container.type].Bind(container, 'OnDragStart', container.StartMoving)
+            containers[container.type].Bind(container, 'OnDragStop', container.StopMovingOrSizing)
+        else
+            containers[container.type].Bind(container, 'OnDragStart', onDragStart)
+            containers[container.type].Bind(container, 'OnUpdate', onDragUpdate)
+            containers[container.type].Bind(container, 'OnDragStop', onDragStop)
+        end
     else
         print ("INVALID CONTAINER, CANNOT BE MOVABLE ")
     end
