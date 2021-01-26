@@ -88,6 +88,40 @@ local Methods = {
 
     ChangeFontColor = function(self, color)
         self:SetTextColor(unpack(color))
+    end,
+
+    AddLabel = function(self, frame, text)
+        if self.Text then
+            return
+        end
+
+        self.Text = frame:CreateFontString()
+        self.Text:SetAllPoints()
+        self.Text:SetFontObject('Game11Font')
+        self.Text:SetText(text or '')
+
+    end,
+
+    AddCollapseSystem = function(self, frame, collapseFct, expandFct)
+        if frame == nil then
+            return
+        end
+        self.isCollapsed = false
+        self.frameHeight = frame:GetHeight()
+        self:SetScript('OnClick', function(self)
+            if self.isCollapsed then
+                --expand
+                print (frame)
+                frame:SetHeight(self.frameHeight)
+                expandFct(frame)
+                self.isCollapsed = false
+            else
+                print (frame)
+                frame:SetHeight(10)
+                collapseFct(frame)
+                self.isCollapsed = true
+            end
+        end)
     end
 }
 
