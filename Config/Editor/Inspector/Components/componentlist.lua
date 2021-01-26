@@ -31,12 +31,20 @@ local function gui(baseName, parent, parentPoint, componentName, componentConfig
     --local name = LibGUI:NewWidget('label', frame, baseName..'ComponentListNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 80, 30 }, nil, nil)
     --name:Update( { 'OVERLAY', nil, componentName or '' } )
 
+    scrollFrame:AddWidget(
+            'widget',
+            'button',
+            {200, 25},
+            { 'General', function(self) Inspector:InspectComponent(self:GetText())  end },
+            'UIPanelButtonTemplate'
+    )
+
     for k, v in pairs(componentConfig) do
         scrollFrame:AddWidget(
                 'widget',
                 'button',
                 {200, 25},
-                { k, function(self) print ("CLICK on", self:GetText())  end },
+                { k, function(self) Inspector:InspectComponent(self:GetText())  end },
                 'UIPanelButtonTemplate'
         )
     end
