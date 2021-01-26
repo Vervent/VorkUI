@@ -15,4 +15,5 @@
     <Script file="Components\submodules.lua"/>
     <Script file="Components\componentlist.lua"/>
     <Script file="Components\componentblock.lua"/>
+    <Script file="Components\indicator.lua"/>
 </Ui>
