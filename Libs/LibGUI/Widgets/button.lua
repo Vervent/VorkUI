@@ -36,10 +36,8 @@ local Methods = {
         self:SetScript('OnClick', onClick)
     end,
 
-    UpdateSize = function(self)
-        local xPadding = 10
-        local yPadding = 4
-        self:SetSize(self:GetFontString():GetWrappedWidth() + xPadding*2, self:GetFontString():GetStringHeight() + yPadding*2)
+    UpdateSize = function(self, xPadding, yPadding)
+        self:SetSize(self:GetFontString():GetWrappedWidth() + (xPadding or 10)*2, self:GetFontString():GetStringHeight() + (yPadding or 4)*2)
     end,
 
     ChangeText = function(self, text)
@@ -47,6 +45,16 @@ local Methods = {
         self:SetText(text)
         if self.autoResize then
             self:UpdateSize()
+        end
+    end,
+
+    ChangeColor = function(self, color)
+        if self.icon then
+            if self.icon:GetTexture() ~= nil then
+                self.icon:SetVertexColor(unpack(color))
+            else
+                self.icon:SetColorTexture(unpack(color))
+            end
         end
     end,
 
