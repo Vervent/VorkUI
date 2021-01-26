@@ -8,6 +8,7 @@
     <Script file="Components\slanting.lua"/>
     <Script file="Components\font.lua"/>
     <Script file="Components\tag.lua"/>
+    <Script file="Components\point.lua"/>
 
     <!-- Load Frame component -->
     <Script file="Components\rendering.lua"/>
