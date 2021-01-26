@@ -110,13 +110,10 @@ local Methods = {
         self.frameHeight = frame:GetHeight()
         self:SetScript('OnClick', function(self)
             if self.isCollapsed then
-                --expand
-                print (frame)
                 frame:SetHeight(self.frameHeight)
                 expandFct(frame)
                 self.isCollapsed = false
             else
-                print (frame)
                 frame:SetHeight(10)
                 collapseFct(frame)
                 self.isCollapsed = true
