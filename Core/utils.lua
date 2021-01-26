@@ -167,8 +167,51 @@ Utils.API.GetRealSize = function(self)
     return width, height
 end
 
+Utils.API.UpdateWidgetsFloatLayout = function(self, firstItemIndex, paddingTop, paddingBottom)
+    local maxWidth, maxHeight = self:GetWidth(), self:GetHeight()
+
+    local width = 0
+    local height = 0
+    local firstItem = firstItemIndex or 1
+    local lineCount = 1
+    local newWidth = 0
+    local w
+
+    for i = firstItem, #self.Widgets do
+        w = self.Widgets[i]
+        height = max(height, w:GetHeight())
+        newWidth = width + w:GetWidth()
+        if newWidth > maxWidth then
+            --cut to index i to end
+            w:ClearAllPoints()
+            w:SetPoint("TOPLEFT", self.Widgets[firstItem], "BOTTOMLEFT", 0, -2)
+            firstItem = i
+            lineCount = lineCount + 1
+            width = newWidth - width
+        else
+            if i-1 >= firstItemIndex then
+                w:ClearAllPoints()
+                w:SetPoint("TOPLEFT", self.Widgets[i-1], "TOPRIGHT", 2, 0)
+            end
+            width = newWidth
+        end
+    end
+    local newHeight = height * lineCount + lineCount * 2 + paddingTop + paddingBottom
+
+    if newHeight > maxHeight then
+        --We change height, so we need to replace first item as every other button are anchored on it
+        self.Widgets[firstItemIndex]:ClearAllPoints()
+        self.Widgets[firstItemIndex]:SetPoint("TOPLEFT", 2, -(paddingTop or 0))
+
+        return newHeight
+    end
+
+    return maxHeight
+
+end
+
 --Grid aligned
-Utils.API.UpdateWidgetsLayout = function (self, firstItemIndex)
+Utils.API.UpdateWidgetsLayout = function (self, firstItemIndex, paddingTop, paddingBottom)
     local maxWidth, maxHeight = self:GetWidth(), self:GetHeight()
     local width = 0
     local height = 0
@@ -182,16 +225,18 @@ Utils.API.UpdateWidgetsLayout = function (self, firstItemIndex)
     for i = firstItem, #self.Widgets do
         w = self.Widgets[i]
         if w:IsObjectType('Frame') and w.text then
-            width = max(width, w:GetWidth() + w.text:GetWrappedWidth() + 20 )
-            height = max(height, w:GetHeight(), w.text:GetStringHeight())
+            if type(w.text) ~= 'string' then
+                width = max(width, w:GetWidth() + w.text:GetWrappedWidth() + 20 )
+                height = max(height, w:GetHeight(), w.text:GetStringHeight())
+            else
+                width = max(width, w:GetTextWidth() + 20 )
+                height = max(height, w:GetTextHeight())
+            end
         else
             width = max(width, w:GetWidth() + 4 )
             height = max(height, w:GetHeight())
         end
     end
-
-    print ('--UpdateWidgetsLayout--')
-    print (width, maxWidth)
 
     nbItemPerLine = math.floor( maxWidth / width )
     lineCount = math.floor((#self.Widgets - firstItemIndex + 1)/nbItemPerLine) + 1
@@ -204,7 +249,7 @@ Utils.API.UpdateWidgetsLayout = function (self, firstItemIndex)
                 w:SetPoint("TOPLEFT", self.Widgets[i-1], "TOPLEFT", width + 2, 0)
             else
                 w:ClearAllPoints()
-                w:SetPoint("TOPLEFT", 0, 0)
+                w:SetPoint("TOPLEFT", 0, - (paddingTop or 0))
             end
             nbItem = nbItem + 1
         else
@@ -215,7 +260,7 @@ Utils.API.UpdateWidgetsLayout = function (self, firstItemIndex)
         end
     end
 
-    return lineCount*height
+    return lineCount*height + (paddingTop or 0) + (paddingBottom or 0)
 end
 
 Utils.API.ShallowCopyTableRecursivelyIgnoring = function(self, orig, degree, degreeMax, ignoreField)

@@ -5,7 +5,6 @@ local LibGUI = Plugin.LibGUI
 local Inspector=V.Editor.Inspector
 
 local function gui(baseName, parent, parentPoint, componentName, componentConfig)
-    local height = 0
 
     local frame = LibGUI:NewContainer(
             'empty',
@@ -17,7 +16,7 @@ local function gui(baseName, parent, parentPoint, componentName, componentConfig
                 { 'TOPRIGHT', parentPoint or parent, 'BOTTOMRIGHT', 0 , -10 }
             }
     )
-    frame:SetHeight(225)
+    frame:SetHeight(150)
     local name = LibGUI:NewWidget('label', frame, baseName..'EnableFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 30 }, nil, nil)
     name:Update( { 'OVERLAY', nil, componentName or '' } )
 
@@ -25,7 +24,7 @@ local function gui(baseName, parent, parentPoint, componentName, componentConfig
             'scrolluniformlist',
             frame,
             baseName..'ComponentListFrame',
-            { 200, 200 },
+            { 200, 125 },
             { 'TOP', 0, -15 }
     )
     --local name = LibGUI:NewWidget('label', frame, baseName..'ComponentListNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 80, 30 }, nil, nil)

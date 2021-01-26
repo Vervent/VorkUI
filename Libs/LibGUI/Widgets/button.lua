@@ -122,7 +122,13 @@ local function create(parent, name, point, size, template)
     button.autoResize = false
 
     if point then
-        button:SetPoint(unpack(point))
+        if type(point[1]) == 'table' then
+            for _, p in pairs(point) do
+                button:SetPoint(unpack(p))
+            end
+        else
+            button:SetPoint( unpack(point) )
+        end
     end
     if size then
         button:SetSize(unpack(size))
