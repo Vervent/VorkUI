@@ -144,7 +144,6 @@ end
 ]]--
 function LibGUI:SetMovableContainer(container, isClampToScreen)
     if isValidContainer(container) and containers[container.type].Bind then
-        print ('SetMovableContainer', container)
         container:SetMovable(true)
         container:EnableMouse(true)
         container:RegisterForDrag("LeftButton")
@@ -159,6 +158,13 @@ function LibGUI:SetMovableContainer(container, isClampToScreen)
         end
     else
         print ("INVALID CONTAINER, CANNOT BE MOVABLE ")
+    end
+end
+
+function LibGUI:UnsetMovableContainer(container)
+    if isValidContainer(container) and container:IsMovable() then
+        container:SetMovable(false)
+        container:RegisterForDrag()
     end
 end
 
