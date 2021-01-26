@@ -7,18 +7,6 @@ local Inspector=V.Editor.Inspector
 local minSize = 0
 local maxSize = 500
 
-local function collapse(container)
-    for i=2, #container.Widgets do
-        container.Widgets[i]:Hide()
-    end
-end
-
-local function expand(container)
-    for i=2, #container.Widgets do
-        container.Widgets[i]:Show()
-    end
-end
-
 local function gui(baseName, parent, parentPoint, componentName, isFirstItem, hasBorder)
 
     local frame = LibGUI:NewContainer(
@@ -34,10 +22,7 @@ local function gui(baseName, parent, parentPoint, componentName, isFirstItem, ha
     frame:SetHeight(50)
 
     local name = LibGUI:NewWidget('button', frame, baseName..'SizeFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 30 }, nil, nil)
-    name.Text = name:CreateFontString()
-    name.Text:SetAllPoints()
-    name.Text:SetFontObject('Game11Font')
-    name.Text:SetText(componentName or '')
+    name:AddLabel(name, componentName)
 
     local width = LibGUI:NewWidget('label', frame, baseName..'SizeFrameWidthLabel', { 'TOP', -60, 0 }, { 80, 30 }, nil, nil)
     width:Update( { 'OVERLAY', GameFontNormal,'Width' } )
@@ -53,22 +38,7 @@ local function gui(baseName, parent, parentPoint, componentName, isFirstItem, ha
         frame:CreateBorder(1, { 1, 1, 1, 0.4 })
     end
 
-    name:Update( { '', function(self)
-        if self.isCollapsed then
-            --expand
-            frame:SetHeight(self.frameHeight)
-            expand(frame)
-            --self.Text:SetText('-')
-            self.isCollapsed = false
-        else
-            frame:SetHeight(10)
-            collapse(frame)
-            --self.Text:SetText('+')
-            self.isCollapsed = true
-        end
-    end} )
-    name.frameHeight = frame:GetHeight()
-    name.isCollapsed = false
+    name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)
 
     return frame
 end

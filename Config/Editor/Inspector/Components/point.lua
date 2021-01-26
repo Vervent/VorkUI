@@ -184,18 +184,6 @@ local function addSnapButton(container, color, frame)
 
 end
 
-local function collapse(container)
-    for i=1, #container.Childs do
-        container.Childs[i]:Hide()
-    end
-end
-
-local function expand(container)
-    for i=1, #container.Childs do
-        container.Childs[i]:Show()
-    end
-end
-
 local function addOffsetSetter(container, index)
 
     local name = container:GetName()
@@ -274,10 +262,7 @@ local function gui(baseName, parent, parentPoint, componentName, isFirstItem, ha
     frame:SetHeight(400)
 
     local name = LibGUI:NewWidget('button', frame, baseName..'PointFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 30 }, nil, nil)
-    name.Text = name:CreateFontString()
-    name.Text:SetAllPoints()
-    name.Text:SetFontObject('Game11Font')
-    name.Text:SetText(componentName or '')
+    name:AddLabel(name, componentName)
 
     frame.anchorPairs = {}
 
@@ -369,22 +354,7 @@ local function gui(baseName, parent, parentPoint, componentName, isFirstItem, ha
         addOffsetSetter(pointTableFrame, i)
     end
 
-    name:Update( { '', function(self)
-        if self.isCollapsed then
-            --expand
-            frame:SetHeight(self.frameHeight)
-            expand(frame)
-            --self.Text:SetText('-')
-            self.isCollapsed = false
-        else
-            frame:SetHeight(10)
-            collapse(frame)
-            --self.Text:SetText('+')
-            self.isCollapsed = true
-        end
-    end} )
-    name.frameHeight = frame:GetHeight()
-    name.isCollapsed = false
+    name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)
 
     return frame
 end

@@ -17,8 +17,8 @@ local function gui(baseName, parent, parentPoint, componentName, componentConfig
             }
     )
     frame:SetHeight(150)
-    local name = LibGUI:NewWidget('label', frame, baseName..'EnableFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 30 }, nil, nil)
-    name:Update( { 'OVERLAY', nil, componentName or '' } )
+    local name = LibGUI:NewWidget('button', frame, baseName..'ComponentListFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 30 }, nil, nil)
+    name:AddLabel(name, componentName)
 
     local scrollFrame = LibGUI:NewContainer(
             'scrolluniformlist',
@@ -27,8 +27,6 @@ local function gui(baseName, parent, parentPoint, componentName, componentConfig
             { 200, 125 },
             { 'TOP', 0, -15 }
     )
-    --local name = LibGUI:NewWidget('label', frame, baseName..'ComponentListNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 80, 30 }, nil, nil)
-    --name:Update( { 'OVERLAY', nil, componentName or '' } )
 
     scrollFrame:AddWidget(
             'widget',
@@ -48,8 +46,9 @@ local function gui(baseName, parent, parentPoint, componentName, componentConfig
         )
     end
     scrollFrame:CreateWidgets()
-
     frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+
+    name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)
 
     return frame
 end
