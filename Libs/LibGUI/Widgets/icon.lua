@@ -33,6 +33,11 @@ local Methods = {
         self:SetTexture(icon)
     end,
 
+    ChangeColorTexture = function(self, color)
+        print (self, unpack(color),self:GetObjectType())
+        self:SetColorTexture(unpack(color))
+    end,
+
     ChangeVertexColor = function(self, color)
         self:SetVertexColor(unpack(color))
     end,
@@ -74,7 +79,7 @@ local function create(container, name, point, size, layer, ...)
     icon.path = ""
 
     --push our internal Methods in the metatable, if it taints, need to wrap this
-    setmetatable(icon, { __index = setmetatable(Methods, getmetatable(label))})
+    setmetatable(icon, { __index = setmetatable(Methods, getmetatable(icon))})
 
     return icon
 end
