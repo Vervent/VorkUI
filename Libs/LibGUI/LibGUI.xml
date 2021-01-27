@@ -5,6 +5,7 @@
 	<Script file='Containers\scrolluniformlist.lua'/>
 	<Script file='Containers\frame.lua'/>
 	<Script file='Containers\tabframe.lua'/>
+	<Script file='Containers\scrollframe.lua'/>
 
 	<Script file='Widgets\button.lua'/>
 	<Script file='Widgets\checkbox.lua'/>
