@@ -21,6 +21,18 @@ function Medias:GetLSM()
     return LibSharedMedia
 end
 
+function Medias:GetAtlasDropDown()
+    local data = {}
+
+    local list = LibAtlas:List()
+
+    for _, e in ipairs(list) do
+        tinsert(data, { text = e })
+    end
+
+    return data
+end
+
 function Medias:GetLSMDropDown(mediatype)
     local data = {}
 
@@ -119,7 +131,7 @@ function Medias:LoadStatusBar(name, adress)
 end
 
 function Medias:GetParticle(name)
-    print (name, Particles[name])
+    --print (name, Particles[name])
     return Particles[name] or nil
 end
 

@@ -9,6 +9,7 @@
     <Script file="Components\font.lua"/>
     <Script file="Components\tag.lua"/>
     <Script file="Components\point.lua"/>
+    <Script file="Components\viewer.lua"/>
 
     <!-- Load Frame component -->
     <Script file="Components\rendering.lua"/>
@@ -16,4 +17,6 @@
     <Script file="Components\componentlist.lua"/>
     <Script file="Components\componentblock.lua"/>
     <Script file="Components\indicator.lua"/>
+    <Script file="Components\particle.lua"/>
+    <Script file="Components\castbar.lua"/>
 </Ui>
