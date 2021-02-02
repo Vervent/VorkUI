@@ -32,10 +32,10 @@ local Methods = {
         local height = 0
 
         for i, c in ipairs(self.ScrollChild.Childs) do
-            height = height + c:GetHeight()
+            height = height + c:GetHeight() + 16
         end
 
-        print (self:GetWidth(), self.ScrollChild:GetWidth())
+        print (#self.ScrollChild.Childs)
         self.ScrollChild:SetHeight(height)
     end,
 
