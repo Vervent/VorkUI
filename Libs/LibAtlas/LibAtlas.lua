@@ -11,10 +11,24 @@ if not LibAtlas then
 end
 
 local debug = 0
+
+--Local caching for global function
 local pairs = pairs
+local tinsert = tinsert
+local type = type
+local unpack = unpack
+local print = print
 
 local Atlas = {}
 
+function LibAtlas:List()
+    local list = {}
+    for k, v in pairs(Atlas) do
+        tinsert(list, k )
+    end
+
+    return list
+end
 
 function LibAtlas:RegisterAtlas(name, path, spriteSheet)
 
