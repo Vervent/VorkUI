@@ -4,39 +4,53 @@ local LibGUI = Plugin.LibGUI
 
 local Inspector=V.Editor.Inspector
 
-local function gui(baseName, parent, parentPoint, componentName, renderingConfig)
+local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
     local height = 0
+
+    local pt
+    if point then
+        pt = point
+    else
+        pt = {
+            { 'TOPLEFT', parentPoint or parent, 'BOTTOMLEFT', 0, -16 },
+            { 'TOPRIGHT', parentPoint or parent, 'BOTTOMRIGHT', 0 , -16 }
+        }
+    end
 
     local frame = LibGUI:NewContainer(
             'empty',
             parent,
             baseName..'RenderingFrame',
             nil,
-            {
-                { 'TOPLEFT', parentPoint or parent, 'BOTTOMLEFT', 0, -10 },
-                { 'TOPRIGHT', parentPoint or parent, 'BOTTOMRIGHT', 0 , -10 }
-            }
+            pt
     )
 
-    local name = LibGUI:NewWidget('button', frame, baseName..'RenderingFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 30 }, nil, nil)
-    name:AddLabel(name, componentName)
-
     local it = frame
-    local hasBorder
-    for i, t in ipairs(renderingConfig) do
-        if i == 1 or i == #renderingConfig then
-            hasBorder = false
+    for i, _ in ipairs(config) do
+        if i == 1 then
+            pt =  {
+                {'TOPLEFT', 0, 0},
+                {'TOPRIGHT', 0, 0},
+            }
         else
-            hasBorder = true
+            pt = nil
         end
-        it = Inspector:CreateComponentGUI('Texture', 'InspectorRenderingTexture', frame, it, nil, i==1, hasBorder)
+        it = Inspector:CreateComponentGUI('Texture', 'InspectorRenderingTexture'..i, frame, it, nil, pt, (i%2 == 1), false, false, nil)
         height = height + it:GetHeight()
     end
 
     frame:SetHeight(height)
-    frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+    if hasBorder then
+        frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+    end
 
-    name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)
+    if hasName then
+        local name = LibGUI:NewWidget('button', frame, baseName..'RenderingFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
+        name:AddLabel(name, componentName)
+        if isCollapsable then
+            name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)
+        end
+    end
 
     return frame
 end

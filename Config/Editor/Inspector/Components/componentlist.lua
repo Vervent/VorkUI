@@ -4,21 +4,26 @@ local LibGUI = Plugin.LibGUI
 
 local Inspector=V.Editor.Inspector
 
-local function gui(baseName, parent, parentPoint, componentName, componentConfig)
+local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
+
+    local pt
+    if point then
+        pt = point
+    else
+        pt = {
+            { 'TOPLEFT', parentPoint or parent, 'BOTTOMLEFT', 0, -16 },
+            { 'TOPRIGHT', parentPoint or parent, 'BOTTOMRIGHT', 0 , -16 }
+        }
+    end
 
     local frame = LibGUI:NewContainer(
             'empty',
             parent,
             baseName..'ComponentListLabelFrame',
             nil,
-            {
-                { 'TOPLEFT', parentPoint or parent, 'BOTTOMLEFT', 0, -10 },
-                { 'TOPRIGHT', parentPoint or parent, 'BOTTOMRIGHT', 0 , -10 }
-            }
+            pt
     )
     frame:SetHeight(150)
-    local name = LibGUI:NewWidget('button', frame, baseName..'ComponentListFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 30 }, nil, nil)
-    name:AddLabel(name, componentName)
 
     local scrollFrame = LibGUI:NewContainer(
             'scrolluniformlist',
@@ -36,7 +41,7 @@ local function gui(baseName, parent, parentPoint, componentName, componentConfig
             'UIPanelButtonTemplate'
     )
 
-    for k, v in pairs(componentConfig) do
+    for k, v in pairs(config) do
         scrollFrame:AddWidget(
                 'widget',
                 'button',
@@ -46,9 +51,18 @@ local function gui(baseName, parent, parentPoint, componentName, componentConfig
         )
     end
     scrollFrame:CreateWidgets()
-    frame:CreateBorder(1, { 1, 1, 1, 0.4 })
 
-    name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)
+    if hasBorder then
+        frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+    end
+
+    if hasName then
+        local name = LibGUI:NewWidget('button', frame, baseName..'ComponentListFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
+        name:AddLabel(name, componentName)
+        if isCollapsable then
+            name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)
+        end
+    end
 
     return frame
 end

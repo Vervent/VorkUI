@@ -248,21 +248,26 @@ local function addOffsetSetter(container, index)
     return frame
 end
 
-local function gui(baseName, parent, parentPoint, componentName, isFirstItem, hasBorder)
+local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
+
+    local pt
+    if point then
+        pt = point
+    else
+        pt = {
+            { 'TOPLEFT', parentPoint or parent, 'BOTTOMLEFT', 0, -16 },
+            { 'TOPRIGHT', parentPoint or parent, 'BOTTOMRIGHT', 0 , -16 }
+        }
+    end
+
     local frame = LibGUI:NewContainer(
             'empty',
             parent,
             baseName..'PointFrame',
             nil,
-            {
-                { 'TOPLEFT', parentPoint or parent, 'BOTTOMLEFT', 0, -10 },
-                { 'TOPRIGHT', parentPoint or parent, 'BOTTOMRIGHT', 0 , -10 }
-            }
+            pt
     )
     frame:SetHeight(400)
-
-    local name = LibGUI:NewWidget('button', frame, baseName..'PointFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 30 }, nil, nil)
-    name:AddLabel(name, componentName)
 
     frame.anchorPairs = {}
 
@@ -354,7 +359,13 @@ local function gui(baseName, parent, parentPoint, componentName, isFirstItem, ha
         addOffsetSetter(pointTableFrame, i)
     end
 
-    name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)
+    if hasName then
+        local name = LibGUI:NewWidget('button', frame, baseName..'PointFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
+        name:AddLabel(name, componentName)
+        if isCollapsable then
+            name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)
+        end
+    end
 
     return frame
 end

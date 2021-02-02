@@ -112,6 +112,10 @@ local Methods = {
     Update = function(self, dataTable)
         self.Data = dataTable
     end,
+
+    GetValue = function (self)
+        return self.selectedValue
+    end,
 }
 
 local function enable(self)

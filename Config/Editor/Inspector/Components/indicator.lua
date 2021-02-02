@@ -15,36 +15,55 @@ local indicatorDropdown = {
     { text = 'Leader'},
 }
 
-local function gui(baseName, parent, parentPoint, componentName, indicatorsConfig)
+local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
+
+    local pt
+    if point then
+        pt = point
+    else
+        pt = {
+            { 'TOPLEFT', parentPoint or parent, 'BOTTOMLEFT', 0, -16 },
+            { 'TOPRIGHT', parentPoint or parent, 'BOTTOMRIGHT', 0 , -16 }
+        }
+    end
 
     local frame = LibGUI:NewContainer(
             'empty',
             parent,
             baseName..'RenderingFrame',
             nil,
-            {
-                { 'TOPLEFT', parentPoint or parent, 'BOTTOMLEFT', 0, -10 },
-                { 'TOPRIGHT', parentPoint or parent, 'BOTTOMRIGHT', 0 , -10 }
-            }
+            pt
     )
-
-    local name = LibGUI:NewWidget('button', frame, baseName..'IndicatorFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 30 }, nil, nil)
-    name:AddLabel(name, componentName)
 
     local indicator = LibGUI:NewWidget('label', frame, baseName..'IndicatorFrameItemLabel', { 'TOPLEFT', 0, -10 }, { 80, 30 }, nil, nil)
     indicator:Update( { 'OVERLAY', GameFontNormal, 'Indicator' } )
     local indicatorMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'IndicatorFrameItemDropDownMenu', { 'LEFT', indicator, 'RIGHT' }, { 200, 25 }, nil, nil)
     indicatorMenu:Update( indicatorDropdown )
 
-    local point = Inspector:CreateComponentGUI('Point', 'InspectorIndicatorPoint', frame, indicatorMenu, nil, nil, false, false)
-    point:ClearAllPoints()
-    point:SetPoint('TOPLEFT', 0, -30)
-    point:SetPoint('TOPRIGHT', 0, -30)
+    local pointFrame = Inspector:CreateComponentGUI('Point',
+            'InspectorIndicatorPoint',
+            frame,
+            indicatorMenu,
+            nil,
+            {
+                {'TOPLEFT', 0, -30},
+                {'TOPRIGHT', 0, -30},
+            },
+            false,
+            false)
 
-    frame:SetHeight(point:GetHeight() + 30)
-    frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+    frame:SetHeight(pointFrame:GetHeight() + 30)
+    if hasBorder then
+        frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+    end
 
-    name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)
+    if hasName then
+        local name = LibGUI:NewWidget('button', frame, baseName..'IndicatorFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
+        name:AddLabel(name, componentName)
+        if isCollapsable then
+            name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)
+        end
+    end
 
     return frame
 end
