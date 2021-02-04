@@ -367,7 +367,18 @@ end
 --]]------------------------------------------------------------------
 
 function UnitFrames:UpdatePortraitOverride(unit)
-    if(self.unit == unit) then return end
+    if(self.unit == unit) then
+        return
+    end
+    local name = UnitName(unit)
+
+    if self.name == name then
+        return
+    else
+        self.name = name
+    end
+
+    print ('UpdatePortraitOverride', unit)
 
     local guid = UnitGUID(unit)
     local isAvailable = UnitIsConnected(unit) and UnitIsVisible(unit)
@@ -403,6 +414,7 @@ function UnitFrames:Create3DPortrait(template, parent, config)
     --end
     --portrait:SetPoint( unpack( point ) )
     portrait:Point(config.Point)
+    portrait.name = ''
 
     if config.PostUpdate then
         portrait.PostUpdateConfig = config.PostUpdate
@@ -422,6 +434,7 @@ function UnitFrames:UpdateClassOverride(event, unit)
     end
     local element = self.ClassIndicator
     local class = select(2,UnitClass(unit)) or "BLANK"
+    local name = UnitName(unit)
 
     --[[ Callback: RestingIndicator:PreUpdate()
     Called before the element has been updated.
@@ -432,8 +445,11 @@ function UnitFrames:UpdateClassOverride(event, unit)
         element:PreUpdate()
     end
 
-    if(element.AtlasName) then
-        element:SetTexCoord( LibAtlas:GetTexCoord(element.AtlasName, class) )
+    if element.name ~= name then
+        element.name = name
+        if(element.AtlasName) then
+            element:SetTexCoord( LibAtlas:GetTexCoord(element.AtlasName, class) )
+        end
     end
 
 
@@ -1140,8 +1156,6 @@ end
 function UnitFrames:PostUpdateAura(unit, button, index, offset, filter, isDebuff, duration, timeLeft)
 
 end
-
-
 
 function UnitFrames:DisplayNameplatePowerAndCastBar(unit, cur, min, max)
 
