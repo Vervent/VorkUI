@@ -10,6 +10,7 @@
     <Script file="Components\tag.lua"/>
     <Script file="Components\point.lua"/>
     <Script file="Components\viewer.lua"/>
+    <Script file="Components\portrait.lua"/>
 
     <!-- Load Frame component -->
     <Script file="Components\rendering.lua"/>
@@ -19,4 +20,6 @@
     <Script file="Components\indicator.lua"/>
     <Script file="Components\particle.lua"/>
     <Script file="Components\castbar.lua"/>
+    <Script file="Components\aura.lua"/>
+    <Script file="Components\attribute.lua"/>
 </Ui>
