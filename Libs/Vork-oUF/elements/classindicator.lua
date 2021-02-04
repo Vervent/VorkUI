@@ -29,6 +29,7 @@ local function Update(self, event, unit)
 
     local element = self.ClassIndicator
     local class = select(2,UnitClass(unit))
+    local name = UnitName(unit)
 
     --[[ Callback: RestingIndicator:PreUpdate()
     Called before the element has been updated.
@@ -39,10 +40,12 @@ local function Update(self, event, unit)
         element:PreUpdate()
     end
 
-    if(element:IsObjectType('Texture') and element:GetTexture() == 131146) then
-        element:SetTexCoord( unpack(CLASS_ICON_TCOORDS[class]) )
+    if element.name ~= name then
+        element.name = name
+        if(element:IsObjectType('Texture') and element:GetTexture() == 131146) then
+            element:SetTexCoord( unpack(CLASS_ICON_TCOORDS[class]) )
+        end
     end
-
 
     --[[ Callback: RestingIndicator:PostUpdate(isResting)
     Called after the element has been updated.
@@ -76,6 +79,7 @@ local function Enable(self, unit)
         element.ForceUpdate = ForceUpdate
 
         self:RegisterEvent('UNIT_TARGET', Path, true)
+        element.name = ''
 
         if(element:IsObjectType('Texture') and not element:GetTexture()) then
             element:SetTexture([[Interface\GLUES\CHARACTERCREATE\UI-CHARACTERCREATE-CLASSES]])
@@ -92,6 +96,7 @@ local function Disable(self)
     if(element) then
         element:Hide()
 
+        element.name = ''
         self:UnregisterEvent('UNIT_TARGET', Path)
     end
 end
