@@ -1,25 +1,16 @@
 local _, Plugin = ...
+
+local select = select
+
 local V = select(2, ...):unpack()
 local LibGUI = Plugin.LibGUI
 
-local Inspector=V.Editor.Inspector
-
-local fonts = {
-    { text = 'Name Font' },
-    { text = 'Normal Font' },
-    { text = 'Duration Font' },
-    { text = 'Stack Font' },
-    { text = 'Value Font' },
-    { text = 'Big Value Font' },
-}
-
-local layers = {
-    { text = 'BACKGROUND' },
-    { text = 'BORDER' },
-    { text = 'ARTWORK' },
-    { text = 'OVERLAY' },
-    { text = 'HIGHLIGHT' },
-}
+--local constant in local cache
+local Editor = V.Editor
+local Inspector = Editor.Inspector
+local borderSettings = Editor.border
+local fonts = Editor.menus.fonts
+local layers = Editor.menus.layers
 
 local function gui(baseName, parent, parentPoint, componentName, point,  hasBorder, isCollapsable, hasName, config)
 
@@ -43,23 +34,23 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     frame:SetHeight(140)
 
     local font = LibGUI:NewWidget('label', frame, baseName..'TagFramePathLabel', { 'TOPLEFT', 0, -10 }, { 80, 30 }, nil, nil)
-    font:Update( { 'OVERLAY', GameFontNormal,'Font' } )
+    font:Update( { 'OVERLAY', 'GameFontNormal','Font' } )
     local fontMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'TagFramePathDropDownMenu', { 'LEFT', font, 'RIGHT' }, { 200, 25 }, nil, nil)
     fontMenu:Update( fonts )
 
     local layer = LibGUI:NewWidget('label', frame, baseName..'TagFrameLayerLabel', { 'TOPLEFT', font, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
-    layer:Update( { 'OVERLAY', GameFontNormal,'Layer' } )
+    layer:Update( { 'OVERLAY', 'GameFontNormal','Layer' } )
     local layerMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'TagFrameLayerDropDownMenu', { 'TOPLEFT', fontMenu, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
     layerMenu:Update( layers )
 
     local tag = LibGUI:NewWidget('label', frame, baseName..'TagFrameSublayerLabel', { 'TOPLEFT', layer, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
-    tag:Update( { 'OVERLAY', GameFontNormal,'Tag' } )
+    tag:Update( { 'OVERLAY', 'GameFontNormal','Tag' } )
     local tagEdit = LibGUI:NewWidget('editbox', frame, baseName..'TagFrameSubLayerEditbox', { 'TOPLEFT', layerMenu, 'BOTTOMLEFT', 20, -4 }, { 250, 0 }, nil, nil)
     tagEdit:Update( { '[Vorkui:HealthColor(true)][Vorkui:PerHP]', 'Game11Font', nil, nil } )
     tagEdit:SetMultiLine(true)
     tagEdit:SetPoint('BOTTOMRIGHT', layerMenu, 'BOTTOMRIGHT', 0, -50) --mandatory to size correctly the editbox
     if hasBorder == true then
-        frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+        frame:CreateBorder(borderSettings.size, borderSettings.color )
     end
 
     if hasName then

@@ -1,24 +1,15 @@
 local _, Plugin = ...
+
+local select = select
+
 local V = select(2, ...):unpack()
 local LibGUI = Plugin.LibGUI
 
---[[
-    Slant.IgnoreBackground = false
-    Slant.StaticLayer
-    Slant.UniformSlanting = true --use for uniform slant, it implies that all textures got same size
-    Slant.Inverse = false --base slant is right-oriented, use this to inverse
-    Enable
-    Slant.FillInverse = false
-]]--
-
-local Inspector=V.Editor.Inspector
-local layers = {
-    { text = 'BACKGROUND' },
-    { text = 'BORDER' },
-    { text = 'ARTWORK' },
-    { text = 'OVERLAY' },
-    { text = 'HIGHLIGHT' },
-}
+--local constant in local cache
+local Editor = V.Editor
+local Inspector = Editor.Inspector
+local borderSettings = Editor.border
+local layers = Editor.menus.layers
 
 local function gui(baseName, parent, parentPoint, componentName, point,  hasBorder, isCollapsable, hasName, config)
 
@@ -62,12 +53,12 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     ignoreBackground:ChangeFont( 'GameFontNormal' )
 
     local staticLayer = LibGUI:NewWidget('label', frame, baseName..'SlantingFrameStaticLayerLabel', { 'TOPLEFT', ignoreBackground, 'BOTTOMLEFT' }, { 100, 30 }, nil, nil)
-    staticLayer:Update( { 'OVERLAY', GameFontNormal,'Static Layer' } )
+    staticLayer:Update( { 'OVERLAY', 'GameFontNormal','Static Layer' } )
     local staticLayerMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'SlantingFrameStaticLayerDropDownMenu', { 'LEFT', staticLayer, 'RIGHT' }, { 200, 25 }, nil, nil)
     staticLayerMenu:Update(layers)
 
     if hasBorder == true then
-        frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+        frame:CreateBorder(borderSettings.size, borderSettings.color )
     end
 
     if hasName then

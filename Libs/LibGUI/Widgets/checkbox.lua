@@ -31,7 +31,6 @@ local Methods = {
     end,
 
     Update = function(self, dataTable)
-
         local text = unpack(dataTable)
         self:ChangeText(text)
     end,

@@ -1,8 +1,15 @@
 ﻿local _, Plugin = ...
+
+local select = select
+local pairs = pairs
+local type = type
+
 local V = select(2, ...):unpack()
 local LibGUI = Plugin.LibGUI
 
-local Inspector=V.Editor.Inspector
+local Editor = V.Editor
+local Inspector = Editor.Inspector
+local borderSettings = Editor.border
 
 local changeList = {}
 
@@ -44,9 +51,15 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     )
 
     local checkbox
-    for k, _ in pairs(config) do
-        checkbox = LibGUI:NewWidget('checkbox', frame, baseName..'SubmodulesFrameCheckbox'..k, { 'TOPLEFT', 2, -2 }, nil, 'UICheckButtonTemplate', nil)
-        checkbox:Update( { k } )
+
+    for k, v in pairs(config) do
+        if type(k) == 'string' then
+            checkbox = LibGUI:NewWidget('checkbox', frame, baseName..'SubmodulesFrameCheckbox'..k, { 'TOPLEFT', 2, -2 }, nil, 'UICheckButtonTemplate', nil)
+            checkbox:Update( { k } )
+        else
+            checkbox = LibGUI:NewWidget('checkbox', frame, baseName..'SubmodulesFrameCheckbox'..v, { 'TOPLEFT', 2, -2 }, nil, 'UICheckButtonTemplate', nil)
+            checkbox:Update( { v } )
+        end
         checkbox:ChangeFont( 'GameFontNormal' )
     end
 
@@ -54,7 +67,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     height = frame:UpdateWidgetsLayout( 1, 10, 0 )
     frame:SetHeight(height)
     if hasBorder then
-        frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+        frame:CreateBorder(borderSettings.size, borderSettings.color )
     end
 
     if hasName then

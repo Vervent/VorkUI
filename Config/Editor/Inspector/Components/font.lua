@@ -1,15 +1,14 @@
 local _, Plugin = ...
+local select = select
+
 local V = select(2, ...):unpack()
 local LibGUI = Plugin.LibGUI
 
-local Inspector=V.Editor.Inspector
-
-local flags = {
-    { text = 'NONE' },
-    { text = 'OUTLINE' },
-    { text = 'THICKOUTLINE' },
-    { text = 'MONOCHROME' },
-}
+--local constant in local cache
+local Editor = V.Editor
+local Inspector = Editor.Inspector
+local borderSettings = Editor.border
+local flags = Editor.menus.flags
 
 local minSize = 8
 local maxSize = 100
@@ -36,22 +35,22 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     frame:SetHeight(110)
 
     local path = LibGUI:NewWidget('label', frame, baseName..'FontFramePathLabel', { 'TOPLEFT', 0, -10 }, { 80, 30 }, nil, nil)
-    path:Update( { 'OVERLAY', GameFontNormal,'Font' } )
+    path:Update( { 'OVERLAY', 'GameFontNormal','Font' } )
     local pathMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'FontFramePathDropDownMenu', { 'LEFT', path, 'RIGHT' }, { 200, 25 }, nil, nil)
     pathMenu:Update( V.Medias:GetLSMDropDown('font') )
 
     local flag = LibGUI:NewWidget('label', frame, baseName..'FontFrameLayerLabel', { 'TOPLEFT', path, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
-    flag:Update( { 'OVERLAY', GameFontNormal,'Layer' } )
+    flag:Update( { 'OVERLAY', 'GameFontNormal','Layer' } )
     local flagMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'FontFrameLayerDropDownMenu', { 'TOPLEFT', pathMenu, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
     flagMenu:Update(flags)
 
     local size = LibGUI:NewWidget('label', frame, baseName..'FontFrameSublayerLabel', { 'TOPLEFT', flag, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
-    size:Update( { 'OVERLAY', GameFontNormal,'Size' } )
+    size:Update( { 'OVERLAY', 'GameFontNormal','Size' } )
     local sizeEdit = LibGUI:NewWidget('editbox', frame, baseName..'FontFrameSubLayerEditbox', { 'TOPLEFT', flagMenu, 'BOTTOMLEFT', 42, -4 }, { 50, 25 }, 'NumericInputSpinnerTemplate', nil)
     sizeEdit:Update( { nil, nil, nil, {minSize, maxSize} } )
 
     if hasBorder == true then
-        frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+        frame:CreateBorder(borderSettings.size, borderSettings.color )
     end
 
     if hasName then

@@ -1,13 +1,15 @@
 local _, Plugin = ...
+
+local select = select
+
 local V = select(2, ...):unpack()
 local LibGUI = Plugin.LibGUI
 
-local Inspector=V.Editor.Inspector
-
-local portraitMenu = {
-    { text = '2D' },
-    { text = '3D' },
-}
+--local constant in local cache
+local Editor = V.Editor
+local Inspector = Editor.Inspector
+local borderSettings = Editor.border
+local portraitMenu = Editor.menus.portrait
 
 local function gui(baseName, parent, parentPoint, componentName, point,  hasBorder, isCollapsable, hasName, config)
 
@@ -31,18 +33,18 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     frame:SetHeight(70)
 
     local portraitTypeLabel = LibGUI:NewWidget('label', frame, '', { 'TOPLEFT' }, {200, 30}, nil, nil )
-    portraitTypeLabel:Update( { 'OVERLAY', GameFontNormal, 'Portrait type' } )
+    portraitTypeLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Portrait type' } )
 
     local portraitTypeDropdown =  LibGUI:NewWidget('dropdownmenu', frame, '', { 'LEFT', portraitTypeLabel, 'RIGHT' }, { 60, 25 }, nil, nil)
     portraitTypeDropdown:Update( portraitMenu )
 
     local rotationLabel = LibGUI:NewWidget('label', frame, '', { 'TOPLEFT', portraitTypeLabel, 'BOTTOMLEFT', 0, -4 }, { 200, 30 }, nil, nil)
-    rotationLabel:Update( { 'OVERLAY', GameFontNormal, 'Rotation' } )
+    rotationLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Rotation' } )
     local rotationEdit = LibGUI:NewWidget('editbox', frame, '', { 'LEFT', rotationLabel, 'RIGHT', 40, 0 }, { 40, 25 }, 'NumericInputSpinnerTemplate', nil)
     rotationEdit:Update( { nil, nil, nil, { -180, 180} } ) --TODO CONVERT DEG TO RAD
 
     if hasBorder then
-        frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+        frame:CreateBorder(borderSettings.size, borderSettings.color )
     end
 
     if hasName then

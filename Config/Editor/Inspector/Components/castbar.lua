@@ -1,28 +1,17 @@
 local _, Plugin = ...
+local select = select
+
 local V = select(2, ...):unpack()
+--load libgui lib
 local LibGUI = Plugin.LibGUI
 
-local Inspector=V.Editor.Inspector
+--local constant in local cache
+local Editor = V.Editor
+local Inspector = Editor.Inspector
+local borderSettings = Editor.border
+local layers = Editor.menus.layers
+local blendmode = Editor.menus.blendmode
 
---[[
-    Debug Purpose
-]]--
-
-local layers = {
-    { text = 'BACKGROUND' },
-    { text = 'BORDER' },
-    { text = 'ARTWORK' },
-    { text = 'OVERLAY' },
-    { text = 'HIGHLIGHT' },
-}
-
-local blendmode = {
-    { text = 'DISABLE' },
-    { text = 'BLEND' },
-    { text = 'ALPHAKEY' },
-    { text = 'ADD' },
-    { text = 'MOD' },
-}
 local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
 
     local atlasDropDown = V.Medias:GetAtlasDropDown()
@@ -39,18 +28,18 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     local frame = LibGUI:NewContainer(
             'empty',
             parent,
-            baseName..'RenderingFrame',
+            baseName..'CastBarFrame',
             nil,
             pt
     )
 
     local layer = LibGUI:NewWidget('label', frame, baseName..'LayerLabel', { 'TOPLEFT', 0, -10 }, { 120, 30 }, nil, nil)
-    layer:Update( { 'OVERLAY', GameFontNormal,'Layer' } )
+    layer:Update( { 'OVERLAY', 'GameFontNormal','Layer' } )
     local layerMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'LayerDropDownMenu', { 'LEFT', layer, 'RIGHT' }, { 200, 25 }, nil, nil)
     layerMenu:Update(layers)
 
     local blend = LibGUI:NewWidget('label', frame, baseName..'BlendLabel', { 'TOPLEFT', layer, 'BOTTOMLEFT', 0, -4 }, { 120, 30 }, nil, nil)
-    blend:Update( { 'OVERLAY', GameFontNormal,'Blending Mode' } )
+    blend:Update( { 'OVERLAY', 'GameFontNormal','Blending Mode' } )
     local blendMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'BlendDropDownMenu', { 'TOPLEFT', layerMenu, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
     blendMenu:Update(blendmode)
 
@@ -59,12 +48,12 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     }, false, false, false, nil)
 
     local castPath = LibGUI:NewWidget('label', frame, baseName..'CastPathLabel', { 'TOPLEFT', size, 'BOTTOMLEFT', 0, -4 }, { 120, 30 }, nil, nil)
-    castPath:Update( { 'OVERLAY', GameFontNormal,'Casting Atlas' } )
+    castPath:Update( { 'OVERLAY', 'GameFontNormal','Casting Atlas' } )
     local castPathMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'CastPathDropDownMenu', { 'LEFT', castPath, 'RIGHT' }, { 200, 25 }, nil, nil)
     castPathMenu:Update( atlasDropDown )
 
     local channelPath = LibGUI:NewWidget('label', frame, baseName..'CastPathLabel', { 'TOPLEFT', castPath, 'BOTTOMLEFT', 0, -4 }, { 120, 30 }, nil, nil)
-    channelPath:Update( { 'OVERLAY', GameFontNormal,'Channeling Atlas' } )
+    channelPath:Update( { 'OVERLAY', 'GameFontNormal','Channeling Atlas' } )
     local channelPathMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'CastPathDropDownMenu', { 'LEFT', channelPath, 'RIGHT' }, { 200, 25 }, nil, nil)
     channelPathMenu:Update( atlasDropDown )
 
@@ -75,7 +64,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     frame:SetHeight(330)
 
     if hasBorder then
-        frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+        frame:CreateBorder(borderSettings.size, borderSettings.color )
     end
 
     if hasName then

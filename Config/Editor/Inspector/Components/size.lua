@@ -1,8 +1,13 @@
 local _, Plugin = ...
+
+local select = select
+
 local V = select(2, ...):unpack()
 local LibGUI = Plugin.LibGUI
 
-local Inspector=V.Editor.Inspector
+local Editor = V.Editor
+local Inspector = Editor.Inspector
+local borderSettings = Editor.border
 
 local minSize = 0
 local maxSize = 500
@@ -29,17 +34,17 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     frame:SetHeight(50)
 
     local width = LibGUI:NewWidget('label', frame, baseName..'SizeFrameWidthLabel', { 'TOP', -60, 0 }, { 80, 30 }, nil, nil)
-    width:Update( { 'OVERLAY', GameFontNormal,'Width' } )
+    width:Update( { 'OVERLAY', 'GameFontNormal','Width' } )
     local widthEdit = LibGUI:NewWidget('editbox', frame, baseName..'SizeFrameWidthEditbox', { 'TOPLEFT', width, 'BOTTOMLEFT', 20, 10 }, { 50, 25 }, 'NumericInputSpinnerTemplate', nil)
     widthEdit:Update( { nil, nil, nil, {minSize, maxSize} } )
 
     local height = LibGUI:NewWidget('label', frame, baseName..'SizeFrameHeightLabel', { 'TOP', 60, 0 }, { 80, 30 }, nil, nil)
-    height:Update( { 'OVERLAY', GameFontNormal,'Height' } )
+    height:Update( { 'OVERLAY', 'GameFontNormal','Height' } )
     local heightEdit = LibGUI:NewWidget('editbox', frame, baseName..'SizeFrameHeightEditbox', { 'TOPLEFT', height, 'BOTTOMLEFT', 20, 10 }, { 50, 25 }, 'NumericInputSpinnerTemplate', nil)
     heightEdit:Update( { nil, nil, nil, {minSize, maxSize} } )
 
     if hasBorder == true then
-        frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+        frame:CreateBorder(borderSettings.size, borderSettings.color )
     end
 
     if hasName then

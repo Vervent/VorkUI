@@ -1,40 +1,23 @@
 local _, Plugin = ...
+
+--caching global func
+local select = select
+
 local V = select(2, ...):unpack()
+--load libgui lib
 local LibGUI = Plugin.LibGUI
 
-local Inspector=V.Editor.Inspector
+--local constant in local cache
+local Editor = V.Editor
+local Inspector = Editor.Inspector
+local borderSettings = Editor.border
+local groupingMenu = Editor.menus.groupingOrder
+local sortingMenu = Editor.menus.sortingOrder
+local sortingDirectionMenu = Editor.menus.sortingDirection
+local growDirectionMenu = Editor.menus.growDirectionX
+local roleFilterMenu = Editor.menus.roleFilter
 
-local groupingMenu = {
-    { text='NONE' },
-    { text='GROUP' },
-    { text='CLASS' },
-    { text='ROLE' },
-    { text='ASSIGNEDROLE' },
-}
-
-local sortingMenu = {
-    { text='INDEX' },
-    { text='NAME' },
-    { text='NAMELIST' },
-}
-
-local sortingDirectionMenu = {
-    { text='ASC' },
-    { text='DESC' },
-}
-
-local growDirectionMenu = {
-    { text='RIGHT' },
-    { text='LEFT' },
-}
-
-local roleFilterMenu = {
-    { text='MT, MA, Tank, Healer, DPS' },
-    { text='MT, Tank, MA, Healer, DPS' },
-    { text='MA, MT, Tank, Healer, DPS' },
-    { text='MA, Healer, MT, Tank, DPS' },
-}
-
+--local var
 local minSpacing = -30
 local maxSpacing = 30
 
@@ -84,7 +67,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
         { 'TOP', showRaid, 'BOTTOM' },
         { 'RIGHT', frame, 'CENTER', -20, 0 }
     }, { 80, 30 }, nil, nil)
-    spacingXLabel:Update( { 'OVERLAY', GameFontNormal, 'Spacing X' } )
+    spacingXLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Spacing X' } )
     local spacingXEdit = LibGUI:NewWidget('editbox', frame, '', { 'TOP', spacingXLabel, 'BOTTOM', 0, -4 }, { 40, 25 }, 'NumericInputSpinnerTemplate', nil)
     spacingXEdit:Update( { nil, nil, nil, { minSpacing, maxSpacing} } )
 
@@ -92,7 +75,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
         { 'TOP', showRaid, 'BOTTOM' } ,
         { 'LEFT', frame, 'CENTER', 20, 0 }
     }, { 80, 30 }, nil, nil)
-    spacingYLabel:Update( { 'OVERLAY', GameFontNormal, 'Spacing Y' } )
+    spacingYLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Spacing Y' } )
     local spacingYEdit = LibGUI:NewWidget('editbox', frame, '', { 'TOP', spacingYLabel, 'BOTTOM', 0, -4 }, { 40, 25 }, 'NumericInputSpinnerTemplate', nil)
     spacingYEdit:Update( { nil, nil, nil, { minSpacing, maxSpacing} } )
 
@@ -101,7 +84,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
         { 'TOP', spacingXEdit, 'BOTTOM', 0, -4 },
         { 'LEFT', frame, 'LEFT' }
     }, {150, 30}, nil, nil )
-    maxColumnsLabel:Update( { 'OVERLAY', GameFontNormal, 'Max columns' } )
+    maxColumnsLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Max columns' } )
 
     local maxColumnsEdit = LibGUI:NewWidget('editbox', frame, '', { 'LEFT', maxColumnsLabel, 'RIGHT', 40, 0 }, { 40, 25 }, 'NumericInputSpinnerTemplate', nil)
     maxColumnsEdit:Update( { nil, nil, nil, { minPlayer, maxPlayer} } )
@@ -109,7 +92,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     local unitsPerColumnLabel = LibGUI:NewWidget('label', frame, '', {
         { 'TOP', maxColumnsLabel, 'BOTTOM', 0, -4 },
     }, {150, 30}, nil, nil )
-    unitsPerColumnLabel:Update( { 'OVERLAY', GameFontNormal, 'Units per column' } )
+    unitsPerColumnLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Units per column' } )
 
     local unitsPerColumnEdit = LibGUI:NewWidget('editbox', frame, '', { 'LEFT', unitsPerColumnLabel, 'RIGHT', 40, 0 }, { 40, 25 }, 'NumericInputSpinnerTemplate', nil)
     unitsPerColumnEdit:Update( { nil, nil, nil, { minPlayer, maxPlayer} } )
@@ -117,7 +100,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     local columnSpacingLabel = LibGUI:NewWidget('label', frame, '', {
         { 'TOP', unitsPerColumnLabel, 'BOTTOM', 0, -4 },
     }, {150, 30}, nil, nil )
-    columnSpacingLabel:Update( { 'OVERLAY', GameFontNormal, 'Column Spacing' } )
+    columnSpacingLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Column Spacing' } )
 
     local columnSpacingEdit = LibGUI:NewWidget('editbox', frame, '', { 'LEFT', columnSpacingLabel, 'RIGHT', 40, 0 }, { 40, 25 }, 'NumericInputSpinnerTemplate', nil)
     columnSpacingEdit:Update( { nil, nil, nil, { minSpacing, maxSpacing} } )
@@ -127,46 +110,46 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
         { 'TOP', columnSpacingLabel, 'BOTTOM', 0, -4 },
         { 'LEFT', frame, 'LEFT' }
     }, {160, 30}, nil, nil )
-    groupingLabel:Update( { 'OVERLAY', GameFontNormal, 'Group by' } )
+    groupingLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Group by' } )
 
     local groupingDropdown =  LibGUI:NewWidget('dropdownmenu', frame, '', { 'LEFT', groupingLabel, 'RIGHT' }, { 180, 25 }, nil, nil)
     groupingDropdown:Update( groupingMenu )
 
     --SORTING METHOD
     local sortingLabel = LibGUI:NewWidget('label', frame, '', { 'TOPLEFT', groupingLabel, 'BOTTOMLEFT', 0, -4 }, {160, 30}, nil, nil )
-    sortingLabel:Update( { 'OVERLAY', GameFontNormal, 'Sorting by' } )
+    sortingLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Sorting by' } )
 
     local sortingDropdown =  LibGUI:NewWidget('dropdownmenu', frame, '', { 'LEFT', sortingLabel, 'RIGHT' }, { 180, 25 }, nil, nil)
     sortingDropdown:Update( sortingMenu )
 
     local sortingDirLabel = LibGUI:NewWidget('label', frame, '', { 'TOPLEFT', sortingLabel, 'BOTTOMLEFT', 0, -4 }, {160, 30}, nil, nil )
-    sortingDirLabel:Update( { 'OVERLAY', GameFontNormal, 'Sorting classification' } )
+    sortingDirLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Sorting classification' } )
 
     local sortingDirDropdown =  LibGUI:NewWidget('dropdownmenu', frame, '', { 'LEFT', sortingDirLabel, 'RIGHT' }, { 180, 25 }, nil, nil)
     sortingDirDropdown:Update( sortingDirectionMenu )
 
     --FILTER
     local growDirLabel = LibGUI:NewWidget('label', frame, '', { 'TOPLEFT', sortingDirLabel, 'BOTTOMLEFT', 0, -4 }, {160, 30}, nil, nil )
-    growDirLabel:Update( { 'OVERLAY', GameFontNormal, 'Grow direction' } )
+    growDirLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Grow direction' } )
 
     local growDirDropdown =  LibGUI:NewWidget('dropdownmenu', frame, '', { 'LEFT', growDirLabel, 'RIGHT' }, { 180, 25 }, nil, nil)
     growDirDropdown:Update( growDirectionMenu )
 
     local filterLabel = LibGUI:NewWidget('label', frame, '', { 'TOPLEFT', growDirLabel, 'BOTTOMLEFT', 0, -4 }, {160, 30}, nil, nil )
-    filterLabel:Update( { 'OVERLAY', GameFontNormal, 'Role filtering' } )
+    filterLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Role filtering' } )
 
     local filterDropdown =  LibGUI:NewWidget('dropdownmenu', frame, '', { 'LEFT', filterLabel, 'RIGHT' }, { 180, 25 }, nil, nil)
     filterDropdown:Update( roleFilterMenu )
 
     --VISIBILITY
     local visibilityLabel = LibGUI:NewWidget('label', frame, '', { 'TOPLEFT', filterLabel, 'BOTTOMLEFT', 0, -4 }, { 200, 30 }, nil, nil)
-    visibilityLabel:Update( { 'OVERLAY', GameFontNormal, 'Player count before hide' } )
+    visibilityLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Player count before hide' } )
     local visibilityEdit = LibGUI:NewWidget('editbox', frame, '', { 'LEFT', visibilityLabel, 'RIGHT', 44, 0 }, { 40, 25 }, 'NumericInputSpinnerTemplate', nil)
     visibilityEdit:Update( { nil, nil, nil, { minPlayer, maxPlayer} } )
 
 
     if hasBorder then
-        frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+        frame:CreateBorder(borderSettings.size, borderSettings.color )
     end
 
     if hasName then

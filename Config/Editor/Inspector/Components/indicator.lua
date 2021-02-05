@@ -1,8 +1,11 @@
 local _, Plugin = ...
+local select = select
 local V = select(2, ...):unpack()
 local LibGUI = Plugin.LibGUI
 
-local Inspector=V.Editor.Inspector
+local Editor = V.Editor
+local Inspector = Editor.Inspector
+local borderSettings = Editor.border
 
 --[[
     Debug Purpose
@@ -36,7 +39,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     )
 
     local indicator = LibGUI:NewWidget('label', frame, baseName..'IndicatorFrameItemLabel', { 'TOPLEFT', 0, -10 }, { 80, 30 }, nil, nil)
-    indicator:Update( { 'OVERLAY', GameFontNormal, 'Indicator' } )
+    indicator:Update( { 'OVERLAY', 'GameFontNormal', 'Indicator' } )
     local indicatorMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'IndicatorFrameItemDropDownMenu', { 'LEFT', indicator, 'RIGHT' }, { 200, 25 }, nil, nil)
     indicatorMenu:Update( indicatorDropdown )
 
@@ -54,7 +57,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
 
     frame:SetHeight(pointFrame:GetHeight() + 30)
     if hasBorder then
-        frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+        frame:CreateBorder(borderSettings.size, borderSettings.color )
     end
 
     if hasName then

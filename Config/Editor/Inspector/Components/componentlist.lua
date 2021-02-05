@@ -1,8 +1,13 @@
 local _, Plugin = ...
+local select = select
+local pairs = pairs
+
 local V = select(2, ...):unpack()
 local LibGUI = Plugin.LibGUI
 
-local Inspector=V.Editor.Inspector
+local Editor = V.Editor
+local Inspector = Editor.Inspector
+local borderSettings = Editor.border
 
 local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
 
@@ -53,7 +58,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     scrollFrame:CreateWidgets()
 
     if hasBorder then
-        frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+        frame:CreateBorder(borderSettings.size, borderSettings.color )
     end
 
     if hasName then

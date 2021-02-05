@@ -1,14 +1,18 @@
 local _, Plugin = ...
+
+local select = select
+local unpack = unpack
+local pairs = pairs
+local type = type
+
 local V = select(2, ...):unpack()
 local LibGUI = Plugin.LibGUI
 
-local Inspector=V.Editor.Inspector
-
-local anchors = {
-    'BOTTOMLEFT', 'LEFT', 'TOPLEFT',
-    'TOP', 'TOPRIGHT', 'RIGHT',
-    'BOTTOMRIGHT', 'BOTTOM', 'CENTER'
-}
+--local constant in local cache
+local Editor = V.Editor
+local Inspector = Editor.Inspector
+local borderSettings = Editor.border
+local anchors = Editor.menus.anchors
 
 local pointColor = {
     { 1, 0.85, 0, 1 },
@@ -73,7 +77,6 @@ local function removePoint(self, i)
     anchorView.Childs[2]:ClearAllPoints()
 
     for _, p in pairs(pointConfig) do
-        print ('iterate through point', p)
         if p ~= nil and type(p) == 'table' then
             countPoint = countPoint + 1
             anchorView.Childs[2]:SetPoint(p[1], anchorView.Childs[1], p[3])
@@ -290,7 +293,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     setterFrame.bg:SetColorTexture(0, 0, 0, 1)
 
     local setterAnchorLabel = LibGUI:NewWidget('label', setterFrame, baseName..'PointFrameSetterAnchorLabel', { { 'TOPLEFT', 0, 25 }, { 'TOPRIGHT', 0, 25 } }, { 0, 30 }, nil, nil)
-    setterAnchorLabel:Update( { 'OVERLAY', GameFontNormal, 'Anchors View' } )
+    setterAnchorLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Anchors View' } )
 
     local parentFrame = LibGUI:NewContainer(
             'empty',
@@ -324,7 +327,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     addSnapButton(childFrame, { 1, 1, 1 }, frame)
 
     if hasBorder then
-        frame:CreateBorder(1, { 1, 1, 1, 0.4 })
+        frame:CreateBorder(borderSettings.size, borderSettings.color )
     end
 
     frame.pointConfig = pointConfig
@@ -344,16 +347,16 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     --pointTableFrame:CreateBorder(1, { 1, 1, 1, 1 })
 
     local pointTableLabel = LibGUI:NewWidget('label', pointTableFrame, baseName..'PointFramePointTableLabel', { { 'TOPLEFT', 0, 25 }, { 'TOPRIGHT', 0, 25 } }, { 0, 30 }, nil, nil)
-    pointTableLabel:Update( { 'OVERLAY', GameFontNormal, 'Offset Settings' } )
+    pointTableLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Offset Settings' } )
 
     local pointTableOffsetXLabel = LibGUI:NewWidget('label', pointTableFrame, baseName..'PointFramePointTableOffsetXLabel', { 'TOPLEFT', 45, 0 }, { 60, 30 }, nil, nil)
-    pointTableOffsetXLabel:Update( { 'OVERLAY', GameFontNormal, 'X' } )
+    pointTableOffsetXLabel:Update( { 'OVERLAY', 'GameFontNormal', 'X' } )
 
     local pointTableOffsetYLabel = LibGUI:NewWidget('label', pointTableFrame, baseName..'PointFramePointTableOffsetYLabel', { 'TOPLEFT', 145, 0 }, { 60, 30 }, nil, nil)
-    pointTableOffsetYLabel:Update( { 'OVERLAY', GameFontNormal, 'Y' } )
+    pointTableOffsetYLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Y' } )
 
     local pointTableParentLabel = LibGUI:NewWidget('label', pointTableFrame, baseName..'PointFramePointTableParentLabel', { 'TOPLEFT', 245, 0 }, { 60, 30 }, nil, nil)
-    pointTableParentLabel:Update( { 'OVERLAY', GameFontNormal, 'Parent' } )
+    pointTableParentLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Parent' } )
 
     for i = 1, 3 do
         addOffsetSetter(pointTableFrame, i)

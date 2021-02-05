@@ -121,7 +121,6 @@ function UnitFrames:Player(Config)
     Debuffs.initialAnchor = 'BOTTOMRIGHT'
 
 
-
     --[[
         FONT
     --]]

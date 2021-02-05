@@ -123,6 +123,7 @@ function UnitFrames:Party(Config)
         Buffs.onlyShowPlayer = Config.Buffs.OnlyShowPlayer or false
         Buffs.num = Config.Buffs.ButtonCount or 32
         Buffs.spacing = Config.Buffs.ButtonSpacing or 0
+        Buffs.filter = 'HELPFUL|CANCELABLE'
         self.Buffs = Buffs
     end
 
