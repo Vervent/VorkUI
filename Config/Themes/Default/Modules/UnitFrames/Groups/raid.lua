@@ -301,7 +301,7 @@ Themes["Default"].SetRaidProfile = function(layout)
             { 16, 16 },
             { 'BOTTOMLEFT', 'Frame', 'BOTTOMLEFT', 0, 0 },
             'ClassIcon',
-            select(2, UnitClass("player")),
+            nil,
             nil,
             nil,
             nil

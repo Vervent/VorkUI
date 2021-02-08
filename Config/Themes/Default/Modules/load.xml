@@ -4,6 +4,7 @@
     <Script file="UnitFrames\Units\targettarget.lua"/>+
     <Script file="UnitFrames\Units\focus.lua"/>
     <Script file="UnitFrames\Units\focustarget.lua"/>
+    <Script file="UnitFrames\Units\pet.lua"/>
 
     <Script file="UnitFrames\Groups\party.lua"/>
     <Script file="UnitFrames\Groups\raid.lua"/>

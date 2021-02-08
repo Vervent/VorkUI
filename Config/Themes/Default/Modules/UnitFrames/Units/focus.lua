@@ -240,7 +240,7 @@ Themes["Default"].SetFocusProfile = function()
             { 16, 16 },
             { 'TOPLEFT', 'Frame', 'TOPRIGHT', -4, -2 },
             'ClassIcon',
-            select(2, UnitClass("player")),
+            nil,
             nil,
             nil,
             nil

@@ -18,22 +18,10 @@ end
 local function absorbOption(module, submodule)
     local data = {
         { nil, 'Enable', true },
-        --TRANSFORM
-        { nil, 'Size', 232, 8 },
-        { nil, 'Point', 'TOPLEFT', 'Frame', 'TOPLEFT' },
-        ----SLANT
-        { 'SlantingSettings', 'Enable', true },
-        { 'SlantingSettings', 'IgnoreBackground', true },
-        { 'SlantingSettings', 'FillInverse', true },
-        { 'SlantingSettings', 'Inverse', true },
-        { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
-        --RENDERING
-        { 'Rendering', nil, 'VorkuiBubbles', 'ARTWORK' },
-        { 'Rendering', nil, { 0, 0, 0, 1 }, 'BACKGROUND', 1 },
         --TAGS
         { 'Value', 'Layer', 'OVERLAY' },
         { 'Value', 'Font', 'ValueFont' },
-        { 'Value', 'Point', "TOPRIGHT", 'Health', "TOP" },
+        { 'Value', 'Point', "TOPLEFT", 'Health', "TOP" },
         { 'Value', 'Tag', '[Vorkui:HealthColor][Vorkui:Absorb]' },
     }
 
@@ -45,12 +33,11 @@ local function healthOption(module, submodule)
     local data = {
         { nil, 'Enable', true },
         --TRANSFORM
-        { nil, 'Size', 256, 32 },
-        { nil, 'Point', 'TOPLEFT', 'Absorb', 'BOTTOMLEFT', 8, 0 },
+        { nil, 'Size', 256, 16 },
+        { nil, 'Point', 'TOPRIGHT' },
         ----SLANT
         { 'SlantingSettings', 'Enable', true },
         { 'SlantingSettings', 'IgnoreBackground', true },
-        { 'SlantingSettings', 'Inverse', true },
         { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
@@ -59,12 +46,12 @@ local function healthOption(module, submodule)
         --TAGS
         { 'Value', 'Layer', 'OVERLAY' },
         { 'Value', 'Font', 'ValueFont' },
-        { 'Value', 'Point', 'TOPLEFT', 'Health', 'TOP' },
-        { 'Value', 'Tag', '[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp-Max]' },
+        { 'Value', 'Point', 'TOPRIGHT', 'Health', 'TOP' },
+        { 'Value', 'Tag', '[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp]' },
 
         { 'Percent', 'Layer', 'OVERLAY' },
         { 'Percent', 'Font', 'BigValueFont' },
-        { 'Percent', 'Point', 'BOTTOMLEFT', 'Frame', 'BOTTOMLEFT' },
+        { 'Percent', 'Point', 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT' },
         { 'Percent', 'Tag', '[Vorkui:HealthColor(true)][Vorkui:PerHP]' },
     }
 
@@ -78,7 +65,6 @@ local function healthPredictionOption(module, submodule)
         ----SLANT
         { 'SlantingSettings', 'Enable', true },
         { 'SlantingSettings', 'IgnoreBackground', true },
-        { 'SlantingSettings', 'Inverse', true },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK', 1 },
         { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
@@ -104,21 +90,21 @@ local function castbarOption(module, submodule)
         { 'Spark', 'Size', 20, 20 },
         { 'Spark', 'BlendMode', 'ADD' },
         { 'CastSettings', 'AtlasName', 'Muzzle' },
-        { 'CastSettings', 'Point', 'LEFT', nil, 'LEFT', -5, 0 },
+        { 'CastSettings', 'Point', 'RIGHT', nil, 'RIGHT', 5, 0 },
         { 'ChannelSettings', 'AtlasName', 'Spark' },
-        { 'ChannelSettings', 'Point', 'CENTER', nil, 'LEFT', 0, 0 },
+        { 'ChannelSettings', 'Point', 'CENTER', nil, 'RIGHT', 0, 0 },
         --TAGS
         { 'Time', 'Layer', 'OVERLAY' },
         { 'Time', 'Font', 'DurationFont' },
-        { 'Time', 'Point', 'LEFT' },
+        { 'Time', 'Point', 'RIGHT', 'Castbar' },
 
         { 'Text', 'Layer', 'OVERLAY' },
         { 'Text', 'Font', 'NormalFont' },
-        { 'Text', 'Point', 'CENTER' },
+        { 'Text', 'Point', 'CENTER', 'Castbar' },
 
         --ICON
         { 'Icon', 'Size', 20, 20 },
-        { 'Icon', 'Point', 'TOPRIGHT' },
+        { 'Icon', 'Point', 'TOPLEFT', 'Castbar' },
 
         --SHIELD
         { 'Shield', 'Size', 20, 20 },
@@ -130,8 +116,6 @@ local function castbarOption(module, submodule)
         { 'SafeZone', 'Layer', 'OVERLAY' },
         { 'SafeZone', 'BlendMode', 'ADD' },
         { 'SafeZone', 'VertexColor', { 255 / 255, 246 / 255, 0, 0.75 } },
-
-        { nil, 'ReverseFill', true },
     }
 
     registers(module, submodule, 'CastBar', data)
@@ -144,8 +128,8 @@ local function nameOption(module, submodule)
         --TAGS
         { nil, 'Layer', 'OVERLAY' },
         { nil, 'Font', 'NameFont' },
-        { nil, 'Point', 'BOTTOMRIGHT', nil, 'TOPRIGHT', 0, 2 },
-        { nil, 'Tag', '[difficulty][level] [Vorkui:Name(8)] [classification]' },
+        { nil, 'Point', 'BOTTOMLEFT', nil, 'TOPLEFT', 0, 2 },
+        { nil, 'Tag', '[classification] [name] [difficulty][level]' },
     }
 
     registers(module, submodule, 'Name', data)
@@ -155,12 +139,11 @@ local function powerOption(module, submodule)
     local data = {
         { nil, 'Enable', true },
         --TRANSFORM
-        { nil, 'Size', 235, 10 },
-        { nil, 'Point', 'TOPRIGHT', 'Health', 'BOTTOMRIGHT', 10, 0 },
+        { nil, 'Size', 240, 8 },
+        { nil, 'Point', 'TOPLEFT', 'Health', 'BOTTOMLEFT', 0, 0 },
         ----SLANT
         { 'SlantingSettings', 'Enable', true },
         { 'SlantingSettings', 'IgnoreBackground', true },
-        { 'SlantingSettings', 'Inverse', true },
         { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
@@ -168,7 +151,7 @@ local function powerOption(module, submodule)
         --TAGS
         { 'Value', 'Layer', 'OVERLAY' },
         { 'Value', 'Font', 'StackFont' },
-        { 'Value', 'Point', 'BOTTOM' },
+        { 'Value', 'Point', 'BOTTOM', 'Frame' },
         { 'Value', 'Tag', '[powercolor][missingpp]' },
     }
 
@@ -183,7 +166,6 @@ local function powerPredictionOption(module, submodule)
         { 'SlantingSettings', 'Enable', true },
         { 'SlantingSettings', 'IgnoreBackground', true },
         { 'SlantingSettings', 'FillInverse', true },
-        { 'SlantingSettings', 'Inverse', true },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK', 1 },
         { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
@@ -197,12 +179,12 @@ local function portraitOption(module, submodule)
     local data = {
         { nil, 'Enable', true },
         --TRANSFORM
-        { nil, 'Size', 49, 49 },
-        { nil, 'Point', 'TOPRIGHT', 'Frame', 'TOPRIGHT' },
+        { nil, 'Size', 32, 32 },
+        { nil, 'Point', 'TOPLEFT', 'Frame', 'TOPLEFT' },
         { nil, 'Type', '3D' },
         { nil, 'ModelDrawLayer', 'BACKGROUND' },
 
-        { 'PostUpdate', 'Position', { 0.1, 0, 0 } },
+        { 'PostUpdate', 'Position', { 0.2, 0, 0 } },
         { 'PostUpdate', 'Rotation', -math.pi / 5 },
         { 'PostUpdate', 'CamDistance', 2 },
     }
@@ -227,14 +209,14 @@ local function indicatorOption(module, submodule, indicator, size, point, textur
 end
 
 --(module, submodule, object, component, type, optionName, defaultValue)
-Themes["Default"].SetTargetProfile = function()
+Themes["Default"].SetPlayerProfile = function()
 
     local module = 'UnitFrames'
-    local submodule = 'TargetLayout'
+    local submodule = 'PetLayout'
 
     --Global OPTION
-    Profiles:RegisterOption(module, submodule, nil, nil, 'Size', 300, 62)
-    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', "CENTER", 'UIParent', "CENTER", 400, -200)
+    Profiles:RegisterOption(module, submodule, nil, nil, 'Size', 300, 32)
+    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', "CENTER", 'UIParent', "CENTER", -450, -400)
     --HEALTH OPTION
     healthOption(module, submodule)
     healthPredictionOption(module, submodule)
@@ -245,7 +227,7 @@ Themes["Default"].SetTargetProfile = function()
 
     indicatorOption(module, submodule, 'ClassIndicator',
             { 16, 16 },
-            { 'TOPRIGHT', 'Frame', 'TOPLEFT', -4, -2 },
+            { 'TOPLEFT', 'Frame', 'TOPRIGHT', -4, -2 },
             'ClassIcon',
             nil,
             nil,
@@ -255,7 +237,7 @@ Themes["Default"].SetTargetProfile = function()
 
     indicatorOption(module, submodule, 'RaidIndicator',
             { 16, 16 },
-            { 'RIGHT', 'Health', 'RIGHT', -10, 0 },
+            { 'LEFT', 'Health', 'LEFT', 10, 0 },
             'RaidIcon',
             nil,
             nil,
@@ -263,19 +245,19 @@ Themes["Default"].SetTargetProfile = function()
             nil
     )
 
-    indicatorOption(module, submodule, 'LeaderIndicator',
-            { 64 / 4, 53 / 4 },
-            { 'LEFT', 'Frame', 'RIGHT' },
+    indicatorOption(module, submodule, 'CombatIndicator',
+            { 39 / 3, 64 / 3 },
+            { 'TOPRIGHT', 'Frame', 'TOPRIGHT' },
             'GlobalIcon',
-            'LEADER',
-            { 163 / 255, 220 / 255, 255 / 255 },
+            'MAELSTROM',
             nil,
-            nil
+            { "VERTICAL", 255 / 255, 246 / 255, 0 / 255, 0.75, 255 / 255, 50 / 255, 0 / 255, 1 },
+            'ADD'
     )
 
     indicatorOption(module, submodule, 'DeadOrGhostIndicator',
             { 40, 40 },
-            { 'BOTTOMLEFT', 'Frame', 'BOTTOMLEFT' },
+            { 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT' },
             'Status',
             'DIED',
             { 255 / 255, 68 / 255, 91 / 255 },
@@ -285,7 +267,7 @@ Themes["Default"].SetTargetProfile = function()
 
     indicatorOption(module, submodule, 'ResurrectIndicator',
             { 40, 40 },
-            { 'BOTTOMLEFT', 'Frame', 'BOTTOMLEFT' },
+            { 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT', 0, 0 },
             'Status',
             'RESURRECT',
             { 30 / 255, 223 / 255, 100 / 255 },
@@ -293,85 +275,20 @@ Themes["Default"].SetTargetProfile = function()
             nil
     )
 
-    indicatorOption(module, submodule, 'SummonIndicator',
-            { 32, 32 },
-            { 'CENTER', 'Health', 'CENTER' },
-            'Phasing',
-            'SUMMON',
-            { 0 / 255, 204 / 255, 255 / 255 },
-            nil,
-            nil
-    )
-
-    indicatorOption(module, submodule, 'PhaseIndicator',
-            { 32, 32 },
-            { 'CENTER', 'Health', 'CENTER' },
-            'Phasing',
-            'PHASE',
-            { 0 / 255, 204 / 255, 255 / 255 },
-            nil,
-            nil
-    )
-
     nameOption(module, submodule)
     castbarOption(module, submodule)
 
-    --[[ TODO TEMPORARY FONT TO KEEP COMPATIBILTY WITH OLD EDITOR
-    ["NameFont"] = {
-				"Montserrat Medium", -- [1]
-				20, -- [2]
-				"OUTLINE", -- [3]
-			},
-    ["NormalFont"] = {
-				"Montserrat Medium", -- [1]
-				12, -- [2]
-				"OUTLINE", -- [3]
-			},
-    ["StackFont"] = {
-				"Montserrat Medium Italic", -- [1]
-				16, -- [2]
-				"OUTLINE", -- [3]
-			},
-	["DurationFont"] = {
-				"Montserrat Medium", -- [1]
-				12, -- [2]
-				"OUTLINE", -- [3]
-			},
-	["BigValueFont"] = {
-				"Montserrat Medium Italic", -- [1]
-				18, -- [2]
-				"OUTLINE", -- [3]
-			},
-	["ValueFont"] = {
-				"Montserrat Medium Italic", -- [1]
-				14, -- [2]
-				"OUTLINE", -- [3]
-			},
-
-	["Submodules"] = {
-				["Absorb"] = true,
-				["Portrait"] = true,
-				["Power"] = true,
-				["LeaderIndicator"] = true,
-				["Debuffs"] = true,
-				["ResurrectIndicator"] = true,
-				["SummonIndicator"] = true,
-				["CastBar"] = true,
-				["RestingIndicator"] = true,
-				["CombatIndicator"] = true,
-				["ClassIndicator"] = true,
-				["DeadOrGhostIndicator"] = true,
-				["Buffs"] = true,
-				["FightIndicator"] = true,
-				["RaidIndicator"] = true,
-			},
-    ]]--
-
-    Profiles:RegisterOption(module, submodule, nil, nil, 'NameFont', 'Montserrat Medium', 20, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'NormalFont', 'Montserrat Medium', 12, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'StackFont', 'Montserrat Medium Italic', 16, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'DurationFont', 'Montserrat Medium', 12, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'BigValueFont', 'Montserrat Medium Italic', 18, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'ValueFont', 'Montserrat Medium Italic', 14, 'OUTLINE')
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Absorb', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Portrait', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Power', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'LeaderIndicator', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Debuffs', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'CastBar', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'CombatIndicator', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'ClassIndicator', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'DeadOrGhostIndicator', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Buffs', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'FightIndicator', true)
+    Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'RaidIndicator', true)
 
 end

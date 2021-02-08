@@ -240,7 +240,7 @@ Themes["Default"].SetPlayerProfile = function()
             { 16, 16 },
             { 'TOPLEFT', 'Frame', 'TOPRIGHT', -4, -2 },
             'ClassIcon',
-            select(2, UnitClass("player")),
+            nil,
             nil,
             nil,
             nil
@@ -278,7 +278,7 @@ Themes["Default"].SetPlayerProfile = function()
 
     indicatorOption(module, submodule, 'CombatIndicator',
             { 39 / 3, 64 / 3 },
-            { 'BOTTOMRIGHT', 'Frame', 'TOPRIGHT' },
+            { 'TOPRIGHT', 'Frame', 'TOPRIGHT' },
             'GlobalIcon',
             'MAELSTROM',
             nil,
@@ -307,7 +307,7 @@ Themes["Default"].SetPlayerProfile = function()
     )
 
     indicatorOption(module, submodule, 'SummonIndicator',
-            { 32, 32 },
+            { 48, 48 },
             { 'CENTER', 'Health', 'CENTER' },
             'Phasing',
             'SUMMON',

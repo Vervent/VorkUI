@@ -298,7 +298,7 @@ local function buffOption(layout, module, submodule)
         { nil, 'Enable', enable },
         --TRANSFORM
         { nil, 'Size', 24*6 + 2*5, 24 },
-        { nil, 'Point', 'BOTTOMLEFT', 'Frame', 'TOPLEFT', 0, 2 },
+        { nil, 'Point', 'BOTTOMRIGHT', 'Frame', 'BOTTOMLEFT', -2, 0 },
         { nil, 'ButtonSize', 24 },
         { nil, 'ButtonCount', 6 },
         { nil, 'ButtonSpacing', 2 },
@@ -320,9 +320,9 @@ local function debuffOption(layout, module, submodule)
     local data = {
         { nil, 'Enable', enable },
         --TRANSFORM
-        { nil, 'Size', 24*6 + 2*5, 24 },
-        { nil, 'Point', 'TOPLEFT', 'Frame', 'BOTTOMLEFT', 0, 2 },
-        { nil, 'ButtonSize', 24 },
+        { nil, 'Size', 32*6 + 2*5, 32 },
+        { nil, 'Point', 'BOTTOMLEFT', 'Frame', 'BOTTOMRIGHT', 0, 2 },
+        { nil, 'ButtonSize', 32 },
         { nil, 'ButtonCount', 6 },
         { nil, 'ButtonSpacing', 2 },
     }
@@ -398,7 +398,7 @@ Themes["Default"].SetPartyProfile = function(layout)
     local submodule = 'PartyLayout'
 
     --Global OPTION
-    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', 'BOTTOM', 'UIParent', 'BOTTOM', 0, 10)
+    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', 'CENTER', 'UIParent', 'CENTER', -500, 150)
 
     headerOption(module, submodule)
 
