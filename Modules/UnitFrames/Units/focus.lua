@@ -2,7 +2,7 @@ local V = select(2, ...):unpack()
 
 local UnitFrames = V["UnitFrames"]
 
-function UnitFrames:Focus(Config)
+function UnitFrames:Focus(Config, unit)
 
     self:RegisterForClicks("AnyUp")
     self:SetScript("OnEnter", UnitFrame_OnEnter)
@@ -136,7 +136,7 @@ function UnitFrames:Focus(Config)
     --]]
     if Config.ClassIndicator then
         --Config.ClassIndicator.Point[2] = self.Portrait or Frame
-        local indicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ClassIndicator)
+        local indicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ClassIndicator, unit)
         indicator.AtlasName = Config.ClassIndicator.Texture
         indicator.Override = UnitFrames.UpdateClassOverride
         self.ClassIndicator = indicator

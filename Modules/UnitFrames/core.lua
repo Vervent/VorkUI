@@ -378,8 +378,6 @@ function UnitFrames:UpdatePortraitOverride(unit)
         self.name = name
     end
 
-    print ('UpdatePortraitOverride', unit)
-
     local guid = UnitGUID(unit)
     local isAvailable = UnitIsConnected(unit) and UnitIsVisible(unit)
 
@@ -468,7 +466,7 @@ end
 --[[------------------------------------------------------------------
 -- INDICATOR SYSTEM
 --]]------------------------------------------------------------------
-function UnitFrames:CreateIndicator(frame, layer, sublayer, config)
+function UnitFrames:CreateIndicator(frame, layer, sublayer, config, unit)
     local indicator = frame:CreateTexture(nil, layer, sublayer)
     indicator:SetSize( unpack(config.Size) )
     --local point = config.Point
@@ -483,6 +481,12 @@ function UnitFrames:CreateIndicator(frame, layer, sublayer, config)
     indicator:SetTexture( LibAtlas:GetPath(config.Texture) )
     if config.TexCoord then
         indicator:SetTexCoord(LibAtlas:GetTexCoord( config.Texture ,config.TexCoord))
+    elseif config.Texture == 'ClassIcon' and unit ~= nil then
+        local class = select(2, UnitClass(unit))
+        if class ~= nil then
+            print (class)
+            indicator:SetTexCoord(LibAtlas:GetTexCoord( config.Texture , class ) )
+        end
     end
     if config.VertexColor then
         indicator:SetVertexColor( unpack(config.VertexColor) )
@@ -1225,31 +1229,31 @@ function UnitFrames:Style(unit)
     local Parent = self:GetParent():GetName()
 
     if (unit == "player") then
-        UnitFrames.Player(self, style.PlayerLayout)
+        UnitFrames.Player(self, style.PlayerLayout, unit)
     elseif (unit == "target") then
-        UnitFrames.Target(self, style.TargetLayout)
+        UnitFrames.Target(self, style.TargetLayout, unit)
     elseif (unit == "targettarget") then
-        UnitFrames.TargetTarget(self, style.TargetTargetLayout)
+        UnitFrames.TargetTarget(self, style.TargetTargetLayout, unit)
     elseif (unit == "pet") then
         --TODO PET
-        --UnitFrames.Pet(self, style.Pet.Config)
+        UnitFrames.Pet(self, style.PetLayout, unit)
     elseif (unit == "focus") then
-        UnitFrames.Focus(self, style.FocusLayout)
+        UnitFrames.Focus(self, style.FocusLayout, unit)
     elseif (unit == "focustarget") then
-        UnitFrames.FocusTarget(self, style.FocusTargetLayout)
+        UnitFrames.FocusTarget(self, style.FocusTargetLayout, unit)
     elseif (unit == "party") then
         --TODO USE CONFIG LAYOUT HERE
-        UnitFrames.Party(self, style.PartyLayout )
+        UnitFrames.Party(self, style.PartyLayout, unit )
     elseif (unit == "raid" ) then
         --TODO USE CONFIG LAYOUT HERE
-        UnitFrames.Raid(self, style.RaidLayout)
+        UnitFrames.Raid(self, style.RaidLayout, unit)
     elseif (unit:find("raid")) or (unit:find("raidpet")) then
         if Parent:match("Party") then
             --TODO USE CONFIG LAYOUT HERE
-            UnitFrames.Party(self, style.PartyLayout)
+            UnitFrames.Party(self, style.PartyLayout, unit)
         else
             --TODO USE CONFIG LAYOUT HERE
-            UnitFrames.Raid(self, style.RaidLayout)
+            UnitFrames.Raid(self, style.RaidLayout, unit)
         end
     end
 

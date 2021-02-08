@@ -234,7 +234,7 @@ Themes["Default"].SetTargetProfile = function()
 
     --Global OPTION
     Profiles:RegisterOption(module, submodule, nil, nil, 'Size', 300, 62)
-    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', "CENTER", 'UIParent', "CENTER", 400, -200)
+    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', "CENTER", 'UIParent', "CENTER", 450, -350)
     --HEALTH OPTION
     healthOption(module, submodule)
     healthPredictionOption(module, submodule)
@@ -244,8 +244,8 @@ Themes["Default"].SetTargetProfile = function()
     portraitOption(module, submodule)
 
     indicatorOption(module, submodule, 'ClassIndicator',
-            { 16, 16 },
-            { 'TOPRIGHT', 'Frame', 'TOPLEFT', -4, -2 },
+            { 24, 24 },
+            { 'TOPRIGHT', 'Frame', 'TOPRIGHT', -51, -2 },
             'ClassIcon',
             nil,
             nil,
@@ -254,8 +254,8 @@ Themes["Default"].SetTargetProfile = function()
     )
 
     indicatorOption(module, submodule, 'RaidIndicator',
-            { 16, 16 },
-            { 'RIGHT', 'Health', 'RIGHT', -10, 0 },
+            { 24, 24 },
+            { 'TOPLEFT', 'Frame', 'TOPLEFT', 2, -10 },
             'RaidIcon',
             nil,
             nil,

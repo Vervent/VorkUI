@@ -209,7 +209,7 @@ local function indicatorOption(module, submodule, indicator, size, point, textur
 end
 
 --(module, submodule, object, component, type, optionName, defaultValue)
-Themes["Default"].SetPlayerProfile = function()
+Themes["Default"].SetPetProfile = function()
 
     local module = 'UnitFrames'
     local submodule = 'PetLayout'
@@ -290,5 +290,12 @@ Themes["Default"].SetPlayerProfile = function()
     Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Buffs', true)
     Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'FightIndicator', true)
     Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'RaidIndicator', true)
+
+    Profiles:RegisterOption(module, submodule, nil, nil, 'NameFont', 'Montserrat Medium', 20, 'OUTLINE')
+    Profiles:RegisterOption(module, submodule, nil, nil, 'NormalFont', 'Montserrat Medium', 12, 'OUTLINE')
+    Profiles:RegisterOption(module, submodule, nil, nil, 'StackFont', 'Montserrat Medium Italic', 16, 'OUTLINE')
+    Profiles:RegisterOption(module, submodule, nil, nil, 'DurationFont', 'Montserrat Medium', 12, 'OUTLINE')
+    Profiles:RegisterOption(module, submodule, nil, nil, 'BigValueFont', 'Montserrat Medium Italic', 18, 'OUTLINE')
+    Profiles:RegisterOption(module, submodule, nil, nil, 'ValueFont', 'Montserrat Medium Italic', 14, 'OUTLINE')
 
 end

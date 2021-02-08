@@ -2,7 +2,7 @@ local V = select(2, ...):unpack()
 
 local UnitFrames = V["UnitFrames"]
 
-function UnitFrames:Pet(Config)
+function UnitFrames:Pet(Config, unit)
 
     self:RegisterForClicks("AnyUp")
     self:SetScript("OnEnter", UnitFrame_OnEnter)
@@ -123,7 +123,7 @@ function UnitFrames:Pet(Config)
     --]]
     if Config.ClassIndicator then
         --Config.ClassIndicator.Point[2] = self.Portrait or Frame
-        self.ClassIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ClassIndicator)
+        self.ClassIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ClassIndicator, unit)
     end
 
     --[[
@@ -132,29 +132,6 @@ function UnitFrames:Pet(Config)
     if Config.RaidIndicator then
         --Config.RaidIndicator.Point[2] = Health
         self.RaidTargetIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.RaidIndicator)
-    end
-
-    --[[
-    LEADER ICON
-    ]]--
-    if Config.LeaderIndicator then
-        --Config.LeaderIndicator.Point[2] = Frame.Name or Frame
-        self.LeaderIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.LeaderIndicator)
-    end
-
-    --[[
-    RESTING ICON
-    ]]--
-    if Config.RestingIndicator then
-        self.RestingIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.RestingIndicator)
-    end
-
-    --[[
-    COMBAT ICON
-    ]]--
-    if Config.CombatIndicator then
-        --Config.CombatIndicator.Point[2] = self.RestingIndicator or Frame
-        self.CombatIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.CombatIndicator)
     end
 
     --[[

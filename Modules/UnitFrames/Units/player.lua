@@ -2,7 +2,7 @@ local V, C = select(2, ...):unpack()
 
 local UnitFrames = V["UnitFrames"]
 
-function UnitFrames:Player(Config)
+function UnitFrames:Player(Config, unit)
 
     self:RegisterForClicks("AnyUp")
     self:SetScript("OnEnter", UnitFrame_OnEnter)
@@ -164,7 +164,7 @@ function UnitFrames:Player(Config)
     --]]
     if Config.ClassIndicator then
         --Config.ClassIndicator.Point[2] = self.Portrait or Frame
-        self.ClassIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ClassIndicator)
+        self.ClassIndicator = UnitFrames:CreateIndicator(Frame, "OVERLAY", nil, Config.ClassIndicator, unit)
     end
 
     --[[

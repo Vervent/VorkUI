@@ -142,7 +142,7 @@ Themes["Default"].SetTargetTargetProfile = function()
 
     --Global OPTION
     Profiles:RegisterOption(module, submodule, nil, nil, 'Size', 200, 31)
-    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', "LEFT", 'UIParent', "CENTER", 560, -250)
+    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', "LEFT", 'UIParent', "CENTER", 550, -450)
     --HEALTH OPTION
     healthOption(module, submodule)
     healthPredictionOption(module, submodule)
