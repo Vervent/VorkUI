@@ -35,25 +35,25 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
             pt
     )
 
-    local path = LibGUI:NewWidget('label', frame, baseName..'TextureFramePathLabel', { 'TOPLEFT', 0, -10 }, { 80, 30 }, nil, nil)
+    local path = LibGUI:NewWidget('label', frame, 'PathLabel', { 'TOPLEFT', 0, -10 }, { 80, 30 }, nil, nil)
     path:Update( { 'OVERLAY', 'GameFontNormal','Texture' } )
-    local pathMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'TextureFramePathDropDownMenu', { 'LEFT', path, 'RIGHT' }, { 200, 25 }, nil, nil)
+    local pathMenu = LibGUI:NewWidget('dropdownmenu', frame, 'PathDropdown', { 'LEFT', path, 'RIGHT' }, { 200, 25 }, nil, nil)
     pathMenu:Update( V.Medias:GetLSMDropDown('statusbar') )
 
-    local layer = LibGUI:NewWidget('label', frame, baseName..'TextureFrameLayerLabel', { 'TOPLEFT', path, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
+    local layer = LibGUI:NewWidget('label', frame, 'LayerLabel', { 'TOPLEFT', path, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
     layer:Update( { 'OVERLAY', 'GameFontNormal','Layer' } )
-    local layerMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'TextureFrameLayerDropDownMenu', { 'TOPLEFT', pathMenu, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
+    local layerMenu = LibGUI:NewWidget('dropdownmenu', frame, 'LayerDropdown', { 'TOPLEFT', pathMenu, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
     layerMenu:Update(layers)
 
-    local sublayer = LibGUI:NewWidget('label', frame, baseName..'TextureFrameSublayerLabel', { 'TOPLEFT', layer, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
+    local sublayer = LibGUI:NewWidget('label', frame, 'SublayerLabel', { 'TOPLEFT', layer, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
     sublayer:Update( { 'OVERLAY', 'GameFontNormal','Sublayer' } )
-    local sublayerEdit = LibGUI:NewWidget('editbox', frame, baseName..'TextureFrameSubLayerEditbox', { 'TOPLEFT', layerMenu, 'BOTTOMLEFT', 42, -4 }, { 50, 25 }, 'NumericInputSpinnerTemplate', nil)
+    local sublayerEdit = LibGUI:NewWidget('editbox', frame, 'SublayerEditbox', { 'TOPLEFT', layerMenu, 'BOTTOMLEFT', 42, -4 }, { 50, 25 }, 'NumericInputSpinnerTemplate', nil)
     sublayerEdit:Update( { nil, nil, nil, {minSubLayer, maxSubLayer} } )
 
     if isBlended then
-        local blend = LibGUI:NewWidget('label', frame, baseName..'TextureFrameLayerLabel', { 'TOPLEFT', sublayer, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
+        local blend = LibGUI:NewWidget('label', frame, 'BlendLabel', { 'TOPLEFT', sublayer, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
         blend:Update( { 'OVERLAY', 'GameFontNormal','Layer' } )
-        local blendMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'TextureFrameLayerDropDownMenu', { 'TOPLEFT', sublayerEdit, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
+        local blendMenu = LibGUI:NewWidget('dropdownmenu', frame, 'BlendDropdown', { 'TOPLEFT', sublayerEdit, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
         blendMenu:Update(blendmode)
 
         frame:SetHeight(140)
@@ -66,7 +66,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     end
 
     if hasName then
-        local name = LibGUI:NewWidget('button', frame, baseName..'TextureFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
+        local name = LibGUI:NewWidget('button', frame, 'NameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
         name:AddLabel(name, componentName)
         if isCollapsable then
             name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)

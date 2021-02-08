@@ -30,7 +30,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     )
     frame:SetHeight(30)
 
-    local checkbox = LibGUI:NewWidget('checkbox', frame, baseName..'EnableFrameCheckbox', { 'TOPLEFT' }, nil, 'UICheckButtonTemplate', nil)
+    local checkbox = LibGUI:NewWidget('checkbox', frame, 'EnableCheckbox', { 'TOPLEFT' }, nil, 'UICheckButtonTemplate', nil)
     checkbox:Update( { 'Enable' } )
     checkbox:ChangeFont( 'GameFontNormal' )
 
@@ -39,7 +39,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     end
 
     if hasName then
-        local name = LibGUI:NewWidget('button', frame, baseName..'EnableFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
+        local name = LibGUI:NewWidget('button', frame, 'NameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
         name:AddLabel(name, componentName)
         if isCollapsable then
             name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)

@@ -28,17 +28,17 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     local frame = LibGUI:NewContainer(
             'empty',
             parent,
-            baseName..'ComponentListLabelFrame',
+            baseName..'ComponentBlockFrame',
             nil,
             pt
     )
 
-    local button = LibGUI:NewWidget('button', frame, baseName..'ComponentBlockFrameCheckbox'..0, { 'TOPLEFT', 2, -2 }, nil, 'UIPanelButtonTemplate', nil)
+    local button = LibGUI:NewWidget('button', frame, 'Checkbox'..0, { 'TOPLEFT', 2, -2 }, nil, 'UIPanelButtonTemplate', nil)
     button:Update( { 'General' }, function(self) Inspector:InspectComponent(self:GetText())  end )
     button:UpdateSize()
 
     for k, _ in pairs(config) do
-        button = LibGUI:NewWidget('button', frame, baseName..'ComponentBlockFrameCheckbox'..k, { 'TOPLEFT', 2, -2 }, nil, 'UIPanelButtonTemplate', nil)
+        button = LibGUI:NewWidget('button', frame, 'Checkbox'..k, { 'TOPLEFT', 2, -2 }, nil, 'UIPanelButtonTemplate', nil)
         button:Update( { k }, function(self) Inspector:InspectComponent(self:GetText())  end )
         button:UpdateSize()
     end
@@ -52,7 +52,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     end
 
     if hasName then
-        local name = LibGUI:NewWidget('button', frame, baseName..'ComponentBlockFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
+        local name = LibGUI:NewWidget('button', frame, 'NameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
         name:AddLabel(name, componentName)
         if isCollapsable then
             name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)

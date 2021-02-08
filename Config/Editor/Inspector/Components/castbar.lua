@@ -28,37 +28,38 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     local frame = LibGUI:NewContainer(
             'empty',
             parent,
-            baseName..'CastBarFrame',
+            baseName..'CastbarFrame',
             nil,
             pt
     )
 
-    local layer = LibGUI:NewWidget('label', frame, baseName..'LayerLabel', { 'TOPLEFT', 0, -10 }, { 120, 30 }, nil, nil)
+    local layer = LibGUI:NewWidget('label', frame, 'LayerLabel', { 'TOPLEFT', 0, -10 }, { 120, 30 }, nil, nil)
     layer:Update( { 'OVERLAY', 'GameFontNormal','Layer' } )
-    local layerMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'LayerDropDownMenu', { 'LEFT', layer, 'RIGHT' }, { 200, 25 }, nil, nil)
+    local layerMenu = LibGUI:NewWidget('dropdownmenu', frame, 'LayerDropdown', { 'LEFT', layer, 'RIGHT' }, { 200, 25 }, nil, nil)
     layerMenu:Update(layers)
 
-    local blend = LibGUI:NewWidget('label', frame, baseName..'BlendLabel', { 'TOPLEFT', layer, 'BOTTOMLEFT', 0, -4 }, { 120, 30 }, nil, nil)
+    local blend = LibGUI:NewWidget('label', frame, 'BlendLabel', { 'TOPLEFT', layer, 'BOTTOMLEFT', 0, -4 }, { 120, 30 }, nil, nil)
     blend:Update( { 'OVERLAY', 'GameFontNormal','Blending Mode' } )
-    local blendMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'BlendDropDownMenu', { 'TOPLEFT', layerMenu, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
+    local blendMenu = LibGUI:NewWidget('dropdownmenu', frame, 'BlendDropdown', { 'TOPLEFT', layerMenu, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
     blendMenu:Update(blendmode)
 
     local size = Inspector:CreateComponentGUI('Size', '', frame, blendMenu, nil, {
         { 'TOPLEFT', 4, -80 }, { 'TOPRIGHT', -4, -80 }
     }, false, false, false, nil)
 
-    local castPath = LibGUI:NewWidget('label', frame, baseName..'CastPathLabel', { 'TOPLEFT', size, 'BOTTOMLEFT', 0, -4 }, { 120, 30 }, nil, nil)
+    local castPath = LibGUI:NewWidget('label', frame, 'CastPathLabel', { 'TOPLEFT', size, 'BOTTOMLEFT', 0, -4 }, { 120, 30 }, nil, nil)
     castPath:Update( { 'OVERLAY', 'GameFontNormal','Casting Atlas' } )
-    local castPathMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'CastPathDropDownMenu', { 'LEFT', castPath, 'RIGHT' }, { 200, 25 }, nil, nil)
+    local castPathMenu = LibGUI:NewWidget('dropdownmenu', frame, 'CastPathDropdown', { 'LEFT', castPath, 'RIGHT' }, { 200, 25 }, nil, nil)
     castPathMenu:Update( atlasDropDown )
 
-    local channelPath = LibGUI:NewWidget('label', frame, baseName..'CastPathLabel', { 'TOPLEFT', castPath, 'BOTTOMLEFT', 0, -4 }, { 120, 30 }, nil, nil)
+    local channelPath = LibGUI:NewWidget('label', frame, 'CastPathLabel', { 'TOPLEFT', castPath, 'BOTTOMLEFT', 0, -4 }, { 120, 30 }, nil, nil)
     channelPath:Update( { 'OVERLAY', 'GameFontNormal','Channeling Atlas' } )
-    local channelPathMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'CastPathDropDownMenu', { 'LEFT', channelPath, 'RIGHT' }, { 200, 25 }, nil, nil)
+    local channelPathMenu = LibGUI:NewWidget('dropdownmenu', frame, 'CastPathDropdown', { 'LEFT', channelPath, 'RIGHT' }, { 200, 25 }, nil, nil)
     channelPathMenu:Update( atlasDropDown )
 
-    local viewer = Inspector:CreateComponentGUI('Viewer', baseName..'ParticleFrame', frame, frame, nil, { {'TOPLEFT', channelPath, 'BOTTOMLEFT', 0, -4}, {'TOPRIGHT'} }, false, false, false, nil)
+    local viewer = Inspector:CreateComponentGUI('Viewer', 'ParticleFrame', frame, frame, nil, { {'TOPLEFT', channelPath, 'BOTTOMLEFT', 0, -4}, {'TOPRIGHT'} }, false, false, false, nil)
 
+    --TODO REMOVE THIS DEBUG
     viewer:SetPath('Spark')
 
     frame:SetHeight(330)
@@ -68,7 +69,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     end
 
     if hasName then
-        local name = LibGUI:NewWidget('button', frame, baseName..'IndicatorFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
+        local name = LibGUI:NewWidget('button', frame, 'NameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
         name:AddLabel(name, componentName)
         if isCollapsable then
             name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)

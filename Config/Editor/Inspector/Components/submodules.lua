@@ -54,10 +54,10 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
 
     for k, v in pairs(config) do
         if type(k) == 'string' then
-            checkbox = LibGUI:NewWidget('checkbox', frame, baseName..'SubmodulesFrameCheckbox'..k, { 'TOPLEFT', 2, -2 }, nil, 'UICheckButtonTemplate', nil)
+            checkbox = LibGUI:NewWidget('checkbox', frame, 'CheckboxEnable'..k, { 'TOPLEFT', 2, -2 }, nil, 'UICheckButtonTemplate', nil)
             checkbox:Update( { k } )
         else
-            checkbox = LibGUI:NewWidget('checkbox', frame, baseName..'SubmodulesFrameCheckbox'..v, { 'TOPLEFT', 2, -2 }, nil, 'UICheckButtonTemplate', nil)
+            checkbox = LibGUI:NewWidget('checkbox', frame, 'CheckboxEnable'..v, { 'TOPLEFT', 2, -2 }, nil, 'UICheckButtonTemplate', nil)
             checkbox:Update( { v } )
         end
         checkbox:ChangeFont( 'GameFontNormal' )
@@ -71,7 +71,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     end
 
     if hasName then
-        local name = LibGUI:NewWidget('button', frame, baseName..'SubmodulesFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
+        local name = LibGUI:NewWidget('button', frame, 'NameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
         name:AddLabel(name, componentName)
         if isCollapsable then
             name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)

@@ -32,28 +32,28 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
             pt
     )
 
-    local path = LibGUI:NewWidget('label', frame, baseName..'PathLabel', { 'TOPLEFT', 0, -10 }, { 80, 30 }, nil, nil)
+    local path = LibGUI:NewWidget('label', frame, 'PathLabel', { 'TOPLEFT', 0, -10 }, { 80, 30 }, nil, nil)
     path:Update( { 'OVERLAY', 'GameFontNormal','Atlas' } )
-    local pathMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'PathDropDownMenu', { 'LEFT', path, 'RIGHT' }, { 200, 25 }, nil, nil)
+    local pathMenu = LibGUI:NewWidget('dropdownmenu', frame, 'PathDropdown', { 'LEFT', path, 'RIGHT' }, { 200, 25 }, nil, nil)
     pathMenu:Update( V.Medias:GetAtlasDropDown() )
 
-    local layer = LibGUI:NewWidget('label', frame, baseName..'LayerLabel', { 'TOPLEFT', path, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
+    local layer = LibGUI:NewWidget('label', frame, 'LayerLabel', { 'TOPLEFT', path, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
     layer:Update( { 'OVERLAY', 'GameFontNormal','Layer' } )
-    local layerMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'LayerDropDownMenu', { 'TOPLEFT', pathMenu, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
+    local layerMenu = LibGUI:NewWidget('dropdownmenu', frame, 'LayerDropdown', { 'TOPLEFT', pathMenu, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
     layerMenu:Update(layers)
 
-    local blend = LibGUI:NewWidget('label', frame, baseName..'BlendLabel', { 'TOPLEFT', layer, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
+    local blend = LibGUI:NewWidget('label', frame, 'BlendLabel', { 'TOPLEFT', layer, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
     blend:Update( { 'OVERLAY', 'GameFontNormal','Blending Mode' } )
-    local blendMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'BlendDropDownMenu', { 'TOPLEFT', layerMenu, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
+    local blendMenu = LibGUI:NewWidget('dropdownmenu', frame, 'BlendDropdown', { 'TOPLEFT', layerMenu, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
     blendMenu:Update(blendmode)
 
     local size = Inspector:CreateComponentGUI('Size', '', frame, blendMenu, nil, {
         { 'TOPLEFT', 0, -110 }, { 'TOPRIGHT', 0, -110 }
     }, false, false, false, nil)
 
-    local viewer = Inspector:CreateComponentGUI('Viewer', baseName..'ParticleFrame', frame, size, nil, { {'TOPLEFT', size, 'BOTTOMLEFT', 0, -4}, {'TOPRIGHT'} }, false, false, false, nil)
+    local viewer = Inspector:CreateComponentGUI('Viewer', 'ParticleViewerFrame', frame, size, nil, { {'TOPLEFT', size, 'BOTTOMLEFT', 0, -4}, {'TOPRIGHT'} }, false, false, false, nil)
 
-    --DEBUG
+    --TODO DEBUG PURPOSE REMOVE THIS
     viewer:SetPath('Muzzle')
 
     frame:SetHeight(300)
@@ -63,7 +63,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     end
 
     if hasName then
-        local name = LibGUI:NewWidget('button', frame, baseName..'ParticleFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
+        local name = LibGUI:NewWidget('button', frame, 'NameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
         name:AddLabel(name, componentName)
         if isCollapsable then
             name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)

@@ -118,18 +118,18 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     frame.spriteCount = 0
     frame.onPlay = false
 
-    local viewerPlay = LibGUI:NewWidget('button', frame, baseName..'ViewerPlay', { 'TOPRIGHT', viewerTexture, 'TOPLEFT', -10, 0 }, {30, 30}, 'UIPanelButtonTemplate')
+    local viewerPlay = LibGUI:NewWidget('button', frame, 'ViewerPlay', { 'TOPRIGHT', viewerTexture, 'TOPLEFT', -10, 0 }, {30, 30}, 'UIPanelButtonTemplate')
     viewerPlay:Update( {'>', play })
-    local viewerStep = LibGUI:NewWidget('button', frame, baseName..'ViewerStep', { 'TOPLEFT', viewerPlay, 'BOTTOMLEFT', 0, -4 }, {30, 30}, 'UIPanelButtonTemplate')
+    local viewerStep = LibGUI:NewWidget('button', frame, 'ViewerStep', { 'TOPLEFT', viewerPlay, 'BOTTOMLEFT', 0, -4 }, {30, 30}, 'UIPanelButtonTemplate')
     viewerStep:Update( {'>||', step })
-    local viewerStop = LibGUI:NewWidget('button', frame, baseName..'ViewerStop', { 'TOPLEFT', viewerStep, 'BOTTOMLEFT', 0, -4 }, {30, 30}, 'UIPanelButtonTemplate')
+    local viewerStop = LibGUI:NewWidget('button', frame, 'ViewerStop', { 'TOPLEFT', viewerStep, 'BOTTOMLEFT', 0, -4 }, {30, 30}, 'UIPanelButtonTemplate')
     viewerStop:Update( {'[]', stop })
 
-    local viewerFPS10 = LibGUI:NewWidget('button', frame, baseName..'ViewerFPS10', { 'TOPLEFT', viewerTexture, 'TOPRIGHT', 10, 0 }, {60, 30}, 'UIPanelButtonTemplate')
+    local viewerFPS10 = LibGUI:NewWidget('button', frame, 'ViewerFPS10', { 'TOPLEFT', viewerTexture, 'TOPRIGHT', 10, 0 }, {60, 30}, 'UIPanelButtonTemplate')
     viewerFPS10.frequency = 1/10
-    local viewerFPS20 = LibGUI:NewWidget('button', frame, baseName..'ViewerFPS20', { 'TOPLEFT', viewerFPS10, 'BOTTOMLEFT', 0, -4 }, {60, 30}, 'UIPanelButtonTemplate')
+    local viewerFPS20 = LibGUI:NewWidget('button', frame, 'ViewerFPS20', { 'TOPLEFT', viewerFPS10, 'BOTTOMLEFT', 0, -4 }, {60, 30}, 'UIPanelButtonTemplate')
     viewerFPS20.frequency = 1/20
-    local viewerFPS30 = LibGUI:NewWidget('button', frame, baseName..'ViewerFPS30', { 'TOPLEFT', viewerFPS20, 'BOTTOMLEFT', 0, -4 }, {60, 30}, 'UIPanelButtonTemplate')
+    local viewerFPS30 = LibGUI:NewWidget('button', frame, 'ViewerFPS30', { 'TOPLEFT', viewerFPS20, 'BOTTOMLEFT', 0, -4 }, {60, 30}, 'UIPanelButtonTemplate')
     viewerFPS30.frequency = 1/30
 
     viewerFPS10:Update( {'10 FPS', function(self)
@@ -153,7 +153,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     end
 
     if hasName then
-        local name = LibGUI:NewWidget('button', frame, baseName..'TextureFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
+        local name = LibGUI:NewWidget('button', frame, 'NameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
         name:AddLabel(name, componentName)
         if isCollapsable then
             name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)

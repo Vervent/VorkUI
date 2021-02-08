@@ -41,7 +41,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
         else
             pt = nil
         end
-        it = Inspector:CreateComponentGUI('Texture', 'InspectorRenderingTexture'..i, frame, it, nil, pt, (i%2 == 1), false, false, nil)
+        it = Inspector:CreateComponentGUI('Texture', 'RenderingTexture'..i, frame, it, nil, pt, (i%2 == 1), false, false, nil)
         height = height + it:GetHeight()
     end
 
@@ -51,7 +51,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     end
 
     if hasName then
-        local name = LibGUI:NewWidget('button', frame, baseName..'RenderingFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
+        local name = LibGUI:NewWidget('button', frame, 'NameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
         name:AddLabel(name, componentName)
         if isCollapsable then
             name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)

@@ -27,26 +27,26 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     local frame = LibGUI:NewContainer(
             'empty',
             parent,
-            baseName..'FontFrame',
+            baseName..'TagFrame',
             nil,
             pt
     )
     frame:SetHeight(140)
 
-    local font = LibGUI:NewWidget('label', frame, baseName..'TagFramePathLabel', { 'TOPLEFT', 0, -10 }, { 80, 30 }, nil, nil)
+    local font = LibGUI:NewWidget('label', frame, 'PathLabel', { 'TOPLEFT', 0, -10 }, { 80, 30 }, nil, nil)
     font:Update( { 'OVERLAY', 'GameFontNormal','Font' } )
-    local fontMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'TagFramePathDropDownMenu', { 'LEFT', font, 'RIGHT' }, { 200, 25 }, nil, nil)
+    local fontMenu = LibGUI:NewWidget('dropdownmenu', frame, 'PathDropdown', { 'LEFT', font, 'RIGHT' }, { 200, 25 }, nil, nil)
     fontMenu:Update( fonts )
 
-    local layer = LibGUI:NewWidget('label', frame, baseName..'TagFrameLayerLabel', { 'TOPLEFT', font, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
+    local layer = LibGUI:NewWidget('label', frame, 'LayerLabel', { 'TOPLEFT', font, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
     layer:Update( { 'OVERLAY', 'GameFontNormal','Layer' } )
-    local layerMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'TagFrameLayerDropDownMenu', { 'TOPLEFT', fontMenu, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
+    local layerMenu = LibGUI:NewWidget('dropdownmenu', frame, 'LayerDropdown', { 'TOPLEFT', fontMenu, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
     layerMenu:Update( layers )
 
-    local tag = LibGUI:NewWidget('label', frame, baseName..'TagFrameSublayerLabel', { 'TOPLEFT', layer, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
+    local tag = LibGUI:NewWidget('label', frame, 'SublayerLabel', { 'TOPLEFT', layer, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
     tag:Update( { 'OVERLAY', 'GameFontNormal','Tag' } )
-    local tagEdit = LibGUI:NewWidget('editbox', frame, baseName..'TagFrameSubLayerEditbox', { 'TOPLEFT', layerMenu, 'BOTTOMLEFT', 20, -4 }, { 250, 0 }, nil, nil)
-    tagEdit:Update( { '[Vorkui:HealthColor(true)][Vorkui:PerHP]', 'Game11Font', nil, nil } )
+    local tagEdit = LibGUI:NewWidget('editbox', frame, 'SublayerEditbox', { 'TOPLEFT', layerMenu, 'BOTTOMLEFT', 20, -4 }, { 250, 0 }, nil, nil)
+    tagEdit:Update( { '[Vorkui:HealthColor(true)][Vorkui:PerHP]', 'Game11Font', nil, nil } ) -- TODO DEBUG PURPOSE
     tagEdit:SetMultiLine(true)
     tagEdit:SetPoint('BOTTOMRIGHT', layerMenu, 'BOTTOMRIGHT', 0, -50) --mandatory to size correctly the editbox
     if hasBorder == true then
@@ -54,7 +54,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     end
 
     if hasName then
-        local name = LibGUI:NewWidget('button', frame, baseName..'TagFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
+        local name = LibGUI:NewWidget('button', frame, 'NameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
         name:AddLabel(name, componentName)
         if isCollapsable then
             name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)

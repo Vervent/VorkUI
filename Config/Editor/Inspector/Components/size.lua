@@ -33,14 +33,14 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     )
     frame:SetHeight(50)
 
-    local width = LibGUI:NewWidget('label', frame, baseName..'SizeFrameWidthLabel', { 'TOP', -60, 0 }, { 80, 30 }, nil, nil)
+    local width = LibGUI:NewWidget('label', frame, 'WidthLabel', { 'TOP', -60, 0 }, { 80, 30 }, nil, nil)
     width:Update( { 'OVERLAY', 'GameFontNormal','Width' } )
-    local widthEdit = LibGUI:NewWidget('editbox', frame, baseName..'SizeFrameWidthEditbox', { 'TOPLEFT', width, 'BOTTOMLEFT', 20, 10 }, { 50, 25 }, 'NumericInputSpinnerTemplate', nil)
+    local widthEdit = LibGUI:NewWidget('editbox', frame, 'WidthEditbox', { 'TOPLEFT', width, 'BOTTOMLEFT', 20, 10 }, { 50, 25 }, 'NumericInputSpinnerTemplate', nil)
     widthEdit:Update( { nil, nil, nil, {minSize, maxSize} } )
 
-    local height = LibGUI:NewWidget('label', frame, baseName..'SizeFrameHeightLabel', { 'TOP', 60, 0 }, { 80, 30 }, nil, nil)
+    local height = LibGUI:NewWidget('label', frame, 'HeightLabel', { 'TOP', 60, 0 }, { 80, 30 }, nil, nil)
     height:Update( { 'OVERLAY', 'GameFontNormal','Height' } )
-    local heightEdit = LibGUI:NewWidget('editbox', frame, baseName..'SizeFrameHeightEditbox', { 'TOPLEFT', height, 'BOTTOMLEFT', 20, 10 }, { 50, 25 }, 'NumericInputSpinnerTemplate', nil)
+    local heightEdit = LibGUI:NewWidget('editbox', frame, 'HeightEditbox', { 'TOPLEFT', height, 'BOTTOMLEFT', 20, 10 }, { 50, 25 }, 'NumericInputSpinnerTemplate', nil)
     heightEdit:Update( { nil, nil, nil, {minSize, maxSize} } )
 
     if hasBorder == true then
@@ -48,7 +48,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     end
 
     if hasName then
-        local name = LibGUI:NewWidget('button', frame, baseName..'SizeFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
+        local name = LibGUI:NewWidget('button', frame, 'NameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
         name:AddLabel(name, componentName)
         if isCollapsable then
             name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)

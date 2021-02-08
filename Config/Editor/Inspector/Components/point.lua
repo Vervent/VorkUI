@@ -4,6 +4,7 @@ local select = select
 local unpack = unpack
 local pairs = pairs
 local type = type
+local tinsert = tinsert
 
 local V = select(2, ...):unpack()
 local LibGUI = Plugin.LibGUI
@@ -26,6 +27,7 @@ local pointColor = {
 local pointConfig = {
 }
 
+-- TODO DEBUG PURPOSE REMOVE THIS
 local parentDropdown = {
     { text = 'PlayerFrame'},
     { text = 'Health'},
@@ -214,19 +216,19 @@ local function addOffsetSetter(container, index)
 
     frame.isUsed = false
 
-    local icon = LibGUI:NewWidget('icon', frame, name..'OffsetFrame'..index..'Icon', { 'LEFT', 10, 0 }, { 10, 10 }, 'ARTWORK')
+    local icon = LibGUI:NewWidget('icon', frame, 'ColorIcon'..index, { 'LEFT', 10, 0 }, { 10, 10 }, 'ARTWORK')
     icon:ChangeColorTexture( pointColor[index] )
 
-    local xOffsetEdit = LibGUI:NewWidget('editbox', frame, name..'OffsetFrame'..index..'XOffsetEdit', { 'LEFT', icon, 'RIGHT', 40, 0 }, { 40, 25 }, 'NumericInputSpinnerTemplate', nil)
+    local xOffsetEdit = LibGUI:NewWidget('editbox', frame, 'XOffsetEdit'..index, { 'LEFT', icon, 'RIGHT', 40, 0 }, { 40, 25 }, 'NumericInputSpinnerTemplate', nil)
     xOffsetEdit:Update( { nil, nil, nil, {minOffset, maxOffset} } )
 
-    local yOffsetEdit = LibGUI:NewWidget('editbox', frame, name..'OffsetFrame'..index..'YOffsetEdit', { 'LEFT', xOffsetEdit, 'RIGHT', 60, 0 }, { 40, 25 }, 'NumericInputSpinnerTemplate', nil)
+    local yOffsetEdit = LibGUI:NewWidget('editbox', frame, 'YOffsetEdit'..index, { 'LEFT', xOffsetEdit, 'RIGHT', 60, 0 }, { 40, 25 }, 'NumericInputSpinnerTemplate', nil)
     yOffsetEdit:Update( { nil, nil, nil, {minOffset, maxOffset} } )
 
-    local parentMenu = LibGUI:NewWidget('dropdownmenu', frame, name..'OffsetFrame'..index..'ParentDropDownMenu', { 'LEFT', yOffsetEdit, 'RIGHT', 10, -2 }, { 80, 20 }, nil, nil)
+    local parentMenu = LibGUI:NewWidget('dropdownmenu', frame, 'ParentDropdown'..index, { 'LEFT', yOffsetEdit, 'RIGHT', 10, -2 }, { 80, 20 }, nil, nil)
     parentMenu:Update( parentDropdown )
 
-    local btnRemove = LibGUI:NewWidget('button', frame, name..'OffsetFrame'..index..'RemoveButton', { 'RIGHT', -10, 0}, { 20, 20 }, 'UIPanelButtonTemplate')
+    local btnRemove = LibGUI:NewWidget('button', frame, 'RemoveButton'..index, { 'RIGHT', -10, 0}, { 20, 20 }, 'UIPanelButtonTemplate')
     btnRemove:SetID(index)
     btnRemove:Update( { ' -', function(self)
         removePoint(container:GetParent(), self:GetID())
@@ -282,7 +284,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
    local setterFrame = LibGUI:NewContainer(
            'empty',
            frame,
-           baseName..'PointFrameSetterFrame',
+           'SetterFrame',
            { 200, 190 },
            { 'TOP', 0, -30 }
    )
@@ -292,13 +294,13 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     setterFrame.bg:SetAllPoints()
     setterFrame.bg:SetColorTexture(0, 0, 0, 1)
 
-    local setterAnchorLabel = LibGUI:NewWidget('label', setterFrame, baseName..'PointFrameSetterAnchorLabel', { { 'TOPLEFT', 0, 25 }, { 'TOPRIGHT', 0, 25 } }, { 0, 30 }, nil, nil)
+    local setterAnchorLabel = LibGUI:NewWidget('label', setterFrame, 'AnchorLabel', { { 'TOPLEFT', 0, 25 }, { 'TOPRIGHT', 0, 25 } }, { 0, 30 }, nil, nil)
     setterAnchorLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Anchors View' } )
 
     local parentFrame = LibGUI:NewContainer(
             'empty',
             setterFrame,
-            baseName..'PointFrameParentFrame',
+            'ParentFrame',
             { 100, 100 },
             { 'CENTER' }
     )
@@ -313,7 +315,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     local childFrame = LibGUI:NewContainer(
             'frame',
             setterFrame,
-            baseName..'PointFrameChildFrame',
+            'ChildFrame',
             { 40, 40 },
             { 'CENTER' }
     )
@@ -336,7 +338,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     local pointTableFrame = LibGUI:NewContainer(
             'empty',
             frame,
-            baseName..'PointFrameSetterFrame',
+            'TableFrame',
             { 0, 150 },
             {
                 { 'BOTTOMLEFT', 5, 10 },
@@ -346,16 +348,16 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
 
     --pointTableFrame:CreateBorder(1, { 1, 1, 1, 1 })
 
-    local pointTableLabel = LibGUI:NewWidget('label', pointTableFrame, baseName..'PointFramePointTableLabel', { { 'TOPLEFT', 0, 25 }, { 'TOPRIGHT', 0, 25 } }, { 0, 30 }, nil, nil)
+    local pointTableLabel = LibGUI:NewWidget('label', pointTableFrame, 'TableLabel', { { 'TOPLEFT', 0, 25 }, { 'TOPRIGHT', 0, 25 } }, { 0, 30 }, nil, nil)
     pointTableLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Offset Settings' } )
 
-    local pointTableOffsetXLabel = LibGUI:NewWidget('label', pointTableFrame, baseName..'PointFramePointTableOffsetXLabel', { 'TOPLEFT', 45, 0 }, { 60, 30 }, nil, nil)
+    local pointTableOffsetXLabel = LibGUI:NewWidget('label', pointTableFrame, 'TableOffsetXLabel', { 'TOPLEFT', 45, 0 }, { 60, 30 }, nil, nil)
     pointTableOffsetXLabel:Update( { 'OVERLAY', 'GameFontNormal', 'X' } )
 
-    local pointTableOffsetYLabel = LibGUI:NewWidget('label', pointTableFrame, baseName..'PointFramePointTableOffsetYLabel', { 'TOPLEFT', 145, 0 }, { 60, 30 }, nil, nil)
+    local pointTableOffsetYLabel = LibGUI:NewWidget('label', pointTableFrame, 'TableOffsetYLabel', { 'TOPLEFT', 145, 0 }, { 60, 30 }, nil, nil)
     pointTableOffsetYLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Y' } )
 
-    local pointTableParentLabel = LibGUI:NewWidget('label', pointTableFrame, baseName..'PointFramePointTableParentLabel', { 'TOPLEFT', 245, 0 }, { 60, 30 }, nil, nil)
+    local pointTableParentLabel = LibGUI:NewWidget('label', pointTableFrame, 'TableParentLabel', { 'TOPLEFT', 245, 0 }, { 60, 30 }, nil, nil)
     pointTableParentLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Parent' } )
 
     for i = 1, 3 do
@@ -363,7 +365,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     end
 
     if hasName then
-        local name = LibGUI:NewWidget('button', frame, baseName..'PointFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
+        local name = LibGUI:NewWidget('button', frame, 'NameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
         name:AddLabel(name, componentName)
         if isCollapsable then
             name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)

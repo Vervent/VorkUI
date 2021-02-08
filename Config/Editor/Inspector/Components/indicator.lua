@@ -8,7 +8,7 @@ local Inspector = Editor.Inspector
 local borderSettings = Editor.border
 
 --[[
-    Debug Purpose
+    TODO Debug Purpose
 ]]--
 
 local indicatorDropdown = {
@@ -33,18 +33,18 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     local frame = LibGUI:NewContainer(
             'empty',
             parent,
-            baseName..'RenderingFrame',
+            baseName..'IndicatorFrame',
             nil,
             pt
     )
 
-    local indicator = LibGUI:NewWidget('label', frame, baseName..'IndicatorFrameItemLabel', { 'TOPLEFT', 0, -10 }, { 80, 30 }, nil, nil)
+    local indicator = LibGUI:NewWidget('label', frame, 'IndicatorLabel', { 'TOPLEFT', 0, -10 }, { 80, 30 }, nil, nil)
     indicator:Update( { 'OVERLAY', 'GameFontNormal', 'Indicator' } )
-    local indicatorMenu = LibGUI:NewWidget('dropdownmenu', frame, baseName..'IndicatorFrameItemDropDownMenu', { 'LEFT', indicator, 'RIGHT' }, { 200, 25 }, nil, nil)
+    local indicatorMenu = LibGUI:NewWidget('dropdownmenu', frame, 'IndicatorDropdown', { 'LEFT', indicator, 'RIGHT' }, { 200, 25 }, nil, nil)
     indicatorMenu:Update( indicatorDropdown )
 
     local pointFrame = Inspector:CreateComponentGUI('Point',
-            'InspectorIndicatorPoint',
+            'IndicatorPoint',
             frame,
             indicatorMenu,
             nil,
@@ -61,7 +61,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     end
 
     if hasName then
-        local name = LibGUI:NewWidget('button', frame, baseName..'IndicatorFrameNameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
+        local name = LibGUI:NewWidget('button', frame, 'NameLabel', { { 'TOPLEFT', 0, 15 }, { 'TOPRIGHT', 0, 15 } }, { 0, 20 }, nil, nil)
         name:AddLabel(name, componentName)
         if isCollapsable then
             name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)

@@ -213,6 +213,11 @@ end
 --Grid aligned
 Utils.API.UpdateWidgetsLayout = function (self, firstItemIndex, paddingTop, paddingBottom)
     local maxWidth, maxHeight = self:GetWidth(), self:GetHeight()
+
+    if maxWidth == 0 then
+        return 0
+    end
+
     local width = 0
     local height = 0
     local firstItem = firstItemIndex or 1
