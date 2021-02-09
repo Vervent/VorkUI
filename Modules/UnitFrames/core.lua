@@ -1096,87 +1096,6 @@ end
 --[[------------------------------------------------------------------
 -- OTHER STUFF
 --]]------------------------------------------------------------------
-function UnitFrames:MouseOnPlayer()
-
-end
-
-function UnitFrames:Highlight()
-
-end
-
-function UnitFrames:PostCreateAuraBar(bar)
-
-end
-
-function UnitFrames:UpdateBuffsHeaderPosition(height)
-
-end
-
-function UnitFrames:UpdateDebuffsHeaderPosition()
-
-end
-
-function UnitFrames:CustomCastTimeText(duration)
-
-end
-
-function UnitFrames:CustomCastDelayText(duration)
-
-end
-
-function UnitFrames:CheckInterrupt(unit)
-
-end
-
-function UnitFrames:CheckCast(unit, name, rank, castid)
-
-end
-
-function UnitFrames:CheckChannel(unit, name, rank)
-
-end
-
-function UnitFrames:DisplayPlayerAndPetNames(event)
-
-end
-
-
-function UnitFrames:UpdateAltPower(minimum, current, maximum)
-
-end
-
-function UnitFrames:SetAuraTimer(elapsed)
-
-end
-
-function UnitFrames:CancelPlayerBuff(index)
-
-end
-
-function UnitFrames:PostCreateAura(button)
-
-end
-
-function UnitFrames:PostUpdateAura(unit, button, index, offset, filter, isDebuff, duration, timeLeft)
-
-end
-
-function UnitFrames:DisplayNameplatePowerAndCastBar(unit, cur, min, max)
-
-end
-
-function UnitFrames:RunesPostUpdate(runemap)
-
-end
-
-function UnitFrames:UpdateTotemTimer(elapsed)
-
-end
-
-function UnitFrames:UpdateTotemOverride(event, slot)
-
-end
-
 function UnitFrames:GetPartyFramesAttributes( config )
 
     local attributes = {}
@@ -1215,6 +1134,237 @@ function UnitFrames:Update()
     for _, element in ipairs(self.__elements) do
         element(self, "UpdateElement", self.unit)
     end
+end
+
+local function CreateUnit(self, unit, config)
+
+    self:RegisterForClicks("AnyUp")
+    self:SetScript("OnEnter", UnitFrame_OnEnter)
+    self:SetScript("OnLeave", UnitFrame_OnLeave)
+
+    local globalConfig = config.Global
+
+    local frame = CreateFrame("Frame", nil, self)
+    frame:SetAllPoints()
+
+    if globalConfig then
+        if globalConfig.Background.Enable then
+            frame.background = frame:CreateTexture(nil, "BACKGROUND")
+            frame.background:SetAllPoints()
+        end
+        if globalConfig.Background.Color then
+            frame.background:SetColorTexture(unpack(globalConfig.Background.Color))
+        end
+    end
+    self.Frame = frame
+
+    local health =  self:CreateSlantedStatusBar(frame, config.Health)
+    for k, v in ipairs(config.Health.attributes) do
+        health[k] = v
+    end
+
+    --TODO ADD COLORSMOOTH OPTION IN PROFILE
+    health.Override = self..UpdateHealthOverride
+    health.UpdateColor = self.UpdateHealthColorOverride
+    self.Health = health
+    self.Health.bg = health.background
+
+    --[[
+       HEALTH PREDICTION SLANTED STATUSBAR
+   --]]
+    local healthPrediction = self:CreateSlantedStatusBar(frame, config.HealthPrediction)
+    healthPrediction:SetBlendMode("ADD")
+    local otherHealthPrediction = self:CreateSlantedStatusBar(frame, config.HealthPrediction)
+    otherHealthPrediction:SetBlendMode("ADD")
+
+    self.HealthPrediction = {
+        myBar = healthPrediction,
+        otherBar = otherHealthPrediction,
+        maxOverflow = 1,
+        Override = self.UpdatePredictionOverride
+    }
+
+    if config.Absorb and config.Absorb.Enable then
+        local absorb = self:CreateSlantedStatusBar(frame, config.Absorb)
+        absorb.Override = self.UpdateAbsorbOverride
+        for k, v in ipairs(config.Absorb.attributes) do
+            absorb[k] = v
+        end
+        self.Absorb = absorb
+        self.Absorb.bg = absorb.background
+    end
+
+    if config.Power and config.Power.Enable then
+        local power = self:CreateSlantedStatusBar(frame, config.Power)
+        power.Override = self.UpdateAbsorbOverride
+        for k, v in ipairs(config.Power.attributes) do
+            power[k] = v
+        end
+        self.Power = power
+        self.Power.bg = power.background
+
+        --[[
+        POWER PREDICTION SLANTED STATUSBAR
+        --]]
+        local powerPrediction = self:CreateSlantedStatusBar(frame, config.PowerPrediction)
+        powerPrediction:SetBlendMode("ADD")
+        self.PowerPrediction = {
+            mainBar = powerPrediction,
+            --altBar = AltPowerPrediction, --TODO ALTERNATIVE POWER
+            Override = self.UpdatePowerPredictionOverride
+        }
+    end
+
+    --[[
+        BUFF/DEBUFF
+    --]]
+    if config.Buffs and config.Buffs.Enable then
+        local buffs = CreateFrame('Frame', nil, Frame)
+        for k, v in ipairs(config.Buffs.attributes) do
+            buffs[k] = v
+        end
+
+        self.Buffs = buffs
+    end
+
+    if config.Debuffs and config.Debuffs.Enable then
+        local debuffs = CreateFrame('Frame', nil, Frame)
+        for k, v in ipairs(config.Debuffs.attributes) do
+            debuffs[k] = v
+        end
+
+        self.Debuffs = debuffs
+    end
+
+    if config.Portrait and config.Portrait.Enable then
+        local portrait
+        if config.Portrait.type == '3D' then
+            portrait = self:Create3DPortrait('PlayerModel', frame, config.Portrait)
+        else
+            --TODO 2D PORTRAIT
+        end
+
+        self.Portrait = portrait
+        --affect same frame level for PlayerModel than the PlayerFrame
+        self.Portrait:SetFrameLevel(frame:GetFrameLevel())
+    end
+
+    if config.Indicators then
+        for k, v in pairs(config.Indicators) do
+            self[k] = self:CreateIndicator(frame, 'OVERLAY', nil, v, unit)
+        end
+    end
+
+    if config.Texts then
+        local text
+        for k, v in pairs (config.Texts) do
+            text = self:CreateFontString(frame, v, config)
+            self:Tag(text, v.Tag)
+        end
+    end
+
+    --[[
+    CASTBAR
+    ]]--
+    if config.Castbar and config.Castbar.Enable then
+        self.Castbar = self:CreateCastBar(Frame, config.Castbar, config)
+    end
+
+    self:HookScript("OnEnter", self.MouseOnPlayer)
+    self:HookScript("OnLeave", self.MouseOnPlayer)
+
+    V.Editor:RegisterFrame(self, config, 'UnitFrames', unit..'Layout')
+
+end
+
+local function LocateUnitFrames(self, config)
+    self.Health:Point(config.Health.Point)
+    if config.Absorb and config.Absorb.Enable then
+        self.Absorb:Point(config.Absorb.Point)
+    end
+    if config.Power and config.Power.Enable then
+        self.Power:Point(config.Power.Point)
+    end
+
+
+    if config.Buffs and config.Buffs.Enable then
+        self.Buffs:Point(config.Buffs.Point)
+    end
+
+    if config.Debuffs and config.Debuffs.Enable then
+        self.Debuffs:Point(config.Debuffs.Point)
+    end
+
+    if config.Portrait and config.Portrait.Enable then
+        self.Portrait:Point(config.Portrait.Point)
+    end
+
+    if config.Castbar and config.Castbar.Enable then
+        self.Castbar:Point(config.Castbar.Point)
+    end
+
+    if config.Indicators then
+        for k, v in pairs(config.Indicators) do
+            self[k]:Point(v.Point)
+        end
+    end
+
+    if config.Texts then
+        for k, v in pairs(config.Texts) do
+            self[k]:Point(v.Point)
+        end
+    end
+end
+
+
+local function ResizeUnitFrames(self, config)
+    self.Health:SetSize(unpack(config.Health.Size))
+    if config.Absorb and config.Absorb.Size then
+        self.Absorb:SetSize(unpack(config.Absorb.Size))
+    end
+    if config.Power and config.Power.Size then
+        self.Power:SetSize(unpack(config.Power.Size))
+    end
+
+
+    if config.Buffs and config.Buffs.Size then
+        self.Buffs:SetSize(unpack(config.Buffs.Size))
+    end
+
+    if config.Debuffs and config.Debuffs.Size then
+        self.Debuffs:SetSize(unpack(config.Debuffs.Size))
+    end
+
+    if config.Portrait and config.Portrait.Size then
+        self.Portrait:SetSize(unpack(config.Portrait.Size))
+    end
+
+    if config.Castbar and config.Castbar.Size then
+        self.Castbar:SetSize(unpack(config.Castbar.Size))
+    end
+
+    if config.Indicators then
+        for k, v in pairs(config.Indicators) do
+            self[k]:SetSize(unpack(v.Size))
+        end
+    end
+
+    if config.Texts then
+        for k, v in pairs(config.Texts) do
+            self[k]:SetSize(unpack(v.Size))
+        end
+    end
+end
+
+function UnitFrames:StyleUnit(unit)
+    if not unit then
+        return
+    end
+
+    local style = C.UnitFrames
+    local parentName = self:GetParent():GetName()
+
+
 end
 
 function UnitFrames:Style(unit)
