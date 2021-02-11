@@ -278,6 +278,52 @@ local function  attributesOption (layout, module, submodule)
     Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'columnAnchorPoint', 'LEFT')
 end
 
+local function buffOption(module, submodule)
+    local data = {
+        { nil, 'Enable', true },
+        --TRANSFORM
+        { nil, 'Point', 'BOTTOMLEFT', 'Frame', 'BOTTOMRIGHT', 2, 0 },
+        ----ATTRIBUTES
+        { 'Attributes', 'size', 18 },
+        { 'Attributes', 'disableMouse', false },
+        { 'Attributes', 'disableCooldown', false },
+        { 'Attributes', 'onlyShowPlayer', true },
+        { 'Attributes', 'showStealableBuffs', false },
+        { 'Attributes', 'spacing', 2 },
+        { 'Attributes', 'growth-x', 'LEFT' },
+        { 'Attributes', 'growth-y', 'TOP' },
+        { 'Attributes', 'initialAnchor', 'BOTTOMLEFT' },
+        { 'Attributes', 'filter', 'HELPFUL' },
+        { 'Attributes', 'tooltipAnchor', 'ANCHOR_BOTTOMRIGHT' },
+        { 'Attributes', 'num', 6 },
+    }
+
+    registers(module, submodule, 'Buffs', data)
+
+end
+
+local function debuffOption(module, submodule)
+    local data = {
+        { nil, 'Enable', true },
+        --TRANSFORM
+        { nil, 'Point', 'BOTTOMLEFT', 'Frame', 'TOPRIGHT', 0, 2 },
+        ----ATTRIBUTES
+        { 'Attributes', 'size', 48 },
+        { 'Attributes', 'onlyShowPlayer', false },
+        { 'Attributes', 'spacing', 2 },
+        { 'Attributes', 'growth-x', 'LEFT' },
+        { 'Attributes', 'growth-y', 'TOP' },
+        { 'Attributes', 'initialAnchor', 'BOTTOMRIGHT' },
+        { 'Attributes', 'showStealableBuffs', false },
+        { 'Attributes', 'filter', 'HARMFUL' },
+        { 'Attributes', 'tooltipAnchor', 'ANCHOR_BOTTOMRIGHT' },
+        { 'Attributes', 'num', 6 },
+    }
+
+    registers(module, submodule, 'Debuffs', data)
+
+end
+
 --(module, submodule, object, component, type, optionName, defaultValue)
 Themes["Default"].SetRaidProfile = function(layout)
 

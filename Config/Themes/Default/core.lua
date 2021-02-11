@@ -1,6 +1,7 @@
 local V  = select(2, ...):unpack()
 
 local Themes = V.Themes
+local Profiles = V.Profiles
 
 if not Themes["Default"] then
     Themes["Default"] = {}

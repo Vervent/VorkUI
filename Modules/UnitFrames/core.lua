@@ -574,7 +574,9 @@ local function CreateSlantedStatusBar(frame, config)
     local texture
     for _, t in ipairs(textures) do
         texture = slant:AddTexture(t[2], t[3])
-        texture:SetSize(unpack(size))
+        if size ~= nil then
+            texture:SetSize(unpack(size))
+        end
 
         if result == nil then
             if point ~= nil then
@@ -612,6 +614,145 @@ local function CreateSlantedStatusBar(frame, config)
     end
     result.Slant = slant
     return result
+end
+
+local function Create3DPortrait(template, parent, config)
+    local portrait = CreateFrame(template, nil, parent)
+    portrait:SetModelDrawLayer( config.ModelDrawLayer )
+    portrait:SetSize( unpack( config.Size ) )
+    --portrait:Point(config.Point)
+    portrait.name = ''
+
+    if config.PostUpdate then
+        portrait.PostUpdateConfig = config.PostUpdate
+        portrait.PostUpdate = UnitFrames.UpdatePortraitOverride
+    end
+
+    return portrait
+end
+
+local function CreateIndicator(frame, layer, sublayer, config, unit)
+    local indicator = frame:CreateTexture(nil, layer, sublayer)
+    indicator:SetSize( unpack(config.Size) )
+    --indicator:Point(config.Point)
+
+    indicator:SetTexture( LibAtlas:GetPath(config.Texture) )
+    if config.TexCoord then
+        indicator:SetTexCoord(LibAtlas:GetTexCoord( config.Texture ,config.TexCoord))
+    elseif config.Texture == 'ClassIcon' and unit ~= nil then
+        local class = select(2, UnitClass(unit))
+        if class ~= nil then
+            print (class)
+            indicator:SetTexCoord(LibAtlas:GetTexCoord( config.Texture , class ) )
+        end
+    end
+    if config.VertexColor then
+        indicator:SetVertexColor( unpack(config.VertexColor) )
+    end
+    if config.GradientAlpha then
+        indicator:SetGradientAlpha( unpack(config.GradientAlpha) )
+    end
+    if config.BlendMode then
+        indicator:SetBlendMode(config.BlendMode)
+    end
+
+    return indicator
+end
+
+local function CreateFontString(frame, config, baseConfig)
+    local font = frame:CreateFontString(nil, config.Layer)
+    local fontObject = baseConfig[config.Font]
+    font:SetFontObject( Medias:GetFont( fontObject[1]..fontObject[2] ) )
+    --font:Point(config.Point, frame:GetParent())
+
+    return font
+end
+
+local function CreateCastBar(frame, config, baseConfig)
+
+    print ('CREATE CAST BAR')
+    local castbar = CreateFrame("StatusBar", frame:GetParent():GetName().."Castbar", frame)
+    local textures = config.Rendering
+    local sparkSettings = config.Spark
+
+    castbar:SetSize(unpack(config.Size))
+    castbar:SetStatusBarTexture(Medias:GetStatusBar(textures[1][1]))
+    castbar:SetStatusBarColor(unpack(config.StatusBarColor))
+    castbar:SetReverseFill(config.ReverseFill or false)
+
+    castbar:Point(config.Point, frame:GetParent())
+
+    -- Add a background
+    local background = castbar:CreateTexture(nil, textures[2][2], textures[2][3])
+    background:SetAllPoints(castbar)
+    background:SetTexture(Medias:GetStatusBar(textures[2][1]))
+
+    if sparkSettings then
+        local spark = castbar:CreateTexture(nil, sparkSettings.Layer)
+        spark:SetSize( unpack(sparkSettings.Size) )
+        spark:SetBlendMode(sparkSettings.BlendMode)
+        spark:SetTexture(LibAtlas:GetPath(config.CastSettings.AtlasName))
+
+        local parentSpark = castbar:GetStatusBarTexture()
+
+        local anchorCast, _, relativeAnchorCast, xOffCast, yOffCast = unpack(config.CastSettings.Point)
+        local anchorChannel, _, relativeAnchorChannel, xOffChannel, yOffChannel = unpack(config.ChannelSettings.Point)
+
+        spark:SetPoint( anchorChannel, parentSpark, relativeAnchorChannel, xOffChannel, yOffChannel )
+        spark.castSettings = {
+            texture = config.CastSettings.AtlasName,
+            point = { anchorCast, parentSpark, relativeAnchorCast, xOffCast, yOffCast },
+            spriteCount = LibAtlas:GetSpriteCount(config.CastSettings.AtlasName)
+        }
+        spark.channelSettings = {
+            texture = config.ChannelSettings.AtlasName,
+            point = { anchorChannel, parentSpark, relativeAnchorChannel, xOffChannel, yOffChannel },
+            spriteCount = LibAtlas:GetSpriteCount(config.ChannelSettings.AtlasName)
+        }
+        spark.castbar = castbar
+        castbar.Spark = spark
+    end
+
+    -- Add a timer
+    if config.Time then
+        castbar.Time = UnitFrames:CreateFontString(castbar, config.Time, baseConfig)
+    end
+
+    -- Add spell text
+    if config.Text then
+        castbar.Text = UnitFrames:CreateFontString(castbar, config.Text, baseConfig)
+    end
+
+    -- Add spell icon
+    if config.Icon then
+        castbar.Icon = UnitFrames:CreateIndicator(castbar, "OVERLAY", nil, config.Icon)
+    end
+    if config.Shield then
+        castbar.Shield = UnitFrames:CreateIndicator(castbar, "OVERLAY", nil, config.Shield)
+    end
+
+    -- Add safezone
+    if config.SafeZone then
+        local safezone = castbar:CreateTexture(nil, 'OVERLAY')
+        safezone:SetVertexColor(unpack(config.SafeZone.VertexColor))
+        safezone:SetBlendMode(config.SafeZone.BlendMode)
+        castbar.SafeZone = safezone
+    end
+
+    castbar.bg = background
+    castbar.OnUpdate = UnitFrames.CastBarOnUpdate
+    if sparkSettings then
+        castbar.PostCastStart = UnitFrames.CastBarStart
+        castbar.PostCastUpdate = UnitFrames.CastBarStart
+    end
+    castbar.PostCastFail = UnitFrames.CastBarReset
+    castbar.PostCastStop = UnitFrames.CastBarReset
+
+    castbar:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    castbar:RegisterEvent("UNIT_SPELLCAST_START")
+    castbar:SetScript('OnEvent', UnitFrames.CastBarSetSpellSchool)
+
+    return castbar
 end
 
 --[[------------------------------------------------------------------
@@ -1147,6 +1288,9 @@ end
 --[[------------------------------------------------------------------
 -- OTHER STUFF
 --]]------------------------------------------------------------------
+function UnitFrames:MouseOnPlayer()
+
+end
 function UnitFrames:GetPartyFramesAttributes( config )
 
     local attributes = {}
@@ -1210,36 +1354,42 @@ local function CreateUnit(self, unit, config)
     self.Frame = frame
 
     local health =  CreateSlantedStatusBar(frame, config.Health)
-    for k, v in ipairs(config.Health.attributes) do
-        health[k] = v
+    if config.Health.Attributes then
+        for k, v in pairs(config.Health.Attributes) do
+            health[k] = v
+        end
     end
 
-    --TODO ADD COLORSMOOTH OPTION IN PROFILE
-    health.Override = self..UpdateHealthOverride
-    health.UpdateColor = self.UpdateHealthColorOverride
+    health.Override = UnitFrames.UpdateHealthOverride
+    health.UpdateColor = UnitFrames.UpdateHealthColorOverride
     self.Health = health
     self.Health.bg = health.background
 
     --[[
        HEALTH PREDICTION SLANTED STATUSBAR
    --]]
-    local healthPrediction = CreateSlantedStatusBar(frame, config.HealthPrediction)
-    healthPrediction:SetBlendMode("ADD")
-    local otherHealthPrediction = CreateSlantedStatusBar(frame, config.HealthPrediction)
-    otherHealthPrediction:SetBlendMode("ADD")
+    if config.HealthPrediction and config.HealthPrediction.Enable then
+        local healthPrediction = CreateSlantedStatusBar(frame, config.HealthPrediction)
+        healthPrediction:SetBlendMode("ADD")
+        local otherHealthPrediction = CreateSlantedStatusBar(frame, config.HealthPrediction)
+        otherHealthPrediction:SetBlendMode("ADD")
 
-    self.HealthPrediction = {
-        myBar = healthPrediction,
-        otherBar = otherHealthPrediction,
-        maxOverflow = 1,
-        Override = self.UpdatePredictionOverride
-    }
+        self.HealthPrediction = {
+            myBar = healthPrediction,
+            otherBar = otherHealthPrediction,
+            maxOverflow = 1,
+            Override = UnitFrames.UpdatePredictionOverride
+        }
+    end
 
     if config.Absorb and config.Absorb.Enable then
         local absorb = CreateSlantedStatusBar(frame, config.Absorb)
-        absorb.Override = self.UpdateAbsorbOverride
-        for k, v in ipairs(config.Absorb.attributes) do
-            absorb[k] = v
+        absorb.Override = UnitFrames.UpdateAbsorbOverride
+
+        if config.Absorb.Attributes then
+            for k, v in pairs(config.Absorb.Attributes) do
+                absorb[k] = v
+            end
         end
         self.Absorb = absorb
         self.Absorb.bg = absorb.background
@@ -1247,9 +1397,12 @@ local function CreateUnit(self, unit, config)
 
     if config.Power and config.Power.Enable then
         local power = CreateSlantedStatusBar(frame, config.Power)
-        power.Override = self.UpdateAbsorbOverride
-        for k, v in ipairs(config.Power.attributes) do
-            power[k] = v
+        power.Override = UnitFrames.UpdatePowerOverride
+        power.UpdateColor = UnitFrames.UpdatePowerColorOverride
+        if config.Power.Attributes then
+            for k, v in pairs(config.Power.Attributes) do
+                power[k] = v
+            end
         end
         self.Power = power
         self.Power.bg = power.background
@@ -1257,40 +1410,48 @@ local function CreateUnit(self, unit, config)
         --[[
         POWER PREDICTION SLANTED STATUSBAR
         --]]
-        local powerPrediction = CreateSlantedStatusBar(frame, config.PowerPrediction)
-        powerPrediction:SetBlendMode("ADD")
-        self.PowerPrediction = {
-            mainBar = powerPrediction,
-            --altBar = AltPowerPrediction, --TODO ALTERNATIVE POWER
-            Override = self.UpdatePowerPredictionOverride
-        }
+
+        if config.PowerPrediction and config.PowerPrediction.Enable then
+            local powerPrediction = CreateSlantedStatusBar(frame, config.PowerPrediction)
+            powerPrediction:SetBlendMode("ADD")
+            self.PowerPrediction = {
+                mainBar = powerPrediction,
+                --altBar = AltPowerPrediction, --TODO ALTERNATIVE POWER
+                Override = UnitFrames.UpdatePowerPredictionOverride
+            }
+        end
+
     end
 
     --[[
         BUFF/DEBUFF
     --]]
     if config.Buffs and config.Buffs.Enable then
-        local buffs = CreateFrame('Frame', nil, Frame)
-        for k, v in ipairs(config.Buffs.attributes) do --TODO Add attributes section in profile
+        local buffs = CreateFrame('Frame', nil, frame)
+        for k, v in pairs(config.Buffs.Attributes) do --TODO Add attributes section in profile
             buffs[k] = v
         end
-
+        local width = ( buffs.size + buffs.spacing ) * 2
+        local height = ( buffs.size + buffs.spacing ) * 3
+        buffs:SetSize(width, height)
         self.Buffs = buffs
     end
 
     if config.Debuffs and config.Debuffs.Enable then
-        local debuffs = CreateFrame('Frame', nil, Frame)
-        for k, v in ipairs(config.Debuffs.attributes) do --TODO Add attributes section in profile
+        local debuffs = CreateFrame('Frame', nil, frame)
+        for k, v in pairs(config.Debuffs.Attributes) do --TODO Add attributes section in profile
             debuffs[k] = v
         end
-
+        local width = ( debuffs.size+ debuffs.spacing ) * 3
+        local height = ( debuffs.size+ debuffs.spacing ) * 2
+        debuffs:SetSize(width, height)
         self.Debuffs = debuffs
     end
 
     if config.Portrait and config.Portrait.Enable then
         local portrait
-        if config.Portrait.type == '3D' then
-            portrait = self:Create3DPortrait('PlayerModel', frame, config.Portrait)
+        if config.Portrait.Type == '3D' then
+            portrait = Create3DPortrait('PlayerModel', frame, config.Portrait)
         else
             --TODO 2D PORTRAIT
         end
@@ -1302,15 +1463,18 @@ local function CreateUnit(self, unit, config)
 
     if config.Indicators then
         for k, v in pairs(config.Indicators) do
-            self[k] = self:CreateIndicator(frame, 'OVERLAY', nil, v, unit)
+            self[k] = CreateIndicator(frame, 'OVERLAY', nil, v, unit)
+            if k == 'ClassIndicator' then
+                self[k].AtlasName = v.Texture
+                self[k].Override = UnitFrames.UpdateClassOverride
+            end
         end
     end
 
     if config.Texts then
-        local text
         for k, v in pairs (config.Texts) do
-            text = self:CreateFontString(frame, v, config)
-            self:Tag(text, v.Tag)
+            self[k] = CreateFontString(frame, v, config)
+            self:Tag(self[k], v.Tag)
         end
     end
 
@@ -1318,51 +1482,50 @@ local function CreateUnit(self, unit, config)
     CASTBAR
     ]]--
     if config.Castbar and config.Castbar.Enable then
-        self.Castbar = self:CreateCastBar(Frame, config.Castbar, config)
+        self.Castbar = CreateCastBar(frame, config.Castbar, config)
     end
 
-    self:HookScript("OnEnter", self.MouseOnPlayer)
-    self:HookScript("OnLeave", self.MouseOnPlayer)
+    self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
+    self:HookScript("OnLeave", UnitFrames.MouseOnPlayer)
 
     V.Editor:RegisterFrame(self, config, 'UnitFrames', unit..'Layout')
 
 end
 
 local function LocateUnitFrames(self, config)
-    self.Health:Point(config.Health.Point)
+    self.Health:Point(config.Health.Point, self)
     if config.Absorb and config.Absorb.Enable then
-        self.Absorb:Point(config.Absorb.Point)
+        self.Absorb:Point(config.Absorb.Point, self)
     end
     if config.Power and config.Power.Enable then
-        self.Power:Point(config.Power.Point)
+        self.Power:Point(config.Power.Point, self)
     end
 
-
     if config.Buffs and config.Buffs.Enable then
-        self.Buffs:Point(config.Buffs.Point)
+        self.Buffs:Point(config.Buffs.Point, self)
     end
 
     if config.Debuffs and config.Debuffs.Enable then
-        self.Debuffs:Point(config.Debuffs.Point)
+        self.Debuffs:Point(config.Debuffs.Point, self)
     end
 
     if config.Portrait and config.Portrait.Enable then
-        self.Portrait:Point(config.Portrait.Point)
+        self.Portrait:Point(config.Portrait.Point, self)
     end
 
     if config.Castbar and config.Castbar.Enable then
-        self.Castbar:Point(config.Castbar.Point)
+        self.Castbar:Point(config.Castbar.Point, self)
     end
 
     if config.Indicators then
         for k, v in pairs(config.Indicators) do
-            self[k]:Point(v.Point)
+            self[k]:Point(v.Point, self)
         end
     end
 
     if config.Texts then
         for k, v in pairs(config.Texts) do
-            self[k]:Point(v.Point)
+            self[k]:Point(v.Point, self)
         end
     end
 end
@@ -1399,18 +1562,17 @@ local function ResizeUnitFrames(self, config)
         end
     end
 
-    if config.Texts then
-        for k, v in pairs(config.Texts) do
-            self[k]:SetSize(unpack(v.Size))
-        end
-    end
+    --if config.Texts then
+    --    for k, v in pairs(config.Texts) do
+    --        self[k]:SetSize(unpack(v.Size))
+    --    end
+    --end
 end
 
 function UnitFrames:StyleUnit(unit)
     if not unit then
         return
     end
-    print ('STYLEUNIT', unit)
 
     local style = C.UnitFrames
     local parentName = self:GetParent():GetName()
@@ -1419,7 +1581,6 @@ function UnitFrames:StyleUnit(unit)
         return first:upper()..rest:lower()
         end)..'Layout'
 
-    print ('StyleUnit', configName)
     local config = style[configName]
 
     CreateUnit(self, unit, config)
@@ -1439,36 +1600,36 @@ function UnitFrames:Style(unit)
 
     local Parent = self:GetParent():GetName()
 
-    UnitFrames.StyleUnit(self, unit)
---[[
     if (unit == "player") then
-        UnitFrames.Player(self, style.PlayerLayout, unit)
+        --UnitFrames.Player(self, style.PlayerLayout, unit)
+        UnitFrames.StyleUnit(self, unit)
     elseif (unit == "target") then
-        UnitFrames.Target(self, style.TargetLayout, unit)
-    elseif (unit == "targettarget") then
-        UnitFrames.TargetTarget(self, style.TargetTargetLayout, unit)
-    elseif (unit == "pet") then
-        --TODO PET
-        UnitFrames.Pet(self, style.PetLayout, unit)
-    elseif (unit == "focus") then
-        UnitFrames.Focus(self, style.FocusLayout, unit)
-    elseif (unit == "focustarget") then
-        UnitFrames.FocusTarget(self, style.FocusTargetLayout, unit)
-    elseif (unit == "party") then
-        --TODO USE CONFIG LAYOUT HERE
-        UnitFrames.Party(self, style.PartyLayout, unit )
-    elseif (unit == "raid" ) then
-        --TODO USE CONFIG LAYOUT HERE
-        UnitFrames.Raid(self, style.RaidLayout, unit)
-    elseif (unit:find("raid")) or (unit:find("raidpet")) then
-        if Parent:match("Party") then
-            --TODO USE CONFIG LAYOUT HERE
-            UnitFrames.Party(self, style.PartyLayout, unit)
-        else
-            --TODO USE CONFIG LAYOUT HERE
-            UnitFrames.Raid(self, style.RaidLayout, unit)
-        end
-    end]]
+    --    UnitFrames.Target(self, style.TargetLayout, unit)
+        UnitFrames.StyleUnit(self, unit)
+    --elseif (unit == "targettarget") then
+    --    UnitFrames.TargetTarget(self, style.TargetTargetLayout, unit)
+    --elseif (unit == "pet") then
+    --    --TODO PET
+    --    UnitFrames.Pet(self, style.PetLayout, unit)
+    --elseif (unit == "focus") then
+    --    UnitFrames.Focus(self, style.FocusLayout, unit)
+    --elseif (unit == "focustarget") then
+    --    UnitFrames.FocusTarget(self, style.FocusTargetLayout, unit)
+    --elseif (unit == "party") then
+    --    --TODO USE CONFIG LAYOUT HERE
+    --    UnitFrames.Party(self, style.PartyLayout, unit )
+    --elseif (unit == "raid" ) then
+    --    --TODO USE CONFIG LAYOUT HERE
+    --    UnitFrames.Raid(self, style.RaidLayout, unit)
+    --elseif (unit:find("raid")) or (unit:find("raidpet")) then
+    --    if Parent:match("Party") then
+    --        --TODO USE CONFIG LAYOUT HERE
+    --        UnitFrames.Party(self, style.PartyLayout, unit)
+    --    else
+    --        --TODO USE CONFIG LAYOUT HERE
+    --        UnitFrames.Raid(self, style.RaidLayout, unit)
+    --    end
+    end
 
     return self
 end
@@ -1527,8 +1688,8 @@ function UnitFrames:CreateUnits()
         elseif type(v) == 'table' and v.Enable == true then
             local unitName = gsub(k, 'Layout', '')
             local unit = oUF:Spawn(strlower(unitName), "Vorkui"..unitName.."Frame")
-                unit:SetSize( unpack(Config[k].Size) )
-                unit:SetPoint( unpack(Config[k].Point) )
+                unit:SetSize( unpack(Config[k].General.Size) )
+                unit:SetPoint( unpack(Config[k].General.Point) )
             self.Units[k] = unit
         end
     end

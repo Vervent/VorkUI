@@ -29,11 +29,6 @@ local function absorbOption(module, submodule)
         --RENDERING
         { 'Rendering', nil, 'VorkuiBubbles', 'ARTWORK' },
         { 'Rendering', nil, { 0, 0, 0, 1 }, 'BACKGROUND', 1 },
-        --TAGS
-        { 'Value', 'Layer', 'OVERLAY' },
-        { 'Value', 'Font', 'ValueFont' },
-        { 'Value', 'Point', "TOPLEFT", 'Health', "TOP" },
-        { 'Value', 'Tag', '[Vorkui:HealthColor][Vorkui:Absorb]' },
     }
 
     registers(module, submodule, 'Absorb', data)
@@ -54,16 +49,9 @@ local function healthOption(module, submodule)
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
         { 'Rendering', nil, 'VorkuiBackground', 'BACKGROUND', 1 },
         { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
-        --TAGS
-        { 'Value', 'Layer', 'OVERLAY' },
-        { 'Value', 'Font', 'ValueFont' },
-        { 'Value', 'Point', 'TOPRIGHT', 'Health', 'TOP' },
-        { 'Value', 'Tag', '[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp]' },
 
-        { 'Percent', 'Layer', 'OVERLAY' },
-        { 'Percent', 'Font', 'BigValueFont' },
-        { 'Percent', 'Point', 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT' },
-        { 'Percent', 'Tag', '[Vorkui:HealthColor(true)][Vorkui:PerHP]' },
+        --ATTRIBUTES
+        { 'Attributes', 'colorSmooth', true },
     }
 
     registers(module, submodule, 'Health', data)
@@ -73,6 +61,7 @@ end
 local function healthPredictionOption(module, submodule)
     local data = {
         { nil, 'Enable', true },
+        { nil, 'Size', 256, 32 },
         ----SLANT
         { 'SlantingSettings', 'Enable', true },
         { 'SlantingSettings', 'IgnoreBackground', true },
@@ -129,21 +118,20 @@ local function castbarOption(module, submodule)
         { 'SafeZone', 'VertexColor', { 255 / 255, 246 / 255, 0, 0.75 } },
     }
 
-    registers(module, submodule, 'CastBar', data)
+    registers(module, submodule, 'Castbar', data)
 
 end
 
-local function nameOption(module, submodule)
+local function textOption(module, submodule, name, layer, font, point, tag)
+
     local data = {
-        { nil, 'Enable', true },
-        --TAGS
-        { nil, 'Layer', 'OVERLAY' },
-        { nil, 'Font', 'NameFont' },
-        { nil, 'Point', 'BOTTOMLEFT', nil, 'TOPLEFT', 0, 2 },
-        { nil, 'Tag', '[classification] [name] [difficulty][level]' },
+        { name, 'Layer', layer },
+        { name, 'Font', font },
+        { name, 'Point', unpack(point) },
+        { name, 'Tag', tag },
     }
 
-    registers(module, submodule, 'Name', data)
+    registers(module, submodule, 'Texts', data)
 end
 
 local function powerOption(module, submodule)
@@ -159,11 +147,9 @@ local function powerOption(module, submodule)
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
         { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
-        --TAGS
-        { 'Value', 'Layer', 'OVERLAY' },
-        { 'Value', 'Font', 'StackFont' },
-        { 'Value', 'Point', 'BOTTOM', 'Frame' },
-        { 'Value', 'Tag', '[powercolor][missingpp]' },
+
+        { 'Attributes', 'colorPower', true },
+        { 'Attributes', 'frequentUpdates', true },
     }
 
     registers(module, submodule, 'Power', data)
@@ -173,6 +159,7 @@ end
 local function powerPredictionOption(module, submodule)
     local data = {
         { nil, 'Enable', true },
+        { nil, 'Size', 235, 10 },
         ----SLANT
         { 'SlantingSettings', 'Enable', true },
         { 'SlantingSettings', 'IgnoreBackground', true },
@@ -205,18 +192,66 @@ local function portraitOption(module, submodule)
 end
 
 local function indicatorOption(module, submodule, indicator, size, point, texture, texcoord, vertexcolor, gradientalpha, blendmode)
+
     local data = {
-        { nil, 'Enable', true },
-        { nil, 'Size', unpack(size) },
-        { nil, 'Point', unpack(point) },
-        { nil, 'Texture', texture },
-        { nil, 'TexCoord', texcoord },
-        { nil, 'VertexColor', vertexcolor },
-        { nil, 'GradientAlpha', gradientalpha },
-        { nil, 'BlendMode', blendmode },
+        { indicator, 'Enable', true },
+        { indicator, 'Size', unpack(size) },
+        { indicator, 'Point', unpack(point) },
+        { indicator, 'Texture', texture },
+        { indicator, 'TexCoord', texcoord },
+        { indicator, 'VertexColor', vertexcolor },
+        { indicator, 'GradientAlpha', gradientalpha },
+        { indicator, 'BlendMode', blendmode },
     }
 
-    registers(module, submodule, indicator, data)
+    registers(module, submodule, 'Indicators', data)
+end
+
+local function buffOption(module, submodule)
+    local data = {
+        { nil, 'Enable', true },
+        --TRANSFORM
+        { nil, 'Point', 'BOTTOMLEFT', 'Frame', 'BOTTOMRIGHT', 2, 0 },
+        ----ATTRIBUTES
+        { 'Attributes', 'size', 18 },
+        { 'Attributes', 'disableMouse', false },
+        { 'Attributes', 'disableCooldown', false },
+        { 'Attributes', 'onlyShowPlayer', true },
+        { 'Attributes', 'showStealableBuffs', false },
+        { 'Attributes', 'spacing', 2 },
+        { 'Attributes', 'growth-x', 'RIGHT' },
+        { 'Attributes', 'growth-y', 'UP' },
+        { 'Attributes', 'initialAnchor', 'BOTTOMLEFT' },
+        { 'Attributes', 'filter', 'HELPFUL' },
+        { 'Attributes', 'tooltipAnchor', 'ANCHOR_BOTTOMRIGHT' },
+        { 'Attributes', 'num', 6 },
+    }
+
+    registers(module, submodule, 'Buffs', data)
+
+end
+
+local function debuffOption(module, submodule)
+    local data = {
+        { nil, 'Enable', true },
+        --TRANSFORM
+        { nil, 'Point', 'BOTTOMRIGHT', 'Frame', 'TOPRIGHT', 0, 2 },
+        ----ATTRIBUTES
+        { 'Attributes', 'size', 48 },
+        { 'Attributes', 'onlyShowPlayer', false },
+        { 'Attributes', 'disableMouse', false },
+        { 'Attributes', 'disableCooldown', false },
+        { 'Attributes', 'spacing', 2 },
+        { 'Attributes', 'growth-x', 'LEFT' },
+        { 'Attributes', 'growth-y', 'UP' },
+        { 'Attributes', 'initialAnchor', 'BOTTOMRIGHT' },
+        { 'Attributes', 'filter', 'HARMFUL' },
+        { 'Attributes', 'tooltipAnchor', 'ANCHOR_BOTTOMRIGHT' },
+        { 'Attributes', 'num', 6 },
+    }
+
+    registers(module, submodule, 'Debuffs', data)
+
 end
 
 --(module, submodule, object, component, type, optionName, defaultValue)
@@ -226,8 +261,11 @@ Themes["Default"].SetPlayerProfile = function()
     local submodule = 'PlayerLayout'
 
     --Global OPTION
-    Profiles:RegisterOption(module, submodule, nil, nil, 'Size', 300, 62)
-    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', "CENTER", 'UIParent', "CENTER", -450, -350)
+    Profiles:RegisterOption(module, submodule, 'General', nil, 'Size', 300, 62)
+    Profiles:RegisterOption(module, submodule, 'General', nil, 'Point', "CENTER", 'UIParent', "CENTER", -450, -350)
+    Profiles:RegisterOption(module, submodule, 'General', 'Background', 'Enable',true)
+    Profiles:RegisterOption(module, submodule, 'General', 'Background', 'Color', 33 / 255, 44 / 255, 79 / 255, 0.75)
+
     --HEALTH OPTION
     healthOption(module, submodule)
     healthPredictionOption(module, submodule)
@@ -235,6 +273,8 @@ Themes["Default"].SetPlayerProfile = function()
     powerOption(module, submodule)
     powerPredictionOption(module, submodule)
     portraitOption(module, submodule)
+    buffOption(module, submodule)
+    debuffOption(module, submodule)
 
     indicatorOption(module, submodule, 'ClassIndicator',
             { 16, 16 },
@@ -246,7 +286,7 @@ Themes["Default"].SetPlayerProfile = function()
             nil
     )
 
-    indicatorOption(module, submodule, 'RaidIndicator',
+    indicatorOption(module, submodule, 'RaidTargetIndicator',
             { 16, 16 },
             { 'LEFT', 'Health', 'LEFT', 10, 0 },
             'RaidIcon',
@@ -326,7 +366,43 @@ Themes["Default"].SetPlayerProfile = function()
             nil
     )
 
-    nameOption(module, submodule)
+    --TEXTS
+    textOption(module, submodule, 'HealthValue',
+            'OVERLAY',
+            'ValueFont',
+            {'TOPRIGHT', 'Health', 'TOP'},
+            '[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp]'
+    )
+
+    textOption(module, submodule, 'HealthPercent',
+            'OVERLAY',
+            'BigValueFont',
+            {'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT'},
+            '[Vorkui:HealthColor(true)][Vorkui:PerHP]'
+    )
+
+    textOption(module, submodule, 'AbsorbValue',
+            'OVERLAY',
+            'ValueFont',
+            {'TOPLEFT', 'Health', 'TOP'},
+            '[Vorkui:HealthColor][Vorkui:Absorb]'
+    )
+
+    textOption(module, submodule, 'PowerValue',
+            'OVERLAY',
+            'StackFont',
+            {'BOTTOM', 'Frame'},
+            '[powercolor][missingpp]'
+    )
+
+    textOption(module, submodule, 'Name',
+            'OVERLAY',
+            'NameFont',
+            { 'BOTTOMLEFT', 'Frame', 'TOPLEFT', 0, 2 },
+            '[classification] [name] [difficulty][level]'
+    )
+
+    --nameOption(module, submodule)
     castbarOption(module, submodule)
 
     --[[ TODO TEMPORARY FONT TO KEEP COMPATIBILTY WITH OLD EDITOR

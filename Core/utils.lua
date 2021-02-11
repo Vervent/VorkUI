@@ -327,6 +327,60 @@ Utils.API.ShallowCopyTable = function(self, orig)
     return copy
 end
 
+--Utils.API.Point = function (self, point, root)
+--    if self == nil then
+--        print ("|cFFFF2200 ERROR API POINT self == nil|r")
+--    end
+--
+--    if type(point) == 'string' then
+--        self:SetPoint(point)
+--    else
+--        local anchor, parent, relativePoint, xOff, yOff = unpack(point)
+--
+--        if parent == nil then
+--            parent = self:GetParent()
+--            self:SetPoint(anchor, parent, relativePoint, xOff, yOff)
+--        elseif type(parent) == 'string' then
+--            if strlower(parent) == 'uiparent' then
+--                self:SetPoint(anchor, parent, relativePoint, xOff, yOff)
+--            else
+--                if self[parent] then
+--                    parent = self[parent]
+--                elseif root and root[parent] then
+--                    parent = root[parent]
+--                else
+--                    --look if GetParent()[parent] exists
+--                    local realParent = self:GetParent()
+--                    parent = realParent[parent] or realParent
+--                end
+--                --parent = self[parent] or self:GetParent()
+--                self:SetPoint(anchor, parent, relativePoint, xOff, yOff)
+--            end
+--        end
+--
+--        return anchor, parent, relativePoint, xOff, yOff
+--    end
+--end
+
+local function GetRealParent(self, parent, root)
+    if parent == nil then
+        return self:GetParent()
+    elseif strlower(parent) == 'uiparent' then
+        return parent
+    else
+        if self[parent] then
+            return self[parent]
+        elseif root and root[parent] then
+            return root[parent]
+        else
+            local realParent = self:GetParent()
+            return realParent[parent] or realParent
+        end
+    end
+
+    return nil
+end
+
 Utils.API.Point = function (self, point, root)
     if self == nil then
         print ("|cFFFF2200 ERROR API POINT self == nil|r")
@@ -335,29 +389,18 @@ Utils.API.Point = function (self, point, root)
     if type(point) == 'string' then
         self:SetPoint(point)
     else
-        local anchor, parent, relativePoint, xOff, yOff = unpack(point)
-
-        if parent == nil then
-            parent = self:GetParent()
-            self:SetPoint(anchor, parent, relativePoint, xOff, yOff)
-        elseif type(parent) == 'string' then
-            if strlower(parent) == 'uiparent' then
-                self:SetPoint(anchor, parent, relativePoint, xOff, yOff)
-            else
-                if self[parent] then
-                    parent = self[parent]
-                elseif root and root[parent] then
-                    parent = root[parent]
-                else
-                    --look if GetParent()[parent] exists
-                    local realParent = self:GetParent()
-                    parent = realParent[parent] or realParent
-                end
-                --parent = self[parent] or self:GetParent()
+        local anchor, parent, relativePoint, xOff, yOff
+        if type(point[1]) == 'table' then
+            for _, p in pairs(point) do
+                anchor, parent, relativePoint, xOff, yOff = unpack(p)
+                parent = GetRealParent(self, parent, root)
                 self:SetPoint(anchor, parent, relativePoint, xOff, yOff)
             end
+        else
+            anchor, parent, relativePoint, xOff, yOff = unpack(point)
+            parent = GetRealParent(self, parent, root)
+            self:SetPoint(anchor, parent, relativePoint, xOff, yOff)
         end
-
-        return anchor, parent, relativePoint, xOff, yOff
+        --return anchor, parent, relativePoint, xOff, yOff
     end
 end
