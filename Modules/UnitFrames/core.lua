@@ -563,6 +563,57 @@ function UnitFrames:CreateSlantedStatusBar(frame, textures, size, point, slantSe
     return result
 end
 
+local function CreateSlantedStatusBar(frame, config)
+    local slant = LibSlant:CreateSlant(frame)
+    local textures = config.Rendering
+    local size = config.Size
+    local point = config.Point
+    local slantSettings = config.SlantingSettings
+
+    local result = nil
+    local texture
+    for _, t in ipairs(textures) do
+        texture = slant:AddTexture(t[2], t[3])
+        texture:SetSize(unpack(size))
+
+        if result == nil then
+            if point ~= nil then
+                --texture:SetPoint(unpack(point))
+                texture:Point(point, frame:GetParent())
+            end
+        else
+            texture:SetAllPoints(result)
+        end
+
+        if type(t[1]) == 'table' then
+            texture:SetColorTexture(unpack(t[1]))
+        elseif type(t[1]) == 'string' then
+            texture:SetTexture(Medias:GetStatusBar(t[1]))
+        else
+            print("|cFFFF2200 ERROR CreateSlantedStatusBar |r")
+        end
+        if result == nil then
+            result = texture
+            result.childs = {}
+        else
+            result.childs[#result.childs+1] = texture
+        end
+    end
+
+    for k,v in pairs(slantSettings) do
+        if k ~= 'StaticLayer' then
+            slant[k]=v
+        end
+    end
+
+    slant:CalculateAutomaticSlant()
+    if slantSettings.StaticLayer then
+        slant:StaticSlant(slantSettings.StaticLayer)
+    end
+    result.Slant = slant
+    return result
+end
+
 --[[------------------------------------------------------------------
 -- OUF UPDATE OVERRIDE
 --]]------------------------------------------------------------------
@@ -1158,7 +1209,7 @@ local function CreateUnit(self, unit, config)
     end
     self.Frame = frame
 
-    local health =  self:CreateSlantedStatusBar(frame, config.Health)
+    local health =  CreateSlantedStatusBar(frame, config.Health)
     for k, v in ipairs(config.Health.attributes) do
         health[k] = v
     end
@@ -1172,9 +1223,9 @@ local function CreateUnit(self, unit, config)
     --[[
        HEALTH PREDICTION SLANTED STATUSBAR
    --]]
-    local healthPrediction = self:CreateSlantedStatusBar(frame, config.HealthPrediction)
+    local healthPrediction = CreateSlantedStatusBar(frame, config.HealthPrediction)
     healthPrediction:SetBlendMode("ADD")
-    local otherHealthPrediction = self:CreateSlantedStatusBar(frame, config.HealthPrediction)
+    local otherHealthPrediction = CreateSlantedStatusBar(frame, config.HealthPrediction)
     otherHealthPrediction:SetBlendMode("ADD")
 
     self.HealthPrediction = {
@@ -1185,7 +1236,7 @@ local function CreateUnit(self, unit, config)
     }
 
     if config.Absorb and config.Absorb.Enable then
-        local absorb = self:CreateSlantedStatusBar(frame, config.Absorb)
+        local absorb = CreateSlantedStatusBar(frame, config.Absorb)
         absorb.Override = self.UpdateAbsorbOverride
         for k, v in ipairs(config.Absorb.attributes) do
             absorb[k] = v
@@ -1195,7 +1246,7 @@ local function CreateUnit(self, unit, config)
     end
 
     if config.Power and config.Power.Enable then
-        local power = self:CreateSlantedStatusBar(frame, config.Power)
+        local power = CreateSlantedStatusBar(frame, config.Power)
         power.Override = self.UpdateAbsorbOverride
         for k, v in ipairs(config.Power.attributes) do
             power[k] = v
@@ -1206,7 +1257,7 @@ local function CreateUnit(self, unit, config)
         --[[
         POWER PREDICTION SLANTED STATUSBAR
         --]]
-        local powerPrediction = self:CreateSlantedStatusBar(frame, config.PowerPrediction)
+        local powerPrediction = CreateSlantedStatusBar(frame, config.PowerPrediction)
         powerPrediction:SetBlendMode("ADD")
         self.PowerPrediction = {
             mainBar = powerPrediction,
@@ -1220,7 +1271,7 @@ local function CreateUnit(self, unit, config)
     --]]
     if config.Buffs and config.Buffs.Enable then
         local buffs = CreateFrame('Frame', nil, Frame)
-        for k, v in ipairs(config.Buffs.attributes) do
+        for k, v in ipairs(config.Buffs.attributes) do --TODO Add attributes section in profile
             buffs[k] = v
         end
 
@@ -1229,7 +1280,7 @@ local function CreateUnit(self, unit, config)
 
     if config.Debuffs and config.Debuffs.Enable then
         local debuffs = CreateFrame('Frame', nil, Frame)
-        for k, v in ipairs(config.Debuffs.attributes) do
+        for k, v in ipairs(config.Debuffs.attributes) do --TODO Add attributes section in profile
             debuffs[k] = v
         end
 
@@ -1316,7 +1367,6 @@ local function LocateUnitFrames(self, config)
     end
 end
 
-
 local function ResizeUnitFrames(self, config)
     self.Health:SetSize(unpack(config.Health.Size))
     if config.Absorb and config.Absorb.Size then
@@ -1360,10 +1410,21 @@ function UnitFrames:StyleUnit(unit)
     if not unit then
         return
     end
+    print ('STYLEUNIT', unit)
 
     local style = C.UnitFrames
     local parentName = self:GetParent():GetName()
 
+    local configName = unit:gsub("(%a)([%w_']*)", function(first, rest)
+        return first:upper()..rest:lower()
+        end)..'Layout'
+
+    print ('StyleUnit', configName)
+    local config = style[configName]
+
+    CreateUnit(self, unit, config)
+    LocateUnitFrames(self, config)
+    ResizeUnitFrames(self, config)
 
 end
 
@@ -1378,6 +1439,8 @@ function UnitFrames:Style(unit)
 
     local Parent = self:GetParent():GetName()
 
+    UnitFrames.StyleUnit(self, unit)
+--[[
     if (unit == "player") then
         UnitFrames.Player(self, style.PlayerLayout, unit)
     elseif (unit == "target") then
@@ -1405,7 +1468,7 @@ function UnitFrames:Style(unit)
             --TODO USE CONFIG LAYOUT HERE
             UnitFrames.Raid(self, style.RaidLayout, unit)
         end
-    end
+    end]]
 
     return self
 end
