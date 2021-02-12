@@ -17,17 +17,20 @@ Themes["Default"].RegisterModules = function(layout)
     Themes["Default"].SetFocusTargetProfile()
     Themes["Default"].SetPartyProfile(layout or 'Expanded')
     Themes["Default"].SetRaidProfile(layout or 'Compact')
-    V.Profiles:UpdateDB()
+
+    Profiles:RegisterOption('Theme', nil, nil, nil, 'Name', 'Default')
+
+    Profiles:UpdateDB()
 end
 
 Themes["Default"].ChangePartyLayout = function(newLayout)
-    V.Profiles:WipeInDB({'UnitFrames', 'PartyLayout'})
+    Profiles:WipeInDB({'UnitFrames', 'PartyLayout'})
     Themes["Default"].SetPartyProfile(newLayout)
-    V.Profiles:UpdateDB()
+    Profiles:UpdateDB()
 end
 
 Themes["Default"].ChangeRaidLayout = function(newLayout)
-    V.Profiles:WipeInDB({'UnitFrames', 'RaidLayout'})
+    Profiles:WipeInDB({'UnitFrames', 'RaidLayout'})
     Themes["Default"].SetRaidProfile(newLayout)
-    V.Profiles:UpdateDB()
+    Profiles:UpdateDB()
 end

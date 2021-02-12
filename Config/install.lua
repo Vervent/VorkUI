@@ -60,7 +60,7 @@ end
 
 function Install:OnEvent(event, ...)
     if event == "PLAYER_LOGIN" then
-        print ("PLAYER_LOGIN", Install.ConfigUI:GetName(), Install.ConfigUI:GetObjectType())
+        --print ("PLAYER_LOGIN", Install.ConfigUI:GetName(), Install.ConfigUI:GetObjectType())
         --Install.ConfigUI.Frame:Show()
     end
 end

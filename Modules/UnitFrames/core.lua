@@ -662,6 +662,7 @@ end
 local function CreateFontString(frame, config, baseConfig)
     local font = frame:CreateFontString(nil, config.Layer)
     local fontObject = baseConfig[config.Font]
+    print (unpack(fontObject))
     font:SetFontObject( Medias:GetFont( fontObject[1]..fontObject[2] ) )
     --font:Point(config.Point, frame:GetParent())
 
@@ -1337,18 +1338,18 @@ local function CreateUnit(self, unit, config)
     self:SetScript("OnEnter", UnitFrame_OnEnter)
     self:SetScript("OnLeave", UnitFrame_OnLeave)
 
-    local globalConfig = config.Global
+    local generalConfig = config.General
 
     local frame = CreateFrame("Frame", nil, self)
     frame:SetAllPoints()
 
-    if globalConfig then
-        if globalConfig.Background.Enable then
+    if generalConfig then
+        if generalConfig.Background.Enable then
             frame.background = frame:CreateTexture(nil, "BACKGROUND")
             frame.background:SetAllPoints()
-        end
-        if globalConfig.Background.Color then
-            frame.background:SetColorTexture(unpack(globalConfig.Background.Color))
+            if generalConfig.Background.Color then
+                frame.background:SetColorTexture(unpack(generalConfig.Background.Color))
+            end
         end
     end
     self.Frame = frame
@@ -1472,8 +1473,10 @@ local function CreateUnit(self, unit, config)
     end
 
     if config.Texts then
+        print ('CREATE FONT STRING FOR', unit)
         for k, v in pairs (config.Texts) do
-            self[k] = CreateFontString(frame, v, config)
+            print (k, v.Font, config.General)
+            self[k] = CreateFontString(frame, v, config.General)
             self:Tag(self[k], v.Tag)
         end
     end
@@ -1482,7 +1485,7 @@ local function CreateUnit(self, unit, config)
     CASTBAR
     ]]--
     if config.Castbar and config.Castbar.Enable then
-        self.Castbar = CreateCastBar(frame, config.Castbar, config)
+        self.Castbar = CreateCastBar(frame, config.Castbar, config.General)
     end
 
     self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
@@ -1577,11 +1580,17 @@ function UnitFrames:StyleUnit(unit)
     local style = C.UnitFrames
     local parentName = self:GetParent():GetName()
 
-    local configName = unit:gsub("(%a)([%w_']*)", function(first, rest)
-        return first:upper()..rest:lower()
-        end)..'Layout'
+    local unitName
 
-    local config = style[configName]
+    if unit == 'targettarget' then
+        unitName = 'TargetTarget'
+    elseif unit == 'focustarget' then
+        unitName = 'FocusTarget'
+    else
+        unitName = unit:gsub("^%l", string.upper)
+    end
+
+    local config = style[unitName..'Layout']
 
     CreateUnit(self, unit, config)
     LocateUnitFrames(self, config)
@@ -1600,12 +1609,12 @@ function UnitFrames:Style(unit)
 
     local Parent = self:GetParent():GetName()
 
-    if (unit == "player") then
+    UnitFrames.StyleUnit(self, unit)
+
+    --if (unit == "player") then
         --UnitFrames.Player(self, style.PlayerLayout, unit)
-        UnitFrames.StyleUnit(self, unit)
-    elseif (unit == "target") then
+    --elseif (unit == "target") then
     --    UnitFrames.Target(self, style.TargetLayout, unit)
-        UnitFrames.StyleUnit(self, unit)
     --elseif (unit == "targettarget") then
     --    UnitFrames.TargetTarget(self, style.TargetTargetLayout, unit)
     --elseif (unit == "pet") then
@@ -1629,7 +1638,7 @@ function UnitFrames:Style(unit)
     --        --TODO USE CONFIG LAYOUT HERE
     --        UnitFrames.Raid(self, style.RaidLayout, unit)
     --    end
-    end
+    --end
 
     return self
 end

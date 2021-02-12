@@ -30,11 +30,7 @@ local function absorbOption(module, submodule)
         --RENDERING
         { 'Rendering', nil, 'VorkuiBubbles', 'ARTWORK' },
         { 'Rendering', nil, { 0, 0, 0, 1 }, 'BACKGROUND', 1 },
-        --TAGS
-        { 'Value', 'Layer', 'OVERLAY' },
-        { 'Value', 'Font', 'ValueFont' },
-        { 'Value', 'Point', "TOPRIGHT", 'Health', "TOP" },
-        { 'Value', 'Tag', '[Vorkui:HealthColor][Vorkui:Absorb]' },
+
     }
 
     registers(module, submodule, 'Absorb', data)
@@ -56,16 +52,8 @@ local function healthOption(module, submodule)
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
         { 'Rendering', nil, 'VorkuiBackground', 'BACKGROUND', 1 },
         { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
-        --TAGS
-        { 'Value', 'Layer', 'OVERLAY' },
-        { 'Value', 'Font', 'ValueFont' },
-        { 'Value', 'Point', 'TOPLEFT', 'Health', 'TOP' },
-        { 'Value', 'Tag', '[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp-Max]' },
-
-        { 'Percent', 'Layer', 'OVERLAY' },
-        { 'Percent', 'Font', 'BigValueFont' },
-        { 'Percent', 'Point', 'BOTTOMLEFT', 'Frame', 'BOTTOMLEFT' },
-        { 'Percent', 'Tag', '[Vorkui:HealthColor(true)][Vorkui:PerHP]' },
+        --ATTRIBUTES
+        { 'Attributes', 'colorSmooth', true },
     }
 
     registers(module, submodule, 'Health', data)
@@ -75,6 +63,7 @@ end
 local function healthPredictionOption(module, submodule)
     local data = {
         { nil, 'Enable', true },
+        { nil, 'Size', 156, 16 },
         ----SLANT
         { 'SlantingSettings', 'Enable', true },
         { 'SlantingSettings', 'IgnoreBackground', true },
@@ -86,19 +75,6 @@ local function healthPredictionOption(module, submodule)
 
     registers(module, submodule, 'HealthPrediction', data)
 
-end
-
-local function nameOption(module, submodule)
-    local data = {
-        { nil, 'Enable', true },
-        --TAGS
-        { nil, 'Layer', 'OVERLAY' },
-        { nil, 'Font', 'NameFont' },
-        { nil, 'Point', 'TOPRIGHT', nil, 'BOTTOMRIGHT', -20, 10 },
-        { nil, 'Tag', '[level][difficulty] [name] [classification]' },
-    }
-
-    registers(module, submodule, 'Name', data)
 end
 
 local function portraitOption(module, submodule)
@@ -119,19 +95,31 @@ local function portraitOption(module, submodule)
 
 end
 
-local function indicatorOption(module, submodule, indicator, size, point, texture, texcoord, vertexcolor, gradientalpha, blendmode)
+local function textOption(module, submodule, name, layer, font, point, tag)
+
     local data = {
-        { nil, 'Enable', true },
-        { nil, 'Size', unpack(size) },
-        { nil, 'Point', unpack(point) },
-        { nil, 'Texture', texture },
-        { nil, 'TexCoord', texcoord },
-        { nil, 'VertexColor', vertexcolor },
-        { nil, 'GradientAlpha', gradientalpha },
-        { nil, 'BlendMode', blendmode },
+        { name, 'Layer', layer },
+        { name, 'Font', font },
+        { name, 'Point', unpack(point) },
+        { name, 'Tag', tag },
     }
 
-    registers(module, submodule, indicator, data)
+    registers(module, submodule, 'Texts', data)
+end
+
+local function indicatorOption(module, submodule, indicator, size, point, texture, texcoord, vertexcolor, gradientalpha, blendmode)
+    local data = {
+        { indicator, 'Enable', true },
+        { indicator, 'Size', unpack(size) },
+        { indicator, 'Point', unpack(point) },
+        { indicator, 'Texture', texture },
+        { indicator, 'TexCoord', texcoord },
+        { indicator, 'VertexColor', vertexcolor },
+        { indicator, 'GradientAlpha', gradientalpha },
+        { indicator, 'BlendMode', blendmode },
+    }
+
+    registers(module, submodule, 'Indicators', data)
 end
 
 local function buffOption(module, submodule)
@@ -180,6 +168,23 @@ local function debuffOption(module, submodule)
 
 end
 
+local function generalOption(module, submodule)
+    local data = {
+        { nil, 'Size', 200, 31 },
+        { nil, 'Point', "CENTER", 'UIParent', "CENTER", -140, 0 },
+        { 'Background', 'Enable', true },
+        { 'Background', 'Color', 33 / 255, 44 / 255, 79 / 255, 0.75 },
+        { nil, 'NameFont', 'Montserrat Medium', 20, 'OUTLINE'},
+        { nil, 'NormalFont', 'Montserrat Medium', 12, 'OUTLINE'},
+        { nil, 'StackFont', 'Montserrat Medium Italic', 16, 'OUTLINE'},
+        { nil, 'DurationFont', 'Montserrat Medium', 12, 'OUTLINE'},
+        { nil, 'BigValueFont', 'Montserrat Medium Italic', 18, 'OUTLINE'},
+        { nil, 'ValueFont', 'Montserrat Medium Italic', 14, 'OUTLINE'},
+    }
+
+    registers(module, submodule, 'General', data)
+end
+
 --(module, submodule, object, component, type, optionName, defaultValue)
 Themes["Default"].SetFocusTargetProfile = function()
 
@@ -187,8 +192,7 @@ Themes["Default"].SetFocusTargetProfile = function()
     local submodule = 'FocusTargetLayout'
 
     --Global OPTION
-    Profiles:RegisterOption(module, submodule, nil, nil, 'Size', 200, 31)
-    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', "CENTER", 'UIParent', "CENTER", -140, 0)
+    generalOption(module, submodule)
     --HEALTH OPTION
     healthOption(module, submodule)
     healthPredictionOption(module, submodule)
@@ -198,81 +202,41 @@ Themes["Default"].SetFocusTargetProfile = function()
     indicatorOption(module, submodule, 'ClassIndicator',
             { 16, 16 },
             { 'TOPRIGHT', 'Frame', 'TOPLEFT', 4, -2 },
-            'ClassIcon',
-            nil,
-            nil,
-            nil,
-            nil
+            'ClassIcon'
     )
 
-    indicatorOption(module, submodule, 'RaidIndicator',
+    indicatorOption(module, submodule, 'RaidTargetIndicator',
             { 16, 16 },
             { 'RIGHT', 'Health', 'RIGHT', -10, 0 },
-            'RaidIcon',
-            nil,
-            nil,
-            nil,
-            nil
+            'RaidIcon'
     )
 
-    nameOption(module, submodule)
+    textOption(module, submodule, 'HealthValue',
+            'OVERLAY',
+            'ValueFont',
+            {'TOPLEFT', 'Health', 'TOP'},
+            '[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp-Max]'
+    )
 
-    --[[ TODO TEMPORARY FONT TO KEEP COMPATIBILTY WITH OLD EDITOR
-    ["NameFont"] = {
-				"Montserrat Medium", -- [1]
-				20, -- [2]
-				"OUTLINE", -- [3]
-			},
-    ["NormalFont"] = {
-				"Montserrat Medium", -- [1]
-				12, -- [2]
-				"OUTLINE", -- [3]
-			},
-    ["StackFont"] = {
-				"Montserrat Medium Italic", -- [1]
-				16, -- [2]
-				"OUTLINE", -- [3]
-			},
-	["DurationFont"] = {
-				"Montserrat Medium", -- [1]
-				12, -- [2]
-				"OUTLINE", -- [3]
-			},
-	["BigValueFont"] = {
-				"Montserrat Medium Italic", -- [1]
-				18, -- [2]
-				"OUTLINE", -- [3]
-			},
-	["ValueFont"] = {
-				"Montserrat Medium Italic", -- [1]
-				14, -- [2]
-				"OUTLINE", -- [3]
-			},
+    textOption(module, submodule, 'HealthPercent',
+            'OVERLAY',
+            'BigValueFont',
+            {'BOTTOMLEFT', 'Frame', 'BOTTOMLEFT'},
+            '[Vorkui:HealthColor(true)][Vorkui:PerHP]'
+    )
 
-	["Submodules"] = {
-				["Absorb"] = true,
-				["Portrait"] = true,
-				["Power"] = true,
-				["LeaderIndicator"] = true,
-				["Debuffs"] = true,
-				["ResurrectIndicator"] = true,
-				["SummonIndicator"] = true,
-				["CastBar"] = true,
-				["RestingIndicator"] = true,
-				["CombatIndicator"] = true,
-				["ClassIndicator"] = true,
-				["DeadOrGhostIndicator"] = true,
-				["Buffs"] = true,
-				["FightIndicator"] = true,
-				["RaidIndicator"] = true,
-			},
-    ]]--
+    textOption(module, submodule, 'AbsorbValue',
+            'OVERLAY',
+            'ValueFont',
+            {'TOPRIGHT', 'Health', 'TOP'},
+            '[Vorkui:HealthColor][Vorkui:Absorb]'
+    )
 
-    Profiles:RegisterOption(module, submodule, nil, nil, 'NameFont', 'Montserrat Medium', 20, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'NormalFont', 'Montserrat Medium', 12, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'StackFont', 'Montserrat Medium Italic', 16, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'DurationFont', 'Montserrat Medium', 12, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'BigValueFont', 'Montserrat Medium Italic', 18, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'ValueFont', 'Montserrat Medium Italic', 14, 'OUTLINE')
+    textOption(module, submodule, 'Name',
+            'OVERLAY',
+            'NameFont',
+            { 'BOTTOMRIGHT', 'Frame', 'TOPRIGHT', 0, 2 },
+            '[level][difficulty] [name] [classification]'
+    )
 
 end

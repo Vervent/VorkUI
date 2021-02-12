@@ -571,7 +571,7 @@ local function parseConfig()
 end
 
 function Install:GenerateConfigFrame()
-    parseConfig()
+    --parseConfig()
 end
 
 function Install:RegisterModule(name, page)

@@ -209,8 +209,8 @@ local function buffOption(module, submodule)
         { 'Attributes', 'showStealableBuffs', true },
         { 'Attributes', 'spacing', 2 },
         { 'Attributes', 'growth-x', 'LEFT' },
-        { 'Attributes', 'growth-y', 'TOP' },
-        { 'Attributes', 'initialAnchor', 'BOTTOMLEFT' },
+        { 'Attributes', 'growth-y', 'UP' },
+        { 'Attributes', 'initialAnchor', 'BOTTOMRIGHT' },
         { 'Attributes', 'filter', 'HELPFUL' },
         { 'Attributes', 'tooltipAnchor', 'ANCHOR_BOTTOMRIGHT' },
         { 'Attributes', 'num', 6 },
@@ -232,7 +232,7 @@ local function debuffOption(module, submodule)
         { 'Attributes', 'disableCooldown', false },
         { 'Attributes', 'spacing', 2 },
         { 'Attributes', 'growth-x', 'LEFT' },
-        { 'Attributes', 'growth-y', 'TOP' },
+        { 'Attributes', 'growth-y', 'UP' },
         { 'Attributes', 'initialAnchor', 'BOTTOMRIGHT' },
         { 'Attributes', 'filter', 'HARMFUL' },
         { 'Attributes', 'tooltipAnchor', 'ANCHOR_BOTTOMRIGHT' },
@@ -243,6 +243,23 @@ local function debuffOption(module, submodule)
 
 end
 
+local function generalOption(module, submodule)
+    local data = {
+        { nil, 'Size', 300, 62 },
+        { nil, 'Point', "CENTER", 'UIParent', "CENTER", 450, -350 },
+        { 'Background', 'Enable', true },
+        { 'Background', 'Color', 33 / 255, 44 / 255, 79 / 255, 0.75 },
+        { nil, 'NameFont', 'Montserrat Medium', 20, 'OUTLINE'},
+        { nil, 'NormalFont', 'Montserrat Medium', 12, 'OUTLINE'},
+        { nil, 'StackFont', 'Montserrat Medium Italic', 16, 'OUTLINE'},
+        { nil, 'DurationFont', 'Montserrat Medium', 12, 'OUTLINE'},
+        { nil, 'BigValueFont', 'Montserrat Medium Italic', 18, 'OUTLINE'},
+        { nil, 'ValueFont', 'Montserrat Medium Italic', 14, 'OUTLINE'},
+    }
+
+    registers(module, submodule, 'General', data)
+end
+
 --(module, submodule, object, component, type, optionName, defaultValue)
 Themes["Default"].SetTargetProfile = function()
 
@@ -250,11 +267,7 @@ Themes["Default"].SetTargetProfile = function()
     local submodule = 'TargetLayout'
 
     --Global OPTION
-    Profiles:RegisterOption(module, submodule, 'General', nil, 'Size', 300, 62)
-    Profiles:RegisterOption(module, submodule, 'General', nil, 'Point', "CENTER", 'UIParent', "CENTER", 450, -350)
-    Profiles:RegisterOption(module, submodule, 'General', 'Background', 'Enable',true)
-    Profiles:RegisterOption(module, submodule, 'General', 'Background', 'Color', 33 / 255, 44 / 255, 79 / 255, 0.75)
-
+    generalOption(module, submodule)
     --HEALTH OPTION
     healthOption(module, submodule)
     healthPredictionOption(module, submodule)
@@ -267,21 +280,13 @@ Themes["Default"].SetTargetProfile = function()
     indicatorOption(module, submodule, 'ClassIndicator',
             { 24, 24 },
             { 'TOPRIGHT', 'Frame', 'TOPRIGHT', -51, -2 },
-            'ClassIcon',
-            nil,
-            nil,
-            nil,
-            nil
+            'ClassIcon'
     )
 
     indicatorOption(module, submodule, 'RaidTargetIndicator',
             { 24, 24 },
             { 'TOPLEFT', 'Frame', 'TOPLEFT', 2, -10 },
-            'RaidIcon',
-            nil,
-            nil,
-            nil,
-            nil
+            'RaidIcon'
     )
 
     indicatorOption(module, submodule, 'LeaderIndicator',
@@ -289,9 +294,7 @@ Themes["Default"].SetTargetProfile = function()
             { 'LEFT', 'Frame', 'RIGHT' },
             'GlobalIcon',
             'LEADER',
-            { 163 / 255, 220 / 255, 255 / 255 },
-            nil,
-            nil
+            { 163 / 255, 220 / 255, 255 / 255 }
     )
 
     indicatorOption(module, submodule, 'DeadOrGhostIndicator',
@@ -299,9 +302,7 @@ Themes["Default"].SetTargetProfile = function()
             { 'BOTTOMLEFT', 'Frame', 'BOTTOMLEFT' },
             'Status',
             'DIED',
-            { 255 / 255, 68 / 255, 91 / 255 },
-            nil,
-            nil
+            { 255 / 255, 68 / 255, 91 / 255 }
     )
 
     indicatorOption(module, submodule, 'ResurrectIndicator',
@@ -309,9 +310,7 @@ Themes["Default"].SetTargetProfile = function()
             { 'BOTTOMLEFT', 'Frame', 'BOTTOMLEFT' },
             'Status',
             'RESURRECT',
-            { 30 / 255, 223 / 255, 100 / 255 },
-            nil,
-            nil
+            { 30 / 255, 223 / 255, 100 / 255 }
     )
 
     indicatorOption(module, submodule, 'SummonIndicator',
@@ -319,9 +318,7 @@ Themes["Default"].SetTargetProfile = function()
             { 'CENTER', 'Health', 'CENTER' },
             'Phasing',
             'SUMMON',
-            { 0 / 255, 204 / 255, 255 / 255 },
-            nil,
-            nil
+            { 0 / 255, 204 / 255, 255 / 255 }
     )
 
     indicatorOption(module, submodule, 'PhaseIndicator',
@@ -329,9 +326,7 @@ Themes["Default"].SetTargetProfile = function()
             { 'CENTER', 'Health', 'CENTER' },
             'Phasing',
             'PHASE',
-            { 0 / 255, 204 / 255, 255 / 255 },
-            nil,
-            nil
+            { 0 / 255, 204 / 255, 255 / 255 }
     )
 
     textOption(module, submodule, 'HealthValue',
@@ -421,12 +416,5 @@ Themes["Default"].SetTargetProfile = function()
 				["RaidIndicator"] = true,
 			},
     ]]--
-
-    Profiles:RegisterOption(module, submodule, nil, nil, 'NameFont', 'Montserrat Medium', 20, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'NormalFont', 'Montserrat Medium', 12, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'StackFont', 'Montserrat Medium Italic', 16, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'DurationFont', 'Montserrat Medium', 12, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'BigValueFont', 'Montserrat Medium Italic', 18, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'ValueFont', 'Montserrat Medium Italic', 14, 'OUTLINE')
 
 end

@@ -36,6 +36,7 @@ local function absorbOption(module, submodule)
 end
 
 local function healthOption(module, submodule)
+
     local data = {
         { nil, 'Enable', true },
         --TRANSFORM
@@ -254,17 +255,32 @@ local function debuffOption(module, submodule)
 
 end
 
+local function generalOption(module, submodule)
+    local data = {
+        { nil, 'Size', 300, 62 },
+        { nil, 'Point', "CENTER", 'UIParent', "CENTER", -450, -350 },
+        { 'Background', 'Enable', true },
+        { 'Background', 'Color', 33 / 255, 44 / 255, 79 / 255, 0.75 },
+        { nil, 'NameFont', 'Montserrat Medium', 20, 'OUTLINE'},
+        { nil, 'NormalFont', 'Montserrat Medium', 12, 'OUTLINE'},
+        { nil, 'StackFont', 'Montserrat Medium Italic', 16, 'OUTLINE'},
+        { nil, 'DurationFont', 'Montserrat Medium', 12, 'OUTLINE'},
+        { nil, 'BigValueFont', 'Montserrat Medium Italic', 18, 'OUTLINE'},
+        { nil, 'ValueFont', 'Montserrat Medium Italic', 14, 'OUTLINE'},
+    }
+
+    registers(module, submodule, 'General', data)
+end
+
 --(module, submodule, object, component, type, optionName, defaultValue)
 Themes["Default"].SetPlayerProfile = function()
 
     local module = 'UnitFrames'
     local submodule = 'PlayerLayout'
 
+
     --Global OPTION
-    Profiles:RegisterOption(module, submodule, 'General', nil, 'Size', 300, 62)
-    Profiles:RegisterOption(module, submodule, 'General', nil, 'Point', "CENTER", 'UIParent', "CENTER", -450, -350)
-    Profiles:RegisterOption(module, submodule, 'General', 'Background', 'Enable',true)
-    Profiles:RegisterOption(module, submodule, 'General', 'Background', 'Color', 33 / 255, 44 / 255, 79 / 255, 0.75)
+    generalOption(module, submodule)
 
     --HEALTH OPTION
     healthOption(module, submodule)
@@ -456,13 +472,6 @@ Themes["Default"].SetPlayerProfile = function()
 			},
     ]]--
 
-    Profiles:RegisterOption(module, submodule, nil, nil, 'NameFont', 'Montserrat Medium', 20, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'NormalFont', 'Montserrat Medium', 12, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'StackFont', 'Montserrat Medium Italic', 16, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'DurationFont', 'Montserrat Medium', 12, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'BigValueFont', 'Montserrat Medium Italic', 18, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'ValueFont', 'Montserrat Medium Italic', 14, 'OUTLINE')
-
     Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Absorb', true)
     Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Portrait', true)
     Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Power', true)
@@ -478,13 +487,5 @@ Themes["Default"].SetPlayerProfile = function()
     Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'Buffs', true)
     Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'FightIndicator', true)
     Profiles:RegisterOption(module, submodule, 'Submodules', nil, 'RaidIndicator', true)
-
-
-    --["Theme"] = "default",
-    Profiles:RegisterOption('Theme', nil, nil, nil, 'Name', 'Default')
-    --Profiles:RegisterOption('PartyLayout', nil, nil, nil, 'Layout', 'Expanded')
-    --Profiles:RegisterOption('RaidLayout', nil, nil, nil, 'Layout', 'Minimalist')
-    --["PartyLayout"] = "Expanded",
-    --["RaidLayout"] = "Minimalist",
 
 end
