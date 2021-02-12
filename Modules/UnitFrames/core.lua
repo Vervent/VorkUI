@@ -662,7 +662,6 @@ end
 local function CreateFontString(frame, config, baseConfig)
     local font = frame:CreateFontString(nil, config.Layer)
     local fontObject = baseConfig[config.Font]
-    print (unpack(fontObject))
     font:SetFontObject( Medias:GetFont( fontObject[1]..fontObject[2] ) )
     --font:Point(config.Point, frame:GetParent())
 
@@ -1432,8 +1431,8 @@ local function CreateUnit(self, unit, config)
         for k, v in pairs(config.Buffs.Attributes) do --TODO Add attributes section in profile
             buffs[k] = v
         end
-        local width = ( buffs.size + buffs.spacing ) * 2
-        local height = ( buffs.size + buffs.spacing ) * 3
+        local width = ( buffs.size + buffs.spacing ) * config.Buffs.Dimension[1]
+        local height = ( buffs.size + buffs.spacing ) * config.Buffs.Dimension[2]
         buffs:SetSize(width, height)
         self.Buffs = buffs
     end
@@ -1443,8 +1442,8 @@ local function CreateUnit(self, unit, config)
         for k, v in pairs(config.Debuffs.Attributes) do --TODO Add attributes section in profile
             debuffs[k] = v
         end
-        local width = ( debuffs.size+ debuffs.spacing ) * 3
-        local height = ( debuffs.size+ debuffs.spacing ) * 2
+        local width = ( debuffs.size+ debuffs.spacing ) * config.Buffs.Dimension[1]
+        local height = ( debuffs.size+ debuffs.spacing ) * config.Buffs.Dimension[2]
         debuffs:SetSize(width, height)
         self.Debuffs = debuffs
     end
@@ -1473,9 +1472,7 @@ local function CreateUnit(self, unit, config)
     end
 
     if config.Texts then
-        print ('CREATE FONT STRING FOR', unit)
         for k, v in pairs (config.Texts) do
-            print (k, v.Font, config.General)
             self[k] = CreateFontString(frame, v, config.General)
             self:Tag(self[k], v.Tag)
         end
@@ -1496,6 +1493,8 @@ local function CreateUnit(self, unit, config)
 end
 
 local function LocateUnitFrames(self, config)
+
+
     self.Health:Point(config.Health.Point, self)
     if config.Absorb and config.Absorb.Enable then
         self.Absorb:Point(config.Absorb.Point, self)
@@ -1590,9 +1589,41 @@ function UnitFrames:StyleUnit(unit)
         unitName = unit:gsub("^%l", string.upper)
     end
 
-    local config = style[unitName..'Layout']
+    local config
+
+    if (unit:find("raid")) or (unit:find("raidpet")) then
+        if parentName:match("Party") then
+            config = style.PartyLayout
+        else
+            config = style.RaidLayout
+        end
+    else
+        config = style[unitName..'Layout']
+    end
 
     CreateUnit(self, unit, config)
+    --if unit ~= 'party' then
+    --    LocateUnitFrames(self, config)
+    --else
+    --    print('Health', self.Health)
+    --    print('Absorb', self.Absorb)
+    --    print('Power', self.Power )
+    --    print('Buffs', self.Buffs )
+    --    print('Debuffs', self.Debuffs )
+    --    print('Portrait', self.Portrait )
+    --    print('Castbar', self.Castbar )
+    --    if config.Indicators then
+    --        for k, v in pairs(config.Indicators) do
+    --            print (k, self[k])
+    --        end
+    --    end
+    --
+    --    if config.Texts then
+    --        for k, v in pairs(config.Texts) do
+    --            print (k, self[k])
+    --        end
+    --    end
+    --end
     LocateUnitFrames(self, config)
     ResizeUnitFrames(self, config)
 
@@ -1606,8 +1637,6 @@ function UnitFrames:Style(unit)
     --local style = C.UnitFrames
 
     local style = C.UnitFrames
-
-    local Parent = self:GetParent():GetName()
 
     UnitFrames.StyleUnit(self, unit)
 
@@ -1665,7 +1694,7 @@ function UnitFrames:CreateUnits()
                     "oUF-initialConfigFunction", initialConfigFunction,
                     unpack( UnitFrames:GetPartyFramesAttributes( Config.PartyLayout.Attributes ) )
             )
-            party:Point(Config.PartyLayout.Point)
+            party:Point( Config.PartyLayout.General.Point )
             --party:SetPoint("LEFT", UIParent, "LEFT", 0, 0)
 
             self.Headers.Party = party

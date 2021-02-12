@@ -8,7 +8,6 @@ if not Themes["Default"] then
 end
 
 Themes["Default"].RegisterModules = function(layout)
-    print ("REGISTER THEMES MODULES")
     Themes["Default"].SetPlayerProfile()
     Themes["Default"].SetPetProfile()
     Themes["Default"].SetTargetProfile()

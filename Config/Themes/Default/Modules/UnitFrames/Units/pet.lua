@@ -176,6 +176,7 @@ local function buffOption(module, submodule)
         { nil, 'Enable', true },
         --TRANSFORM
         { nil, 'Point', 'BOTTOMLEFT', 'Frame', 'BOTTOMRIGHT', 2, 0 },
+        { nil, 'Dimension', 2, 3 }, --column, row
         ----ATTRIBUTES
         { 'Attributes', 'size', 18 },
         { 'Attributes', 'disableMouse', false },
@@ -200,6 +201,7 @@ local function debuffOption(module, submodule)
         { nil, 'Enable', true },
         --TRANSFORM
         { nil, 'Point', 'BOTTOMLEFT', 'Frame', 'TOPRIGHT', 0, 2 },
+        { nil, 'Dimension', 3, 2 }, --column, row
         ----ATTRIBUTES
         { 'Attributes', 'size', 48 },
         { 'Attributes', 'onlyShowPlayer', false },
