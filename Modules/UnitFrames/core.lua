@@ -5,10 +5,8 @@
 local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 local oUF = Plugin.oUF or oUF
-local Noop = function() end
-local UnitFrames = V["UnitFrames"]
---local Config = V["Themes"].Default.UnitFrames
 
+local UnitFrames = V["UnitFrames"]
 local Medias = V["Medias"]
 local LibSlant = LibStub:GetLibrary("LibSlant")
 local LibAtlas = Medias:GetLibAtlas()
@@ -19,6 +17,11 @@ local strlower = strlower
 local format = format
 local floor = floor
 local max = max
+local unpack = unpack
+local select = select
+local string = string
+local gsub = gsub
+local type = type
 
 -- WoW globals (I don't really wanna import all the funcs we use here, so localize the ones called a LOT, like in Health/Power functions)
 local UnitIsEnemy = UnitIsEnemy
@@ -29,6 +32,12 @@ local UnitPlayerControlled = UnitPlayerControlled
 local UnitIsGhost = UnitIsGhost
 local UnitIsDead = UnitIsDead
 local UnitPowerType = UnitPowerType
+local CreateFrame = CreateFrame
+local UnitGUID = UnitGUID
+local UnitName = UnitName
+local UnitIsVisible = UnitIsVisible
+local UnitClass = UnitClass
+
 
 UnitFrames.oUF = oUF
 UnitFrames.Units = {}
@@ -264,15 +273,6 @@ function UnitFrames:CreateCastBar(frame, config, baseConfig)
     castbar:SetStatusBarTexture(Medias:GetStatusBar(textures[1][1]))
     castbar:SetStatusBarColor(unpack(config.StatusBarColor))
     castbar:SetReverseFill(config.ReverseFill or false)
-    --local point = config.Point
-    --
-    --if point[2] == nil then
-    --    point[2] = frame
-    --elseif type(config.Point[2]) == 'string' then
-    --    point = { self:GetPoint(point) }
-    --end
-    --
-    --castbar:SetPoint(unpack(point))
 
     castbar:Point(config.Point, frame:GetParent())
 
@@ -404,13 +404,6 @@ function UnitFrames:Create3DPortrait(template, parent, config)
     local portrait = CreateFrame(template, nil, parent)
     portrait:SetModelDrawLayer( config.ModelDrawLayer )
     portrait:SetSize( unpack( config.Size ) )
-    --local point = config.Point
-    --if point[2] == nil then
-    --    point[2] = parent
-    --elseif type(config.Point[2]) == 'string' then
-    --    point = { self:GetPoint(point) }
-    --end
-    --portrait:SetPoint( unpack( point ) )
     portrait:Point(config.Point)
     portrait.name = ''
 
@@ -469,14 +462,6 @@ end
 function UnitFrames:CreateIndicator(frame, layer, sublayer, config, unit)
     local indicator = frame:CreateTexture(nil, layer, sublayer)
     indicator:SetSize( unpack(config.Size) )
-    --local point = config.Point
-    --if point[2] == nil then
-    --    point[2] = frame
-    --elseif type(config.Point[2]) == 'string' then
-    --    point = {self:GetPoint(point)}
-    --end
-    --indicator:SetPoint( unpack(point) )
-    indicator:Point(config.Point)
 
     indicator:SetTexture( LibAtlas:GetPath(config.Texture) )
     if config.TexCoord then
@@ -499,17 +484,6 @@ function UnitFrames:CreateIndicator(frame, layer, sublayer, config, unit)
     end
 
     return indicator
-end
-
-function UnitFrames:GetPoint(point)
-    if point == nil then
-        print ("||cFFFF1010 GET POINT ERROR|r", self)
-        return
-    end
-    local anchor, parent, relativeAnchor, xOff, yOff = unpack(point)
-    parent = self[parent]
-
-    return anchor, parent, relativeAnchor, xOff, yOff
 end
 
 --[[------------------------------------------------------------------
@@ -1297,7 +1271,7 @@ end
 function UnitFrames:MouseOnPlayer()
 
 end
-function UnitFrames:GetPartyFramesAttributes( config )
+function UnitFrames:GetFramesAttributes(config )
 
     local attributes = {}
     for attribName, attribValue in pairs ( config ) do
@@ -1307,21 +1281,6 @@ function UnitFrames:GetPartyFramesAttributes( config )
 
     return attributes
 
-end
-
-function UnitFrames:GetPetPartyFramesAttributes()
-    return
-   ""
-end
-
-function UnitFrames:GetRaidFramesAttributes()
-
-    return
-   ""
-end
-
-function UnitFrames:GetPetRaidFramesAttributes()
-  return ""
 end
 
 function UnitFrames:UpdateRaidDebuffIndicator()
@@ -1581,14 +1540,12 @@ local function ResizeUnitFrames(self, config)
 
 end
 
-function UnitFrames:StyleUnit(unit)
-    if not unit then
+function UnitFrames:Style(unit)
+    if (not unit) then
         return
     end
 
     local style = C.UnitFrames
-    local parentName = self:GetParent():GetName()
-
     local unitName
 
     if unit == 'targettarget' then
@@ -1599,78 +1556,24 @@ function UnitFrames:StyleUnit(unit)
         unitName = unit:gsub("^%l", string.upper)
     end
 
-    local config
-
-    if (unit:find("raid")) or (unit:find("raidpet")) then
-        if parentName:match("Party") then
-            config = style.PartyLayout
-        else
-            config = style.RaidLayout
-        end
-    else
-        config = style[unitName..'Layout']
-    end
+    local config = style[unitName..'Layout']
 
     CreateUnit(self, unit, config)
     LocateUnitFrames(self, config)
     ResizeUnitFrames(self, config)
 
-end
-
-function UnitFrames:Style(unit)
-    if (not unit) then
-        return
-    end
-
-    --local style = C.UnitFrames
-
-    local style = C.UnitFrames
-
-    UnitFrames.StyleUnit(self, unit)
-
-    --if (unit == "player") then
-        --UnitFrames.Player(self, style.PlayerLayout, unit)
-    --elseif (unit == "target") then
-    --    UnitFrames.Target(self, style.TargetLayout, unit)
-    --elseif (unit == "targettarget") then
-    --    UnitFrames.TargetTarget(self, style.TargetTargetLayout, unit)
-    --elseif (unit == "pet") then
-    --    --TODO PET
-    --    UnitFrames.Pet(self, style.PetLayout, unit)
-    --elseif (unit == "focus") then
-    --    UnitFrames.Focus(self, style.FocusLayout, unit)
-    --elseif (unit == "focustarget") then
-    --    UnitFrames.FocusTarget(self, style.FocusTargetLayout, unit)
-    --elseif (unit == "party") then
-    --    --TODO USE CONFIG LAYOUT HERE
-    --    UnitFrames.Party(self, style.PartyLayout, unit )
-    --elseif (unit == "raid" ) then
-    --    --TODO USE CONFIG LAYOUT HERE
-    --    UnitFrames.Raid(self, style.RaidLayout, unit)
-    --elseif (unit:find("raid")) or (unit:find("raidpet")) then
-    --    if Parent:match("Party") then
-    --        --TODO USE CONFIG LAYOUT HERE
-    --        UnitFrames.Party(self, style.PartyLayout, unit)
-    --    else
-    --        --TODO USE CONFIG LAYOUT HERE
-    --        UnitFrames.Raid(self, style.RaidLayout, unit)
-    --    end
-    --end
 
     return self
 end
 
 function UnitFrames:CreateUnits()
 
-    --local themeName = C.Theme.Name
-    --local Config = V.Themes['default'].UnitFrames
     local Config = C.UnitFrames
 
     for k, v in pairs (Config) do
         if k == "PartyLayout" and v.Enable == true then
 
             local header = Config.PartyLayout.Header
-            local layout = Config.PartyLayout.Layout
             local initialConfigFunction = [[
                     local header = self:GetParent()
                     self:SetWidth(header:GetAttribute("initial-width"))
@@ -1679,16 +1582,13 @@ function UnitFrames:CreateUnits()
 
             local party = oUF:SpawnHeader( header.Name, header.Template or nil, header.Visibility,
                     "oUF-initialConfigFunction", initialConfigFunction,
-                    unpack( UnitFrames:GetPartyFramesAttributes( Config.PartyLayout.Attributes ) )
+                    unpack( UnitFrames:GetFramesAttributes( Config.PartyLayout.Attributes ) )
             )
             party:Point( Config.PartyLayout.General.Point )
-            --party:SetPoint("LEFT", UIParent, "LEFT", 0, 0)
-
             self.Headers.Party = party
         elseif k == "RaidLayout" and v.Enable == true then
 
             local header = Config.RaidLayout.Header
-            local layout = Config.RaidLayout.Layout
             local initialConfigFunction = [[
                     local header = self:GetParent()
                     self:SetWidth(header:GetAttribute("initial-width"))
@@ -1697,11 +1597,9 @@ function UnitFrames:CreateUnits()
 
             local raid = oUF:SpawnHeader( header.Name, header.Template or nil, header.Visibility,
                     "oUF-initialConfigFunction", initialConfigFunction,
-                    unpack( UnitFrames:GetPartyFramesAttributes( Config.RaidLayout.Attributes ) )
+                    unpack( UnitFrames:GetFramesAttributes( Config.RaidLayout.Attributes ) )
             )
             raid:Point(Config.RaidLayout.General.Point)
-            --raid:SetPoint("BOTTOM", UIParent, "BOTTOM", -300, 120)
-
             --TO TEST AREA
             --local background = raid:CreateTexture(nil, "BACKGROUND")
             --background:SetSize(81*8,61*5)
@@ -1724,7 +1622,6 @@ function UnitFrames:Enable()
 
     oUF:RegisterStyle("Vorkui", UnitFrames.Style)
     oUF:SetActiveStyle("Vorkui")
-
     self:CreateUnits()
 
 end
