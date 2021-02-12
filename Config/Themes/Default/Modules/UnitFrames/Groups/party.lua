@@ -25,7 +25,7 @@ local function textOption(module, submodule, name, layer, font, tag, points, lay
 
     if points[layout] ~= nil then
         data[4] = { name, 'Point', points[layout] }
-    else
+    elseif type(points[1]) == 'string' then
         data[4] = { name, 'Point', points }
     end
 
@@ -184,28 +184,6 @@ local function castbarOption(layout, module, submodule)
 
     registers(module, submodule, 'Castbar', data)
 
-end
-
-local function nameOption(layout, module, submodule)
-    local data = {
-        { nil, 'Enable', true },
-        --TAGS
-        { nil, 'Layer', 'OVERLAY' },
-        { nil, 'Font', 'NameFont' },
-        { nil, 'Tag', '[classification] [name] [difficulty][level]' },
-    }
-
-    if layout == 'Expanded' then
-        data[#data + 1] = { nil, 'Point', 'TOPRIGHT', 'Frame', 'TOPRIGHT', -20, 0 }
-    elseif layout == 'Minimalist' then
-        data[#data + 1] = { nil, 'Point', 'TOPRIGHT', 'Frame', 'TOPRIGHT', -20, 0 }
-    elseif layout == 'Compact' then
-        data[#data + 1] = { nil, 'Point', 'LEFT', 'Frame', 'RIGHT', 20, 0 }
-    else
-        print ("|cFFFF1010 BAD PARTY LAYOUT |r")
-    end
-
-    registers(module, submodule, 'Name', data)
 end
 
 local function powerOption(layout, module, submodule)
@@ -521,7 +499,6 @@ Themes["Default"].SetPartyProfile = function(layout)
             nil
     )
 
-    nameOption(layout, module, submodule)
     castbarOption(layout, module, submodule)
     buffOption(layout, module, submodule)
     debuffOption(layout, module, submodule)

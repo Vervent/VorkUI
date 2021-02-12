@@ -143,7 +143,7 @@ local function InitializeProfile(self)
 
     if not VorkuiDB then
         -- TODO Launch INSTALL SYSTEM
-        V["Themes"]:RegisterTheme("Default")
+        V["Themes"]:RegisterTheme("Default", 'Minimalist', 'Minimalist')
         --Install:Launch(VorkuiDB)
     else
         db = VorkuiDB

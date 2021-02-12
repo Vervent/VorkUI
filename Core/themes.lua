@@ -9,7 +9,7 @@ local Themes = CreateFrame("Frame")
 
 local themes = {}
 
-function Themes:RegisterTheme(name)
+function Themes:RegisterTheme(name, partyLayout, raidLayout)
     if themes[name] then
         return
     end
@@ -24,7 +24,7 @@ function Themes:RegisterTheme(name)
         return
     end
 
-    themes[name] = Themes[name].RegisterModules()
+    themes[name] = Themes[name].RegisterModules(partyLayout, raidLayout)
 end
 
 function Themes:ApplyTheme(name)

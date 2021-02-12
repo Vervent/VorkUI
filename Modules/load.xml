@@ -1,5 +1,3 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="UnitFrames\core.lua"/>
-	<Script file="UnitFrames\Groups\party.lua"/>
-	<Script file="UnitFrames\Groups\raid.lua"/>
 </Ui>

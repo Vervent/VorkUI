@@ -608,7 +608,15 @@ local function CreateSlantedStatusBar(frame, config)
         end
     end
 
-    slant:CalculateAutomaticSlant()
+    if slantSettings.Enable then
+        if slantSettings.SlantFactor and type(slantSettings.SlantFactor) == 'number' then
+            slant:SetCustomSlant(slantSettings.SlantFactor)
+        else
+            slant:CalculateAutomaticSlant()
+        end
+    else
+        slant:SetCustomSlant(0)
+    end
     if slantSettings.StaticLayer then
         slant:StaticSlant(slantSettings.StaticLayer)
     end
@@ -669,8 +677,6 @@ local function CreateFontString(frame, config, baseConfig)
 end
 
 local function CreateCastBar(frame, config, baseConfig)
-
-    print ('CREATE CAST BAR')
     local castbar = CreateFrame("StatusBar", frame:GetParent():GetName().."Castbar", frame)
     local textures = config.Rendering
     local sparkSettings = config.Spark
@@ -1431,9 +1437,6 @@ local function CreateUnit(self, unit, config)
         for k, v in pairs(config.Buffs.Attributes) do --TODO Add attributes section in profile
             buffs[k] = v
         end
-        local width = ( buffs.size + buffs.spacing ) * config.Buffs.Dimension[1]
-        local height = ( buffs.size + buffs.spacing ) * config.Buffs.Dimension[2]
-        buffs:SetSize(width, height)
         self.Buffs = buffs
     end
 
@@ -1442,9 +1445,6 @@ local function CreateUnit(self, unit, config)
         for k, v in pairs(config.Debuffs.Attributes) do --TODO Add attributes section in profile
             debuffs[k] = v
         end
-        local width = ( debuffs.size+ debuffs.spacing ) * config.Buffs.Dimension[1]
-        local height = ( debuffs.size+ debuffs.spacing ) * config.Buffs.Dimension[2]
-        debuffs:SetSize(width, height)
         self.Debuffs = debuffs
     end
 
@@ -1494,8 +1494,8 @@ end
 
 local function LocateUnitFrames(self, config)
 
-
     self.Health:Point(config.Health.Point, self)
+
     if config.Absorb and config.Absorb.Enable then
         self.Absorb:Point(config.Absorb.Point, self)
     end
@@ -1521,40 +1521,49 @@ local function LocateUnitFrames(self, config)
 
     if config.Indicators then
         for k, v in pairs(config.Indicators) do
-            self[k]:Point(v.Point, self)
+            if v.Point then
+                self[k]:Point(v.Point, self)
+            end
         end
     end
 
     if config.Texts then
         for k, v in pairs(config.Texts) do
-            self[k]:Point(v.Point, self)
+            if v.Point then
+                self[k]:Point(v.Point, self)
+            end
         end
     end
 end
 
 local function ResizeUnitFrames(self, config)
     self.Health:SetSize(unpack(config.Health.Size))
-    if config.Absorb and config.Absorb.Size then
+    if config.Absorb and config.Absorb.Enable then
         self.Absorb:SetSize(unpack(config.Absorb.Size))
     end
-    if config.Power and config.Power.Size then
+    if config.Power and config.Power.Enable then
         self.Power:SetSize(unpack(config.Power.Size))
     end
 
-
-    if config.Buffs and config.Buffs.Size then
-        self.Buffs:SetSize(unpack(config.Buffs.Size))
+    if config.Buffs and config.Buffs.Enable then
+        local s = config.Buffs.Attributes.size
+        local sp = config.Buffs.Attributes.spacing
+        local dim = config.Buffs.Dimension
+        self.Buffs:SetSize(( s + sp ) * dim[1], ( s + sp ) * dim[2])
     end
 
-    if config.Debuffs and config.Debuffs.Size then
-        self.Debuffs:SetSize(unpack(config.Debuffs.Size))
+    if config.Debuffs and config.Debuffs.Enable then
+        local s = config.Debuffs.Attributes.size
+        local sp = config.Debuffs.Attributes.spacing
+        local dim = config.Debuffs.Dimension
+        self.Debuffs:SetSize(( s + sp ) * dim[1], ( s + sp ) * dim[2])
     end
 
-    if config.Portrait and config.Portrait.Size then
+    if config.Portrait and config.Portrait.Enable then
         self.Portrait:SetSize(unpack(config.Portrait.Size))
     end
 
-    if config.Castbar and config.Castbar.Size then
+    if config.Castbar and config.Castbar.Enable then
         self.Castbar:SetSize(unpack(config.Castbar.Size))
     end
 
@@ -1564,11 +1573,12 @@ local function ResizeUnitFrames(self, config)
         end
     end
 
-    --if config.Texts then
-    --    for k, v in pairs(config.Texts) do
-    --        self[k]:SetSize(unpack(v.Size))
-    --    end
-    --end
+    if config.Texts then
+        for k, v in pairs(config.Texts) do
+            --self[k]:SetSize(80, 30)
+        end
+    end
+
 end
 
 function UnitFrames:StyleUnit(unit)
@@ -1602,28 +1612,6 @@ function UnitFrames:StyleUnit(unit)
     end
 
     CreateUnit(self, unit, config)
-    --if unit ~= 'party' then
-    --    LocateUnitFrames(self, config)
-    --else
-    --    print('Health', self.Health)
-    --    print('Absorb', self.Absorb)
-    --    print('Power', self.Power )
-    --    print('Buffs', self.Buffs )
-    --    print('Debuffs', self.Debuffs )
-    --    print('Portrait', self.Portrait )
-    --    print('Castbar', self.Castbar )
-    --    if config.Indicators then
-    --        for k, v in pairs(config.Indicators) do
-    --            print (k, self[k])
-    --        end
-    --    end
-    --
-    --    if config.Texts then
-    --        for k, v in pairs(config.Texts) do
-    --            print (k, self[k])
-    --        end
-    --    end
-    --end
     LocateUnitFrames(self, config)
     ResizeUnitFrames(self, config)
 
@@ -1689,7 +1677,6 @@ function UnitFrames:CreateUnits()
                     self:SetHeight(header:GetAttribute("initial-height"))
                     ]]
 
-            --TODO USE CONFIG LAYOUT HERE
             local party = oUF:SpawnHeader( header.Name, header.Template or nil, header.Visibility,
                     "oUF-initialConfigFunction", initialConfigFunction,
                     unpack( UnitFrames:GetPartyFramesAttributes( Config.PartyLayout.Attributes ) )
@@ -1708,18 +1695,17 @@ function UnitFrames:CreateUnits()
                     self:SetHeight(header:GetAttribute("initial-height"))
                     ]]
 
-            --TODO USE CONFIG LAYOUT HERE
-            local raid = oUF:SpawnHeader( header.Name, header.Template, header.Visibility,
+            local raid = oUF:SpawnHeader( header.Name, header.Template or nil, header.Visibility,
                     "oUF-initialConfigFunction", initialConfigFunction,
                     unpack( UnitFrames:GetPartyFramesAttributes( Config.RaidLayout.Attributes ) )
             )
-            raid:Point(Config.RaidLayout.Point)
+            raid:Point(Config.RaidLayout.General.Point)
             --raid:SetPoint("BOTTOM", UIParent, "BOTTOM", -300, 120)
 
             --TO TEST AREA
             --local background = raid:CreateTexture(nil, "BACKGROUND")
-            --background:SetSize(150*4,46*5)
-            --background:SetPoint("BOTTOMLEFT", raid, "BOTTOMLEFT")
+            --background:SetSize(81*8,61*5)
+            --background:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 10)
             --background:SetColorTexture(0,0,0,1)
 
             self.Headers.Raid = raid

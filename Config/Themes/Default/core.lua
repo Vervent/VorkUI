@@ -7,15 +7,15 @@ if not Themes["Default"] then
     Themes["Default"] = {}
 end
 
-Themes["Default"].RegisterModules = function(layout)
+Themes["Default"].RegisterModules = function(partyLayout, raidLayout)
     Themes["Default"].SetPlayerProfile()
     Themes["Default"].SetPetProfile()
     Themes["Default"].SetTargetProfile()
     Themes["Default"].SetTargetTargetProfile()
     Themes["Default"].SetFocusProfile()
     Themes["Default"].SetFocusTargetProfile()
-    Themes["Default"].SetPartyProfile(layout or 'Expanded')
-    Themes["Default"].SetRaidProfile(layout or 'Compact')
+    Themes["Default"].SetPartyProfile(partyLayout or 'Expanded')
+    Themes["Default"].SetRaidProfile(raidLayout or 'Compact')
 
     Profiles:RegisterOption('Theme', nil, nil, nil, 'Name', 'Default')
 

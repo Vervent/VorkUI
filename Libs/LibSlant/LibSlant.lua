@@ -181,8 +181,19 @@ local Methods = {
         end
     end,
 
-    CalculateAutomaticSlant = function(self)
+    SetCustomSlant = function (self, factor)
+        if self.UniformSlanting == false then
+            return
+        end
 
+        local textures = self.Textures
+
+        for i = 1, #textures do
+            self.Factors[i] = factor
+        end
+    end,
+
+    CalculateAutomaticSlant = function(self)
         local w, h
 
         if self.UniformSlanting then

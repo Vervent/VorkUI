@@ -15,11 +15,28 @@ local function registers(module, submodule, object, table)
     end
 end
 
+local function textOption(module, submodule, name, layer, font, tag, points, layout)
+
+    local data = {
+        { name, 'Layer', layer },
+        { name, 'Font', font },
+        { name, 'Tag', tag },
+    }
+
+    if points[layout] ~= nil then
+        data[4] = { name, 'Point', points[layout] }
+    elseif type(points[1]) == 'string' then
+        data[4] = { name, 'Point', points }
+    end
+
+    registers(module, submodule, 'Texts', data)
+end
+
 local function absorbOption(layout, module, submodule)
 
     local data = {
         { nil, 'Enable', true },
-        { 'SlantingSettings', 'Enable', true },
+        { 'SlantingSettings', 'Enable', false },
         { 'SlantingSettings', 'IgnoreBackground', true },
         { 'SlantingSettings', 'FillInverse', true },
         { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
@@ -28,22 +45,11 @@ local function absorbOption(layout, module, submodule)
         { 'Rendering', nil, { 0, 0, 0, 1 }, 'BACKGROUND', 1 },
     }
 
-    --if layout == 'Expanded' then
-    --elseif layout == 'Minimalist' then
-    --elseif layout == 'Compact' then
-    --  print ('|cFFFF1010 BAD PARTY LAYOUT |r')
-    --end
-
     local size = #data
 
     if layout == 'Minimalist' then
-        data[size + 1] = { nil, 'Size', 116, 6 }
-        data[size + 2] = { nil, 'Point', 'TOPRIGHT', 'Frame', 'TOPRIGHT', 0, -12 }
-        --TAGS
-        data[size + 3] = { 'Value', 'Layer', 'OVERLAY' }
-        data[size + 4] = { 'Value', 'Font', 'ValueFont' }
-        data[size + 5] = { 'Value', 'Point', "TOPLEFT", 'Health', "TOP" }
-        data[size + 6] = { 'Value', 'Tag', '[Vorkui:HealthColor][Vorkui:Absorb]' }
+        data[size + 1] = { nil, 'Size', 80, 10 }
+        data[size + 2] = { nil, 'Point', 'TOPRIGHT', 'Frame', 'TOPRIGHT' }
     elseif layout == 'Compact' then
         data[size + 1] = { nil, 'Size', 90, 6 }
         data[size + 2] = { nil, 'Point', 'TOPRIGHT', 'Frame', 'TOPRIGHT', 2, 0 }
@@ -56,36 +62,29 @@ end
 local function healthOption(layout, module, submodule)
     local data = {
         --TRANSFORM
-        { nil, 'Enable', enable },
+        { nil, 'Enable', true },
         ----SLANT
-        { 'SlantingSettings', 'Enable', true },
+        { 'SlantingSettings', 'Enable', false },
         { 'SlantingSettings', 'IgnoreBackground', true },
         { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
         { 'Rendering', nil, 'VorkuiBackground', 'BACKGROUND', 1 },
         { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
-        --TAGS
-        { 'Value', 'Layer', 'OVERLAY' },
-        { 'Value', 'Font', 'ValueFont' },
-        { 'Value', 'Tag', '[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp]' },
+        --ATTRIBUTES
+        { 'Attributes', 'colorSmooth', true },
+        { 'Attributes', 'colorClass', true },
 
-        { 'Percent', 'Layer', 'OVERLAY' },
-        { 'Percent', 'Font', 'BigValueFont' },
-        { 'Percent', 'Point', 'BOTTOMRIGHT', 'Frame', 'BOTTOMRIGHT' },
-        { 'Percent', 'Tag', '[Vorkui:HealthColor(true)][Vorkui:PerHP]' },
     }
 
     local size = #data
 
     if layout == 'Minimalist' then
-        data[size + 1] = { nil, 'Size', 126, 16 }
-        data[size + 2] = { nil, 'Point', 'TOPRIGHT', 'Absorb', 'TOPRIGHT', -4, 0 }
-        data[size + 3] = { 'Value', 'Point', 'TOPRIGHT', 'Health', 'TOP' }
+        data[size + 1] = { nil, 'Size', 80, 38 }
+        data[size + 2] = { nil, 'Point', 'TOPRIGHT', 'Absorb', 'BOTTOMRIGHT' }
     elseif layout == 'Compact' then
         data[size + 1] = { nil, 'Size', 94, 12 }
-        data[size + 2] = { nil, 'Point', 'TOPRIGHT', 'Absorb', 'TOPRIGHT', -7, 0 }
-        data[size + 3] = { 'Value', 'Point', 'CENTER', 'Health', 'CENTER' }
+        data[size + 2] = { nil, 'Point', 'TOPRIGHT', 'Absorb', 'BOTTOMRIGHT' }
     else
         print ('|cFFFF1010 BAD RAID LAYOUT |r')
     end
@@ -97,36 +96,27 @@ end
 local function healthPredictionOption(layout, module, submodule)
     local data = {
         ----SLANT
-        { nil, 'Enable', enable },
-        { 'SlantingSettings', 'Enable', true },
+        { nil, 'Enable', true },
+        { 'SlantingSettings', 'Enable', false },
         { 'SlantingSettings', 'IgnoreBackground', true },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK', 1 },
         { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
     }
 
-    registers(module, submodule, 'HealthPrediction', data)
-
-end
-
-local function nameOption(layout, module, submodule)
-    local data = {
-        { nil, 'Enable', true },
-        --TAGS
-        { nil, 'Layer', 'OVERLAY' },
-        { nil, 'Font', 'NameFont' },
-        { nil, 'Tag', '[Vorkui:Name(5)] [difficulty][level]' },
-    }
+    local size = #data
 
     if layout == 'Minimalist' then
-        data[#data + 1] = { nil, 'Point', 'TOPRIGHT', nil, 'TOPRIGHT', -20, 0 }
+        data[size + 1] = { nil, 'Size', 80, 38 }
     elseif layout == 'Compact' then
-        data[#data + 1] = { nil, 'Point', 'BOTTOM', nil, 'BOTTOM', 0, 0 }
+        data[size + 1] = { nil, 'Size', 94, 12 }
+        data[size + 2] = { nil, 'Point', 'TOPRIGHT', 'Absorb', 'BOTTOMRIGHT' }
     else
-        print ("|cFFFF1010 BAD RAID LAYOUT |r")
+        print ('|cFFFF1010 BAD RAID LAYOUT |r')
     end
 
-    registers(module, submodule, 'Name', data)
+    registers(module, submodule, 'HealthPrediction', data)
+
 end
 
 local function powerOption(layout, module, submodule)
@@ -138,15 +128,17 @@ local function powerOption(layout, module, submodule)
 
     local data = {
         { nil, 'Enable', enable },
-        { nil, 'Size', 118, 8 },
-        { nil, 'Point', 'TOPLEFT', 'Health', 'BOTTOMLEFT', -8, 0 },
+        { nil, 'Size', 80, 12 },
+        { nil, 'Point', 'TOPRIGHT', 'Health', 'BOTTOMRIGHT' },
         ----SLANT
-        { 'SlantingSettings', 'Enable', true },
+        { 'SlantingSettings', 'Enable', false },
         { 'SlantingSettings', 'IgnoreBackground', true },
         { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
         { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
+        { 'Attributes', 'colorPower', true },
+        { 'Attributes', 'frequentUpdates', true },
         --TAGS
     }
 
@@ -154,92 +146,25 @@ local function powerOption(layout, module, submodule)
 
 end
 
-local function powerPredictionOption(layout, module, submodule)
-    local enable = true
-
-    if layout == 'Compact' then
-        enable = false
-    end
-
-    local data = {
-        { nil, 'Enable', enable },
-        ----SLANT
-        { 'SlantingSettings', 'Enable', true },
-        { 'SlantingSettings', 'IgnoreBackground', true },
-        { 'SlantingSettings', 'FillInverse', true },
-        --RENDERING
-        { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK', 1 },
-        { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
-    }
-
-    registers(module, submodule, 'PowerPrediction', data)
-
-end
---
---local function buffOption(layout, module, submodule)
---
---    local enable = true
---
---    if layout ~= 'Expanded' then
---        enable = false
---    end
---
---    local data = {
---        { nil, 'Enable', enable },
---        --TRANSFORM
---        { nil, 'Size', 24*6 + 2*5, 24 },
---        { nil, 'Point', 'BOTTOMLEFT', 'Frame', 'TOPLEFT', 0, 2 },
---        { nil, 'ButtonSize', 24 },
---        { nil, 'ButtonCount', 6 },
---        { nil, 'ButtonSpacing', 2 },
---        { nil, 'OnlyShowPlayer', true },
---    }
---
---    registers(module, submodule, 'Buffs', data)
---
---end
---
---local function debuffOption(layout, module, submodule)
---
---    local enable = true
---
---    if layout ~= 'Compact' then
---        enable = false
---    end
---
---    local data = {
---        { nil, 'Enable', enable },
---        --TRANSFORM
---        { nil, 'Size', 24*6 + 2*5, 24 },
---        { nil, 'Point', 'TOPLEFT', 'Frame', 'BOTTOMLEFT', 0, 2 },
---        { nil, 'ButtonSize', 24 },
---        { nil, 'ButtonCount', 6 },
---        { nil, 'ButtonSpacing', 2 },
---    }
---
---    registers(module, submodule, 'Debuffs', data)
---
---end
-
 local function indicatorOption(module, submodule, indicator, size, point, texture, texcoord, vertexcolor, gradientalpha, blendmode)
     local data = {
-        { nil, 'Enable', enable },
-        { nil, 'Size', unpack(size) },
-        { nil, 'Point', unpack(point) },
-        { nil, 'Texture', texture },
-        { nil, 'TexCoord', texcoord },
-        { nil, 'VertexColor', vertexcolor },
-        { nil, 'GradientAlpha', gradientalpha },
-        { nil, 'BlendMode', blendmode },
+        { indicator, 'Enable', enable },
+        { indicator, 'Size', unpack(size) },
+        { indicator, 'Point', unpack(point) },
+        { indicator, 'Texture', texture },
+        { indicator, 'TexCoord', texcoord },
+        { indicator, 'VertexColor', vertexcolor },
+        { indicator, 'GradientAlpha', gradientalpha },
+        { indicator, 'BlendMode', blendmode },
     }
 
-    registers(module, submodule, indicator, data)
+    registers(module, submodule, 'Indicators', data)
 end
 
 local function headerOption(module, submodule)
     Profiles:RegisterOption(module, submodule, nil, 'Header', 'Name', 'VorkuiRaid')
     Profiles:RegisterOption(module, submodule, nil, 'Header', 'Template', nil)
-    Profiles:RegisterOption(module, submodule, nil, 'Header', 'Visibility', 'custom [@raid6,exists] show;hide')
+    Profiles:RegisterOption(module, submodule, nil, 'Header', 'Visibility', 'custom [@raid6,exists] show;show')
 end
 
 local function  attributesOption (layout, module, submodule)
@@ -247,21 +172,22 @@ local function  attributesOption (layout, module, submodule)
     Profiles:RegisterOption(module, submodule, nil, nil, 'Layout', layout)
 
     if layout == 'Minimalist' then
-        Profiles:RegisterOption(module, submodule, nil, nil, 'Size', 150*8 + 5*7, 5*46+4)
-        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'point', 'BOTTOM')
-        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-width', 150)
-        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-height', 46)
+
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'point', 'TOP')
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-width', 80)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-height', 60)
         Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'xOffset', 1)
         Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'yOffset', 1)
         Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'unitsPerColumn', 5)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'maxColumns', 8)
     elseif layout == 'Compact' then
-        Profiles:RegisterOption(module, submodule, nil, nil, 'Size', 100*4 + 5*3, 10*30+9)
-        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'point', 'BOTTOM')
-        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-width', 100)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'point', 'TOP')
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-width', 46)
         Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-height', 30)
         Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'xOffset', 1)
         Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'yOffset', 1)
-        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'unitsPerColumn', 10)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'unitsPerColumn', 20)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'maxColumns', 2)
     else
         print ("|cFFFF1010 BAD RAID LAYOUT |r")
     end
@@ -269,7 +195,7 @@ local function  attributesOption (layout, module, submodule)
     Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'showRaid', true)
     Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'showParty', false)
     Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'showPlayer', true)
-    Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'showSolo', false)
+    Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'showSolo', true)
     Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'sortMethod', 'INDEX')
     Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'sortDir', 'ASC')
     Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'groupBy', 'GROUP')
@@ -278,50 +204,29 @@ local function  attributesOption (layout, module, submodule)
     Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'columnAnchorPoint', 'LEFT')
 end
 
-local function buffOption(module, submodule)
+local function generalOption(module, submodule, layout)
     local data = {
-        { nil, 'Enable', true },
-        --TRANSFORM
-        { nil, 'Point', 'BOTTOMLEFT', 'Frame', 'BOTTOMRIGHT', 2, 0 },
-        ----ATTRIBUTES
-        { 'Attributes', 'size', 18 },
-        { 'Attributes', 'disableMouse', false },
-        { 'Attributes', 'disableCooldown', false },
-        { 'Attributes', 'onlyShowPlayer', true },
-        { 'Attributes', 'showStealableBuffs', false },
-        { 'Attributes', 'spacing', 2 },
-        { 'Attributes', 'growth-x', 'LEFT' },
-        { 'Attributes', 'growth-y', 'TOP' },
-        { 'Attributes', 'initialAnchor', 'BOTTOMLEFT' },
-        { 'Attributes', 'filter', 'HELPFUL' },
-        { 'Attributes', 'tooltipAnchor', 'ANCHOR_BOTTOMRIGHT' },
-        { 'Attributes', 'num', 6 },
+        { 'Background', 'Enable', true },
+        { 'Background', 'Color', 33 / 255, 44 / 255, 79 / 255, 0.75 },
+        { nil, 'NameFont', 'Montserrat SemiBold', 12, 'OUTLINE'},
+        { nil, 'NormalFont', 'Montserrat Medium', 12, 'OUTLINE'},
+        { nil, 'StackFont', 'Montserrat Medium Italic', 16, 'OUTLINE'},
+        { nil, 'DurationFont', 'Montserrat Medium', 12, 'OUTLINE'},
+        { nil, 'BigValueFont', 'Montserrat Medium Italic', 18, 'OUTLINE'},
+        { nil, 'ValueFont', 'Montserrat SemiBold Italic', 14, 'OUTLINE'},
     }
 
-    registers(module, submodule, 'Buffs', data)
+    local size = #data
 
-end
+    if layout == 'Compact' then
+        data[size + 1] = { nil, 'Point', 'LEFT', 'UIParent', 'LEFT', 10, 0 }
+        data[size + 2] = { nil, 'Size', 47*2, 31*20}
+    elseif layout == 'Minimalist' then
+        data[size + 1] = { nil, 'Point', 'BOTTOM', 'UIParent', 'BOTTOM', 0, 10 }
+        data[size + 2] = { nil, 'Size', 81*8, 51*5}
+    end
 
-local function debuffOption(module, submodule)
-    local data = {
-        { nil, 'Enable', true },
-        --TRANSFORM
-        { nil, 'Point', 'BOTTOMLEFT', 'Frame', 'TOPRIGHT', 0, 2 },
-        ----ATTRIBUTES
-        { 'Attributes', 'size', 48 },
-        { 'Attributes', 'onlyShowPlayer', false },
-        { 'Attributes', 'spacing', 2 },
-        { 'Attributes', 'growth-x', 'LEFT' },
-        { 'Attributes', 'growth-y', 'TOP' },
-        { 'Attributes', 'initialAnchor', 'BOTTOMRIGHT' },
-        { 'Attributes', 'showStealableBuffs', false },
-        { 'Attributes', 'filter', 'HARMFUL' },
-        { 'Attributes', 'tooltipAnchor', 'ANCHOR_BOTTOMRIGHT' },
-        { 'Attributes', 'num', 6 },
-    }
-
-    registers(module, submodule, 'Debuffs', data)
-
+    registers(module, submodule, 'General', data)
 end
 
 --(module, submodule, object, component, type, optionName, defaultValue)
@@ -331,8 +236,7 @@ Themes["Default"].SetRaidProfile = function(layout)
     local submodule = 'RaidLayout'
 
     --Global OPTION
-    Profiles:RegisterOption(module, submodule, nil, nil, 'Point', 'CENTER', 'UIParent', 'CENTER', -450, -350)
-
+    generalOption(module, submodule, layout)
     headerOption(module, submodule)
     attributesOption(layout, module, submodule)
 
@@ -341,26 +245,17 @@ Themes["Default"].SetRaidProfile = function(layout)
     healthPredictionOption(layout, module, submodule)
     absorbOption(layout, module, submodule)
     powerOption(layout, module, submodule)
-    powerPredictionOption(layout, module, submodule)
 
-    indicatorOption(module, submodule, 'ClassIndicator',
-            { 16, 16 },
-            { 'BOTTOMLEFT', 'Frame', 'BOTTOMLEFT', 0, 0 },
-            'ClassIcon',
-            nil,
-            nil,
-            nil,
-            nil
-    )
+    --indicatorOption(module, submodule, 'ClassIndicator',
+    --        { 16, 16 },
+    --        { 'BOTTOMLEFT', 'Frame', 'BOTTOMLEFT', 0, 0 },
+    --        'ClassIcon'
+    --)
 
-    indicatorOption(module, submodule, 'RaidIndicator',
+    indicatorOption(module, submodule, 'RaidTargetIndicator',
             { 16, 16 },
             { 'TOPLEFT', 'Frame', 'TOPLEFT', 0, 0 },
-            'RaidIcon',
-            nil,
-            nil,
-            nil,
-            nil
+            'RaidIcon'
     )
 
     indicatorOption(module, submodule, 'LeaderIndicator',
@@ -368,9 +263,7 @@ Themes["Default"].SetRaidProfile = function(layout)
             { 'LEFT', 'Frame', 'RIGHT' },
             'GlobalIcon',
             'LEADER',
-            { 163 / 255, 220 / 255, 255 / 255 },
-            nil,
-            nil
+            { 163 / 255, 220 / 255, 255 / 255 }
     )
 
     indicatorOption(module, submodule, 'DeadOrGhostIndicator',
@@ -378,9 +271,7 @@ Themes["Default"].SetRaidProfile = function(layout)
             { 'CENTER', 'Frame', 'CENTER' },
             'Status',
             'DIED',
-            { 255 / 255, 68 / 255, 91 / 255 },
-            nil,
-            nil
+            { 255 / 255, 68 / 255, 91 / 255 }
     )
 
     indicatorOption(module, submodule, 'ResurrectIndicator',
@@ -388,9 +279,7 @@ Themes["Default"].SetRaidProfile = function(layout)
             { 'CENTER', 'Frame', 'CENTER', 0, 0 },
             'Status',
             'RESURRECT',
-            { 30 / 255, 223 / 255, 100 / 255 },
-            nil,
-            nil
+            { 30 / 255, 223 / 255, 100 / 255 }
     )
 
     indicatorOption(module, submodule, 'SummonIndicator',
@@ -398,9 +287,7 @@ Themes["Default"].SetRaidProfile = function(layout)
             { 'CENTER', 'Frame', 'CENTER' },
             'Phasing',
             'SUMMON',
-            { 0 / 255, 204 / 255, 255 / 255 },
-            nil,
-            nil
+            { 0 / 255, 204 / 255, 255 / 255 }
     )
 
     indicatorOption(module, submodule, 'PhaseIndicator',
@@ -408,71 +295,35 @@ Themes["Default"].SetRaidProfile = function(layout)
             { 'CENTER', 'Frame', 'CENTER' },
             'Phasing',
             'PHASE',
-            { 0 / 255, 204 / 255, 255 / 255 },
-            nil,
-            nil
+            { 0 / 255, 204 / 255, 255 / 255 }
+    )
+    --textOption(module, submodule, 'HealthValue',
+    --        'OVERLAY',
+    --        'ValueFont',
+    --        '[Vorkui:HealthColor(false)][Vorkui:Deficit:Curhp]',
+    --        {
+    --            ['Minimalist'] = {'TOP', 'Health'},
+    --            ['Compact'] = {'CENTER', 'Health', 'CENTER'}
+    --        },
+    --        layout
+    --)
+
+    textOption(module, submodule, 'HealthPercent',
+            'OVERLAY',
+            'BigValueFont',
+            '[Vorkui:HealthColor(true)][Vorkui:PerHP]',
+            { 'CENTER', 'Frame', 'CENTER' }
     )
 
-    nameOption(layout, module, submodule)
-    --buffOption(layout, module, submodule)
-    --debuffOption(layout, module, submodule)
-
-    --[[ TODO TEMPORARY FONT TO KEEP COMPATIBILTY WITH OLD EDITOR
-    ["NameFont"] = {
-				"Montserrat Medium", -- [1]
-				20, -- [2]
-				"OUTLINE", -- [3]
-			},
-    ["NormalFont"] = {
-				"Montserrat Medium", -- [1]
-				12, -- [2]
-				"OUTLINE", -- [3]
-			},
-    ["StackFont"] = {
-				"Montserrat Medium Italic", -- [1]
-				16, -- [2]
-				"OUTLINE", -- [3]
-			},
-	["DurationFont"] = {
-				"Montserrat Medium", -- [1]
-				12, -- [2]
-				"OUTLINE", -- [3]
-			},
-	["BigValueFont"] = {
-				"Montserrat Medium Italic", -- [1]
-				18, -- [2]
-				"OUTLINE", -- [3]
-			},
-	["ValueFont"] = {
-				"Montserrat Medium Italic", -- [1]
-				14, -- [2]
-				"OUTLINE", -- [3]
-			},
-
-	["Submodules"] = {
-				["Absorb"] = true,
-				["Portrait"] = true,
-				["Power"] = true,
-				["LeaderIndicator"] = true,
-				["Debuffs"] = true,
-				["ResurrectIndicator"] = true,
-				["SummonIndicator"] = true,
-				["CastBar"] = true,
-				["RestingIndicator"] = true,
-				["CombatIndicator"] = true,
-				["ClassIndicator"] = true,
-				["DeadOrGhostIndicator"] = true,
-				["Buffs"] = true,
-				["FightIndicator"] = true,
-				["RaidIndicator"] = true,
-			},
-    ]]--
-
-    Profiles:RegisterOption(module, submodule, nil, nil, 'NameFont', 'Montserrat Medium', 20, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'NormalFont', 'Montserrat Medium', 12, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'StackFont', 'Montserrat Medium Italic', 16, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'DurationFont', 'Montserrat Medium', 12, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'BigValueFont', 'Montserrat Medium Italic', 18, 'OUTLINE')
-    Profiles:RegisterOption(module, submodule, nil, nil, 'ValueFont', 'Montserrat Medium Italic', 14, 'OUTLINE')
+    textOption(module, submodule, 'Name',
+            'OVERLAY',
+            'NameFont',
+            '[Vorkui:Name(5)]',
+            {
+                ['Minimalist'] = {'BOTTOM', 'Frame'},
+                ['Compact'] = {'BOTTOM', 'Frame'}
+            },
+            layout
+    )
 
 end
