@@ -22,8 +22,13 @@ local select = select
 local string = string
 local gsub = gsub
 local type = type
+local pairs = pairs
+local ipairs = ipairs
+local tostring = tostring
+local print = print
+local next = next
 
--- WoW globals (I don't really wanna import all the funcs we use here, so localize the ones called a LOT, like in Health/Power functions)
+-- WoW globals
 local UnitIsEnemy = UnitIsEnemy
 local UnitIsPlayer = UnitIsPlayer
 local UnitIsFriend = UnitIsFriend
@@ -37,7 +42,19 @@ local UnitGUID = UnitGUID
 local UnitName = UnitName
 local UnitIsVisible = UnitIsVisible
 local UnitClass = UnitClass
-
+local UnitCastingInfo = UnitCastingInfo
+local UnitPowerMax = UnitPowerMax
+local UnitPower = UnitPower
+local GetSpellPowerCost = GetSpellPowerCost
+local UnitGetIncomingHeals = UnitGetIncomingHeals
+local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
+local UnitGetTotalHealAbsorbs = UnitGetTotalHealAbsorbs
+local UnitHealth = UnitHealth
+local UnitHealthMax = UnitHealthMax
+local UnitIsTapDenied = UnitIsTapDenied
+local UnitThreatSituation = UnitThreatSituation
+local UnitReaction = UnitReaction
+local UnitSelectionType = UnitSelectionType
 
 UnitFrames.oUF = oUF
 UnitFrames.Units = {}
@@ -469,7 +486,6 @@ function UnitFrames:CreateIndicator(frame, layer, sublayer, config, unit)
     elseif config.Texture == 'ClassIcon' and unit ~= nil then
         local class = select(2, UnitClass(unit))
         if class ~= nil then
-            print (class)
             indicator:SetTexCoord(LibAtlas:GetTexCoord( config.Texture , class ) )
         end
     end
@@ -624,7 +640,6 @@ local function CreateIndicator(frame, layer, sublayer, config, unit)
     elseif config.Texture == 'ClassIcon' and unit ~= nil then
         local class = select(2, UnitClass(unit))
         if class ~= nil then
-            print (class)
             indicator:SetTexCoord(LibAtlas:GetTexCoord( config.Texture , class ) )
         end
     end
@@ -1097,8 +1112,8 @@ function UnitFrames:UpdatePowerColorOverride(event, unit)
             or (element.colorClassPet and UnitPlayerControlled(unit) and not UnitIsPlayer(unit)) then
         local _, class = UnitClass(unit)
         t = self.colors.class[class]
-    elseif(element.colorSelection and unitSelectionType(unit, element.considerSelectionInCombatHostile)) then
-        t = self.colors.selection[unitSelectionType(unit, element.considerSelectionInCombatHostile)]
+    elseif(element.colorSelection and UnitSelectionType(unit, element.considerSelectionInCombatHostile)) then
+        t = self.colors.selection[UnitSelectionType(unit, element.considerSelectionInCombatHostile)]
     elseif(element.colorReaction and UnitReaction(unit, 'player')) then
         t = self.colors.reaction[UnitReaction(unit, 'player')]
     elseif(element.colorSmooth) then
@@ -1183,8 +1198,8 @@ function UnitFrames:UpdateHealthColorOverride(event, unit)
         local _, class = UnitClass(unit)
         t = self.colors.class[class]
         --print ("colorClass")
-    elseif(element.colorSelection and unitSelectionType(unit, element.considerSelectionInCombatHostile)) then
-        t = self.colors.selection[unitSelectionType(unit, element.considerSelectionInCombatHostile)]
+    elseif(element.colorSelection and UnitSelectionType(unit, element.considerSelectionInCombatHostile)) then
+        t = self.colors.selection[UnitSelectionType(unit, element.considerSelectionInCombatHostile)]
         --print ("colorSelection")
     elseif(element.colorReaction and UnitReaction(unit, 'player')) then
         t = self.colors.reaction[UnitReaction(unit, 'player')]
@@ -1271,7 +1286,7 @@ end
 function UnitFrames:MouseOnPlayer()
 
 end
-function UnitFrames:GetFramesAttributes(config )
+function UnitFrames:GetFramesAttributes( config )
 
     local attributes = {}
     for attribName, attribValue in pairs ( config ) do
@@ -1532,12 +1547,6 @@ local function ResizeUnitFrames(self, config)
         end
     end
 
-    if config.Texts then
-        for k, v in pairs(config.Texts) do
-            --self[k]:SetSize(80, 30)
-        end
-    end
-
 end
 
 function UnitFrames:Style(unit)
@@ -1570,16 +1579,16 @@ function UnitFrames:CreateUnits()
 
     local Config = C.UnitFrames
 
-    for k, v in pairs (Config) do
-        if k == "PartyLayout" and v.Enable == true then
-
-            local header = Config.PartyLayout.Header
-            local initialConfigFunction = [[
+    local initialConfigFunction = [[
                     local header = self:GetParent()
                     self:SetWidth(header:GetAttribute("initial-width"))
                     self:SetHeight(header:GetAttribute("initial-height"))
                     ]]
 
+    for k, v in pairs (Config) do
+        if k == "PartyLayout" and v.Enable == true then
+
+            local header = Config.PartyLayout.Header
             local party = oUF:SpawnHeader( header.Name, header.Template or nil, header.Visibility,
                     "oUF-initialConfigFunction", initialConfigFunction,
                     unpack( UnitFrames:GetFramesAttributes( Config.PartyLayout.Attributes ) )
@@ -1589,12 +1598,6 @@ function UnitFrames:CreateUnits()
         elseif k == "RaidLayout" and v.Enable == true then
 
             local header = Config.RaidLayout.Header
-            local initialConfigFunction = [[
-                    local header = self:GetParent()
-                    self:SetWidth(header:GetAttribute("initial-width"))
-                    self:SetHeight(header:GetAttribute("initial-height"))
-                    ]]
-
             local raid = oUF:SpawnHeader( header.Name, header.Template or nil, header.Visibility,
                     "oUF-initialConfigFunction", initialConfigFunction,
                     unpack( UnitFrames:GetFramesAttributes( Config.RaidLayout.Attributes ) )

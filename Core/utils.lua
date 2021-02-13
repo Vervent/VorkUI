@@ -8,6 +8,18 @@ local Utils = CreateFrame("Frame")
 local strlower = strlower
 local tinsert = tinsert
 local EnumerateFrames = EnumerateFrames
+
+local type = type
+local print = print
+local pairs = pairs
+local ipairs = ipairs
+local getmetatable = getmetatable
+local string = string
+local select = select
+local unpack = unpack
+local math = math
+local min = min
+local max = max
 ---------------------------------------------------
 -- Basic Utils
 ---------------------------------------------------
@@ -327,41 +339,6 @@ Utils.API.ShallowCopyTable = function(self, orig)
     return copy
 end
 
---Utils.API.Point = function (self, point, root)
---    if self == nil then
---        print ("|cFFFF2200 ERROR API POINT self == nil|r")
---    end
---
---    if type(point) == 'string' then
---        self:SetPoint(point)
---    else
---        local anchor, parent, relativePoint, xOff, yOff = unpack(point)
---
---        if parent == nil then
---            parent = self:GetParent()
---            self:SetPoint(anchor, parent, relativePoint, xOff, yOff)
---        elseif type(parent) == 'string' then
---            if strlower(parent) == 'uiparent' then
---                self:SetPoint(anchor, parent, relativePoint, xOff, yOff)
---            else
---                if self[parent] then
---                    parent = self[parent]
---                elseif root and root[parent] then
---                    parent = root[parent]
---                else
---                    --look if GetParent()[parent] exists
---                    local realParent = self:GetParent()
---                    parent = realParent[parent] or realParent
---                end
---                --parent = self[parent] or self:GetParent()
---                self:SetPoint(anchor, parent, relativePoint, xOff, yOff)
---            end
---        end
---
---        return anchor, parent, relativePoint, xOff, yOff
---    end
---end
-
 local function GetRealParent(self, parent, root)
     if parent == nil then
         return self:GetParent()
@@ -401,6 +378,5 @@ Utils.API.Point = function (self, point, root)
             parent = GetRealParent(self, parent, root)
             self:SetPoint(anchor, parent, relativePoint, xOff, yOff)
         end
-        --return anchor, parent, relativePoint, xOff, yOff
     end
 end

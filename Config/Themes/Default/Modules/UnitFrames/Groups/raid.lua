@@ -164,7 +164,7 @@ end
 local function headerOption(module, submodule)
     Profiles:RegisterOption(module, submodule, nil, 'Header', 'Name', 'VorkuiRaid')
     Profiles:RegisterOption(module, submodule, nil, 'Header', 'Template', nil)
-    Profiles:RegisterOption(module, submodule, nil, 'Header', 'Visibility', 'custom [@raid6,exists] show;show')
+    Profiles:RegisterOption(module, submodule, nil, 'Header', 'Visibility', 'custom [@raid6,exists] show;hide')
 end
 
 local function  attributesOption (layout, module, submodule)
@@ -176,16 +176,16 @@ local function  attributesOption (layout, module, submodule)
         Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'point', 'TOP')
         Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-width', 80)
         Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-height', 60)
-        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'xOffset', 1)
-        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'yOffset', 1)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'xOffset', 2)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'yOffset', -2)
         Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'unitsPerColumn', 5)
         Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'maxColumns', 8)
     elseif layout == 'Compact' then
         Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'point', 'TOP')
         Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-width', 46)
         Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'initial-height', 30)
-        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'xOffset', 1)
-        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'yOffset', 1)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'xOffset', 2)
+        Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'yOffset', -2)
         Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'unitsPerColumn', 20)
         Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'maxColumns', 2)
     else
@@ -195,7 +195,7 @@ local function  attributesOption (layout, module, submodule)
     Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'showRaid', true)
     Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'showParty', false)
     Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'showPlayer', true)
-    Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'showSolo', true)
+    Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'showSolo', false)
     Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'sortMethod', 'INDEX')
     Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'sortDir', 'ASC')
     Profiles:RegisterOption(module, submodule, 'Attributes', nil, 'groupBy', 'GROUP')
@@ -223,7 +223,7 @@ local function generalOption(module, submodule, layout)
         data[size + 2] = { nil, 'Size', 47*2, 31*20}
     elseif layout == 'Minimalist' then
         data[size + 1] = { nil, 'Point', 'BOTTOM', 'UIParent', 'BOTTOM', 0, 10 }
-        data[size + 2] = { nil, 'Size', 81*8, 51*5}
+        data[size + 2] = { nil, 'Size', 80*8, 50*5}
     end
 
     registers(module, submodule, 'General', data)
