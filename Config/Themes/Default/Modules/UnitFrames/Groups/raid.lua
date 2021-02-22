@@ -229,6 +229,29 @@ local function generalOption(module, submodule, layout)
     registers(module, submodule, 'General', data)
 end
 
+local function raidDebuffOption(module, submodule)
+
+    local data = {
+        { nil, 'Enable', true },
+        { nil, 'Size', 24, 24 },
+        { nil, 'Point', 'CENTER', 'Health', 'CENTER' },
+        { 'Time', 'Layer', 'OVERLAY' },
+        { 'Time', 'Font', 'DurationFont' },
+        { 'Time', 'Point', 'CENTER' },
+        { 'Count', 'Layer', 'OVERLAY' },
+        { 'Count', 'Font', 'StackFont' },
+        { 'Count', 'Point', 'BOTTOMRIGHT' },
+        { 'Attributes', 'onlyMatchSpellID', true },
+        { 'Attributes', 'showDispellableDebuff', true },
+        { 'Attributes', 'ShowDispellableDebuff', true },
+        { 'Attributes', 'FilterDispellableDebuff', true },
+        { 'Attributes', 'MatchBySpellName', true },
+    }
+
+    registers(module, submodule, 'RaidDebuffs', data)
+
+end
+
 --(module, submodule, object, component, type, optionName, defaultValue)
 Themes["Default"].SetRaidProfile = function(layout)
 
@@ -245,6 +268,7 @@ Themes["Default"].SetRaidProfile = function(layout)
     healthPredictionOption(layout, module, submodule)
     absorbOption(layout, module, submodule)
     powerOption(layout, module, submodule)
+    raidDebuffOption(module, submodule)
 
     --indicatorOption(module, submodule, 'ClassIndicator',
     --        { 16, 16 },
@@ -260,7 +284,7 @@ Themes["Default"].SetRaidProfile = function(layout)
 
     indicatorOption(module, submodule, 'LeaderIndicator',
             { 64 / 4, 53 / 4 },
-            { 'LEFT', 'Frame', 'RIGHT' },
+            { 'TOPRIGHT', 'Frame', 'TOPRIGHT' },
             'GlobalIcon',
             'LEADER',
             { 163 / 255, 220 / 255, 255 / 255 }

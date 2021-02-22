@@ -222,7 +222,7 @@ end
 local function generalOption(module, submodule)
     local data = {
         { nil, 'Size', 300, 32 },
-        { nil, 'Point', "CENTER", 'UIParent', "CENTER", -450, -400 },
+        { nil, 'Point', "CENTER", 'UIParent', "CENTER", -450, -450 },
         { 'Background', 'Enable', true },
         { 'Background', 'Color', 33 / 255, 44 / 255, 79 / 255, 0.75 },
         { nil, 'NameFont', 'Montserrat Medium', 20, 'OUTLINE'},
@@ -262,16 +262,6 @@ Themes["Default"].SetPetProfile = function()
             { 16, 16 },
             { 'LEFT', 'Health', 'LEFT', 10, 0 },
             'RaidIcon'
-    )
-
-    indicatorOption(module, submodule, 'CombatIndicator',
-            { 39 / 3, 64 / 3 },
-            { 'TOPRIGHT', 'Frame', 'TOPRIGHT' },
-            'GlobalIcon',
-            'MAELSTROM',
-            nil,
-            { "VERTICAL", 255 / 255, 246 / 255, 0 / 255, 0.75, 255 / 255, 50 / 255, 0 / 255, 1 },
-            'ADD'
     )
 
     indicatorOption(module, submodule, 'DeadOrGhostIndicator',

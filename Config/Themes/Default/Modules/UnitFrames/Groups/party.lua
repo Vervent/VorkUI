@@ -301,7 +301,7 @@ local function debuffOption(layout, module, submodule)
         { 'Attributes', 'disableMouse', false },
         { 'Attributes', 'disableCooldown', false },
         { 'Attributes', 'spacing', 2 },
-        { 'Attributes', 'growth-x', 'LEFT' },
+        { 'Attributes', 'growth-x', 'RIGHT' },
         { 'Attributes', 'growth-y', 'UP' },
         { 'Attributes', 'initialAnchor', 'BOTTOMLEFT' },
         { 'Attributes', 'filter', 'HARMFUL' },

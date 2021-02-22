@@ -17,6 +17,7 @@
 	<!-- oUF -->
 	<Include file='oUF\oUF.xml'/>
 	<Include file='Vork-oUF\load.xml'/>
+	<Script file='oUF_RaidDebuffs\oUF_RaidDebuffs.lua'/>
 
 	<!-- LSM -->
 	<Include file='LibSharedMedia\lib.xml'/>

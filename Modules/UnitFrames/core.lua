@@ -29,9 +29,7 @@ local print = print
 local next = next
 
 -- WoW globals
-local UnitIsEnemy = UnitIsEnemy
 local UnitIsPlayer = UnitIsPlayer
-local UnitIsFriend = UnitIsFriend
 local UnitIsConnected = UnitIsConnected
 local UnitPlayerControlled = UnitPlayerControlled
 local UnitIsGhost = UnitIsGhost
@@ -627,6 +625,33 @@ local function Create3DPortrait(template, parent, config)
     end
 
     return portrait
+end
+
+local function CreateRaidDebuffs(parent, config, baseConfig)
+    local frame = CreateFrame("Frame", nil, parent)
+    frame:SetFrameLevel(parent:GetFrameLevel() + 10)
+
+    frame.icon = frame:CreateTexture(nil, "ARTWORK")
+    frame.icon:SetTexCoord(.1, .9, .1, .9)
+    frame.icon:SetAllPoints()
+
+    frame.cd = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
+    frame.cd:SetAllPoints()
+    frame.cd:SetReverse(true)
+    frame.cd.noOCC = true
+    frame.cd.noCooldownCount = true
+    frame.cd:SetHideCountdownNumbers(true)
+    frame.cd:SetAlpha(.7)
+
+    frame.time = UnitFrames:CreateFontString(frame, config.Time, baseConfig)
+    frame.count = UnitFrames:CreateFontString(frame, config.Count, baseConfig)
+    frame.count:SetTextColor(1, .9, 0)
+
+    for k, v in pairs(config.Attributes) do
+        frame[k] = v
+    end
+
+    return frame
 end
 
 local function CreateIndicator(frame, layer, sublayer, config, unit)
@@ -1298,7 +1323,31 @@ function UnitFrames:GetFramesAttributes( config )
 
 end
 
-function UnitFrames:UpdateRaidDebuffIndicator()
+local function updateRaidDebuffIndicator()
+    local oUFRD = Plugin.oUF_RaidDebuffs or oUF_RaidDebuffs
+
+    if (oUFRD) then
+        local _, InstanceType = IsInInstance()
+        oUFRD:ResetDebuffData()
+
+        if (InstanceType == "party" or InstanceType == "raid") then
+            oUFRD:RegisterDebuffs(UnitFrames.DebuffsTracking.PvE.spells)
+        elseif (InstanceType == "pvp") then
+            local class = UnitClass('player')
+            local activeSpec = GetActiveSpecGroup()
+            if (class == "PRIEST") or
+                    (class == "PALADIN" and activeSpec == 1) or
+                    (class == "SHAMAN" and activeSpec == 3) or
+                    (class == "DRUID" and activeSpec == 4) or
+                    (class == "MONK" and activeSpec == 2) then
+                oUFRD:RegisterDebuffs(UnitFrames.DebuffsTracking.PvP.spells)
+            else
+                oUFRD:RegisterDebuffs(UnitFrames.DebuffsTracking.CrowdControl.spells)
+            end
+        else
+            oUFRD:RegisterDebuffs(UnitFrames.DebuffsTracking.PvP.spells) -- replace this one later with a new list
+        end
+    end
 
 end
 
@@ -1422,6 +1471,22 @@ local function CreateUnit(self, unit, config)
         self.Debuffs = debuffs
     end
 
+    if config.RaidDebuffs and config.RaidDebuffs.Enable then
+        local raidDebuffs = CreateRaidDebuffs(frame, config.RaidDebuffs, config.General)
+        local oUFRD = Plugin.oUF_RaidDebuffs or oUF_RaidDebuffs
+
+        raidDebuffs:RegisterEvent("PLAYER_ENTERING_WORLD")
+        raidDebuffs:SetScript("OnEvent", updateRaidDebuffIndicator)
+
+        if (oUFRD) then
+            oUFRD.ShowDispellableDebuff = true
+            oUFRD.FilterDispellableDebuff = true
+            oUFRD.MatchBySpellName = false
+        end
+
+        self.RaidDebuffs = raidDebuffs
+    end
+
     if config.Portrait and config.Portrait.Enable then
         local portrait
         if config.Portrait.Type == '3D' then
@@ -1462,11 +1527,9 @@ local function CreateUnit(self, unit, config)
     self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
     self:HookScript("OnLeave", UnitFrames.MouseOnPlayer)
 
-    V.Editor:RegisterFrame(self, config, 'UnitFrames', unit..'Layout')
-
 end
 
-local function LocateUnitFrames(self, config)
+local function LocateUnitFrames(self, config, unit)
 
     self.Health:Point(config.Health.Point, self)
 
@@ -1491,6 +1554,10 @@ local function LocateUnitFrames(self, config)
 
     if config.Castbar and config.Castbar.Enable then
         self.Castbar:Point(config.Castbar.Point, self)
+    end
+
+    if config.RaidDebuffs and config.RaidDebuffs.Enable then
+        self.RaidDebuffs:Point(config.RaidDebuffs.Point, self)
     end
 
     if config.Indicators then
@@ -1541,6 +1608,10 @@ local function ResizeUnitFrames(self, config)
         self.Castbar:SetSize(unpack(config.Castbar.Size))
     end
 
+    if config.RaidDebuffs and config.RaidDebuffs.Enable then
+        self.RaidDebuffs:SetSize(unpack(config.RaidDebuffs.Size))
+    end
+
     if config.Indicators then
         for k, v in pairs(config.Indicators) do
             self[k]:SetSize(unpack(v.Size))
@@ -1568,9 +1639,10 @@ function UnitFrames:Style(unit)
     local config = style[unitName..'Layout']
 
     CreateUnit(self, unit, config)
-    LocateUnitFrames(self, config)
+    LocateUnitFrames(self, config, unit)
     ResizeUnitFrames(self, config)
 
+    V.Editor:RegisterFrame(self, config, 'UnitFrames', unitName..'Layout')
 
     return self
 end
