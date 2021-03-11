@@ -629,7 +629,6 @@ end
 
 local function CreateRaidDebuffs(parent, config, baseConfig)
     local frame = CreateFrame("Frame", nil, parent)
-    frame:SetFrameLevel(parent:GetFrameLevel() + 10)
 
     frame.icon = frame:CreateTexture(nil, "ARTWORK")
     frame.icon:SetTexCoord(.1, .9, .1, .9)

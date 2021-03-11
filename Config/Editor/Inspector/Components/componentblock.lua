@@ -11,9 +11,10 @@ local Editor = V.Editor
 local Inspector = Editor.Inspector
 local borderSettings = Editor.border
 
-local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
+local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, maxLabel)
     local width = parent:GetWidth()
     local height = 0
+    local maxItem = maxLabel or 0
 
     local pt
     if point then
@@ -37,11 +38,16 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     button:Update( { 'General' }, function(self) Inspector:InspectComponent(self:GetText())  end )
     button:UpdateSize()
 
-    for k, _ in pairs(config) do
-        button = LibGUI:NewWidget('button', frame, 'Checkbox'..k, { 'TOPLEFT', 2, -2 }, nil, 'UIPanelButtonTemplate', nil)
-        button:Update( { k }, function(self) Inspector:InspectComponent(self:GetText())  end )
-        button:UpdateSize()
+    for i = 1, maxItem do
+        button = LibGUI:NewWidget('button', frame, 'Checkbox'..i, { 'TOPLEFT', 2, -2 }, nil, 'UIPanelButtonTemplate', nil)
+        button:Update( { nil }, function(self) Inspector:InspectComponent(self:GetText())  end )
     end
+
+    --for k, _ in pairs(config) do
+    --    button = LibGUI:NewWidget('button', frame, 'Checkbox'..k, { 'TOPLEFT', 2, -2 }, nil, 'UIPanelButtonTemplate', nil)
+    --    button:Update( { k }, function(self) Inspector:InspectComponent(self:GetText())  end )
+    --    button:UpdateSize()
+    --end
 
     frame:SetWidth(width)
     height = frame:UpdateWidgetsFloatLayout( 1, 10, 4 )

@@ -195,7 +195,7 @@ local function powerOption(layout, module, submodule)
 
     local data = {
         { nil, 'Enable', enable },
-        { nil, 'Point', 'TOPLEFT', 'Health', 'BOTTOMLEFT', -8, 0 },
+        { nil, 'Point', 'TOPLEFT', 'Health', 'BOTTOMLEFT', -10, 0 },
         ----SLANT
         { 'SlantingSettings', 'Enable', true },
         { 'SlantingSettings', 'IgnoreBackground', true },
@@ -544,7 +544,7 @@ Themes["Default"].SetPartyProfile = function(layout)
     textOption(module, submodule, 'Name',
             'OVERLAY',
             'NameFont',
-            '[classification] [name] [difficulty][level]',
+            '[classification] [name(5)] [difficulty][level]',
             {
                 ['Expanded'] = {'TOPRIGHT', 'Frame', 'TOPRIGHT', -20, 0},
                 ['Minimalist'] = {'TOPRIGHT', 'Frame', 'TOPRIGHT', -20, 0},

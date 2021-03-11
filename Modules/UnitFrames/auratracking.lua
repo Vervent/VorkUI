@@ -156,6 +156,7 @@ UnitFrames.DebuffsTracking["PvE"] = {
         [330713] = Priority(), -- Reverberating Pain
         [329370] = Priority(), -- Deadly Descent
         [336494] = Priority(), -- Echo Screech
+        [342074] = Priority(), -- Echolocation
         -- Huntsman Altimor
         [335304] = Priority(), -- Sinseeker
         [334971] = Priority(), -- Jagged Claws
@@ -163,6 +164,7 @@ UnitFrames.DebuffsTracking["PvE"] = {
         [335112] = Priority(), -- Huntsman's Mark 2
         [335113] = Priority(), -- Huntsman's Mark 3
         [334945] = Priority(), -- Bloody Thrash
+        [334939] = Priority(), --Vicious Lunge
         -- Hungering Destroyer
         [334228] = Priority(), -- Volatile Ejection
         [329298] = Priority(), -- Gluttonous Miasma
@@ -182,6 +184,7 @@ UnitFrames.DebuffsTracking["PvE"] = {
         [326302] = Priority(), -- Stasis Trap
         [325236] = Priority(), -- Glyph of Destruction
         [327414] = Priority(), -- Possession
+        [340860] = Priority(), -- Withering Touch
         -- The Council of Blood
         [327052] = Priority(), -- Drain Essence 1
         [327773] = Priority(), -- Drain Essence 2
@@ -202,7 +205,9 @@ UnitFrames.DebuffsTracking["PvE"] = {
         [334498] = Priority(), -- Seismic Upheaval
         [337643] = Priority(), -- Unstable Footing
         [334765] = Priority(), -- Heart Rend
+        [334771] = Priority(), -- Heart Hemorrhage
         [333377] = Priority(), -- Wicked Mark
+        [333913] = Priority(), -- Wicked Laceration
         [334616] = Priority(), -- Petrified
         [334541] = Priority(), -- Curse of Petrification
         [339690] = Priority(), -- Crystalize

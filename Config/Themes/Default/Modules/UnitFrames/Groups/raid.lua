@@ -314,6 +314,11 @@ Themes["Default"].SetRaidProfile = function(layout)
             { 0 / 255, 204 / 255, 255 / 255 }
     )
 
+    indicatorOption(module, submodule, 'RaidRoleIndicator',
+            { 20, 20 },
+            { 'LEFT', 'Name', 'RIGHT' }
+    )
+
     indicatorOption(module, submodule, 'PhaseIndicator',
             { 20, 20 },
             { 'CENTER', 'Frame', 'CENTER' },
