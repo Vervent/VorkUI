@@ -10,7 +10,12 @@ local Editor = V.Editor
 local Inspector = Editor.Inspector
 local borderSettings = Editor.border
 
-local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
+local function update(self, config)
+
+end
+
+
+local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, count)
     local height = 0
 
     local pt
@@ -32,7 +37,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     )
 
     local it = frame
-    for i, _ in ipairs(config) do
+    for i=1, count do
         if i == 1 then
             pt =  {
                 {'TOPLEFT', 0, 0},
@@ -61,4 +66,4 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     return frame
 end
 
-Inspector:RegisterComponentGUI('Rendering', gui)
+Inspector:RegisterComponentGUI('Rendering', gui, update)

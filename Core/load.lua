@@ -7,11 +7,21 @@
 local V, C, L = select(2,...):unpack()
 
 local CreateFrame = CreateFrame
+local _G = _G
 
 local Load = CreateFrame("Frame")
 
+local function moveBlizzardFrame()
+
+    local belowMinimapContainer = _G.UIWidgetBelowMinimapContainerFrame
+    belowMinimapContainer:ClearAllPoints()
+    belowMinimapContainer:SetPoint("TOP", 0, -50)
+
+end
+
 function Load:OnEvent(event, ...)
     if (event == "PLAYER_LOGIN") then
+        moveBlizzardFrame()
         V["Utils"]:Enable()
         V["Medias"]:Enable()
         --Now that all systems and medias are loaded, we can generate config frame
@@ -26,6 +36,11 @@ function Load:OnEvent(event, ...)
             V["Editor"]:CreateGUI()
         end
         V["UnitFrames"]:Enable()
+    elseif (event == 'ADDON_LOADED') then
+        if IsAddOnLoaded("Blizzard_DebugTools") then
+            _G.TableAttributeDisplay:SetSize(800, 600)
+            _G.TableAttributeDisplay.LinesScrollFrame:SetSize(740, 500)
+        end
     end
 end
 

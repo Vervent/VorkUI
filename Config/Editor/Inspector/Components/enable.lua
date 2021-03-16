@@ -9,6 +9,11 @@ local Editor = V.Editor
 local Inspector = Editor.Inspector
 local borderSettings = Editor.border
 
+local function update(self, config)
+    local w = self.Widgets[1]
+    w:SetChecked(config)
+end
+
 local function gui(baseName, parent, parentPoint, componentName, point,  hasBorder, isCollapsable, hasName, config)
 
     local pt
@@ -49,4 +54,4 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     return frame
 end
 
-Inspector:RegisterComponentGUI('Enable', gui)
+Inspector:RegisterComponentGUI('Enable', gui, update)

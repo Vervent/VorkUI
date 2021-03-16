@@ -211,4 +211,38 @@ function LibGUI:NewWidget(t, container, name, point, ...)
     return nil
 end
 
+function LibGUI:GetWidgetsByTypeWithFilter(container, widgetType, filter)
+    if isValidContainer(container) and container.Widgets then
+        local widgets = {}
+        for k, v in ipairs(container.Widgets) do
+            if v.type == widgetType then
+                if filter and type(filter) == 'string' then
+                    if v:GetName() ~= filter then
+                        tinsert(widgets, v)
+                    end
+                else
+                    tinsert(widgets, v)
+                end
+            end
+        end
+        return widgets
+    end
+
+    return nil
+end
+
+function LibGUI:GetWidgetsByType(container, widgetType)
+    if isValidContainer(container) and container.Widgets then
+        local widgets = {}
+        for k, v in ipairs(container.Widgets) do
+            if v.type == widgetType then
+                tinsert(widgets, v)
+            end
+        end
+        return widgets
+    end
+
+    return nil
+end
+
 Plugin.LibGUI = LibGUI

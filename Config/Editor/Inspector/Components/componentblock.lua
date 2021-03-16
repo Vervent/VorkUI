@@ -11,10 +11,36 @@ local Editor = V.Editor
 local Inspector = Editor.Inspector
 local borderSettings = Editor.border
 
-local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, maxLabel)
-    local width = parent:GetWidth()
+local function addButton(frame, index)
+    return LibGUI:NewWidget('button', frame, 'Button'..index, { 'TOPLEFT', 2, -2 }, nil, 'UIPanelButtonTemplate', nil)
+end
+
+local function update(self, config)
+    local widgets = LibGUI:GetWidgetsByTypeWithFilter(self, 'button', 'NameLabel')
+
+    local buttonCount = #widgets
+
+    for i=1, #config do
+        if i > buttonCount then
+            tinsert(widgets, addButton(self, i))
+        end
+
+        widgets[i]:Update( {config[i], function() Inspector:InspectComponent(config[i])  end } )
+        widgets[i]:UpdateSize()
+    end
+
+    for cIdx = buttonCount, #config +1, -1 do
+        widgets[cIdx]:Hide()
+    end
+
+    local height = self:UpdateFloatLayoutOnWidgets( widgets, 10, 4 )
+    self.frameHeight = height
+    self:SetHeight(height)
+end
+
+local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, count)
+    local width = parent:GetWidth() - 12
     local height = 0
-    local maxItem = maxLabel or 0
 
     local pt
     if point then
@@ -34,24 +60,11 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
             pt
     )
 
-    local button = LibGUI:NewWidget('button', frame, 'Checkbox'..0, { 'TOPLEFT', 2, -2 }, nil, 'UIPanelButtonTemplate', nil)
-    button:Update( { 'General' }, function(self) Inspector:InspectComponent(self:GetText())  end )
-    button:UpdateSize()
-
-    for i = 1, maxItem do
-        button = LibGUI:NewWidget('button', frame, 'Checkbox'..i, { 'TOPLEFT', 2, -2 }, nil, 'UIPanelButtonTemplate', nil)
-        button:Update( { nil }, function(self) Inspector:InspectComponent(self:GetText())  end )
+    for i=1,count do
+        addButton(frame, i)
     end
 
-    --for k, _ in pairs(config) do
-    --    button = LibGUI:NewWidget('button', frame, 'Checkbox'..k, { 'TOPLEFT', 2, -2 }, nil, 'UIPanelButtonTemplate', nil)
-    --    button:Update( { k }, function(self) Inspector:InspectComponent(self:GetText())  end )
-    --    button:UpdateSize()
-    --end
-
     frame:SetWidth(width)
-    height = frame:UpdateWidgetsFloatLayout( 1, 10, 4 )
-    frame:SetHeight(height)
 
     if hasBorder then
         frame:CreateBorder(borderSettings.size, borderSettings.color )
@@ -68,4 +81,4 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     return frame
 end
 
-Inspector:RegisterComponentGUI('ComponentBlock', gui)
+Inspector:RegisterComponentGUI('ComponentBlock', gui, update)

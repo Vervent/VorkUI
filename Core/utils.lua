@@ -222,6 +222,172 @@ Utils.API.UpdateWidgetsFloatLayout = function(self, firstItemIndex, paddingTop, 
 
 end
 
+Utils.API.UpdateFloatLayoutOnWidgets = function(self, widgets, paddingTop, paddingBottom)
+    local maxWidth, maxHeight = self:GetWidth(), self:GetHeight()
+
+    local width = 0
+    local height = 0
+    local firstItem = 1
+    local lineCount = 0
+    local newWidth = 0
+    local w
+
+    for i = 1, #widgets do
+        w = widgets[i]
+        height = max(height, w:GetHeight())
+        newWidth = width + w:GetWidth()
+        if newWidth > maxWidth then
+            --cut to index i to end
+            w:ClearAllPoints()
+            w:SetPoint("TOPLEFT", widgets[firstItem], "BOTTOMLEFT", 0, -2)
+            firstItem = i
+            lineCount = lineCount + 1
+            width = newWidth - width
+        else
+            if i-1 >= 1 then
+                w:ClearAllPoints()
+                w:SetPoint("TOPLEFT", widgets[i-1], "TOPRIGHT", 2, 0)
+            end
+            width = newWidth
+        end
+    end
+    local newHeight = height * lineCount + paddingTop + paddingBottom
+
+    if newHeight > maxHeight then
+        --We change height, so we need to replace first item as every other button are anchored on it
+        widgets[1]:ClearAllPoints()
+        widgets[1]:SetPoint("TOPLEFT", 2, -(paddingTop or 0))
+
+        return newHeight
+    end
+
+    return maxHeight
+
+end
+
+--Grid aligned by component type
+Utils.API.UpdateLayoutOnWidgets = function (self, widgets, paddingTop, paddingBottom)
+    local maxWidth, maxHeight = self:GetWidth(), self:GetHeight()
+
+    if maxWidth == 0 then
+        return 0
+    end
+
+    local width = 0
+    local height = 0
+    local firstItem = 1
+    local lineCount = 0
+    local nbItemPerLine = 0
+
+    local w
+    local nbItem = 0
+
+    for i = firstItem, #widgets do
+        w = widgets[i]
+        if w:IsShown() then
+            if w:IsObjectType('Frame') and w.text then
+                if type(w.text) ~= 'string' then
+                    width = max(width, w:GetWidth() + w.text:GetWrappedWidth() )
+                    height = max(height, w:GetHeight(), w.text:GetStringHeight())
+                else
+                    width = max(width, w:GetTextWidth() + 20 )
+                    height = max(height, w:GetTextHeight())
+                end
+            else
+                width = max(width, w:GetWidth() + 4 )
+                height = max(height, w:GetHeight())
+            end
+        end
+    end
+
+    nbItemPerLine = math.floor( maxWidth / width )
+    lineCount = math.floor((#widgets)/nbItemPerLine) + 1
+
+    for i = firstItem, #widgets do
+        w = widgets[i]
+        if nbItem < nbItemPerLine then
+            if i-1 >= 1 then
+                w:ClearAllPoints()
+                w:SetPoint("TOPLEFT", widgets[i-1], "TOPLEFT", width + 2, 0)
+            else
+                w:ClearAllPoints()
+                w:SetPoint("TOPLEFT", 0, - (paddingTop or 0))
+            end
+            nbItem = nbItem + 1
+        else
+            w:ClearAllPoints()
+            w:SetPoint("TOPLEFT", widgets[firstItem], "BOTTOMLEFT", 0, 0)
+            firstItem = i
+            nbItem = 1
+        end
+    end
+
+    return lineCount*height + (paddingTop or 0) + (paddingBottom or 0)
+end
+
+Utils.API.UpdateWidgetsByTypeLayout = function (self, widgetType, paddingTop, paddingBottom)
+    local maxWidth, maxHeight = self:GetWidth(), self:GetHeight()
+
+    if maxWidth == 0 then
+        return 0
+    end
+
+    local width = 0
+    local height = 0
+    local firstItem = 1
+    local lineCount = 0
+    local nbItemPerLine = 0
+
+    local w
+    local nbItem = 0
+    local widgets = {}
+    for k, v in ipairs(self.Widgets) do
+        if v.type == widgetType then
+            tinsert(widgets, v)
+        end
+    end
+
+    for i = firstItem, #widgets do
+        w = widgets[i]
+        if w:IsObjectType('Frame') and w.text then
+            if type(w.text) ~= 'string' then
+                width = max(width, w:GetWidth() + w.text:GetWrappedWidth() )
+                height = max(height, w:GetHeight(), w.text:GetStringHeight())
+            else
+                width = max(width, w:GetTextWidth() + 20 )
+                height = max(height, w:GetTextHeight())
+            end
+        else
+            width = max(width, w:GetWidth() + 4 )
+            height = max(height, w:GetHeight())
+        end
+    end
+
+    nbItemPerLine = math.floor( maxWidth / width )
+    lineCount = math.floor((#widgets)/nbItemPerLine) + 1
+
+    for i = firstItem, #widgets do
+        w = widgets[i]
+        if nbItem < nbItemPerLine then
+            if i-1 >= 1 then
+                w:ClearAllPoints()
+                w:SetPoint("TOPLEFT", widgets[i-1], "TOPLEFT", width + 2, 0)
+            else
+                w:ClearAllPoints()
+                w:SetPoint("TOPLEFT", 0, - (paddingTop or 0))
+            end
+            nbItem = nbItem + 1
+        else
+            w:ClearAllPoints()
+            w:SetPoint("TOPLEFT", widgets[firstItem], "BOTTOMLEFT", 0, 0)
+            firstItem = i
+            nbItem = 1
+        end
+    end
+
+    return lineCount*height + (paddingTop or 0) + (paddingBottom or 0)
+end
+
 --Grid aligned
 Utils.API.UpdateWidgetsLayout = function (self, firstItemIndex, paddingTop, paddingBottom)
     local maxWidth, maxHeight = self:GetWidth(), self:GetHeight()

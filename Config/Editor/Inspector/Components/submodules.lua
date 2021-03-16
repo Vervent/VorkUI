@@ -28,7 +28,45 @@ local function disable(frame)
 
 end
 
-local function gui(baseName, parent, parentPoint, componentName, point,  hasBorder, isCollapsable, hasName, config)
+local function addCheckbox(frame, index)
+    local checkbox = LibGUI:NewWidget('checkbox', frame, 'CheckboxEnable'..index, { 'TOPLEFT', 2, -2 }, nil, 'UICheckButtonTemplate', nil)
+    checkbox:ChangeFont( 'GameFontNormal' )
+
+    return checkbox
+end
+
+local function update(self, config)
+    local widgets = LibGUI:GetWidgetsByType(self, 'checkbox')
+    local checkboxIdx = 1
+    local checkboxCount = #widgets
+
+    for k, v in pairs(config) do
+        if checkboxIdx > checkboxCount then
+            tinsert(widgets, addCheckbox(self, checkboxIdx))
+            checkboxCount = checkboxCount + 1
+        end
+
+        if type(k) == 'string' then
+            widgets[checkboxIdx]:Update( { k } )
+        else
+            widgets[checkboxIdx]:Update( { v } )
+        end
+        widgets[checkboxIdx]:SetChecked(v)
+        widgets[checkboxIdx]:Show()
+        checkboxIdx = checkboxIdx + 1
+    end
+
+    for cIdx = checkboxCount, checkboxIdx, -1 do
+        widgets[cIdx]:Hide()
+    end
+
+    local height = self:UpdateWidgetsByTypeLayout( 'checkbox', 10, 0 )
+    self.frameHeight = height
+    self:SetHeight(height)
+
+ end
+
+local function gui(baseName, parent, parentPoint, componentName, point,  hasBorder, isCollapsable, hasName, count)
     local width = parent:GetWidth()
     local height = 0
 
@@ -50,22 +88,11 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
             pt
     )
 
-    local checkbox
-
-    for k, v in pairs(config) do
-        if type(k) == 'string' then
-            checkbox = LibGUI:NewWidget('checkbox', frame, 'CheckboxEnable'..k, { 'TOPLEFT', 2, -2 }, nil, 'UICheckButtonTemplate', nil)
-            checkbox:Update( { k } )
-        else
-            checkbox = LibGUI:NewWidget('checkbox', frame, 'CheckboxEnable'..v, { 'TOPLEFT', 2, -2 }, nil, 'UICheckButtonTemplate', nil)
-            checkbox:Update( { v } )
-        end
-        checkbox:ChangeFont( 'GameFontNormal' )
+    for i=1,count do
+        addCheckbox(frame, i)
     end
 
     frame:SetWidth(width)
-    height = frame:UpdateWidgetsLayout( 1, 10, 0 )
-    frame:SetHeight(height)
     if hasBorder then
         frame:CreateBorder(borderSettings.size, borderSettings.color )
     end
@@ -81,4 +108,4 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     return frame
 end
 
-Inspector:RegisterComponentGUI('Submodules', gui)
+Inspector:RegisterComponentGUI('Submodules', gui, update)

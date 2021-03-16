@@ -69,7 +69,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     local filterFrame = Inspector:CreateComponentGUI('Submodules', baseName..'AuraFrameFilterFrame', frame, frame, 'Filters', {
         { 'TOPLEFT', 4, -20 },
         { 'TOPRIGHT', -4, -20 }
-    }, false, false, true, filters)
+    }, false, false, true, #filters)
 
     local sortingLabel = LibGUI:NewWidget('label', frame, 'SortingLabel', { 'TOPLEFT', filterFrame, 'BOTTOMLEFT', 0, 10 }, {120, 30}, nil, nil )
     sortingLabel:Update( { layer, labelFont, 'Sorting Method' } )

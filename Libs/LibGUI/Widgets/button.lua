@@ -102,15 +102,19 @@ local Methods = {
 
     end,
 
+    HasCollapseSystem = function(self)
+        return self.isCollapsed ~= nil
+    end,
+
     AddCollapseSystem = function(self, frame, collapseFct, expandFct)
         if frame == nil then
             return
         end
         self.isCollapsed = false
-        self.frameHeight = frame:GetHeight()
+        frame.frameHeight = frame:GetHeight()
         self:SetScript('OnClick', function(self)
             if self.isCollapsed then
-                frame:SetHeight(self.frameHeight)
+                frame:SetHeight(frame.frameHeight)
                 expandFct(frame)
                 self.isCollapsed = false
             else

@@ -6,7 +6,9 @@ local Editor = V.Editor
 local Inspector = CreateFrame("Frame")
 
 ComponentsGUI = {}
-local components = {}
+local scrollableComponents = {}
+local fixedComponents = {}
+local visibleComponentIndex = {}
 
 local currentFrame = nil
 local currentItem = nil
@@ -29,10 +31,6 @@ local inspector = {
     }
 }
 
---local function setInspectorBaseStructure()
---    tinsert(inspector.root.childs, ComponentsGUI['Enable']('Inspector', Inspector.UI))
---end
-
 local componentBaseConfig = {
     nil, -- point
     true, --hasBorder
@@ -41,94 +39,200 @@ local componentBaseConfig = {
     nil --config
 }
 
-local function createInspectorComponent()
+local function componentPoint(component, isFirst, ...)
+    component:ClearAllPoints()
+    local parent1 = select(1, ...)
+    local parent2 = select(2, ...)
+    if isFirst then
+        component:SetPoint('TOPLEFT', parent1, 'BOTTOMLEFT', 2, -16)
+        if parent2 then
+            component:SetPoint('TOPRIGHT', parent2, 'BOTTOMRIGHT', -10, -16)
+        else
+            component:SetPoint('TOPRIGHT', parent1, 'BOTTOMRIGHT', -10, -16)
+        end
+    else
+        component:SetPoint('TOPLEFT', parent1, 'BOTTOMLEFT', 0, -16)
+        component:SetPoint('TOPRIGHT', parent1, 'BOTTOMRIGHT', 0, -16)
+    end
+end
 
+local function initializeComponent(component, data, ...)
+    if component.Update then
+        component.Update(component, data)
+    end
+    componentPoint(component, ...)
+    component:Show()
+end
+
+local function initializeComponents(tab, config, ...)
+
+    local isFirst = true
+    local lastIndex = 1
+
+    local t
+    for i,v in ipairs(tab) do
+        t = v.componentType
+        if config[t] then
+            if isFirst == true then
+                initializeComponent(v, config[t], isFirst, ...)
+                isFirst = false
+            else
+                initializeComponent(v, config[t], isFirst, tab[lastIndex])
+            end
+            lastIndex = i
+            tinsert(visibleComponentIndex, lastIndex)
+        else
+            v:Hide()
+        end
+    end
+
+end
+
+local function getComponentBlockData(config)
+    local blockName = {}
+
+    local order = {
+        'General',
+        'Health',
+        'HealthPrediction',
+        'Absorb',
+        'Power',
+        'PowerPrediction',
+        'Portrait',
+        'Indicators',
+        'Castbar',
+        'Buffs',
+        'Debuffs',
+        'Texts'
+    }
+
+    local item
+    for i=1, #order do
+        item = config[order[i]]
+        if item ~= nil then
+            tinsert(blockName, order[i])
+        end
+    end
+
+    return blockName
+end
+
+local function parseComponentConfig(config)
     local scrollParent = Inspector.UI.Scroll
 
-    components['Enable'] = ComponentsGUI['Enable']('InspectorModule', scrollParent.ScrollChild, scrollParent.ScrollChild,
-            'Settings', {
-                {'TOPLEFT', scrollParent.ScrollChild, 'TOPLEFT', 4, -16}, {'TOPRIGHT', scrollParent.ScrollBar, 'TOPLEFT', -6, -16}
-            },
-            select(2, unpack(componentBaseConfig))
-    )
-    --local cListComponent = ComponentsGUI['ComponentList']('InspectorModule', Inspector.UI, enableComponent, 'Components', nil, config.Submodules, true)
-    components['Components'] = ComponentsGUI['ComponentBlock']('InspectorModule', scrollParent.ScrollChild, components['Enable'], 'Components', nil, true, true, true, 20)
-    components['Point'] =  ComponentsGUI['Point']('InspectorModule', scrollParent.ScrollChild, components['Components'], 'Point', unpack(componentBaseConfig))
-    components['Size'] =  ComponentsGUI['Size']('InspectorModule', scrollParent.ScrollChild, components['Point'], 'Size', unpack(componentBaseConfig))
-    components['Submodules'] =  ComponentsGUI['Submodules']('InspectorModule', scrollParent.ScrollChild,  components['Size'], 'Submodules', nil, true, true, true, config.Submodules)
-    components['Indicator'] =  ComponentsGUI['Indicator']('InspectorModule', scrollParent.ScrollChild, components['Submodules'], 'Indicators', unpack(componentBaseConfig))
-    components['Rendering'] =  ComponentsGUI['Rendering']('InspectorHealth', scrollParent.ScrollChild, components['Indicator'], 'Rendering', nil, true, true, true, config.Health.Rendering)
-    components['Slanting'] =  ComponentsGUI['Slanting']('InspectorHealth', scrollParent.ScrollChild, components['Rendering'], 'Slanting', unpack(componentBaseConfig))
-    components['Tag'] =  ComponentsGUI['Tag']('InspectorModule', scrollParent.ScrollChild, components['Slanting'], 'Tag', unpack(componentBaseConfig))
-    components['Font'] =  ComponentsGUI['Font']('InspectorModule', scrollParent.ScrollChild, components['Font'], 'Font', unpack(componentBaseConfig))
-    components['Particle'] =  ComponentsGUI['Particle']('InspectorModule', scrollParent.ScrollChild, components['Particle'], 'Particle', unpack(componentBaseConfig))
-    components['Castbar'] =  ComponentsGUI['Castbar']('InspectorModule', scrollParent.ScrollChild, components['Castbar'], 'Castbar', unpack(componentBaseConfig))
-    components['Buffs'] =  ComponentsGUI['Aura']('InspectorModule', scrollParent.ScrollChild, components['Buffs'], 'Buffs', unpack(componentBaseConfig))
-    components['Debuffs'] =  ComponentsGUI['Aura']('InspectorModule', scrollParent.ScrollChild, components['Debuffs'], 'Debuffs', unpack(componentBaseConfig))
-    components['Attribute'] =  ComponentsGUI['Attribute']('InspectorModule', scrollParent.ScrollChild, components['Attribute'], 'Attribute', unpack(componentBaseConfig))
+    print ('PARSE COMPONENT CONFIG')
+
+    scrollParent:ShowScrollChild()
+    initializeComponents(scrollableComponents, config, scrollParent.ScrollChild, scrollParent.ScrollBar)
+    scrollParent:ResizeScrollChild()
 end
 
 local function parseItemConfig(item)
-
-    print ("|cff33ff99PARSE ITEM CONFIG|r", item, item.Enable)
-
-    local frame = item[1] --useless for now
+    local frame = item[1]
     local config = item[2]
     local baseName = item[4] or frame:GetName()
-
     local scrollParent = Inspector.UI.Scroll
 
-    if config.Enable ~= nil then
-        --tinsert(inspector.root.childs, ComponentsGUI['Enable']('Inspector', Inspector.UI))
-        local enableComponent = ComponentsGUI['Enable']('InspectorModule', scrollParent.ScrollChild, scrollParent.ScrollChild,
-                baseName..' Settings', {
-                    {'TOPLEFT', scrollParent.ScrollChild, 'TOPLEFT', 4, -16}, {'TOPRIGHT', scrollParent.ScrollBar, 'TOPLEFT', -6, -16}
-                },
-                select(2, unpack(componentBaseConfig))
-        )
-        --local cListComponent = ComponentsGUI['ComponentList']('InspectorModule', Inspector.UI, enableComponent, 'Components', nil, config.Submodules, true)
-        local cBlockComponent = ComponentsGUI['ComponentBlock']('InspectorModule', scrollParent.ScrollChild, enableComponent, 'Components', nil, true, true, true, 20)
-        local pointComponent = ComponentsGUI['Point']('InspectorModule', scrollParent.ScrollChild, cBlockComponent, 'Point', unpack(componentBaseConfig))
-        local sizeComponent = ComponentsGUI['Size']('InspectorModule', scrollParent.ScrollChild, pointComponent, 'Size', unpack(componentBaseConfig))
-        local submoduleComponent = ComponentsGUI['Submodules']('InspectorModule', scrollParent.ScrollChild, sizeComponent, 'Submodules', nil, true, true, true, config.Submodules)
-        local indicatorComponent = ComponentsGUI['Indicator']('InspectorModule', scrollParent.ScrollChild, submoduleComponent, 'Indicators', unpack(componentBaseConfig))
-        local renderingComponent = ComponentsGUI['Rendering']('InspectorHealth', scrollParent.ScrollChild, indicatorComponent, 'Rendering', nil, true, true, true, config.Health.Rendering)
-        local slantingComponent = ComponentsGUI['Slanting']('InspectorHealth', scrollParent.ScrollChild, renderingComponent, 'Slanting', unpack(componentBaseConfig))
-        local TagComponent = ComponentsGUI['Tag']('InspectorModule', scrollParent.ScrollChild, slantingComponent, 'Tag', unpack(componentBaseConfig))
-        local FontComponent = ComponentsGUI['Font']('InspectorModule', scrollParent.ScrollChild, TagComponent, 'Font', unpack(componentBaseConfig))
-        local ParticleComponent = ComponentsGUI['Particle']('InspectorModule', scrollParent.ScrollChild, FontComponent, 'Particle', unpack(componentBaseConfig))
-        local CastBarComponent = ComponentsGUI['Castbar']('InspectorModule', scrollParent.ScrollChild, ParticleComponent, 'Castbar', unpack(componentBaseConfig))
-        local BuffsComponent = ComponentsGUI['Aura']('InspectorModule', scrollParent.ScrollChild, CastBarComponent, 'Buffs', unpack(componentBaseConfig))
-        local DebuffsComponent = ComponentsGUI['Aura']('InspectorModule', scrollParent.ScrollChild, BuffsComponent, 'Debuffs', unpack(componentBaseConfig))
-        local AttributesComponent = ComponentsGUI['Attribute']('InspectorModule', scrollParent.ScrollChild, DebuffsComponent, 'Attribute', unpack(componentBaseConfig))
-        --local it1 = ComponentsGUI['Texture']('InspectorTexture1', Inspector.UI, enable, 'Background')
-        --local it2 = ComponentsGUI['Texture']('InspectorTexture2', Inspector.UI, it1, 'Main')
-        --local it3 = ComponentsGUI['Texture']('InspectorTexture3', Inspector.UI, it2, 'Overlay')
-        --local it1 = ComponentsGUI['Rendering']('InspectorHealth', Inspector.UI, enable, 'Rendering', config.Health.Rendering)
-        --local it2 = ComponentsGUI['Size']('InspectorModule', Inspector.UI, it1, 'Size', nil, true)
-        --local it3 = ComponentsGUI['Submodules']('InspectorModule', Inspector.UI, it2, 'Submodules', config.Submodules)
-        --local it4 = ComponentsGUI['Slanting']('InspectorHealth', Inspector.UI, it3, 'Slanting', nil, true)
-        --local it5 = ComponentsGUI['Tag']('InspectorModule', Inspector.UI, it3, 'Tag', nil, true)
-        --local it7 = ComponentsGUI['Point']('InspectorModule', Inspector.UI, it2, 'Point', nil, true)
+    local enable = fixedComponents[1]
+    local submodule = fixedComponents[2]
+    local blocks = fixedComponents[3]
 
-        for _, c in ipairs(scrollParent.Childs) do
-            c:Show()
-        end
-        scrollParent:ResizeScrollChild()
-        scrollParent:ShowScrollChild()
-        --Inspector.UI.Childs[1]:Show()
-    end
+    initializeComponent(enable, config.Enable, true, Inspector.UI.TitleBg, Inspector.UI)
+    initializeComponent(submodule, config.Submodules, false, fixedComponents[1])
+    initializeComponent(blocks, getComponentBlockData(config), false, fixedComponents[2])
 
-    --if item.Enable ~= nil then
-    --    print("ITEM CONFIG", item.__key)
-    --    --tinsert(inspector.root.childs, ComponentsGUI["Enable"]()
-    --end
+    scrollParent:SetHeight(inspector.root.params.size[2] -
+            enable:GetHeight() -
+            submodule:GetHeight() -
+            blocks:GetHeight() -
+            4*16 - --spacing Y between component
+            20) --title
 
+    --scrollParent:ShowScrollChild()
+    --initializeComponents(scrollableComponents, config, scrollParent.ScrollChild, scrollParent.ScrollBar)
+    --scrollParent:ResizeScrollChild()
 end
 
+local function createInspectorComponent(self)
+
+    local frameParent = self.UI.TitleBg
+    local scrollParent = self.UI.Scroll
+    tinsert(fixedComponents, self:CreateComponentGUI('Enable', 'InspectorModule', self.UI, scrollParent.ScrollChild,
+            'Settings', {
+                {'TOPLEFT', frameParent, 'BOTTOMLEFT', 0, -16}, {'TOPRIGHT', frameParent, 'BOTTOMRIGHT'}
+            },
+            select(2, unpack(componentBaseConfig))
+    ))
+    tinsert(fixedComponents, self:CreateComponentGUI('Submodules', 'InspectorModule', self.UI,  scrollableComponents['Enable'], 'Submodules', nil, true, true, true, 10))
+    tinsert(fixedComponents, self:CreateComponentGUI('ComponentBlock', 'InspectorModule', self.UI, scrollableComponents['Submodules'], 'Components', nil, true, true, true, 20))
+    scrollParent:SetPoint('TOPLEFT', fixedComponents[3], 'BOTTOMLEFT', 0, -10)
+
+    tinsert(scrollableComponents, self:CreateComponentGUI('Point', 'InspectorModule', scrollParent.ScrollChild, scrollableComponents['Components'], 'Point', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Size', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Point'], 'Size', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Indicator', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Submodules'], 'Indicators', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Rendering', 'InspectorHealth', scrollParent.ScrollChild,  scrollableComponents['Indicator'], 'Rendering', nil, true, true, true, 3))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Slanting', 'InspectorHealth', scrollParent.ScrollChild,  scrollableComponents['Rendering'], 'Slanting', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Tag', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Slanting'], 'Tag', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Font', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Tag'], 'Font', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Particle', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Font'], 'Particle', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Castbar', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Particle'], 'Castbar', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Aura', 'InspectorModule', scrollParent.ScrollChild,   scrollableComponents['Castbar'], 'Buffs', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Aura', 'InspectorModule', scrollParent.ScrollChild,     scrollableComponents['Buffs'], 'Debuffs', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Attribute', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Debuffs'], 'Attribute', unpack(componentBaseConfig)))
+end
+
+--local function parseItemConfig(self, item)
+--
+--    print ("|cff33ff99PARSE ITEM CONFIG|r", item, item.Enable)
+--
+--    local frame = item[1] --useless for now
+--    local config = item[2]
+--    local baseName = item[4] or frame:GetName()
+--
+--    local scrollParent = Inspector.UI.Scroll
+--
+--    if config.Enable ~= nil then
+--        local enableComponent = self:CreateComponentGUI('Enable', 'InspectorModule', scrollParent.ScrollChild, scrollParent.ScrollChild,
+--                baseName..' Settings', {
+--                    {'TOPLEFT', scrollParent.ScrollChild, 'TOPLEFT', 4, -16}, {'TOPRIGHT', scrollParent.ScrollBar, 'TOPLEFT', -6, -16}
+--                },
+--                select(2, unpack(componentBaseConfig))
+--        )
+--
+--        local cBlockComponent =     self:CreateComponentGUI('ComponentBlock', 'InspectorModule', scrollParent.ScrollChild, enableComponent, 'Components', nil, true, true, true, 20)
+--        local pointComponent =      self:CreateComponentGUI('Point', 'InspectorModule', scrollParent.ScrollChild, cBlockComponent, 'Point', unpack(componentBaseConfig))
+--        local sizeComponent =       self:CreateComponentGUI('Size', 'InspectorModule', scrollParent.ScrollChild, pointComponent, 'Size', unpack(componentBaseConfig))
+--        local submoduleComponent =  self:CreateComponentGUI('Submodules', 'InspectorModule', scrollParent.ScrollChild, sizeComponent, 'Submodules', nil, true, true, true, 10)
+--        local indicatorComponent =  self:CreateComponentGUI('Indicator', 'InspectorModule', scrollParent.ScrollChild, submoduleComponent, 'Indicators', unpack(componentBaseConfig))
+--        local renderingComponent =  self:CreateComponentGUI('Rendering', 'InspectorHealth', scrollParent.ScrollChild, indicatorComponent, 'Rendering', nil, true, true, true, config.Health.Rendering)
+--        local slantingComponent =   self:CreateComponentGUI('Slanting', 'InspectorHealth', scrollParent.ScrollChild, renderingComponent, 'Slanting', unpack(componentBaseConfig))
+--        local TagComponent =        self:CreateComponentGUI('Tag', 'InspectorModule', scrollParent.ScrollChild, slantingComponent, 'Tag', unpack(componentBaseConfig))
+--        local FontComponent =       self:CreateComponentGUI('Font', 'InspectorModule', scrollParent.ScrollChild, TagComponent, 'Font', unpack(componentBaseConfig))
+--        local ParticleComponent =   self:CreateComponentGUI('Particle', 'InspectorModule', scrollParent.ScrollChild, FontComponent, 'Particle', unpack(componentBaseConfig))
+--        local CastBarComponent =    self:CreateComponentGUI('Castbar', 'InspectorModule', scrollParent.ScrollChild, ParticleComponent, 'Castbar', unpack(componentBaseConfig))
+--        local BuffsComponent =      self:CreateComponentGUI('Aura', 'InspectorModule', scrollParent.ScrollChild, CastBarComponent, 'Buffs', unpack(componentBaseConfig))
+--        local DebuffsComponent =    self:CreateComponentGUI('Aura', 'InspectorModule', scrollParent.ScrollChild, BuffsComponent, 'Debuffs', unpack(componentBaseConfig))
+--        local AttributesComponent = self:CreateComponentGUI('Attribute', 'InspectorModule', scrollParent.ScrollChild, DebuffsComponent, 'Attribute', unpack(componentBaseConfig))
+--
+--        scrollParent:ShowScrollChild()
+--        scrollParent:ResizeScrollChild()
+--        scrollParent:ShowScrollChild()
+--        --Inspector.UI.Childs[1]:Show()
+--    end
+--
+--    --if item.Enable ~= nil then
+--    --    print("ITEM CONFIG", item.__key)
+--    --    --tinsert(inspector.root.childs, ComponentsGUI["Enable"]()
+--    --end
+--
+--end
+
 function Inspector:Collapse()
-    for i=1, #self.Widgets-1 do
-        self.Widgets[i]:Hide()
+
+    for i=1, #self.Widgets do
+        if self.Widgets[i].HasCollapseSystem == nil or self.Widgets[i]:HasCollapseSystem() == false then
+            self.Widgets[i]:Hide()
+        end
     end
 
     for _, c in ipairs(self.Childs) do
@@ -139,8 +243,10 @@ function Inspector:Collapse()
 end
 
 function Inspector:Expand()
-    for i=1, #self.Widgets-1 do
-        self.Widgets[i]:Show()
+    for i=1, #self.Widgets do
+        if self.Widgets[i].HasCollapseSystem == nil or self.Widgets[i]:HasCollapseSystem() == false then
+            self.Widgets[i]:Show()
+        end
     end
 
     for _, c in ipairs(self.Childs) do
@@ -152,11 +258,14 @@ end
 
 function Inspector:CreateComponentGUI(t, baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
     if ComponentsGUI[t] then
-        return ComponentsGUI[t](baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
+        local component = ComponentsGUI[t].Create(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
+        component.componentType = t
+        component.Update = ComponentsGUI[t].Update
+        return component
     end
 end
 
-function Inspector:RegisterComponentGUI(name, fct)
+function Inspector:RegisterComponentGUI(name, create, update)
     if name == nil or type(name)~= 'string' or name == '' then
         print("|cFFFF1010 REGISTER COMPONENT GUI ERROR|r")
         return
@@ -164,9 +273,12 @@ function Inspector:RegisterComponentGUI(name, fct)
 
     if ComponentsGUI[name] then
         print("|cff33ff99 A FONCTION FOR "..name.." COMPONENT EXISTS YET|r")
+    else
+        ComponentsGUI[name] = {
+            Create = create,
+            Update = update,
+        }
     end
-
-    ComponentsGUI[name] = fct
 
     print ("|cFF10FF10Register gui for "..name.." component|r")
 end
@@ -189,12 +301,9 @@ function Inspector:CreateGUI()
     frame.Scroll = LibGUI:NewContainer( 'scrollframe',
             frame,
             root.params.name..'ScrollFrame',
-            { root.params.size[1] - 10, root.params.size[2] - 50},
-            {
-                {'TOPLEFT', frame.TitleBg, 'BOTTOMLEFT', 0, -10},
-                --{'BOTTOMRIGHT', frame, 'BOTTOMRIGHT'}
-            }
+            { root.params.size[1] - 15, 0}
     )
+    frame.Scroll.enableAllChilds = false
 
     frame.TitleText:SetText(root.params.title)
 
@@ -202,6 +311,9 @@ function Inspector:CreateGUI()
     LibGUI:SetMovableContainer(frame, true)
 
     self.UI = frame;
+
+    createInspectorComponent(self)
+
     self:Hide()
 end
 
@@ -222,25 +334,30 @@ function Inspector:LockItem(item)
     currentFrame = item
     currentItem = Editor:GetFrameOptions(item)
 
-    print ("|cFF10FF10 LockItem |r")
-    Editor:PrintFrameOptions(currentItem)
     parseItemConfig(currentItem)
 end
 
 function Inspector:InspectComponent(name)
-    if name == 'General' then
-        --root inspect
-        print ('|cFF10FF10 General Option|r')
-    else
-        --component inspect
-        print ('|cFF10FF10 Component Option|r:', name)
-    end
+
+    --local frame = currentItem[1]
+    local config = currentItem[2]
+
+    parseComponentConfig(config[name])
+
+    --if name == 'General' then
+    --    --root inspect
+    --    print ('|cFF10FF10 General Option|r')
+    --else
+    --    --component inspect
+    --    print ('|cFF10FF10 Component Option|r:', name)
+    --end
 end
 
 function Inspector:ReleaseItem()
     --release all widgets
     currentFrame = nil
     currentItem = nil
+    wipe(visibleComponentIndex)
 end
 
 function Inspector:Inspect(item)

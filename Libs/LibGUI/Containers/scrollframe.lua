@@ -32,7 +32,9 @@ local Methods = {
         local height = 0
 
         for i, c in ipairs(self.ScrollChild.Childs) do
-            height = height + c:GetHeight() + 16
+            if c:IsShown() then
+                height = height + c:GetHeight() + 16
+            end
         end
 
         print (#self.ScrollChild.Childs)

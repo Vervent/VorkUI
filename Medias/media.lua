@@ -159,7 +159,7 @@ local AtlasSettings = {
         ["CRITICAL"] = {183, 247, 64, 128},
         ["HASTE"] = {247, 311, 64, 128},
         ["RESTING"] = {311, 375, 64, 124},
-        ["DEFENSE"] = {375, 429, 64, 126},
+        ["DEFENSE"] = {375, 429, 64, 128},
         ["MASTERY"] = {429, 493, 46, 88},
         ["STRENGTH"] = {429, 493, 92, 126},
         ["FOCUS"] = {401, 465, 0, 36}, --same as energy
@@ -219,8 +219,8 @@ local AtlasSettings = {
     ["Phasing"] = {
         width = 128,
         height = 64,
-        ["PHASE"] = {0, 64, 0, 64},
-        ["SUMMON"] = {64, 128, 0, 64},
+        ["PHASE"] = {0, 66, 0, 64},
+        ["SUMMON"] = {66, 128, 0, 64},
     },
 }
 
