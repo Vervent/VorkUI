@@ -11,6 +11,9 @@
 	<!-- LibSlant -->
 	<Script file='LibSlant\LibSlant.lua'/>
 
+	<!-- LibObserver -->
+	<Script file='LibObserver\LibObserver.lua'/>
+
 	<!-- LibAtlas -->
 	<Script file='LibAtlas\LibAtlas.lua'/>
 
