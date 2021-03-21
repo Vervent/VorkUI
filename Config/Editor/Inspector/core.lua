@@ -72,7 +72,7 @@ local function initializeComponents(tab, config, ...)
     local lastIndex = 1
 
     local t
-    for i,v in ipairs(tab) do
+    for i, v in ipairs(tab) do
         t = v.componentType
         print ('|cFFFFFF00initializeComponents|r', t)
         if config[t] then
@@ -219,11 +219,12 @@ function Inspector:CreateComponentGUI(t, baseName, parent, parentPoint, componen
         local component = ComponentsGUI[t].Create(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
         component.componentType = t
         component.Update = ComponentsGUI[t].Update
+        component.Clean = ComponentsGUI[t].Clean
         return component
     end
 end
 
-function Inspector:RegisterComponentGUI(name, create, update)
+function Inspector:RegisterComponentGUI(name, create, update, clean)
     if name == nil or type(name)~= 'string' or name == '' then
         print("|cFFFF1010 REGISTER COMPONENT GUI ERROR|r")
         return
@@ -235,9 +236,11 @@ function Inspector:RegisterComponentGUI(name, create, update)
         ComponentsGUI[name] = {
             Create = create,
             Update = update,
+            Clean = clean,
         }
     end
 
+    print (ComponentsGUI[name])
     print ("|cFF10FF10Register gui for "..name.." component|r")
 end
 
@@ -319,6 +322,15 @@ end
 function Inspector:InspectComponent(name)
 
     --local frame = currentItem[1]
+    local component
+    for idx=1, #visibleComponentIndex do
+        component = scrollableComponents[visibleComponentIndex[idx]]
+        print (component.componentType, component)
+        if component.Clean then
+            component.Clean(component)
+        end
+    end
+
     local config = currentItem[2]
     currentComponent = name
 

@@ -39,8 +39,6 @@ local minOffset = -500
 local maxOffset = 500
 
 local function updatePointConfig(index, key, value)
-    print("before", unpack(pointConfig[index]))
-
     if key == 5 and pointConfig[index][4] == nil then
         pointConfig[index][4] = 0
     elseif key == 4 and pointConfig[index][5] == nil then
@@ -50,8 +48,6 @@ local function updatePointConfig(index, key, value)
     if pointConfig[index] then
         pointConfig[index][key] = value
     end
-
-    print('after', unpack(pointConfig[index]))
 end
 
 local function viewMustClearAllPoints(parent, realparent, child)
@@ -113,8 +109,6 @@ local function removePoint(self, i)
     local offsetContainer = self.Childs[2]
     offsetContainer.Childs[i].isUsed = false
     offsetContainer.Childs[i]:DisableChilds()
-
-    Inspector:SubmitUpdateValue(nil, 'Point', nil, pointConfig)
 
 end
 
@@ -271,6 +265,7 @@ local function addOffsetSetter(container, index)
     btnRemove:SetID(index)
     btnRemove:Update( { ' -', function(self)
         removePoint(container:GetParent(), self:GetID())
+        Inspector:SubmitUpdateValue(nil, 'Point', nil, pointConfig)
     end } )
 
     frame.DisableChilds = function()
@@ -468,4 +463,11 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     return frame
 end
 
-Inspector:RegisterComponentGUI('Point', gui, update)
+local function clean(self)
+
+    for i=1, #pointConfig do
+        removePoint(self, i)
+    end
+end
+
+Inspector:RegisterComponentGUI('Point', gui, update, clean)

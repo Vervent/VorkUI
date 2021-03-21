@@ -55,8 +55,6 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
             false,
             false)
 
-    print('INDICATOR POINT FRAME', pointFrame)
-
     frame:SetHeight(pointFrame:GetHeight() + 30)
     if hasBorder then
         frame:CreateBorder(borderSettings.size, borderSettings.color )
