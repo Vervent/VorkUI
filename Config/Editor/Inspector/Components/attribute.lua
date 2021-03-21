@@ -158,6 +158,15 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
         end
     end
 
+    local LibObserver = LibStub:GetLibrary("LibObserver")
+    if LibObserver then
+        frame.Observer = LibObserver:CreateObserver()
+        frame.Observer.OnNotify = function (...)
+            local event, item, value = unpack(...)
+            Inspector:SubmitUpdateValue('Attribute', item.key, value)
+        end
+    end
+
     return frame
 end
 

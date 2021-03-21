@@ -6,7 +6,6 @@ local type = type
 
 local V = select(2, ...):unpack()
 local LibGUI = Plugin.LibGUI
-
 local Editor = V.Editor
 local Inspector = Editor.Inspector
 local borderSettings = Editor.border
@@ -32,6 +31,8 @@ local function addCheckbox(frame, index)
     local checkbox = LibGUI:NewWidget('checkbox', frame, 'CheckboxEnable'..index, { 'TOPLEFT', 2, -2 }, nil, 'UICheckButtonTemplate', nil)
     checkbox:ChangeFont( 'GameFontNormal' )
 
+    checkbox:RegisterObserver(frame.Observer)
+
     return checkbox
 end
 
@@ -51,6 +52,7 @@ local function update(self, config)
         else
             widgets[checkboxIdx]:Update( { v } )
         end
+        widgets[checkboxIdx].key = k
         widgets[checkboxIdx]:SetChecked(v)
         widgets[checkboxIdx]:Show()
         checkboxIdx = checkboxIdx + 1
@@ -63,7 +65,6 @@ local function update(self, config)
     local height = self:UpdateWidgetsByTypeLayout( 'checkbox', 10, 0 )
     self.frameHeight = height
     self:SetHeight(height)
-
  end
 
 local function gui(baseName, parent, parentPoint, componentName, point,  hasBorder, isCollapsable, hasName, count)
@@ -102,6 +103,15 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
         name:AddLabel(name, componentName)
         if isCollapsable then
             name:AddCollapseSystem(frame, Inspector.Collapse, Inspector.Expand)
+        end
+    end
+
+    local LibObserver = LibStub:GetLibrary("LibObserver")
+    if LibObserver then
+        frame.Observer = LibObserver:CreateObserver()
+        frame.Observer.OnNotify = function (...)
+            local event, item, value = unpack(...)
+            Inspector:SubmitUpdateValue('Submodules', nil, item.key, value)
         end
     end
 

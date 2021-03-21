@@ -40,6 +40,14 @@ function Load:OnEvent(event, ...)
         if IsAddOnLoaded("Blizzard_DebugTools") then
             _G.TableAttributeDisplay:SetSize(800, 600)
             _G.TableAttributeDisplay.LinesScrollFrame:SetSize(740, 500)
+        elseif IsAddOnLoaded("BugSack") then
+            hooksecurefunc(BugSack, 'OpenSack', function()
+                if BugSackFrame.IsResized then
+                    return
+                end
+                BugSackFrame:SetSize(800, 600)
+                BugSackFrame.IsResized = true
+            end)
         end
     end
 end

@@ -22,6 +22,7 @@
 local _, Plugin = ...
 
 local LibGUI = Plugin.LibGUI
+
 local profile
 
 local Methods = {
@@ -61,7 +62,16 @@ local Methods = {
 
     ChangeFontColor = function(self, color)
         self.text:SetTextColor(unpack(color))
+    end,
+
+    RegisterObserver = function(self, entity)
+        self.Subject:RegisterObserver(entity)
+    end,
+
+    UnregisterObserver = function(self, entity)
+        self.Subject:UnregisterObserver(entity)
     end
+
 }
 
 local function enable(self)
@@ -89,9 +99,11 @@ end
 local function onClick(self)
     --self.isChecked = self:GetChecked()
 
-    if self.DBOption then
-        profile:UpdateOption( self.DBOption, self:GetChecked() )
-    end
+    self.Subject:Notify({ 'OnUpdate', self, self:GetChecked() })
+
+    --if self.DBOption then
+    --    profile:UpdateOption( self.DBOption, self:GetChecked() )
+    --end
 end
 
 local function create(parent, name, point, size, template, dboption)
@@ -103,9 +115,9 @@ local function create(parent, name, point, size, template, dboption)
     checkbutton:SetScript("OnHide", disable)
     checkbutton:SetScript("OnClick", onClick)
     checkbutton.Scripts = {}
-    checkbutton.DBOption = dboption
+    --checkbutton.DBOption = dboption
 
-    checkbutton:SetChecked(profile:GetValue( dboption ) or false)
+    --checkbutton:SetChecked(profile:GetValue( dboption ) or false)
     --checkbutton.isChecked = profile:GetValue( dboption ) or false
 
     if point then
@@ -118,6 +130,9 @@ local function create(parent, name, point, size, template, dboption)
 
     --push our internal Methods in the metatable, if it taints, need to wrap this
     setmetatable(checkbutton, { __index = setmetatable(Methods, getmetatable(checkbutton))})
+
+    local LibObserver = LibStub:GetLibrary("LibObserver")
+    checkbutton.Subject = LibObserver:CreateSubject()
 
     return checkbutton
 end

@@ -12,6 +12,8 @@ local visibleComponentIndex = {}
 
 local currentFrame = nil
 local currentItem = nil
+local currentComponent = nil
+local parentDropdown = nil
 
 --[[
     INSPECTOR FRAME CONFIG
@@ -44,11 +46,11 @@ local function componentPoint(component, isFirst, ...)
     local parent1 = select(1, ...)
     local parent2 = select(2, ...)
     if isFirst then
-        component:SetPoint('TOPLEFT', parent1, 'BOTTOMLEFT', 2, -16)
+        component:SetPoint('TOPLEFT', parent1, 'TOPLEFT', 2, -16)
         if parent2 then
-            component:SetPoint('TOPRIGHT', parent2, 'BOTTOMRIGHT', -10, -16)
+            component:SetPoint('TOPRIGHT', parent2, 'TOPRIGHT', -10, -16)
         else
-            component:SetPoint('TOPRIGHT', parent1, 'BOTTOMRIGHT', -10, -16)
+            component:SetPoint('TOPRIGHT', parent1, 'TOPRIGHT', -10, -16)
         end
     else
         component:SetPoint('TOPLEFT', parent1, 'BOTTOMLEFT', 0, -16)
@@ -58,7 +60,7 @@ end
 
 local function initializeComponent(component, data, ...)
     if component.Update then
-        component.Update(component, data)
+        component.Update(component, data, parentDropdown)
     end
     componentPoint(component, ...)
     component:Show()
@@ -72,6 +74,7 @@ local function initializeComponents(tab, config, ...)
     local t
     for i,v in ipairs(tab) do
         t = v.componentType
+        print ('|cFFFFFF00initializeComponents|r', t)
         if config[t] then
             if isFirst == true then
                 initializeComponent(v, config[t], isFirst, ...)
@@ -118,10 +121,11 @@ local function getComponentBlockData(config)
 end
 
 local function parseComponentConfig(config)
+    if config == nil then
+        return
+    end
+
     local scrollParent = Inspector.UI.Scroll
-
-    print ('PARSE COMPONENT CONFIG')
-
     scrollParent:ShowScrollChild()
     initializeComponents(scrollableComponents, config, scrollParent.ScrollChild, scrollParent.ScrollBar)
     scrollParent:ResizeScrollChild()
@@ -137,7 +141,7 @@ local function parseItemConfig(item)
     local submodule = fixedComponents[2]
     local blocks = fixedComponents[3]
 
-    initializeComponent(enable, config.Enable, true, Inspector.UI.TitleBg, Inspector.UI)
+    initializeComponent(enable, config.Enable, true, Inspector.UI.Bg, Inspector.UI.Bg)
     initializeComponent(submodule, config.Submodules, false, fixedComponents[1])
     initializeComponent(blocks, getComponentBlockData(config), false, fixedComponents[2])
 
@@ -165,7 +169,7 @@ local function createInspectorComponent(self)
     ))
     tinsert(fixedComponents, self:CreateComponentGUI('Submodules', 'InspectorModule', self.UI,  scrollableComponents['Enable'], 'Submodules', nil, true, true, true, 10))
     tinsert(fixedComponents, self:CreateComponentGUI('ComponentBlock', 'InspectorModule', self.UI, scrollableComponents['Submodules'], 'Components', nil, true, true, true, 20))
-    scrollParent:SetPoint('TOPLEFT', fixedComponents[3], 'BOTTOMLEFT', 0, -10)
+    scrollParent:SetPoint('TOPLEFT', fixedComponents[3], 'BOTTOMLEFT', 0, 0)
 
     tinsert(scrollableComponents, self:CreateComponentGUI('Point', 'InspectorModule', scrollParent.ScrollChild, scrollableComponents['Components'], 'Point', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Size', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Point'], 'Size', unpack(componentBaseConfig)))
@@ -180,52 +184,6 @@ local function createInspectorComponent(self)
     tinsert(scrollableComponents, self:CreateComponentGUI('Aura', 'InspectorModule', scrollParent.ScrollChild,     scrollableComponents['Buffs'], 'Debuffs', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Attribute', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Debuffs'], 'Attribute', unpack(componentBaseConfig)))
 end
-
---local function parseItemConfig(self, item)
---
---    print ("|cff33ff99PARSE ITEM CONFIG|r", item, item.Enable)
---
---    local frame = item[1] --useless for now
---    local config = item[2]
---    local baseName = item[4] or frame:GetName()
---
---    local scrollParent = Inspector.UI.Scroll
---
---    if config.Enable ~= nil then
---        local enableComponent = self:CreateComponentGUI('Enable', 'InspectorModule', scrollParent.ScrollChild, scrollParent.ScrollChild,
---                baseName..' Settings', {
---                    {'TOPLEFT', scrollParent.ScrollChild, 'TOPLEFT', 4, -16}, {'TOPRIGHT', scrollParent.ScrollBar, 'TOPLEFT', -6, -16}
---                },
---                select(2, unpack(componentBaseConfig))
---        )
---
---        local cBlockComponent =     self:CreateComponentGUI('ComponentBlock', 'InspectorModule', scrollParent.ScrollChild, enableComponent, 'Components', nil, true, true, true, 20)
---        local pointComponent =      self:CreateComponentGUI('Point', 'InspectorModule', scrollParent.ScrollChild, cBlockComponent, 'Point', unpack(componentBaseConfig))
---        local sizeComponent =       self:CreateComponentGUI('Size', 'InspectorModule', scrollParent.ScrollChild, pointComponent, 'Size', unpack(componentBaseConfig))
---        local submoduleComponent =  self:CreateComponentGUI('Submodules', 'InspectorModule', scrollParent.ScrollChild, sizeComponent, 'Submodules', nil, true, true, true, 10)
---        local indicatorComponent =  self:CreateComponentGUI('Indicator', 'InspectorModule', scrollParent.ScrollChild, submoduleComponent, 'Indicators', unpack(componentBaseConfig))
---        local renderingComponent =  self:CreateComponentGUI('Rendering', 'InspectorHealth', scrollParent.ScrollChild, indicatorComponent, 'Rendering', nil, true, true, true, config.Health.Rendering)
---        local slantingComponent =   self:CreateComponentGUI('Slanting', 'InspectorHealth', scrollParent.ScrollChild, renderingComponent, 'Slanting', unpack(componentBaseConfig))
---        local TagComponent =        self:CreateComponentGUI('Tag', 'InspectorModule', scrollParent.ScrollChild, slantingComponent, 'Tag', unpack(componentBaseConfig))
---        local FontComponent =       self:CreateComponentGUI('Font', 'InspectorModule', scrollParent.ScrollChild, TagComponent, 'Font', unpack(componentBaseConfig))
---        local ParticleComponent =   self:CreateComponentGUI('Particle', 'InspectorModule', scrollParent.ScrollChild, FontComponent, 'Particle', unpack(componentBaseConfig))
---        local CastBarComponent =    self:CreateComponentGUI('Castbar', 'InspectorModule', scrollParent.ScrollChild, ParticleComponent, 'Castbar', unpack(componentBaseConfig))
---        local BuffsComponent =      self:CreateComponentGUI('Aura', 'InspectorModule', scrollParent.ScrollChild, CastBarComponent, 'Buffs', unpack(componentBaseConfig))
---        local DebuffsComponent =    self:CreateComponentGUI('Aura', 'InspectorModule', scrollParent.ScrollChild, BuffsComponent, 'Debuffs', unpack(componentBaseConfig))
---        local AttributesComponent = self:CreateComponentGUI('Attribute', 'InspectorModule', scrollParent.ScrollChild, DebuffsComponent, 'Attribute', unpack(componentBaseConfig))
---
---        scrollParent:ShowScrollChild()
---        scrollParent:ResizeScrollChild()
---        scrollParent:ShowScrollChild()
---        --Inspector.UI.Childs[1]:Show()
---    end
---
---    --if item.Enable ~= nil then
---    --    print("ITEM CONFIG", item.__key)
---    --    --tinsert(inspector.root.childs, ComponentsGUI["Enable"]()
---    --end
---
---end
 
 function Inspector:Collapse()
 
@@ -289,6 +247,7 @@ end
 
 function Inspector:CreateGUI()
     local root = inspector.root
+    local borderSettings = Editor.border
 
     local frame = LibGUI:NewContainer( root.type,
             root.params.parent,
@@ -301,9 +260,10 @@ function Inspector:CreateGUI()
     frame.Scroll = LibGUI:NewContainer( 'scrollframe',
             frame,
             root.params.name..'ScrollFrame',
-            { root.params.size[1] - 15, 0}
+            { root.params.size[1] - 20, 0}
     )
     frame.Scroll.enableAllChilds = false
+    frame.Scroll:CreateBorder(borderSettings.size, borderSettings.color )
 
     frame.TitleText:SetText(root.params.title)
 
@@ -335,12 +295,43 @@ function Inspector:LockItem(item)
     currentItem = Editor:GetFrameOptions(item)
 
     parseItemConfig(currentItem)
+    self:InspectComponent('General')
+end
+
+function Inspector:SubmitUpdateValue(component, subcomponent, key, value)
+    local config = currentItem[2]
+    component = currentComponent or component
+
+    print (component, subcomponent, key, value)
+    if subcomponent ~= nil then
+        if key ~= nil then
+            config[component][subcomponent][key] = value
+        else
+            config[component][subcomponent] = value
+        end
+    elseif key ~= nil then
+        config[component][key] = value
+    else
+        config[component] = value
+    end
 end
 
 function Inspector:InspectComponent(name)
 
     --local frame = currentItem[1]
     local config = currentItem[2]
+    currentComponent = name
+
+    parentDropdown = {}
+    if name == 'General' then
+        tinsert(parentDropdown, { text = 'UIParent'})
+    else
+        for k, v in pairs(currentItem[1]) do
+            if type(v) == 'table' and v.GetObjectType then
+                tinsert(parentDropdown, { text = k})
+            end
+        end
+    end
 
     parseComponentConfig(config[name])
 

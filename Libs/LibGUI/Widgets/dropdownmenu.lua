@@ -109,13 +109,25 @@ local Methods = {
     end,
 
     --TODO UPDATE THIS FUNC FOR MORE DATA
-    Update = function(self, dataTable)
+    Update = function(self, dataTable, value)
         self.Data = dataTable
+        if value then
+            self.value = value
+            UIDropDownMenu_SetText(self, self.value)
+        end
     end,
 
     GetValue = function (self)
         return self.selectedValue
     end,
+
+    RegisterObserver = function(self, entity)
+        self.Subject:RegisterObserver(entity)
+    end,
+
+    UnregisterObserver = function(self, entity)
+        self.Subject:UnregisterObserver(entity)
+    end
 }
 
 local function enable(self)
@@ -142,11 +154,13 @@ local function setValue(button, arg1, arg2, checked)
     local dropdown = button:GetParent().dropdown
     dropdown.value = button:GetText()
 
-    if dropdown.DBOption then
-        profile:UpdateOption( dropdown.DBOption, dropdown.value )
-    end
+    dropdown.Subject:Notify({ 'OnUpdate', dropdown,  dropdown.value })
 
-    UIDropDownMenu_SetSelectedValue(dropdown, button:GetText(), true)
+    --if dropdown.DBOption then
+    --    profile:UpdateOption( dropdown.DBOption, dropdown.value )
+    --end
+
+    UIDropDownMenu_SetSelectedValue(dropdown, dropdown.value, true)
     CloseDropDownMenus()
 end
 
@@ -186,7 +200,7 @@ local function create(parent, name, point, size, data, dboption)
     menu:SetScript("OnHide", disable)
     menu.Scripts = {}
     menu.Data = data
-    menu.DBOption = dboption
+    --menu.DBOption = dboption
 
     if point then
         menu:SetPoint(unpack(point))
@@ -195,13 +209,16 @@ local function create(parent, name, point, size, data, dboption)
         UIDropDownMenu_SetWidth(menu, size[1])
     end
 
-    menu.value = profile:GetValue( dboption ) or "Choose option"
+    --menu.value = "Choose option"
 
     --push our internal Methods in the metatable, if it taints, need to wrap this
     setmetatable(menu, { __index = setmetatable(Methods, getmetatable(menu)) })
 
     UIDropDownMenu_Initialize(menu, initialize)
     UIDropDownMenu_SetText(menu, menu.value)
+
+    local LibObserver = LibStub:GetLibrary("LibObserver")
+    menu.Subject = LibObserver:CreateSubject()
 
     return menu
 end

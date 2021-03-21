@@ -37,7 +37,6 @@ local Methods = {
             end
         end
 
-        print (#self.ScrollChild.Childs)
         self.ScrollChild:SetHeight(height)
     end,
 

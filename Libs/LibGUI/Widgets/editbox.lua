@@ -61,9 +61,11 @@ local Methods = {
             self.text = self:GetText()
         end
 
-        if self.DBOption then
-            profile:UpdateOption( self.DBOption, self.text )
-        end
+        self.Subject:Notify({ 'OnUpdate', self, self.text })
+
+        --if self.DBOption then
+        --    profile:UpdateOption( self.DBOption, self.text )
+        --end
 
         self:ChangeText(self.text)
 
@@ -84,6 +86,14 @@ local Methods = {
 
     ChangeFontColor = function(self, color)
         self:SetTextColor(unpack(color))
+    end,
+
+    RegisterObserver = function(self, entity)
+        self.Subject:RegisterObserver(entity)
+    end,
+
+    UnregisterObserver = function(self, entity)
+        self.Subject:UnregisterObserver(entity)
     end
 }
 
@@ -127,7 +137,7 @@ local function create(parent, name, point, size, template, dboption)
     edit:ClearFocus()
     edit:SetTextInsets(2, 2, 2, 2)
     edit.Scripts = {}
-    edit.DBOption = dboption
+    --edit.DBOption = dboption
 
     if point then
         edit:SetPoint(unpack(point))
@@ -143,7 +153,7 @@ local function create(parent, name, point, size, template, dboption)
     edit.Scripts['OnEnterPressed'] = edit.TextChanged
     edit.Scripts['OnEscapePressed'] = edit.ClearFocus
 
-    local initialVal = profile:GetValue( dboption ) or ''
+    local initialVal = ''
 
     if edit.SetValue then
         edit:SetNumeric(false)
@@ -161,6 +171,9 @@ local function create(parent, name, point, size, template, dboption)
         edit.bg:SetAllPoints()
         edit.bg:SetColorTexture(0, 0, 0, 0.5)
     end
+
+    local LibObserver = LibStub:GetLibrary("LibObserver")
+    edit.Subject = LibObserver:CreateSubject()
 
     return edit
 end

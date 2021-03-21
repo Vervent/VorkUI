@@ -35,8 +35,24 @@ local parentDropdown = {
     { text = 'Absorbs'},
 }
 
-local minOffset = -50
-local maxOffset = 50
+local minOffset = -500
+local maxOffset = 500
+
+local function updatePointConfig(index, key, value)
+    print("before", unpack(pointConfig[index]))
+
+    if key == 5 and pointConfig[index][4] == nil then
+        pointConfig[index][4] = 0
+    elseif key == 4 and pointConfig[index][5] == nil then
+        pointConfig[index][5] = 0
+    end
+
+    if pointConfig[index] then
+        pointConfig[index][key] = value
+    end
+
+    print('after', unpack(pointConfig[index]))
+end
 
 local function viewMustClearAllPoints(parent, realparent, child)
     local _, p = child:GetPoint()
@@ -98,6 +114,8 @@ local function removePoint(self, i)
     offsetContainer.Childs[i].isUsed = false
     offsetContainer.Childs[i]:DisableChilds()
 
+    Inspector:SubmitUpdateValue(nil, 'Point', nil, pointConfig)
+
 end
 
 local function addPoint(table, container, anchorChild, relativeTo)
@@ -113,6 +131,8 @@ local function addPoint(table, container, anchorChild, relativeTo)
             return i
         end
     end
+
+    Inspector:SubmitUpdateValue(nil, 'Point', nil, pointConfig)
 end
 
 local function snap(frame)
@@ -148,6 +168,8 @@ local function snap(frame)
     btn2:ChangeColor( pointColor[colorIdx] )
 
     frame.anchorPairs={}
+
+    return colorIdx
 end
 
 local function clickSnapButton(self)
@@ -157,11 +179,11 @@ local function clickSnapButton(self)
         if parent.anchorPairs[1] == nil then
             parent.anchorPairs[1] = self
         elseif parent.anchorPairs[1]:GetParent() == self:GetParent() then
-            parent.anchorPairs[1]:ChangeColor( {1,1,1,1} )
+            parent.anchorPairs[1]:ChangeColor( {1, 1, 1, 1} )
             parent.anchorPairs[1] = self
         else
             parent.anchorPairs[2] = self
-            snap(parent)
+            return snap(parent)
         end
     end
 
@@ -181,7 +203,8 @@ local function addSnapButton(container, color, frame)
         item.icon = item:CreateTexture(nil, 'BACKGROUND')
         item.icon:SetAllPoints()
         if type(color) == 'table' then
-            item.icon:SetColorTexture(unpack(color))
+            item:ChangeColor(color)
+            --item.icon:SetColorTexture(unpack(color))
         end
         item:Update({ '', clickSnapButton })
         item.componentParent = frame
@@ -216,17 +239,33 @@ local function addOffsetSetter(container, index)
 
     frame.isUsed = false
 
+    local LibObserver = LibStub:GetLibrary("LibObserver")
+    if LibObserver then
+        frame.Observer = LibObserver:CreateObserver()
+        frame.Observer.OnNotify = function (...)
+            local event, item, value = unpack(...)
+            updatePointConfig(index, item.key, value)
+            Inspector:SubmitUpdateValue(nil, 'Point', nil, pointConfig)
+        end
+    end
+
     local icon = LibGUI:NewWidget('icon', frame, 'ColorIcon'..index, { 'LEFT', 10, 0 }, { 10, 10 }, 'ARTWORK')
     icon:ChangeColorTexture( pointColor[index] )
 
     local xOffsetEdit = LibGUI:NewWidget('editbox', frame, 'XOffsetEdit'..index, { 'LEFT', icon, 'RIGHT', 40, 0 }, { 40, 25 }, 'NumericInputSpinnerTemplate', nil)
     xOffsetEdit:Update( { nil, nil, nil, {minOffset, maxOffset} } )
+    xOffsetEdit.key = 4
+    xOffsetEdit:RegisterObserver(frame.Observer)
 
     local yOffsetEdit = LibGUI:NewWidget('editbox', frame, 'YOffsetEdit'..index, { 'LEFT', xOffsetEdit, 'RIGHT', 60, 0 }, { 40, 25 }, 'NumericInputSpinnerTemplate', nil)
     yOffsetEdit:Update( { nil, nil, nil, {minOffset, maxOffset} } )
+    yOffsetEdit.key = 5
+    yOffsetEdit:RegisterObserver(frame.Observer)
 
     local parentMenu = LibGUI:NewWidget('dropdownmenu', frame, 'ParentDropdown'..index, { 'LEFT', yOffsetEdit, 'RIGHT', 10, -2 }, { 80, 20 }, nil, nil)
-    parentMenu:Update( parentDropdown )
+    --parentMenu:Update( parentDropdown )
+    parentMenu.key = 2
+    parentMenu:RegisterObserver(frame.Observer)
 
     local btnRemove = LibGUI:NewWidget('button', frame, 'RemoveButton'..index, { 'RIGHT', -10, 0}, { 20, 20 }, 'UIPanelButtonTemplate')
     btnRemove:SetID(index)
@@ -251,6 +290,60 @@ local function addOffsetSetter(container, index)
     frame:DisableChilds()
 
     return frame
+end
+
+local function update(self, config, parentDropdown)
+
+    local idx
+    local anchor, parent, relativeTo, x, y
+    local anchorId, relativeToId
+
+    local setterFrame = self.Childs[1]
+    local parentFrame = setterFrame.Childs[1]
+    local childFrame = setterFrame.Childs[2]
+    local tableFrame = self.Childs[2]
+
+    if type(config[1]) == 'table' then
+        --complex table point
+        for i, v in ipairs(config) do
+            anchor, parent, relativeTo, x, y = unpack(v)
+            anchorId = getAnchorIdx(anchor)
+            relativeToId = getAnchorIdx(relativeTo)
+
+            local parentButtons = LibGUI:GetWidgetsByType(parentFrame, 'button')
+            local childButtons = LibGUI:GetWidgetsByType(childFrame, 'button')
+
+            clickSnapButton(childButtons[anchorId])
+            idx = clickSnapButton(parentButtons[relativeToId])
+
+            pointConfig[idx][2] = parent
+            pointConfig[idx][4] = x
+            pointConfig[idx][5] = y
+
+            tableFrame.Childs[idx].Widgets[2]:ChangeText( x )
+            tableFrame.Childs[idx].Widgets[3]:ChangeText( y )
+            tableFrame.Childs[idx].Widgets[4]:Update( parentDropdown, parent )
+        end
+    else
+        --tinsert(pointConfig, config)
+        anchor, parent, relativeTo, x, y = unpack(config)
+        anchorId = getAnchorIdx(anchor)
+        relativeToId = getAnchorIdx(relativeTo)
+
+        local parentButtons = LibGUI:GetWidgetsByType(parentFrame, 'button')
+        local childButtons = LibGUI:GetWidgetsByType(childFrame, 'button')
+
+        clickSnapButton(childButtons[anchorId])
+        idx = clickSnapButton(parentButtons[relativeToId])
+        pointConfig[idx][2] = parent
+        pointConfig[idx][4] = x
+        pointConfig[idx][5] = y
+
+        tableFrame.Childs[idx].Widgets[2]:ChangeText( x )
+        tableFrame.Childs[idx].Widgets[3]:ChangeText( y )
+        tableFrame.Childs[idx].Widgets[4]:Update( parentDropdown, parent )
+    end
+
 end
 
 local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
@@ -375,4 +468,4 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     return frame
 end
 
-Inspector:RegisterComponentGUI('Point', gui)
+Inspector:RegisterComponentGUI('Point', gui, update)

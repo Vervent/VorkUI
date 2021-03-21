@@ -12,6 +12,14 @@ local borderSettings = Editor.border
 local minSize = 0
 local maxSize = 500
 
+local function update(self, config)
+    local widgets = LibGUI:GetWidgetsByType(self, 'editbox')
+
+    widgets[1]:ChangeText( config[1] )
+    widgets[2]:ChangeText( config[2] )
+
+end
+
 local function gui(baseName, parent, parentPoint, componentName, point,  hasBorder, isCollapsable, hasName, config)
 
     local pt
@@ -55,7 +63,21 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
         end
     end
 
+    local LibObserver = LibStub:GetLibrary("LibObserver")
+    if LibObserver then
+        frame.Observer = LibObserver:CreateObserver()
+        frame.Observer.OnNotify = function (...)
+            local event, item, value = unpack(...)
+            Inspector:SubmitUpdateValue(nil, 'Size', item.key, value)
+        end
+
+        widthEdit.key = 1
+        widthEdit:RegisterObserver(frame.Observer)
+        heightEdit.key = 2
+        heightEdit:RegisterObserver(frame.Observer)
+    end
+
     return frame
 end
 
-Inspector:RegisterComponentGUI('Size', gui)
+Inspector:RegisterComponentGUI('Size', gui, update)
