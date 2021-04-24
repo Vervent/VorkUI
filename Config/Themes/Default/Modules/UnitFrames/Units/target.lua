@@ -22,11 +22,11 @@ local function absorbOption(module, submodule)
         { nil, 'Size', 232, 8 },
         { nil, 'Point', 'TOPLEFT', 'Frame', 'TOPLEFT' },
         ----SLANT
-        { 'SlantingSettings', 'Enable', true },
-        { 'SlantingSettings', 'IgnoreBackground', true },
-        { 'SlantingSettings', 'FillInverse', true },
-        { 'SlantingSettings', 'Inverse', true },
-        { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
+        { 'Slanting', 'Enable', true },
+        { 'Slanting', 'IgnoreBackground', true },
+        { 'Slanting', 'FillInverse', true },
+        { 'Slanting', 'Inverse', true },
+        { 'Slanting', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
         { 'Rendering', nil, 'VorkuiBubbles', 'ARTWORK' },
         { 'Rendering', nil, { 0, 0, 0, 1 }, 'BACKGROUND', 1 },
@@ -43,10 +43,10 @@ local function healthOption(module, submodule)
         { nil, 'Size', 256, 32 },
         { nil, 'Point', 'TOPLEFT', 'Absorb', 'BOTTOMLEFT', 8, 0 },
         ----SLANT
-        { 'SlantingSettings', 'Enable', true },
-        { 'SlantingSettings', 'IgnoreBackground', true },
-        { 'SlantingSettings', 'Inverse', true },
-        { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
+        { 'Slanting', 'Enable', true },
+        { 'Slanting', 'IgnoreBackground', true },
+        { 'Slanting', 'Inverse', true },
+        { 'Slanting', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
         { 'Rendering', nil, 'VorkuiBackground', 'BACKGROUND', 1 },
@@ -66,9 +66,9 @@ local function healthPredictionOption(module, submodule)
         --TRANSFORM
         { nil, 'Size', 256, 32 },
         ----SLANT
-        { 'SlantingSettings', 'Enable', true },
-        { 'SlantingSettings', 'IgnoreBackground', true },
-        { 'SlantingSettings', 'Inverse', true },
+        { 'Slanting', 'Enable', true },
+        { 'Slanting', 'IgnoreBackground', true },
+        { 'Slanting', 'Inverse', true },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK', 1 },
         { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
@@ -147,10 +147,10 @@ local function powerOption(module, submodule)
         { nil, 'Size', 235, 10 },
         { nil, 'Point', 'TOPRIGHT', 'Health', 'BOTTOMRIGHT', 10, 0 },
         ----SLANT
-        { 'SlantingSettings', 'Enable', true },
-        { 'SlantingSettings', 'IgnoreBackground', true },
-        { 'SlantingSettings', 'Inverse', true },
-        { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
+        { 'Slanting', 'Enable', true },
+        { 'Slanting', 'IgnoreBackground', true },
+        { 'Slanting', 'Inverse', true },
+        { 'Slanting', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
         { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },

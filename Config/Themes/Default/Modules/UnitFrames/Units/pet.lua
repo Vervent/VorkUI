@@ -22,9 +22,9 @@ local function healthOption(module, submodule)
         { nil, 'Size', 256, 16 },
         { nil, 'Point', 'TOPRIGHT' },
         ----SLANT
-        { 'SlantingSettings', 'Enable', true },
-        { 'SlantingSettings', 'IgnoreBackground', true },
-        { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
+        { 'Slanting', 'Enable', true },
+        { 'Slanting', 'IgnoreBackground', true },
+        { 'Slanting', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
         { 'Rendering', nil, 'VorkuiBackground', 'BACKGROUND', 1 },
@@ -44,8 +44,8 @@ local function healthPredictionOption(module, submodule)
         --TRANSFORM
         { nil, 'Size', 256, 16 },
         ----SLANT
-        { 'SlantingSettings', 'Enable', true },
-        { 'SlantingSettings', 'IgnoreBackground', true },
+        { 'Slanting', 'Enable', true },
+        { 'Slanting', 'IgnoreBackground', true },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK', 1 },
         { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
@@ -122,9 +122,9 @@ local function powerOption(module, submodule)
         { nil, 'Size', 240, 8 },
         { nil, 'Point', 'TOPLEFT', 'Health', 'BOTTOMLEFT', 0, 0 },
         ----SLANT
-        { 'SlantingSettings', 'Enable', true },
-        { 'SlantingSettings', 'IgnoreBackground', true },
-        { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
+        { 'Slanting', 'Enable', true },
+        { 'Slanting', 'IgnoreBackground', true },
+        { 'Slanting', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
         { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },

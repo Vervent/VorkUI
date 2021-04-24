@@ -42,10 +42,10 @@ local function absorbOption(layout, module, submodule)
 
     local data = {
         { nil, 'Enable', enable },
-        { 'SlantingSettings', 'Enable', true },
-        { 'SlantingSettings', 'IgnoreBackground', true },
-        { 'SlantingSettings', 'FillInverse', true },
-        { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
+        { 'Slanting', 'Enable', true },
+        { 'Slanting', 'IgnoreBackground', true },
+        { 'Slanting', 'FillInverse', true },
+        { 'Slanting', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
         { 'Rendering', nil, 'VorkuiBubbles', 'ARTWORK' },
         { 'Rendering', nil, { 0, 0, 0, 1 }, 'BACKGROUND', 1 },
@@ -69,9 +69,9 @@ local function healthOption(layout, module, submodule)
         --TRANSFORM
         { nil, 'Enable', enable },
         ----SLANT
-        { 'SlantingSettings', 'Enable', true },
-        { 'SlantingSettings', 'IgnoreBackground', true },
-        { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
+        { 'Slanting', 'Enable', true },
+        { 'Slanting', 'IgnoreBackground', true },
+        { 'Slanting', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
         { 'Rendering', nil, 'VorkuiBackground', 'BACKGROUND', 1 },
@@ -103,8 +103,8 @@ local function healthPredictionOption(layout, module, submodule)
     local data = {
         { nil, 'Enable', true },
         ----SLANT
-        { 'SlantingSettings', 'Enable', true },
-        { 'SlantingSettings', 'IgnoreBackground', true },
+        { 'Slanting', 'Enable', true },
+        { 'Slanting', 'IgnoreBackground', true },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK', 1 },
         { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
@@ -197,9 +197,9 @@ local function powerOption(layout, module, submodule)
         { nil, 'Enable', enable },
         { nil, 'Point', 'TOPLEFT', 'Health', 'BOTTOMLEFT', -10, 0 },
         ----SLANT
-        { 'SlantingSettings', 'Enable', true },
-        { 'SlantingSettings', 'IgnoreBackground', true },
-        { 'SlantingSettings', 'StaticLayer', 'BACKGROUND' },
+        { 'Slanting', 'Enable', true },
+        { 'Slanting', 'IgnoreBackground', true },
+        { 'Slanting', 'StaticLayer', 'BACKGROUND' },
         --RENDERING
         { 'Rendering', nil, 'VorkuiDefault', 'ARTWORK' },
         { 'Rendering', nil, 'VorkuiBorder', 'OVERLAY' },
@@ -453,7 +453,7 @@ Themes["Default"].SetPartyProfile = function(layout)
             { 64 / 4, 53 / 4 },
             { 'TOPRIGHT', 'Frame', 'TOPRIGHT' },
             'GlobalIcon',
-            'LEADER',
+            'MASTERY',
             { 163 / 255, 220 / 255, 255 / 255 },
             nil,
             nil
@@ -497,6 +497,11 @@ Themes["Default"].SetPartyProfile = function(layout)
             { 0 / 255, 204 / 255, 255 / 255 },
             nil,
             nil
+    )
+
+    indicatorOption(module, submodule, 'GroupRoleIndicator',
+            { 20, 20 },
+            { 'LEFT', 'Name', 'RIGHT' }
     )
 
     castbarOption(layout, module, submodule)
