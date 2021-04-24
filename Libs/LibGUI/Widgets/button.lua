@@ -102,6 +102,13 @@ local Methods = {
 
     end,
 
+    AddTexture = function(self)
+        local texture = self:CreateTexture('Texture', 'BACKGROUND')
+        texture:SetAllPoints()
+
+        return texture
+    end,
+
     HasCollapseSystem = function(self)
         return self.isCollapsed ~= nil
     end,
@@ -123,6 +130,14 @@ local Methods = {
                 self.isCollapsed = true
             end
         end)
+    end,
+
+    RegisterObserver = function(self, entity)
+        self.Subject:RegisterObserver(entity)
+    end,
+
+    UnregisterObserver = function(self, entity)
+        self.Subject:UnregisterObserver(entity)
     end
 }
 
@@ -171,6 +186,9 @@ local function create(parent, name, point, size, template)
 
     --push our internal Methods in the metatable, if it taints, need to wrap this
     setmetatable(button, { __index = setmetatable(Methods, getmetatable(button))})
+
+    local LibObserver = LibStub:GetLibrary("LibObserver")
+    button.Subject = LibObserver:CreateSubject()
 
     return button
 end

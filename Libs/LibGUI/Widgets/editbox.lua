@@ -44,6 +44,13 @@ local Methods = {
     end,
 
     ChangeText = function(self, text)
+        if text == nil then
+            if self.SetMinMaxValues then
+                text = 0
+            else
+                text = ''
+            end
+        end
         self.text = text
         self:SetText(text)
     end,

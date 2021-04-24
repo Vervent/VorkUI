@@ -113,8 +113,16 @@ local Methods = {
         self.Data = dataTable
         if value then
             self.value = value
+            UIDropDownMenu_SetSelectedValue(self, self.value, true)
             UIDropDownMenu_SetText(self, self.value)
         end
+    end,
+
+    CleanValue = function(self)
+        self.value = ''
+        UIDropDownMenu_SetSelectedValue(self, self.value, true)
+        UIDropDownMenu_SetText(self, self.value)
+        self.Subject:Notify({ 'OnUpdate', self,  self.value })
     end,
 
     GetValue = function (self)
