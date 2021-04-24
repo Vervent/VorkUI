@@ -110,3 +110,17 @@ oUF.Tags.Methods['Vorkui:Name'] = function(unit, realUnit, ...)
     end
 end
 oUF.Tags.Events['Vorkui:Name'] = 'UNIT_NAME_UPDATE'
+
+oUF.Tags.Methods['Vorkui:SmartLevel'] = function(unit)
+    local l = UnitLevel(unit)
+    if(UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then
+        l = UnitBattlePetLevel(unit)
+    end
+
+    if (l > 0 and l < 60) then
+        return l
+    elseif (l <= 0) then
+        return '??'
+    end
+end
+oUF.Tags.Events['Vorkui:SmartLevel'] = 'UNIT_LEVEL PLAYER_LEVEL_UP'
