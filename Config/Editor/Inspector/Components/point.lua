@@ -239,7 +239,7 @@ local function addOffsetSetter(container, index)
         frame.Observer.OnNotify = function (...)
             local event, item, value = unpack(...)
             updatePointConfig(index, item.key, value)
-            Inspector:SubmitUpdateValue(nil, 'Point', nil, pointConfig)
+            Inspector:SubmitUpdateValue(nil, 'Point', nil, nil, pointConfig)
         end
     end
 
@@ -302,6 +302,14 @@ local function update(self, config, parentDropdown)
         --complex table point
         for i, v in ipairs(config) do
             anchor, parent, relativeTo, x, y = unpack(v)
+
+            --default values
+            --x = 0 or x
+            --y = 0 or y
+            --relativeTo = 'CENTER' or relativeTo
+            --parent = nil or parent
+            --anchor = 'CENTER' or anchor
+
             anchorId = getAnchorIdx(anchor)
             relativeToId = getAnchorIdx(relativeTo)
 

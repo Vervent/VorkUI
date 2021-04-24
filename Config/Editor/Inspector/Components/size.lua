@@ -68,7 +68,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
         frame.Observer = LibObserver:CreateObserver()
         frame.Observer.OnNotify = function (...)
             local event, item, value = unpack(...)
-            Inspector:SubmitUpdateValue(nil, 'Size', item.key, value)
+            Inspector:SubmitUpdateValue(nil, 'Size', item.key, nil, value)
         end
 
         widthEdit.key = 1

@@ -111,7 +111,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
         frame.Observer = LibObserver:CreateObserver()
         frame.Observer.OnNotify = function (...)
             local event, item, value = unpack(...)
-            Inspector:SubmitUpdateValue('Submodules', nil, item.key, value)
+            Inspector:SubmitUpdateValue('Submodules', nil, item.key, nil, value)
         end
     end
 
