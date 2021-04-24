@@ -433,6 +433,76 @@ end
 --[[------------------------------------------------------------------
 -- Class SYSTEM
 --]]------------------------------------------------------------------
+function UnitFrames:UpdateGroupRoleIndicator(event, unit)
+       local element = self.GroupRoleIndicator
+
+    --[[ Callback: GroupRoleIndicator:PreUpdate()
+    Called before the element has been updated.
+
+    * self - the GroupRoleIndicator element
+    --]]
+    if(element.PreUpdate) then
+        element:PreUpdate()
+    end
+
+    local role = UnitGroupRolesAssigned(self.unit)
+    if role == 'TANK' then
+        element:SetTexCoord( LibAtlas:GetTexCoord(element.AtlasName, 'DEFENSE') )
+        element:Show()
+    elseif role == 'HEALER' then
+        element:SetTexCoord( LibAtlas:GetTexCoord(element.AtlasName, 'STAMINA') )
+        element:Show()
+    --elseif role == 'DAMAGER' then
+    --    element:SetTexCoord( LibAtlas:GetTexCoord(element.AtlasName, 'CRITICAL') )
+    --    element:Show()
+    else
+        element:Hide()
+    end
+
+    --[[ Callback: GroupRoleIndicator:PostUpdate(role)
+    Called after the element has been updated.
+
+    * self - the GroupRoleIndicator element
+    * role - the role as returned by [UnitGroupRolesAssigned](http://wowprogramming.com/docs/api/UnitGroupRolesAssigned.html)
+    --]]
+    if(element.PostUpdate) then
+        return element:PostUpdate(role)
+    end
+end
+
+function UnitFrames:UpdateSummonOverride(event, unit)
+    if(self.unit ~= unit) then return end
+
+    local element = self.SummonIndicator
+
+    --[[ Callback: SummonIndicator:PreUpdate()
+    Called before the element has been updated.
+
+    * self - the SummonIndicator element
+    --]]
+    if(element.PreUpdate) then
+        element:PreUpdate()
+    end
+
+    local status = C_IncomingSummon.IncomingSummonStatus(unit)
+    if(status ~= Enum.SummonStatus.None) then
+        element:Show()
+    else
+        element:Hide()
+    end
+
+    --[[ Callback: SummonIndicator:PostUpdate(status)
+    Called after the element has been updated.
+
+    * self  - the SummonIndicator element
+    * status - the unit's incoming summon status (number)[0-3]
+    --]]
+    if(element.PostUpdate) then
+        return element:PostUpdate(status)
+    end
+end
+
+
 function UnitFrames:UpdateClassOverride(event, unit)
 
     if (unit ~= self.unit) then
@@ -556,8 +626,7 @@ local function CreateSlantedStatusBar(frame, config)
     local textures = config.Rendering
     local size = config.Size
     local point = config.Point
-    local slantSettings = config.SlantingSettings
-
+    local slantSettings = config.Slanting
     local result = nil
     local texture
     for _, t in ipairs(textures) do
@@ -675,6 +744,12 @@ local function CreateIndicator(frame, layer, sublayer, config, unit)
     end
     if config.BlendMode then
         indicator:SetBlendMode(config.BlendMode)
+    end
+    if config.Background and config.Background == true then
+        indicator.bg = frame:CreateTexture(nil, layer, (sublayer or 0)-1)
+        indicator.bg:SetSize( unpack(config.Size) )
+        indicator.bg:SetPoint('TOPLEFT', indicator)
+        indicator.bg:SetColorTexture(0, 0, 0, 0.75)
     end
 
     return indicator
@@ -1501,10 +1576,16 @@ local function CreateUnit(self, unit, config)
 
     if config.Indicators then
         for k, v in pairs(config.Indicators) do
-            self[k] = CreateIndicator(frame, 'OVERLAY', nil, v, unit)
+            self[k] = CreateIndicator(frame, config.Indicators.Layer or 'OVERLAY', config.Indicators.Sublayer, v, unit)
             if k == 'ClassIndicator' then
                 self[k].AtlasName = v.Texture
                 self[k].Override = UnitFrames.UpdateClassOverride
+            elseif k == 'GroupRoleIndicator' then
+                --self[k]:SetTexture([[Interface\LFGFrame\UI-LFG-ICON-PORTRAITROLES]])
+                self[k].AtlasName = v.Texture
+                self[k].Override = UnitFrames.UpdateGroupRoleIndicator
+            elseif k =='SummonIndicator' then
+                self[k].Override = UnitFrames.UpdateSummonOverride
             end
         end
     end
@@ -1685,7 +1766,8 @@ function UnitFrames:CreateUnits()
             local unitName = gsub(k, 'Layout', '')
             local unit = oUF:Spawn(strlower(unitName), "Vorkui"..unitName.."Frame")
                 unit:SetSize( unpack(Config[k].General.Size) )
-                unit:SetPoint( unpack(Config[k].General.Point) )
+                unit:Point( Config[k].General.Point )
+                --unit:SetPoint( unpack(Config[k].General.Point) )
             self.Units[k] = unit
         end
     end
