@@ -174,8 +174,8 @@ local function createInspectorComponent(self)
     tinsert(scrollableComponents, self:CreateComponentGUI('Point', 'InspectorModule', scrollParent.ScrollChild, scrollableComponents['Components'], 'Point', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Size', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Point'], 'Size', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Indicator', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Submodules'], 'Indicators', unpack(componentBaseConfig)))
-    tinsert(scrollableComponents, self:CreateComponentGUI('Rendering', 'InspectorHealth', scrollParent.ScrollChild,  scrollableComponents['Indicator'], 'Rendering', nil, true, true, true, 3))
-    tinsert(scrollableComponents, self:CreateComponentGUI('Slanting', 'InspectorHealth', scrollParent.ScrollChild,  scrollableComponents['Rendering'], 'Slanting', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Rendering', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Indicator'], 'Rendering', nil, true, true, true, 3))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Slanting', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Rendering'], 'Slanting', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Tag', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Slanting'], 'Tag', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Font', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Tag'], 'Font', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Particle', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Font'], 'Particle', unpack(componentBaseConfig)))
@@ -301,14 +301,43 @@ function Inspector:LockItem(item)
     self:InspectComponent('General')
 end
 
-function Inspector:SubmitUpdateValue(component, subcomponent, key, value)
+--function Inspector:SubmitUpdateValue(component, subcomponent, key, value)
+--    local config = currentItem[2]
+--    component = currentComponent or component
+--
+--    print (component, subcomponent, key, value)
+--
+--    if subcomponent ~= nil then
+--        if key ~= nil then
+--            config[component][subcomponent][key] = value
+--        else
+--            config[component][subcomponent] = value
+--        end
+--    elseif key ~= nil then
+--        config[component][key] = value
+--    else
+--        config[component] = value
+--    end
+--end
+
+function Inspector:SubmitUpdateValue(component, subcomponent, key, subkey, value)
     local config = currentItem[2]
     component = currentComponent or component
 
     print (component, subcomponent, key, value)
+
     if subcomponent ~= nil then
         if key ~= nil then
-            config[component][subcomponent][key] = value
+            if subkey ~= nil then
+                config[component][subcomponent][key][subkey] = value
+            else
+                if type(key) == 'number' then
+                    tremove(config[component][subcomponent], key)
+                    tinsert(config[component][subcomponent], key, value)
+                else
+                    config[component][subcomponent][key] = value
+                end
+            end
         else
             config[component][subcomponent] = value
         end
@@ -325,11 +354,12 @@ function Inspector:InspectComponent(name)
     local component
     for idx=1, #visibleComponentIndex do
         component = scrollableComponents[visibleComponentIndex[idx]]
-        print (component.componentType, component)
         if component.Clean then
             component.Clean(component)
         end
     end
+    --replace scroll to top
+    self.UI.Scroll:SetVerticalScroll(0)
 
     local config = currentItem[2]
     currentComponent = name
