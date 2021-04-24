@@ -12,6 +12,21 @@ local borderSettings = Editor.border
 
 local function update(self, config)
 
+    local idxConfig = 1
+    local maxConfig = #config
+
+    for i, c in ipairs(self.Childs) do
+        if c.componentType == 'Texture' and idxConfig <= maxConfig then
+            c.Update(c, config[idxConfig])
+            idxConfig = idxConfig + 1
+        end
+    end
+end
+
+local function clean(self)
+    for i, c in ipairs(self.Childs) do
+        c.Clean(c)
+    end
 end
 
 
@@ -47,6 +62,12 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
             pt = nil
         end
         it = Inspector:CreateComponentGUI('Texture', 'RenderingTexture'..i, frame, it, nil, pt, (i%2 == 1), false, false, nil)
+        if it.Observer then
+            it.Observer.OnNotify = function (...)
+                local event, item, value = unpack(...)
+                Inspector:SubmitUpdateValue(nil, 'Rendering', i, item.key, value)
+            end
+        end
         height = height + it:GetHeight()
     end
 
@@ -66,4 +87,4 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     return frame
 end
 
-Inspector:RegisterComponentGUI('Rendering', gui, update)
+Inspector:RegisterComponentGUI('Rendering', gui, update, clean)
