@@ -17,13 +17,16 @@ local function moveBlizzardFrame()
     belowMinimapContainer:ClearAllPoints()
     belowMinimapContainer:SetPoint("TOP", 0, -50)
 
+    local extraAbilityContainer = _G.ExtraAbilityContainer
+    extraAbilityContainer:ClearAllPoints()
+    extraAbilityContainer:SetPoint('BOTTOM', -400, 200)
+
 end
 
 function Load:OnEvent(event, ...)
     if (event == "PLAYER_LOGIN") then
         moveBlizzardFrame()
         V["Utils"]:Enable()
-        V["Medias"]:Enable()
         --Now that all systems and medias are loaded, we can generate config frame
         if not V["Profiles"]:IsReady() then
             --print ("REGISTER DATA")
@@ -37,6 +40,10 @@ function Load:OnEvent(event, ...)
         end
         V["UnitFrames"]:Enable()
     elseif (event == 'ADDON_LOADED') then
+
+        --We want to load Medias as soon as possible
+        V["Medias"]:Enable()
+
         if IsAddOnLoaded("Blizzard_DebugTools") then
             _G.TableAttributeDisplay:SetSize(800, 600)
             _G.TableAttributeDisplay.LinesScrollFrame:SetSize(740, 500)
