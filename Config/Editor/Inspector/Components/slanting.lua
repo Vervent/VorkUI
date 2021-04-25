@@ -11,6 +11,30 @@ local Inspector = Editor.Inspector
 local borderSettings = Editor.border
 local layers = Editor.menus.layers
 
+local function update(self, config)
+    local checkboxWidgets = LibGUI:GetWidgetsByType(self, 'checkbox')
+    local dropdownWidgets = LibGUI:GetWidgetsByType(self, 'dropdownmenu')
+
+    local enable = checkboxWidgets[1]
+    enable:SetChecked(config['Enable'])
+
+    local uniformSlanting = checkboxWidgets[2]
+    uniformSlanting:SetChecked(true)
+
+    local ignoreBackground = checkboxWidgets[3]
+    ignoreBackground:SetChecked(config['IgnoreBackground'])
+
+    local inverse = checkboxWidgets[4]
+    inverse:SetChecked(config['Inverse'])
+
+    local fillInverse = checkboxWidgets[5]
+    fillInverse:SetChecked(config['FillInverse'])
+
+    local layer = dropdownWidgets[1]
+    layer:Update( layers, config['StaticLayer'] )
+
+end
+
 local function gui(baseName, parent, parentPoint, componentName, point,  hasBorder, isCollapsable, hasName, config)
 
     local pt
@@ -30,32 +54,53 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
             nil,
             pt
     )
+
+    local LibObserver = LibStub:GetLibrary("LibObserver")
+    if LibObserver then
+        frame.Observer = LibObserver:CreateObserver()
+        frame.Observer.OnNotify = function (...)
+            local event, item, value = unpack(...)
+            Inspector:SubmitUpdateValue(nil, 'Slanting', item.key, nil, value)
+        end
+    end
+
     frame:SetHeight(160)
 
-    local checkbox = LibGUI:NewWidget('checkbox', frame, 'CheckboxEnable', { 'TOPLEFT' }, nil, 'UICheckButtonTemplate', nil)
-    checkbox:Update( { 'Enable' } )
-    checkbox:ChangeFont( 'GameFontNormal' )
+    local enable = LibGUI:NewWidget('checkbox', frame, 'CheckboxEnable', { 'TOPLEFT' }, nil, 'UICheckButtonTemplate', nil)
+    enable:Update( { 'Enable' } )
+    enable:ChangeFont( 'GameFontNormal' )
+    enable.key = 'Enable'
+    enable:RegisterObserver(frame.Observer)
 
-    local uniformSlanting = LibGUI:NewWidget('checkbox', frame, 'CheckboxUniformSlant', { 'TOPLEFT', checkbox, 'BOTTOMLEFT' }, nil, 'UICheckButtonTemplate', nil)
+    local uniformSlanting = LibGUI:NewWidget('checkbox', frame, 'CheckboxUniformSlant', { 'TOPLEFT', enable, 'BOTTOMLEFT' }, nil, 'UICheckButtonTemplate', nil)
     uniformSlanting:Update( { 'Uniform Slanting' } )
     uniformSlanting:ChangeFont( 'GameFontNormal' )
+    uniformSlanting:Disable()
+
+    local ignoreBackground = LibGUI:NewWidget('checkbox', frame, 'CheckboxIgnoreBG', { 'LEFT', uniformSlanting.text, 'RIGHT', 15, 0 }, nil, 'UICheckButtonTemplate', nil)
+    ignoreBackground:Update( { 'ignore Background' } )
+    ignoreBackground:ChangeFont( 'GameFontNormal' )
+    ignoreBackground.key = 'IgnoreBackground'
+    ignoreBackground:RegisterObserver(frame.Observer)
 
     local inverse = LibGUI:NewWidget('checkbox', frame, 'CheckboxInverse', { 'TOPLEFT', uniformSlanting, 'BOTTOMLEFT' }, nil, 'UICheckButtonTemplate', nil)
     inverse:Update( { 'Inverse' } )
     inverse:ChangeFont( 'GameFontNormal' )
+    inverse.key = 'Inverse'
+    inverse:RegisterObserver(frame.Observer)
 
     local fillInverse = LibGUI:NewWidget('checkbox', frame, 'CheckboxFillInverse', { 'LEFT', inverse.text, 'RIGHT', 80, 0 }, nil, 'UICheckButtonTemplate', nil)
     fillInverse:Update( { 'Fill Inverse' } )
     fillInverse:ChangeFont( 'GameFontNormal' )
+    fillInverse.key = 'FillInverse'
+    fillInverse:RegisterObserver(frame.Observer)
 
-    local ignoreBackground = LibGUI:NewWidget('checkbox', frame, 'CheckboxIgnoreBG', { 'TOPLEFT', inverse, 'BOTTOMLEFT' }, nil, 'UICheckButtonTemplate', nil)
-    ignoreBackground:Update( { 'ignore Background' } )
-    ignoreBackground:ChangeFont( 'GameFontNormal' )
-
-    local staticLayer = LibGUI:NewWidget('label', frame, 'StaticLayerLabel', { 'TOPLEFT', ignoreBackground, 'BOTTOMLEFT' }, { 100, 30 }, nil, nil)
+    local staticLayer = LibGUI:NewWidget('label', frame, 'StaticLayerLabel', { 'TOPLEFT', inverse, 'BOTTOMLEFT' }, { 100, 30 }, nil, nil)
     staticLayer:Update( { 'OVERLAY', 'GameFontNormal','Static Layer' } )
     local staticLayerMenu = LibGUI:NewWidget('dropdownmenu', frame, 'StaticLayerDropdown', { 'LEFT', staticLayer, 'RIGHT' }, { 200, 25 }, nil, nil)
     staticLayerMenu:Update(layers)
+    staticLayerMenu.key = 'StaticLayer'
+    staticLayerMenu:RegisterObserver(frame.Observer)
 
     if hasBorder == true then
         frame:CreateBorder(borderSettings.size, borderSettings.color )
@@ -72,4 +117,4 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     return frame
 end
 
-Inspector:RegisterComponentGUI('Slanting', gui)
+Inspector:RegisterComponentGUI('Slanting', gui, update)

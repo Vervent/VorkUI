@@ -173,9 +173,9 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
         blendMenu.key = 4
         blendMenu:RegisterObserver(frame.Observer)
 
-        frame:SetHeight(195)
+        frame:SetHeight(160)
     else
-        frame:SetHeight(165)
+        frame:SetHeight(130)
     end
 
     if hasBorder == true then
