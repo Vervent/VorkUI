@@ -208,12 +208,12 @@ local function generalOption(module, submodule, layout)
     local data = {
         { 'Background', 'Enable', true },
         { 'Background', 'Color', 33 / 255, 44 / 255, 79 / 255, 0.75 },
-        { nil, 'NameFont', 'Montserrat SemiBold', 12, 'OUTLINE'},
-        { nil, 'NormalFont', 'Montserrat Medium', 12, 'OUTLINE'},
-        { nil, 'StackFont', 'Montserrat Medium Italic', 16, 'OUTLINE'},
-        { nil, 'DurationFont', 'Montserrat Medium', 12, 'OUTLINE'},
-        { nil, 'BigValueFont', 'Montserrat Medium Italic', 18, 'OUTLINE'},
-        { nil, 'ValueFont', 'Montserrat SemiBold Italic', 14, 'OUTLINE'},
+        { 'Fonts', 'NameFont', 'Montserrat SemiBold', 12, 'OUTLINE'},
+        { 'Fonts', 'NormalFont', 'Montserrat Medium', 12, 'OUTLINE'},
+        { 'Fonts', 'StackFont', 'Montserrat Medium Italic', 16, 'OUTLINE'},
+        { 'Fonts', 'DurationFont', 'Montserrat Medium', 12, 'OUTLINE'},
+        { 'Fonts', 'BigValueFont', 'Montserrat Medium Italic', 18, 'OUTLINE'},
+        { 'Fonts', 'ValueFont', 'Montserrat SemiBold Italic', 14, 'OUTLINE'},
     }
 
     local size = #data

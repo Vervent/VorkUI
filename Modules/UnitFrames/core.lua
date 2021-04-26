@@ -1582,7 +1582,7 @@ local function CreateUnit(self, unit, config)
                 self[k].Override = UnitFrames.UpdateClassOverride
             elseif k == 'GroupRoleIndicator' then
                 --self[k]:SetTexture([[Interface\LFGFrame\UI-LFG-ICON-PORTRAITROLES]])
-                self[k].AtlasName = v.Texture
+                self[k].AtlasName = v.Texture or [[Interface\LFGFrame\UI-LFG-ICON-PORTRAITROLES]]
                 self[k].Override = UnitFrames.UpdateGroupRoleIndicator
             elseif k =='SummonIndicator' then
                 self[k].Override = UnitFrames.UpdateSummonOverride
@@ -1592,7 +1592,7 @@ local function CreateUnit(self, unit, config)
 
     if config.Texts then
         for k, v in pairs (config.Texts) do
-            self[k] = CreateFontString(frame, v, config.General)
+            self[k] = CreateFontString(frame, v, config.General.Fonts)
             self:Tag(self[k], v.Tag)
         end
     end
@@ -1601,7 +1601,7 @@ local function CreateUnit(self, unit, config)
     CASTBAR
     ]]--
     if config.Castbar and config.Castbar.Enable then
-        self.Castbar = CreateCastBar(frame, config.Castbar, config.General)
+        self.Castbar = CreateCastBar(frame, config.Castbar, config.General.Fonts)
     end
 
     self:HookScript("OnEnter", UnitFrames.MouseOnPlayer)
