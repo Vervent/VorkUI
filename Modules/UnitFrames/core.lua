@@ -370,9 +370,25 @@ end
 function UnitFrames:CreateFontString(frame, config, baseConfig)
 
     local font = frame:CreateFontString(nil, config.Layer)
-    local fontObject = baseConfig[config.Font]
-    font:SetFontObject( Medias:GetFont( fontObject[1]..fontObject[2] ) )
-    font:Point(config.Point, frame:GetParent())
+    local name
+    local size
+    local flag
+    local fontObject
+
+    for _,f in ipairs(baseConfig) do
+        if f[1] == config.Font then
+            name = f[2]
+            size = f[3]
+            flag = f[4]
+            fontObject = Medias:GetFont( name..size )
+            if fontObject == nil then
+                Medias:LoadFont(name, Medias:GetFontAddress(name), size, flag)
+                fontObject = Medias:GetFont( name..size )
+            end
+            font:SetFontObject( fontObject )
+            font:Point(config.Point, frame:GetParent())
+            end
+    end
 
     return font
 end
@@ -753,15 +769,6 @@ local function CreateIndicator(frame, layer, sublayer, config, unit)
     end
 
     return indicator
-end
-
-local function CreateFontString(frame, config, baseConfig)
-    local font = frame:CreateFontString(nil, config.Layer)
-    local fontObject = baseConfig[config.Font]
-    font:SetFontObject( Medias:GetFont( fontObject[1]..fontObject[2] ) )
-    --font:Point(config.Point, frame:GetParent())
-
-    return font
 end
 
 local function CreateCastBar(frame, config, baseConfig)
@@ -1546,7 +1553,7 @@ local function CreateUnit(self, unit, config)
     end
 
     if config.RaidDebuffs and config.RaidDebuffs.Enable then
-        local raidDebuffs = CreateRaidDebuffs(frame, config.RaidDebuffs, config.General)
+        local raidDebuffs = CreateRaidDebuffs(frame, config.RaidDebuffs, config.General.Fonts)
         local oUFRD = Plugin.oUF_RaidDebuffs or oUF_RaidDebuffs
 
         raidDebuffs:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -1592,7 +1599,7 @@ local function CreateUnit(self, unit, config)
 
     if config.Texts then
         for k, v in pairs (config.Texts) do
-            self[k] = CreateFontString(frame, v, config.General.Fonts)
+            self[k] = UnitFrames:CreateFontString(frame, v, config.General.Fonts)
             self:Tag(self[k], v.Tag)
         end
     end
