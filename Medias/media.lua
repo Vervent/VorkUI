@@ -249,7 +249,7 @@ function Medias:LoadAllFonts()
 
     for _, v in ipairs(FontAdress) do
         if FontSettings[ v[2] ] ~= nil then
-            Medias:LoadFont(v[2], v[1],unpack(FontSettings[ v[2] ]))
+            Medias:LoadFont(v[2], v[1], unpack(FontSettings[ v[2] ]))
         end
     end
 
