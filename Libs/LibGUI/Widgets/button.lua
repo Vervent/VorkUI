@@ -41,10 +41,14 @@ local Methods = {
     end,
 
     ChangeText = function(self, text)
-        self.text = text
-        self:SetText(text)
-        if self.autoResize then
-            self:UpdateSize()
+        if self.Text then
+            self.Text:SetText(text or '')
+        else
+            self.text = text
+            self:SetText(text)
+            if self.autoResize then
+                self:UpdateSize()
+            end
         end
     end,
 
@@ -66,6 +70,10 @@ local Methods = {
     end,
 
     ChangeFont = function(self, normalFont,  disabledFont, highlightFont)
+
+        if self.Text then
+            self.Text:SetFontObject(normalFont)
+        end
 
         if type(normalFont) == 'table' then
             if normalFont.GetObjectType and normalFont:GetObjectType() == 'Font' then
