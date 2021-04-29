@@ -1582,17 +1582,19 @@ local function CreateUnit(self, unit, config)
     end
 
     if config.Indicators then
-        for k, v in pairs(config.Indicators) do
-            self[k] = CreateIndicator(frame, config.Indicators.Layer or 'OVERLAY', config.Indicators.Sublayer, v, unit)
-            if k == 'ClassIndicator' then
-                self[k].AtlasName = v.Texture
-                self[k].Override = UnitFrames.UpdateClassOverride
-            elseif k == 'GroupRoleIndicator' then
+        local name
+        for i, v in ipairs(config.Indicators) do
+            name = v.Name
+            self[name] = CreateIndicator(frame, config.Indicators.Layer or 'OVERLAY', config.Indicators.Sublayer, v, unit)
+            if name == 'ClassIndicator' then
+                self[name].AtlasName = v.Texture
+                self[name].Override = UnitFrames.UpdateClassOverride
+            elseif name == 'GroupRoleIndicator' then
                 --self[k]:SetTexture([[Interface\LFGFrame\UI-LFG-ICON-PORTRAITROLES]])
-                self[k].AtlasName = v.Texture or [[Interface\LFGFrame\UI-LFG-ICON-PORTRAITROLES]]
-                self[k].Override = UnitFrames.UpdateGroupRoleIndicator
-            elseif k =='SummonIndicator' then
-                self[k].Override = UnitFrames.UpdateSummonOverride
+                self[name].AtlasName = v.Texture or [[Interface\LFGFrame\UI-LFG-ICON-PORTRAITROLES]]
+                self[name].Override = UnitFrames.UpdateGroupRoleIndicator
+            elseif name =='SummonIndicator' then
+                self[name].Override = UnitFrames.UpdateSummonOverride
             end
         end
     end
@@ -1648,9 +1650,9 @@ local function LocateUnitFrames(self, config, unit)
     end
 
     if config.Indicators then
-        for k, v in pairs(config.Indicators) do
+        for i, v in ipairs(config.Indicators) do
             if v.Point then
-                self[k]:Point(v.Point, self)
+                self[v.Name]:Point(v.Point, self)
             end
         end
     end
@@ -1700,8 +1702,8 @@ local function ResizeUnitFrames(self, config)
     end
 
     if config.Indicators then
-        for k, v in pairs(config.Indicators) do
-            self[k]:SetSize(unpack(v.Size))
+        for i, v in ipairs(config.Indicators) do
+            self[v.Name]:SetSize(unpack(v.Size))
         end
     end
 

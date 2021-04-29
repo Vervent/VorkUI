@@ -11,15 +11,22 @@ local borderSettings = Editor.border
     TODO Debug Purpose
 ]]--
 
-local indicatorDropdown = {
-    { text = 'Fight'},
-    { text = 'Resting'},
-    { text = 'Class'},
-    { text = 'Leader'},
-}
+local function update(self, config, parentDropdown)
+    local pointFrame = self.Childs[1]
+    pointFrame.Update(pointFrame, config.Point, parentDropdown)
+
+    local sizeFrame = self.Childs[2]
+    sizeFrame.Update(sizeFrame, config.Size)
+end
+
+local function clean(self)
+    local pointFrame = self.Childs[1]
+    pointFrame.Clean(pointFrame)
+end
 
 local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
 
+    local height = 0
     local pt
     if point then
         pt = point
@@ -37,25 +44,49 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
             nil,
             pt
     )
-
-    local indicator = LibGUI:NewWidget('label', frame, 'IndicatorLabel', { 'TOPLEFT', 0, -10 }, { 80, 30 }, nil, nil)
-    indicator:Update( { 'OVERLAY', 'GameFontNormal', 'Indicator' } )
-    local indicatorMenu = LibGUI:NewWidget('dropdownmenu', frame, 'IndicatorDropdown', { 'LEFT', indicator, 'RIGHT' }, { 200, 25 }, nil, nil)
-    indicatorMenu:Update( indicatorDropdown )
+    local LibObserver = LibStub:GetLibrary("LibObserver")
+    if LibObserver then
+        frame.Observer = LibObserver:CreateObserver()
+        frame.Observer.OnNotify = function (...)
+        end
+    end
 
     local pointFrame = Inspector:CreateComponentGUI('Point',
-            'IndicatorPoint',
+            'Indicator',
             frame,
-            indicatorMenu,
             nil,
+            'Point',
             {
-                {'TOPLEFT', 0, -30},
-                {'TOPRIGHT', 0, -30},
+                {'TOPLEFT', 0, -16},
+                {'TOPRIGHT', 0, -16},
             },
             false,
-            false)
+            false,
+            true)
 
-    frame:SetHeight(pointFrame:GetHeight() + 30)
+    local pointTableFrame = pointFrame.Childs[2]
+    if pointTableFrame.Observer then
+        pointTableFrame.Observer.OnNotify = function(...)
+            local event = select(1, ...)
+            local value = select(2, ...)
+            frame.Observer.OnNotify(event, 'Point', nil, value)
+        end
+    end
+    height = height + pointFrame:GetHeight() + 16
+
+    local sizeFrame = Inspector:CreateComponentGUI('Size', 'Indicator', frame, nil, 'Size', {
+        {'TOPLEFT', pointFrame, 'BOTTOMLEFT', 0, 0},
+        {'TOPRIGHT', pointFrame, 'BOTTOMRIGHT', 0, 0},
+    }, false, false, true)
+    if sizeFrame.Observer then
+        sizeFrame.Observer.OnNotify = function(...)
+            local event, item, value = unpack(...)
+            frame.Observer.OnNotify(event, 'Size', item.key, value)
+        end
+    end
+    height = height + sizeFrame:GetHeight() + 16
+
+    frame:SetHeight(height)
     if hasBorder then
         frame:CreateBorder(borderSettings.size, borderSettings.color )
     end
@@ -71,4 +102,4 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     return frame
 end
 
-Inspector:RegisterComponentGUI('Indicator', gui)
+Inspector:RegisterComponentGUI('Indicator', gui, update, clean)

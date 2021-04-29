@@ -11,14 +11,15 @@
     <Script file="Components\point.lua"/>
     <Script file="Components\viewer.lua"/>
     <Script file="Components\portrait.lua"/>
+    <Script file="Components\indicator.lua"/>
 
     <!-- Load Frame component -->
     <Script file="Components\rendering.lua"/>
     <Script file="Components\fonts.lua"/>
+    <Script file="Components\indicators.lua"/>
     <Script file="Components\submodules.lua"/>
     <Script file="Components\componentlist.lua"/>
     <Script file="Components\componentblock.lua"/>
-    <Script file="Components\indicator.lua"/>
     <Script file="Components\particle.lua"/>
     <Script file="Components\castbar.lua"/>
     <Script file="Components\aura.lua"/>

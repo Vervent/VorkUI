@@ -120,6 +120,29 @@ local function getComponentBlockData(config)
     return blockName
 end
 
+local function iterativeParseComponentConfig(config, name)
+
+    if config == nil then
+        return
+    end
+
+    print ("ITERATIVE PARSE", name)
+
+    local scrollParent = Inspector.UI.Scroll
+    scrollParent:ShowScrollChild()
+
+    for i, v in ipairs(scrollableComponents) do
+        if v.componentType == name then
+            initializeComponent(v, config, true, scrollParent.ScrollChild, scrollParent.ScrollBar)
+            tinsert(visibleComponentIndex, i)
+        else
+            v:Hide()
+        end
+    end
+    scrollParent:ResizeScrollChild()
+
+end
+
 local function parseComponentConfig(config)
     if config == nil then
         return
@@ -173,8 +196,8 @@ local function createInspectorComponent(self)
 
     tinsert(scrollableComponents, self:CreateComponentGUI('Point', 'InspectorModule', scrollParent.ScrollChild, scrollableComponents['Components'], 'Point', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Size', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Point'], 'Size', unpack(componentBaseConfig)))
-    tinsert(scrollableComponents, self:CreateComponentGUI('Indicator', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Submodules'], 'Indicators', unpack(componentBaseConfig)))
-    tinsert(scrollableComponents, self:CreateComponentGUI('Rendering', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Indicator'], 'Rendering', nil, true, true, true, 3))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Indicators', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Submodules'], 'Indicators', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Rendering', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Indicators'], 'Rendering', nil, true, true, true, 3))
     tinsert(scrollableComponents, self:CreateComponentGUI('Slanting', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Rendering'], 'Slanting', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Tag', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Slanting'], 'Tag', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Fonts', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Tag'], 'Fonts', nil, true, true, true, 6))
@@ -375,7 +398,11 @@ function Inspector:InspectComponent(name)
         end
     end
 
-    parseComponentConfig(config[name])
+    if name == 'Indicators' or name == 'Texts' then
+        iterativeParseComponentConfig(config[name], name)
+    else
+        parseComponentConfig(config[name])
+    end
 
     --if name == 'General' then
     --    --root inspect

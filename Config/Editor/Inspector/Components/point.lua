@@ -126,7 +126,7 @@ local function addPoint(table, container, anchorChild, relativeTo)
         end
     end
 
-    Inspector:SubmitUpdateValue(nil, 'Point', nil, pointConfig)
+    Inspector:SubmitUpdateValue(nil, 'Point', nil, nil, pointConfig)
 end
 
 local function snap(frame)
@@ -239,7 +239,11 @@ local function addOffsetSetter(container, index)
         frame.Observer.OnNotify = function (...)
             local event, item, value = unpack(...)
             updatePointConfig(index, item.key, value)
-            Inspector:SubmitUpdateValue(nil, 'Point', nil, nil, pointConfig)
+            if container.Observer then
+                container.Observer.OnNotify(event, pointConfig)
+            else
+                Inspector:SubmitUpdateValue(nil, 'Point', nil, nil, pointConfig)
+            end
         end
     end
 
@@ -265,7 +269,7 @@ local function addOffsetSetter(container, index)
     btnRemove:SetID(index)
     btnRemove:Update( { ' -', function(self)
         removePoint(container:GetParent(), self:GetID())
-        Inspector:SubmitUpdateValue(nil, 'Point', nil, pointConfig)
+        Inspector:SubmitUpdateValue(nil, 'Point', nil, nil, pointConfig)
     end } )
 
     frame.DisableChilds = function()
@@ -369,7 +373,6 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
             pt
     )
     frame:SetHeight(400)
-
     frame.anchorPairs = {}
 
     --[[
@@ -441,6 +444,12 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
                 { 'BOTTOMRIGHT', -5, 10 },
             }
     )
+    local LibObserver = LibStub:GetLibrary("LibObserver")
+    if LibObserver then
+        pointTableFrame.Observer = LibObserver:CreateObserver()
+        pointTableFrame.Observer.OnNotify = function (...)
+        end
+    end
 
     --pointTableFrame:CreateBorder(1, { 1, 1, 1, 1 })
 
