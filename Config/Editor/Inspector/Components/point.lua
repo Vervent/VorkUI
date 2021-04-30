@@ -38,6 +38,22 @@ local parentDropdown = {
 local minOffset = -500
 local maxOffset = 500
 
+local function export(container, event)
+
+    local val
+    if next(pointConfig) == nil then
+        val = nil
+    else
+        val = pointConfig
+    end
+
+    if container.Observer then
+        container.Observer.OnNotify(event, val)
+    else
+        Inspector:SubmitUpdateValue(nil, 'Point', nil, nil, val)
+    end
+end
+
 local function updatePointConfig(index, key, value)
     if key == 5 and pointConfig[index][4] == nil then
         pointConfig[index][4] = 0
@@ -122,11 +138,11 @@ local function addPoint(table, container, anchorChild, relativeTo)
         if not container.Childs[i].isUsed then
             container.Childs[i].isUsed = true
             container.Childs[i]:EnableChilds()
+            export(container, 'OnCreate')
             return i
         end
     end
-
-    Inspector:SubmitUpdateValue(nil, 'Point', nil, nil, pointConfig)
+    --Inspector:SubmitUpdateValue(nil, 'Point', nil, nil, pointConfig)
 end
 
 local function snap(frame)
@@ -239,11 +255,12 @@ local function addOffsetSetter(container, index)
         frame.Observer.OnNotify = function (...)
             local event, item, value = unpack(...)
             updatePointConfig(index, item.key, value)
-            if container.Observer then
-                container.Observer.OnNotify(event, pointConfig)
-            else
-                Inspector:SubmitUpdateValue(nil, 'Point', nil, nil, pointConfig)
-            end
+            export(container, event)
+            --if container.Observer then
+            --    container.Observer.OnNotify(event, pointConfig)
+            --else
+            --    Inspector:SubmitUpdateValue(nil, 'Point', nil, nil, pointConfig)
+            --end
         end
     end
 
@@ -269,7 +286,8 @@ local function addOffsetSetter(container, index)
     btnRemove:SetID(index)
     btnRemove:Update( { ' -', function(self)
         removePoint(container:GetParent(), self:GetID())
-        Inspector:SubmitUpdateValue(nil, 'Point', nil, nil, pointConfig)
+        export(container, 'OnDestroy')
+        --Inspector:SubmitUpdateValue(nil, 'Point', nil, nil, pointConfig)
     end } )
 
     frame.DisableChilds = function()
@@ -301,6 +319,13 @@ local function update(self, config, parentDropdown)
     local parentFrame = setterFrame.Childs[1]
     local childFrame = setterFrame.Childs[2]
     local tableFrame = self.Childs[2]
+
+    if config == nil then
+        for i=1, 3 do
+            tableFrame.Childs[i].Widgets[4]:Update( parentDropdown )
+        end
+        return
+    end
 
     if type(config[1]) == 'table' then
         --complex table point
