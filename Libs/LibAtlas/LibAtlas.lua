@@ -88,6 +88,15 @@ function LibAtlas:GetPath(key)
     end
 end
 
+function LibAtlas:GetSize(key)
+    local atlas = self:GetAtlas(key)
+    if atlas == nil then
+        return nil
+    end
+
+    return atlas.Sprites.width, atlas.Sprites.height
+end
+
 function LibAtlas:GetSheet(key)
     local atlas = self:GetAtlas(key)
     if atlas == nil then
