@@ -30,7 +30,8 @@ local function updateAtlas(self, name, texCoord)
     local atlasWidth, atlasHeight = LibAtlas:GetSize(name)
     local texture = LibAtlas:GetPath(name)
     local factor = mmath(width, height) / mmath(atlasWidth, atlasHeight)
-    viewerAtlas:SetSize(atlasWidth * factor, atlasHeight * factor)
+    local newHeight = atlasHeight*factor
+    viewerAtlas:SetSize(atlasWidth * factor, newHeight)
 
     local atlas = LibAtlas:GetAtlas(name)
     local name = texCoord or ''
@@ -59,6 +60,8 @@ local function updateAtlas(self, name, texCoord)
     end
 
     viewerAtlas:ChangeIcon(texture)
+
+    self:SetHeight(400 - (height-newHeight))
 end
 
 local function update(self, texture, texCoord, vertexColor, blendMode, gradientAlpha)
@@ -89,6 +92,8 @@ local function clean(self)
         btn:ClearAllPoints()
         btn:Hide()
     end
+
+    self:SetHeight(400)
 
     initialized = false
 end
