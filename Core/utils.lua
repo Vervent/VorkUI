@@ -472,6 +472,31 @@ Utils.API.ShallowCopyTableRecursivelyIgnoring = function(self, orig, degree, deg
     return copy
 end
 
+Utils.API.DeepCopyTable = function(self, orig)
+    local copy = {}
+
+    local clone = { unpack(orig) }
+    for i=1, #clone do
+        copy[i] = clone[i]
+    end
+
+    for k, v in pairs(orig) do
+        if type(k) ~= 'number' or math.floor(k) ~= k then
+            if type(v) == 'table' then
+                if next(v) == nil then --empty table
+                    copy[k] = {}
+                else
+                    copy[k] = self:DeepCopyTable(v)
+                end
+            else
+                copy[k] = v
+            end
+        end
+    end
+
+    return copy
+end
+
 Utils.API.ShallowCopyTableRecursively = function(self, orig, degree, degreeMax)
 
     local orig_type = type(orig)
@@ -480,13 +505,26 @@ Utils.API.ShallowCopyTableRecursively = function(self, orig, degree, degreeMax)
         copy = {}
         for orig_key, orig_value in pairs(orig) do
             if type(orig_value) == 'table' then
-                copy[orig_key] = self:ShallowCopyTableRecursively(orig_value, degree + 1, degreeMax)
+                local clone = { unpack(orig_value) }
+                for i=1, #clone do
+                    print (i, tab[i])
+                end
+
+                if type(orig_key) == 'number' then
+                    tinsert(copy, self:ShallowCopyTableRecursively(orig_value, degree + 1, degreeMax))
+                else
+                    copy[orig_key] = self:ShallowCopyTableRecursively(orig_value, degree + 1, degreeMax)
+                end
             else
-                copy[orig_key] = orig_value
+                if type(orig_key) == 'number' then
+                    tinsert(copy, orig_value or nil)
+                else
+                    copy[orig_key] = orig_value or nil
+                end
             end
         end
     else -- number, string, boolean, etc
-        copy = orig
+        copy = orig or nil
     end
     return copy
 end
