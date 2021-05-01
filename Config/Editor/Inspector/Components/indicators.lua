@@ -113,14 +113,17 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
         {'TOPLEFT', 0, -45},
         {'TOPRIGHT', 0, 0},
     }, false, false, true, nil)
+
     if indicator.Observer then
         indicator.Observer.OnNotify = function (...)
-            local event = select(1, ...)
-            local key = select(2, ...)
-            local subkey = select(3, ...)
-            local value = select(4, ...)
-            print (event, 'Indicators', currentId, key, subkey, value)
-            Inspector:SubmitUpdateValue('Indicators', currentId, key, subkey, value)
+            local event, item, subkey, value = unpack(...)
+            if type(item) == 'string' then
+                --print ('INDICATORS', event, item, subkey, value)
+                Inspector:SubmitUpdateValue('Indicators', currentId, item, subkey, value)
+            else
+                --print ('INDICATORS', event, item.key, 'nil', subkey)
+                Inspector:SubmitUpdateValue('Indicators', currentId, item.key, item.subkey or nil, subkey)
+            end
         end
     end
 

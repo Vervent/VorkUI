@@ -26,7 +26,7 @@ local function updateAtlas(self, name, texCoord)
     local buttonWidgets = LibGUI:GetWidgetsByType(self, 'button')
     local viewerAtlas = iconWidgets[1]
 
-    local width, height = viewerAtlas:GetSize()
+    local width, height = size, size
     local atlasWidth, atlasHeight = LibAtlas:GetSize(name)
     local texture = LibAtlas:GetPath(name)
     local factor = mmath(width, height) / mmath(atlasWidth, atlasHeight)
@@ -60,11 +60,10 @@ local function updateAtlas(self, name, texCoord)
     end
 
     viewerAtlas:ChangeIcon(texture)
-
-    self:SetHeight(400 - (height-newHeight))
+    self:SetHeight(400 - (height - newHeight))
 end
 
-local function update(self, texture, texCoord, vertexColor, blendMode, gradientAlpha)
+local function update(self, texture, texCoord)
     local dropdownWidgets = LibGUI:GetWidgetsByType(self, 'dropdownmenu')
     local chooseAtlas = dropdownWidgets[1]
 
@@ -126,7 +125,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
         frame.Observer.OnNotify = function (...)
             local event, item, value = unpack(...)
             if item.key == 'Texture' then
-                updateAtlas(frame, value)
+                local h = updateAtlas(frame, value)
             else
                 print (event, item.key, unpack(value))
             end
@@ -144,10 +143,11 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     --  Atlas Viewer
     ]]--
     local viewerAtlas = LibGUI:NewWidget('icon', frame, baseName..'ViewerAtlas', { 'TOP', 0, -50 }, { size, size }, nil, nil)
-    viewerAtlas.bg = frame:CreateTexture(nil, 'BACKGROUND')
+    viewerAtlas.bg = LibGUI:NewWidget('icon', frame, nil, nil, nil, 'BACKGROUND', nil)
+    --viewerAtlas.bg = frame:CreateTexture(nil, 'BACKGROUND')
     viewerAtlas.bg:SetPoint('TOPLEFT', viewerAtlas)
     viewerAtlas.bg:SetPoint('BOTTOMRIGHT', viewerAtlas)
-    viewerAtlas.bg:SetColorTexture( 0, 0, 0, 0.66 )
+    viewerAtlas.bg:ChangeColorTexture( { 0, 0, 0, 0.66 } )
 
     local btn, r, g, b
     for i=1, 20 do

@@ -19,6 +19,11 @@ Editor.menus.layers = {
     { text = 'HIGHLIGHT' },
 }
 
+Editor.menus.orientation = {
+    { text = 'VERTICAL' },
+    { text = 'HORIZONTAL' },
+}
+
 Editor.menus.blendmode = {
     { text = 'DISABLE' },
     { text = 'BLEND' },
