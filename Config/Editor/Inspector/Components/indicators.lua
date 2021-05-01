@@ -27,16 +27,17 @@ local function update(self, config, parentDropdown)
     self.config = config
     self.parentDropdown = parentDropdown
 
-    --local idxConfig = 1
-    --local maxConfig = #config
-    --
-    --for i, c in ipairs(self.Childs) do
-    --    if c.componentType == 'Indicator' and idxConfig <= maxConfig then
-    --        c.Update(c, config[idxConfig])
-    --        idxConfig = idxConfig + 1
-    --    end
-    --end
+end
 
+local function removeIndicatorFromDropdown(self, name)
+    local dropdown = {}
+    for _, v in ipairs(self.parentDropdown) do
+        if v.text ~= name then
+            tinsert(dropdown, v)
+        end
+    end
+
+    return dropdown
 end
 
 local function updateIndicator(self, name)
@@ -47,11 +48,13 @@ local function updateIndicator(self, name)
     local dropdownWidgets = LibGUI:GetWidgetsByType(self, 'dropdownmenu')
     local indicatorChoice = dropdownWidgets[1]
 
+    local parentDropdown = removeIndicatorFromDropdown(self, name)
+
     for i, v in ipairs(self.config) do
         if v.Name == name then
             local indicator = self.Childs[1]
             indicator.Clean(indicator) --clean old data before update
-            indicator.Update(indicator, v, self.parentDropdown)
+            indicator.Update(indicator, v, parentDropdown)
             indicatorChoice.key = i
             currentId = i
         end
@@ -99,14 +102,14 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
         end
     end
 
-    local indicator = LibGUI:NewWidget('label', frame, 'IndicatorLabel', { 'TOPLEFT', 0, -10 }, { 100, 30 }, nil, nil)
-    indicator:Update( { 'OVERLAY', 'GameFontNormal', 'Choose Indicator' } )
-    local indicatorMenu = LibGUI:NewWidget('dropdownmenu', frame, 'IndicatorDropdown', { 'LEFT', indicator, 'RIGHT' }, { 200, 25 }, nil, nil)
+    local indicatorLabel = LibGUI:NewWidget('label', frame, 'IndicatorLabel', { 'TOPLEFT', 0, -10 }, { 100, 30 }, nil, nil)
+    indicatorLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Choose Indicator' } )
+    local indicatorMenu = LibGUI:NewWidget('dropdownmenu', frame, 'IndicatorDropdown', { 'LEFT', indicatorLabel, 'RIGHT' }, { 200, 25 }, nil, nil)
     --indicatorMenu:Update( indicatorDropdown )
     indicatorMenu.key = nil
     indicatorMenu:RegisterObserver(frame.Observer)
 
-    local indicator = Inspector:CreateComponentGUI('Indicator', 'Indicator', frame, indicator, nil, {
+    local indicator = Inspector:CreateComponentGUI('Indicator', 'Indicator', frame, indicatorLabel, nil, {
         {'TOPLEFT', 0, -45},
         {'TOPRIGHT', 0, 0},
     }, false, false, true, nil)
