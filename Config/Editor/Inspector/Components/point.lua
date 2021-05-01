@@ -127,50 +127,9 @@ local function resetWidgets(self, i)
 end
 
 local function removePoint(self, i)
-    --local anchorChild, _, relativeTo = unpack(pointConfig[i])
 
     resetWidgets(self, i)
     pointConfig[i] = nil
-    --local countPoint = 0
-    --
-    --local btnChildIdx = getAnchorIdx(anchorChild)
-    --local btnParentIdx = getAnchorIdx(relativeTo)
-    --local btn
-    --
-    --local anchorView = self.Childs[1]
-    --if btnChildIdx > 0 then
-    --    btn = anchorView.Childs[2].Widgets[btnChildIdx]
-    --    btn:ChangeColor( { 1, 1, 1, 1 } )
-    --end
-    --
-    --if btnParentIdx > 0 then
-    --    btn = anchorView.Childs[1].Widgets[btnParentIdx]
-    --    btn:ChangeColor( { 1, 1, 1, 1 } )
-    --end
-    --anchorView.Childs[2]:ClearAllPoints()
-    --
-    --for _, p in pairs(pointConfig) do
-    --    if p ~= nil and type(p) == 'table' then
-    --        countPoint = countPoint + 1
-    --        anchorView.Childs[2]:SetPoint(p[1], anchorView.Childs[1], p[3])
-    --    end
-    --end
-    --
-    --if countPoint == 0 then
-    --    anchorView.Childs[2]:SetPoint('CENTER')
-    --    anchorView.Childs[2]:SetSize(40, 40)
-    --    LibGUI:SetMovableContainer(anchorView.Childs[2], false)
-    --elseif countPoint == 1 then
-    --    --resize child to original size
-    --    anchorView.Childs[2]:SetSize(40, 40)
-    --end
-    --
-    --local offsetContainer = self.Childs[2]
-    --offsetContainer.Childs[i].isUsed = false
-    --offsetContainer.Childs[i]:DisableChilds()
-    --offsetContainer.Childs[i].Widgets[2]:ChangeText( 0 )
-    --offsetContainer.Childs[i].Widgets[3]:ChangeText( 0 )
-    --offsetContainer.Childs[i].Widgets[4]:Update( self.parentDropdown, '' )
 
 end
 
@@ -304,11 +263,6 @@ local function addOffsetSetter(container, index)
             local event, item, value = unpack(...)
             updatePointConfig(index, item.key, value)
             export(container, event)
-            --if container.Observer then
-            --    container.Observer.OnNotify(event, pointConfig)
-            --else
-            --    Inspector:SubmitUpdateValue(nil, 'Point', nil, nil, pointConfig)
-            --end
         end
     end
 
@@ -326,7 +280,6 @@ local function addOffsetSetter(container, index)
     yOffsetEdit:RegisterObserver(frame.Observer)
 
     local parentMenu = LibGUI:NewWidget('dropdownmenu', frame, 'ParentDropdown'..index, { 'LEFT', yOffsetEdit, 'RIGHT', 10, -2 }, { 80, 20 }, nil, nil)
-    --parentMenu:Update( parentDropdown )
     parentMenu.key = 2
     parentMenu:RegisterObserver(frame.Observer)
 
@@ -388,11 +341,8 @@ local function update(self, config, parentDropdown)
 
     local idx
     local anchor, parent, relativeTo, x, y
-    local anchorId, relativeToId
 
     local setterFrame = self.Childs[1]
-    local parentFrame = setterFrame.Childs[1]
-    local childFrame = setterFrame.Childs[2]
     local tableFrame = self.Childs[2]
 
     self.parentDropdown = parentDropdown
@@ -422,7 +372,6 @@ local function update(self, config, parentDropdown)
         pointConfig[idx][5] = y
     end
 
-    --export(tableFrame, 'OnCreate')
     initialized = true
 end
 
@@ -451,8 +400,6 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     --[[
         The Anchor Snap Item
     ]]--
-
-
    local setterFrame = LibGUI:NewContainer(
            'empty',
            frame,
