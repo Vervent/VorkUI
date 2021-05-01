@@ -27,16 +27,10 @@ local pointColor = {
 local pointConfig = {
 }
 
--- TODO DEBUG PURPOSE REMOVE THIS
-local parentDropdown = {
-    { text = 'PlayerFrame'},
-    { text = 'Health'},
-    { text = 'Power'},
-    { text = 'Absorbs'},
-}
-
 local minOffset = -500
 local maxOffset = 500
+
+local initialized = false
 
 local function export(container, event)
 
@@ -48,8 +42,10 @@ local function export(container, event)
     end
 
     if container.Observer then
+        print ('|cFF10FF10 POINT CONTAINER EXPORT|r')
         container.Observer.OnNotify(event, val)
     else
+        print ('|cFFFF1010 POINT DIRECT EXPORT |r')
         Inspector:SubmitUpdateValue(nil, 'Point', nil, nil, val)
     end
 end
@@ -85,9 +81,9 @@ local function getAnchorIdx(point)
     return 0
 end
 
-local function removePoint(self, i)
+local function resetWidgets(self, i)
+
     local anchorChild, _, relativeTo = unpack(pointConfig[i])
-    pointConfig[i] = nil
     local countPoint = 0
 
     local btnChildIdx = getAnchorIdx(anchorChild)
@@ -97,17 +93,17 @@ local function removePoint(self, i)
     local anchorView = self.Childs[1]
     if btnChildIdx > 0 then
         btn = anchorView.Childs[2].Widgets[btnChildIdx]
-        btn:ChangeColor( { 1, 1, 1, 1 } )
+        btn:ChangeColor({ 1, 1, 1, 1 })
     end
 
     if btnParentIdx > 0 then
         btn = anchorView.Childs[1].Widgets[btnParentIdx]
-        btn:ChangeColor( { 1, 1, 1, 1 } )
+        btn:ChangeColor({ 1, 1, 1, 1 })
     end
     anchorView.Childs[2]:ClearAllPoints()
 
-    for _, p in pairs(pointConfig) do
-        if p ~= nil and type(p) == 'table' then
+    for idx, p in ipairs(pointConfig) do
+        if idx ~= i and p ~= nil and type(p) == 'table' then
             countPoint = countPoint + 1
             anchorView.Childs[2]:SetPoint(p[1], anchorView.Childs[1], p[3])
         end
@@ -125,6 +121,56 @@ local function removePoint(self, i)
     local offsetContainer = self.Childs[2]
     offsetContainer.Childs[i].isUsed = false
     offsetContainer.Childs[i]:DisableChilds()
+    offsetContainer.Childs[i].Widgets[2]:ChangeText(0)
+    offsetContainer.Childs[i].Widgets[3]:ChangeText(0)
+    offsetContainer.Childs[i].Widgets[4]:Update(self.parentDropdown, '')
+end
+
+local function removePoint(self, i)
+    --local anchorChild, _, relativeTo = unpack(pointConfig[i])
+
+    resetWidgets(self, i)
+    pointConfig[i] = nil
+    --local countPoint = 0
+    --
+    --local btnChildIdx = getAnchorIdx(anchorChild)
+    --local btnParentIdx = getAnchorIdx(relativeTo)
+    --local btn
+    --
+    --local anchorView = self.Childs[1]
+    --if btnChildIdx > 0 then
+    --    btn = anchorView.Childs[2].Widgets[btnChildIdx]
+    --    btn:ChangeColor( { 1, 1, 1, 1 } )
+    --end
+    --
+    --if btnParentIdx > 0 then
+    --    btn = anchorView.Childs[1].Widgets[btnParentIdx]
+    --    btn:ChangeColor( { 1, 1, 1, 1 } )
+    --end
+    --anchorView.Childs[2]:ClearAllPoints()
+    --
+    --for _, p in pairs(pointConfig) do
+    --    if p ~= nil and type(p) == 'table' then
+    --        countPoint = countPoint + 1
+    --        anchorView.Childs[2]:SetPoint(p[1], anchorView.Childs[1], p[3])
+    --    end
+    --end
+    --
+    --if countPoint == 0 then
+    --    anchorView.Childs[2]:SetPoint('CENTER')
+    --    anchorView.Childs[2]:SetSize(40, 40)
+    --    LibGUI:SetMovableContainer(anchorView.Childs[2], false)
+    --elseif countPoint == 1 then
+    --    --resize child to original size
+    --    anchorView.Childs[2]:SetSize(40, 40)
+    --end
+    --
+    --local offsetContainer = self.Childs[2]
+    --offsetContainer.Childs[i].isUsed = false
+    --offsetContainer.Childs[i]:DisableChilds()
+    --offsetContainer.Childs[i].Widgets[2]:ChangeText( 0 )
+    --offsetContainer.Childs[i].Widgets[3]:ChangeText( 0 )
+    --offsetContainer.Childs[i].Widgets[4]:Update( self.parentDropdown, '' )
 
 end
 
@@ -138,7 +184,9 @@ local function addPoint(table, container, anchorChild, relativeTo)
         if not container.Childs[i].isUsed then
             container.Childs[i].isUsed = true
             container.Childs[i]:EnableChilds()
-            export(container, 'OnCreate')
+            if initialized == true then
+                export(container, 'OnCreate')
+            end
             return i
         end
     end
@@ -309,7 +357,34 @@ local function addOffsetSetter(container, index)
     return frame
 end
 
+local function updateWidgets(self, anchor, parent, relativeTo, x, y)
+
+    local anchorId = getAnchorIdx(anchor)
+    local relativeToId = getAnchorIdx(relativeTo)
+    local setterFrame = self.Childs[1]
+    local parentFrame = setterFrame.Childs[1]
+    local childFrame = setterFrame.Childs[2]
+    local tableFrame = self.Childs[2]
+
+    anchorId = getAnchorIdx(anchor)
+    relativeToId = getAnchorIdx(relativeTo)
+
+    local parentButtons = LibGUI:GetWidgetsByType(parentFrame, 'button')
+    local childButtons = LibGUI:GetWidgetsByType(childFrame, 'button')
+
+    clickSnapButton(childButtons[anchorId])
+    local idx = clickSnapButton(parentButtons[relativeToId])
+
+    tableFrame.Childs[idx].Widgets[2]:ChangeText( x )
+    tableFrame.Childs[idx].Widgets[3]:ChangeText( y )
+    tableFrame.Childs[idx].Widgets[4]:Update( self.parentDropdown, parent )
+
+    return idx
+end
+
 local function update(self, config, parentDropdown)
+
+    print ('|cff33ff99 Update Point|r')
 
     local idx
     local anchor, parent, relativeTo, x, y
@@ -320,6 +395,7 @@ local function update(self, config, parentDropdown)
     local childFrame = setterFrame.Childs[2]
     local tableFrame = self.Childs[2]
 
+    self.parentDropdown = parentDropdown
     if config == nil then
         for i=1, 3 do
             tableFrame.Childs[i].Widgets[4]:Update( parentDropdown )
@@ -332,50 +408,22 @@ local function update(self, config, parentDropdown)
         for i, v in ipairs(config) do
             anchor, parent, relativeTo, x, y = unpack(v)
 
-            --default values
-            --x = 0 or x
-            --y = 0 or y
-            --relativeTo = 'CENTER' or relativeTo
-            --parent = nil or parent
-            --anchor = 'CENTER' or anchor
-
-            anchorId = getAnchorIdx(anchor)
-            relativeToId = getAnchorIdx(relativeTo)
-
-            local parentButtons = LibGUI:GetWidgetsByType(parentFrame, 'button')
-            local childButtons = LibGUI:GetWidgetsByType(childFrame, 'button')
-
-            clickSnapButton(childButtons[anchorId])
-            idx = clickSnapButton(parentButtons[relativeToId])
-
+            idx = updateWidgets(self, anchor, parent, relativeTo, x, y)
             pointConfig[idx][2] = parent
             pointConfig[idx][4] = x
             pointConfig[idx][5] = y
-
-            tableFrame.Childs[idx].Widgets[2]:ChangeText( x )
-            tableFrame.Childs[idx].Widgets[3]:ChangeText( y )
-            tableFrame.Childs[idx].Widgets[4]:Update( parentDropdown, parent )
         end
     else
         --tinsert(pointConfig, config)
         anchor, parent, relativeTo, x, y = unpack(config)
-        anchorId = getAnchorIdx(anchor)
-        relativeToId = getAnchorIdx(relativeTo)
-
-        local parentButtons = LibGUI:GetWidgetsByType(parentFrame, 'button')
-        local childButtons = LibGUI:GetWidgetsByType(childFrame, 'button')
-
-        clickSnapButton(childButtons[anchorId])
-        idx = clickSnapButton(parentButtons[relativeToId])
+        idx = updateWidgets(self, anchor, parent, relativeTo, x, y)
         pointConfig[idx][2] = parent
         pointConfig[idx][4] = x
         pointConfig[idx][5] = y
-
-        tableFrame.Childs[idx].Widgets[2]:ChangeText( x )
-        tableFrame.Childs[idx].Widgets[3]:ChangeText( y )
-        tableFrame.Childs[idx].Widgets[4]:Update( parentDropdown, parent )
     end
 
+    --export(tableFrame, 'OnCreate')
+    initialized = true
 end
 
 local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
@@ -469,12 +517,12 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
                 { 'BOTTOMRIGHT', -5, 10 },
             }
     )
-    local LibObserver = LibStub:GetLibrary("LibObserver")
-    if LibObserver then
-        pointTableFrame.Observer = LibObserver:CreateObserver()
-        pointTableFrame.Observer.OnNotify = function (...)
-        end
-    end
+    --local LibObserver = LibStub:GetLibrary("LibObserver")
+    --if LibObserver then
+    --    pointTableFrame.Observer = LibObserver:CreateObserver()
+    --    pointTableFrame.Observer.OnNotify = function (...)
+    --    end
+    --end
 
     --pointTableFrame:CreateBorder(1, { 1, 1, 1, 1 })
 
@@ -508,8 +556,14 @@ end
 local function clean(self)
 
     for i=1, #pointConfig do
-        removePoint(self, i)
+        --removePoint(self, i)
+        resetWidgets(self, i)
     end
+
+    pointConfig = {}
+    initialized = false
+
+    print ('|cFFFF1010 CLEAN POINT |r')
 end
 
 Inspector:RegisterComponentGUI('Point', gui, update, clean)
