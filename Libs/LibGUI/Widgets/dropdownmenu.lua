@@ -108,7 +108,6 @@ local Methods = {
         end
     end,
 
-    --TODO UPDATE THIS FUNC FOR MORE DATA
     Update = function(self, dataTable, value)
         self.Data = dataTable
         if value then
@@ -163,10 +162,6 @@ local function setValue(button, arg1, arg2, checked)
     dropdown.value = button:GetText()
 
     dropdown.Subject:Notify({ 'OnUpdate', dropdown,  dropdown.value })
-
-    --if dropdown.DBOption then
-    --    profile:UpdateOption( dropdown.DBOption, dropdown.value )
-    --end
 
     UIDropDownMenu_SetSelectedValue(dropdown, dropdown.value, true)
     CloseDropDownMenus()
