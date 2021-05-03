@@ -412,7 +412,7 @@ function UnitFrames:UpdatePortraitOverride(unit)
     local guid = UnitGUID(unit)
     local isAvailable = UnitIsConnected(unit) and UnitIsVisible(unit)
 
-    if(not isAvailable) then
+    if (not isAvailable) then
         self:SetCamDistanceScale(0.25)
         self:SetPortraitZoom(0)
         self:SetPosition(0, 0, 0.25)
@@ -429,21 +429,6 @@ function UnitFrames:UpdatePortraitOverride(unit)
     self.guid = guid
     self.state = isAvailable
 
-end
-
-function UnitFrames:Create3DPortrait(template, parent, config)
-    local portrait = CreateFrame(template, nil, parent)
-    portrait:SetModelDrawLayer( config.ModelDrawLayer )
-    portrait:SetSize( unpack( config.Size ) )
-    portrait:Point(config.Point)
-    portrait.name = ''
-
-    if config.PostUpdate then
-        portrait.PostUpdateConfig = config.PostUpdate
-        portrait.PostUpdate = UnitFrames.UpdatePortraitOverride
-    end
-
-    return portrait
 end
 
 --[[------------------------------------------------------------------
@@ -697,16 +682,28 @@ local function CreateSlantedStatusBar(frame, config)
     return result
 end
 
-local function Create3DPortrait(template, parent, config)
-    local portrait = CreateFrame(template, nil, parent)
-    portrait:SetModelDrawLayer( config.ModelDrawLayer )
-    portrait:SetSize( unpack( config.Size ) )
-    --portrait:Point(config.Point)
-    portrait.name = ''
+local function CreatePortrait(template, parent, config)
 
-    if config.PostUpdate then
-        portrait.PostUpdateConfig = config.PostUpdate
-        portrait.PostUpdate = UnitFrames.UpdatePortraitOverride
+    local conf = config.Portrait
+    local portrait
+
+    if conf.Type == '3D' then
+        portrait = CreateFrame(template, nil, parent)
+        portrait:SetModelDrawLayer( conf.ModelDrawLayer )
+        portrait:SetSize( unpack( config.Size ) )
+        --portrait:Point(config.Point)
+        portrait.name = ''
+
+        if conf.PostUpdate then
+            portrait.PostUpdateConfig = conf.PostUpdate
+            portrait.PostUpdate = UnitFrames.UpdatePortraitOverride
+        end
+        --affect same frame level for PlayerModel than the PlayerFrame
+        portrait:SetFrameLevel(parent:GetFrameLevel())
+    elseif conf.Type == '2D' then
+        portrait = parent:CreateTexture(nil, 'OVERLAY', nil, 2)
+        portrait:SetSize( unpack( config.Size ) )
+        portrait:SetTexCoord(0.1,0.9,0.1,0.9) --squarify
     end
 
     return portrait
@@ -1569,16 +1566,7 @@ local function CreateUnit(self, unit, config)
     end
 
     if config.Portrait and config.Portrait.Enable then
-        local portrait
-        if config.Portrait.Type == '3D' then
-            portrait = Create3DPortrait('PlayerModel', frame, config.Portrait)
-        else
-            --TODO 2D PORTRAIT
-        end
-
-        self.Portrait = portrait
-        --affect same frame level for PlayerModel than the PlayerFrame
-        self.Portrait:SetFrameLevel(frame:GetFrameLevel())
+        self.Portrait = CreatePortrait('PlayerModel', frame, config.Portrait)
     end
 
     if config.Indicators then
@@ -1600,9 +1588,11 @@ local function CreateUnit(self, unit, config)
     end
 
     if config.Texts then
-        for k, v in pairs (config.Texts) do
-            self[k] = UnitFrames:CreateFontString(frame, v, config.General.Fonts)
-            self:Tag(self[k], v.Tag)
+        local name
+        for i, v in ipairs(config.Texts) do
+            name = v.Name
+            self[name] = UnitFrames:CreateFontString(frame, v, config.General.Fonts)
+            self:Tag(self[name], v.Tag)
         end
     end
 
@@ -1658,9 +1648,9 @@ local function LocateUnitFrames(self, config, unit)
     end
 
     if config.Texts then
-        for k, v in pairs(config.Texts) do
+        for i, v in ipairs(config.Texts) do
             if v.Point then
-                self[k]:Point(v.Point, self)
+                self[v.Name]:Point(v.Point, self)
             end
         end
     end

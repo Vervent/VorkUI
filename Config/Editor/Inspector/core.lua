@@ -46,11 +46,11 @@ local function componentPoint(component, isFirst, ...)
     local parent1 = select(1, ...)
     local parent2 = select(2, ...)
     if isFirst then
-        component:SetPoint('TOPLEFT', parent1, 'TOPLEFT', 2, -16)
+        component:SetPoint('TOPLEFT', parent1, 'TOPLEFT', 4, -16)
         if parent2 then
-            component:SetPoint('TOPRIGHT', parent2, 'TOPRIGHT', -10, -16)
+            component:SetPoint('TOPRIGHT', parent2, 'TOPRIGHT', -4, -16)
         else
-            component:SetPoint('TOPRIGHT', parent1, 'TOPRIGHT', -10, -16)
+            component:SetPoint('TOPRIGHT', parent1, 'TOPRIGHT', -4, -16)
         end
     else
         component:SetPoint('TOPLEFT', parent1, 'BOTTOMLEFT', 0, -16)
@@ -126,14 +126,12 @@ local function iterativeParseComponentConfig(config, name)
         return
     end
 
-    print ("ITERATIVE PARSE", name)
-
     local scrollParent = Inspector.UI.Scroll
     scrollParent:ShowScrollChild()
 
     for i, v in ipairs(scrollableComponents) do
         if v.componentType == name then
-            initializeComponent(v, config, true, scrollParent.ScrollChild, scrollParent.ScrollBar)
+            initializeComponent(v, config, true, scrollParent.ScrollChild, scrollParent.ScrollChild)
             tinsert(visibleComponentIndex, i)
         else
             v:Hide()
@@ -150,7 +148,7 @@ local function parseComponentConfig(config)
 
     local scrollParent = Inspector.UI.Scroll
     scrollParent:ShowScrollChild()
-    initializeComponents(scrollableComponents, config, scrollParent.ScrollChild, scrollParent.ScrollBar)
+    initializeComponents(scrollableComponents, config, scrollParent.ScrollChild, scrollParent.ScrollChild)
     scrollParent:ResizeScrollChild()
 end
 
@@ -184,19 +182,19 @@ local function createInspectorComponent(self)
 
     local frameParent = self.UI.TitleBg
     local scrollParent = self.UI.Scroll
-    tinsert(fixedComponents, self:CreateComponentGUI('Enable', 'InspectorModule', self.UI, scrollParent.ScrollChild,
+    tinsert(fixedComponents, self:CreateComponentGUI('Enable', 'InspectorModule', self.UI, self.UI,
             'Settings', {
                 {'TOPLEFT', frameParent, 'BOTTOMLEFT', 0, -16}, {'TOPRIGHT', frameParent, 'BOTTOMRIGHT'}
             },
             select(2, unpack(componentBaseConfig))
     ))
-    tinsert(fixedComponents, self:CreateComponentGUI('Submodules', 'InspectorModule', self.UI,  scrollableComponents['Enable'], 'Submodules', nil, true, true, true, 10))
-    tinsert(fixedComponents, self:CreateComponentGUI('ComponentBlock', 'InspectorModule', self.UI, scrollableComponents['Submodules'], 'Components', nil, true, false, true, 20))
+    tinsert(fixedComponents, self:CreateComponentGUI('Submodules', 'InspectorModule', self.UI,  fixedComponents['Enable'], 'Submodules', nil, true, true, true, 10))
+    tinsert(fixedComponents, self:CreateComponentGUI('ComponentBlock', 'InspectorModule', self.UI, fixedComponents['Submodules'], 'Components', nil, true, false, true, 20))
     scrollParent:SetPoint('TOPLEFT', fixedComponents[3], 'BOTTOMLEFT', 0, 0)
 
     tinsert(scrollableComponents, self:CreateComponentGUI('Point', 'InspectorModule', scrollParent.ScrollChild, scrollableComponents['Components'], 'Point', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Size', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Point'], 'Size', unpack(componentBaseConfig)))
-    tinsert(scrollableComponents, self:CreateComponentGUI('Indicators', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Submodules'], 'Indicators', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Indicators', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Submodules'], 'Indicators', nil, false, false, true))
     tinsert(scrollableComponents, self:CreateComponentGUI('Rendering', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Indicators'], 'Rendering', nil, true, true, true, 3))
     tinsert(scrollableComponents, self:CreateComponentGUI('Slanting', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Rendering'], 'Slanting', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Tag', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Slanting'], 'Tag', unpack(componentBaseConfig)))
@@ -206,6 +204,8 @@ local function createInspectorComponent(self)
     tinsert(scrollableComponents, self:CreateComponentGUI('Aura', 'InspectorModule', scrollParent.ScrollChild,   scrollableComponents['Castbar'], 'Buffs', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Aura', 'InspectorModule', scrollParent.ScrollChild,     scrollableComponents['Buffs'], 'Debuffs', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Attribute', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Debuffs'], 'Attribute', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Texts', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Attribute'], 'Texts', nil, false, false, true))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Portrait', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Texts'], 'Portrait', unpack(componentBaseConfig)))
 end
 
 function Inspector:Collapse()
@@ -343,31 +343,39 @@ end
 --    end
 --end
 
+local function clone(data)
+    if type(data) ~= 'table' then
+        return data
+    else
+        return Inspector:DeepCopyTable(data)
+    end
+end
+
 function Inspector:SubmitUpdateValue(component, subcomponent, key, subkey, value)
     local config = currentItem[2]
     component = currentComponent or component
 
-    print (component, subcomponent, key, value)
+    local cloneValue = clone(value)
 
     if subcomponent ~= nil then
         if key ~= nil then
             if subkey ~= nil then
-                config[component][subcomponent][key][subkey] = value
+                config[component][subcomponent][key][subkey] = cloneValue
             else
                 if type(key) == 'number' then
                     tremove(config[component][subcomponent], key)
-                    tinsert(config[component][subcomponent], key, value)
+                    tinsert(config[component][subcomponent], key, cloneValue)
                 else
-                    config[component][subcomponent][key] = value
+                    config[component][subcomponent][key] = cloneValue
                 end
             end
         else
-            config[component][subcomponent] = value
+            config[component][subcomponent] = cloneValue
         end
     elseif key ~= nil then
-        config[component][key] = value
+        config[component][key] = cloneValue
     else
-        config[component] = value
+        config[component] = cloneValue
     end
 end
 
