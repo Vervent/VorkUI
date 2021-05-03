@@ -102,14 +102,42 @@ end
 
 oUF.Tags.Methods['Vorkui:Name'] = function(unit, realUnit, ...)
     local name = _TAGS['name'](unit, realUnit)
-    local length = tonumber(...)
-    if(length) then
+    local length = tonumber(... or 0)
+    if length > 0 then
         return name:sub(1, length) -- please note, this code doesn't support UTF-8 chars
     else
         return name
     end
 end
 oUF.Tags.Events['Vorkui:Name'] = 'UNIT_NAME_UPDATE'
+
+oUF.Tags.Methods['Vorkui:FirstName'] = function(unit, realUnit, ...)
+    local name = _TAGS['name'](unit, realUnit)
+    local firstname = strmatch(name, '(%a+)$')
+    local length = tonumber(... or 0)
+    if length > 0 then
+        return firstname:sub(1, length) -- please note, this code doesn't support UTF-8 chars
+    else
+        return firstname
+    end
+end
+oUF.Tags.Events['Vorkui:FirstName'] = 'UNIT_NAME_UPDATE'
+
+oUF.Tags.Methods['Vorkui:SmartName'] = function(unit, realUnit, ...)
+    local name = _TAGS['name'](unit, realUnit)
+    local length = tonumber(... or 0)
+
+    if length > 0 then
+        if strlen(name) > length then
+            return strmatch(name, '(%a+)$'):sub(1, length)
+        else
+            return name
+        end
+    else
+        return name
+    end
+end
+oUF.Tags.Events['Vorkui:SmartName'] = 'UNIT_NAME_UPDATE'
 
 oUF.Tags.Methods['Vorkui:SmartLevel'] = function(unit)
     local l = UnitLevel(unit)
