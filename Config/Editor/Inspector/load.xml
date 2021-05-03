@@ -12,11 +12,13 @@
     <Script file="Components\viewer.lua"/>
     <Script file="Components\portrait.lua"/>
     <Script file="Components\indicator.lua"/>
+    <Script file="Components\atlas.lua"/>
 
     <!-- Load Frame component -->
     <Script file="Components\rendering.lua"/>
     <Script file="Components\fonts.lua"/>
     <Script file="Components\indicators.lua"/>
+    <Script file="Components\texts.lua"/>
     <Script file="Components\submodules.lua"/>
     <Script file="Components\componentlist.lua"/>
     <Script file="Components\componentblock.lua"/>

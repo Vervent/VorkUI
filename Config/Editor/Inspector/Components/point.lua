@@ -42,10 +42,10 @@ local function export(container, event)
     end
 
     if container.Observer then
-        print ('|cFF10FF10 POINT CONTAINER EXPORT|r')
+        --print ('|cFF10FF10 POINT CONTAINER EXPORT|r')
         container.Observer.OnNotify(event, val)
     else
-        print ('|cFFFF1010 POINT DIRECT EXPORT |r')
+        --print ('|cFFFF1010 POINT DIRECT EXPORT |r')
         Inspector:SubmitUpdateValue(nil, 'Point', nil, nil, val)
     end
 end
@@ -319,6 +319,9 @@ local function updateWidgets(self, anchor, parent, relativeTo, x, y)
     local childFrame = setterFrame.Childs[2]
     local tableFrame = self.Childs[2]
 
+    anchor = anchor or 'CENTER'
+    relativeTo = relativeTo or 'CENTER'
+
     anchorId = getAnchorIdx(anchor)
     relativeToId = getAnchorIdx(relativeTo)
 
@@ -337,7 +340,7 @@ end
 
 local function update(self, config, parentDropdown)
 
-    print ('|cff33ff99 Update Point|r')
+    --print ('|cff33ff99 Update Point|r')
 
     local idx
     local anchor, parent, relativeTo, x, y
@@ -510,7 +513,7 @@ local function clean(self)
     pointConfig = {}
     initialized = false
 
-    print ('|cFFFF1010 CLEAN POINT |r')
+    --print ('|cFFFF1010 CLEAN POINT |r')
 end
 
 Inspector:RegisterComponentGUI('Point', gui, update, clean)

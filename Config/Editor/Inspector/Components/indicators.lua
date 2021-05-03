@@ -49,10 +49,10 @@ local function updateIndicator(self, name)
     local indicatorChoice = dropdownWidgets[1]
 
     local parentDropdown = removeIndicatorFromDropdown(self, name)
+    local indicator = self.Childs[1]
 
     for i, v in ipairs(self.config) do
         if v.Name == name then
-            local indicator = self.Childs[1]
             indicator.Clean(indicator) --clean old data before update
             indicator.Update(indicator, v, parentDropdown)
             indicatorChoice.key = i

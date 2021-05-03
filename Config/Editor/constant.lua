@@ -34,12 +34,12 @@ Editor.menus.blendmode = {
 
 --TAG
 Editor.menus.fonts = {
-    { text = 'Name Font' },
-    { text = 'Normal Font' },
-    { text = 'Duration Font' },
-    { text = 'Stack Font' },
-    { text = 'Value Font' },
-    { text = 'Big Value Font' },
+    { text = 'NameFont' },
+    { text = 'NormalFont' },
+    { text = 'DurationFont' },
+    { text = 'StackFont' },
+    { text = 'ValueFont' },
+    { text = 'BigValueFont' },
 }
 
 --FONT
