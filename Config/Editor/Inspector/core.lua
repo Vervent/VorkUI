@@ -60,7 +60,7 @@ end
 
 local function initializeComponent(component, data, ...)
     if component.Update then
-        component.Update(component, data, parentDropdown)
+        component.Update(component, data, parentDropdown, currentComponent)
     end
     componentPoint(component, ...)
     component:Show()
@@ -206,6 +206,7 @@ local function createInspectorComponent(self)
     tinsert(scrollableComponents, self:CreateComponentGUI('Attribute', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Debuffs'], 'Attribute', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Texts', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Attribute'], 'Texts', nil, false, false, true))
     tinsert(scrollableComponents, self:CreateComponentGUI('Portrait', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Texts'], 'Portrait', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Attributes', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Portrait'], 'Attributes', unpack(componentBaseConfig)))
 end
 
 function Inspector:Collapse()

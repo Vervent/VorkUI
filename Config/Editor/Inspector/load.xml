@@ -26,4 +26,5 @@
     <Script file="Components\castbar.lua"/>
     <Script file="Components\aura.lua"/>
     <Script file="Components\attribute.lua"/>
+    <Script file="Components\attributes.lua"/>
 </Ui>

@@ -8,6 +8,25 @@ Editor.border = {
     color = { 1, 1, 1, 0.4 }
 }
 
+Editor.TypeChecker = {
+    ['number'] = function(val)
+        if type(val) == 'number' then
+            return true
+        else
+            -- try to cast in number
+            -- we need to recheck the tostring with origin val because tonumber can cast to number specific string
+            local cast = tonumber(val)
+            return cast ~= nil and tostring(cast) == val
+        end
+    end,
+    ['string'] = function(val)
+        return type(val) == 'string'
+    end,
+    ['boolean'] = function(val)
+        return val == 'true' or val == 'false'
+    end,
+}
+
 Editor.menus = {}
 
 --TEXTURE
@@ -121,3 +140,85 @@ Editor.menus.auraFilter = {
     { text='DURATION' },
     { text='PLAYER' },
 }
+
+Editor.attributes = {}
+Editor.attributes.health = { --all booleans
+    ['colorDisconnected'] = 'boolean',
+    ['colorTapping'] = 'boolean',
+    ['colorThreat'] = 'boolean',
+    ['colorClass'] = 'boolean',
+    ['colorClassNPC'] = 'boolean',
+    ['colorClassPet'] = 'boolean',
+    ['colorSelection'] = 'boolean',
+    ['colorReaction'] = 'boolean',
+    ['colorSmooth'] = 'boolean',
+    ['colorHealth'] = 'boolean',
+}
+
+Editor.attributes.power = { --all booleans
+    ['frequentUpdates'] = 'boolean',
+    ['displayAltPower'] = 'boolean',
+    ['considerSelectionInCombatHostile'] = 'boolean',
+    ['colorDisconnected'] = 'boolean',
+    ['colorTapping'] = 'boolean',
+    ['colorThreat'] = 'boolean',
+    ['colorPower'] = 'boolean',
+    ['colorClass'] = 'boolean',
+    ['colorClassNPC'] = 'boolean',
+    ['colorClassPet'] = 'boolean',
+    ['colorSelection'] = 'boolean',
+    ['colorReaction'] = 'boolean',
+    ['colorSmooth'] = 'boolean',
+}
+
+Editor.attributes.auras = {
+    ['disableMouse'] = 'boolean',
+    ['disableCooldown'] = 'boolean',
+    ['size'] = 'number',
+    ['onlyShowPlayer'] = 'boolean',
+    ['showStealableBuffs'] = 'boolean',
+    ['spacing'] = 'number',
+    ['spacing-x'] = 'number',
+    ['spacing-y'] = 'number',
+    ['growth-x'] = 'string',
+    ['growth-y'] = 'string',
+    ['initialAnchor'] = 'string',
+    ['filter'] = 'string',
+    ['tooltipAnchor'] = 'string',
+    ['numBuffs'] = 'number',
+    ['numDebuffs'] = 'number',
+    ['numTotal'] = 'number',
+    ['gap'] = 'number',
+    ['buffFilter'] = 'string',
+    ['debuffFilter'] = 'string',
+    ['num'] = 'number',
+}
+Editor.attributes.buffs = Editor.attributes.auras
+Editor.attributes.debuffs = Editor.attributes.auras
+
+Editor.attributes.party = {
+    ['template'] = 'string',
+    ['templateType'] = 'string',
+    ['showParty'] = 'boolean',
+    ['showRaid'] = 'boolean',
+    ['showPlayer'] = 'boolean',
+    ['showSolo'] = 'boolean',
+    ['point'] = 'string',
+    ['xOffset'] = 'number',
+    ['yOffset'] = 'number',
+    ['maxColumns'] = 'number',
+    ['unitsPerColumn'] = 'number',
+    ['columnSpacing'] = 'number',
+    ['columnAnchorPoint'] = 'string',
+    ['nameList'] = 'string',
+    ['groupFilter'] = 'string',
+    ['roleFilter'] = 'string',
+    ['strictFiltering'] = 'boolean',
+    ['sortMethod'] = 'string',
+    ['sortDir'] = 'string',
+    ['startingIndex'] = 'number',
+    ['groupBy'] = 'string',
+    ['groupingOrder'] = 'string',
+}
+
+Editor.attributes.raid = Editor.attributes.party

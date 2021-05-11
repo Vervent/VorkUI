@@ -100,10 +100,20 @@ local Methods = {
         return #self.Childs
     end,
 
+    GetRowHeight = function(self)
+        if #self.Childs == 0 then
+            return 0
+        else
+            return self.Childs[1]:GetHeight()
+        end
+    end,
+
     AddRows = function (self, nbRow)
         for i=1, nbRow do
             self:AddRow()
         end
+
+        return self:GetRows()
     end,
 
     HideRow = function (self, id)
@@ -132,8 +142,15 @@ local Methods = {
                 self:ShowRow( v )
             end
         end
-    end
+    end,
 
+    GetRow = function (self, id)
+        return self.Childs[id]
+    end,
+
+    GetRows = function(self)
+        return self.Childs
+    end
 }
 
 local function create(parent, name, size, point)
