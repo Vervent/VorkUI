@@ -14,4 +14,5 @@
 	<Script file='Widgets\editbox.lua'/>
 	<Script file='Widgets\label.lua'/>
 	<Script file='Widgets\icon.lua'/>
+	<Script file='Widgets\color.lua'/>
 </Ui>
