@@ -21,7 +21,6 @@
 local _, Plugin = ...
 
 local LibGUI = Plugin.LibGUI
-local profile
 
 local Methods = {
 
@@ -69,11 +68,6 @@ local Methods = {
         end
 
         self.Subject:Notify({ 'OnUpdate', self, self.text })
-
-        --if self.DBOption then
-        --    profile:UpdateOption( self.DBOption, self.text )
-        --end
-
         self:ChangeText(self.text)
 
         return self.text
@@ -133,9 +127,8 @@ local function bindScript(self, event, fct)
     self.Scripts[event] = fct
 end
 
-local function create(parent, name, point, size, template, dboption)
+local function create(parent, name, point, size, template)
 
-    profile = LibGUI:GetProfile()
     local edit = CreateFrame('Editbox', name, parent, template)
 
     edit:SetScript("OnShow", enable)
@@ -144,7 +137,6 @@ local function create(parent, name, point, size, template, dboption)
     edit:ClearFocus()
     edit:SetTextInsets(2, 2, 2, 2)
     edit.Scripts = {}
-    --edit.DBOption = dboption
 
     if point then
         edit:SetPoint(unpack(point))
