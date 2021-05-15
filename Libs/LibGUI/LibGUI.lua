@@ -55,6 +55,13 @@ local function isValidWidget(w)
     return w and widgets[w.type]
 end
 
+--[[
+        This function return if widget is valid
+]]--
+function LibGUI:IsValidWidget(widget)
+    return isValidWidget(widget)
+end
+
 local function isValidContainer(c)
     return c and containers[c.type]
 end
