@@ -36,7 +36,6 @@
 local _, Plugin = ...
 
 local LibGUI = Plugin.LibGUI
-local profile
 
 local Methods = {
 
@@ -128,6 +127,14 @@ local Methods = {
         return self.selectedValue
     end,
 
+    Enable = function(self)
+        self.Button:Enable()
+    end,
+
+    Disable = function(self)
+        self.Button:Disable()
+    end,
+
     RegisterObserver = function(self, entity)
         self.Subject:RegisterObserver(entity)
     end,
@@ -194,9 +201,8 @@ local function initialize(self, level, menuList)
     end
 end
 
-local function create(parent, name, point, size, data, dboption)
+local function create(parent, name, point, size, data)
 
-    profile = LibGUI:GetProfile()
     local menu = CreateFrame('Frame', name or "DropDown", parent, 'UIDropDownMenuTemplate')
 
     menu:SetScript("OnShow", enable)
