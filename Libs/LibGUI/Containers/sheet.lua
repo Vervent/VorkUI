@@ -24,6 +24,20 @@ local colors = {
     { 1, 1, 1, 0 },
 }
 
+
+local function createWidget(self, config, pt)
+    local w = LibGUI:NewWidget(config.type, self, config.name, unpack(config.data))
+    w:SetPoint( unpack( pt ) )
+    if config.type == 'editbox' then
+        w:ChangeFont( 'Game11Font' )
+    elseif config.type == 'checkbox' then
+        w:ChangeFont( 'GameFontNormal' )
+    elseif config.type == 'label' then
+        w:JustifyH('LEFT')
+    end
+    return w
+end
+
 local Methods = {
 
     SetConfiguration = function(self, ...)
@@ -44,9 +58,76 @@ local Methods = {
         tinsert(self.configuration, config)
     end,
 
+    ResetConfiguration = function(self)
+        self.configuration = {}
+    end,
+
+    ResetConfigurationByRow = function(self, r)
+        local row = self.GetRow( r )
+        if row.configuration ~= nil then
+            row.configuration = {}
+        end
+    end,
+
+    AddConfigurationToRowByTable = function(self, r, ...)
+        local w
+        local row = self:GetRow(r)
+        if row.configuration ~= nil then
+            for i=1, select('#', ...) do
+                w = select(i, ...)
+                tinsert(row.configuration, w)
+            end
+        end
+    end,
+
+    AddConfigurationToRow = function(self, r, ...)
+        local type, name, data = unpack(...)
+        local config = {
+            ['type'] = type,
+            ['name'] = name,
+            ['data'] = data
+        }
+        local row = self:GetRow( r )
+        if row.configuration ~= nil then
+            tinsert(row.configuration, config)
+        end
+    end,
+
+    GenerateWidgetsByRow = function(self, r)
+        local width = self:GetWidth()
+        local row = self:GetRow(r)
+        local wHeight = 0
+        if row.configuration ~= nil and #row.configuration > 0 then
+            local anchor = row
+            local w
+            local h
+            for i, v in ipairs(row.configuration) do
+                if i == 1 then
+                    w = createWidget(row, v, { 'LEFT', anchor, 'LEFT' })
+                else
+                    w = createWidget(row, v, { 'LEFT', anchor, 'RIGHT' })
+                end
+
+                h = w:GetHeight()
+                if h > wHeight then
+                    wHeight = h
+                end
+
+                --anchor = w
+                --use this hack to overlap all remaining widget in the 3rd column
+                if i < 3 then
+                    anchor = w
+                end
+            end
+        end
+
+        row:SetSize(width - 8, wHeight)
+    end,
+
     AddRow = function(self)
         local width, height = self:GetSize()
         local wHeight = 0
+        local colCount = self.columnCount
 
         local nbRow = #self.Childs + 1
         local pt
@@ -62,38 +143,50 @@ local Methods = {
             }
         end
         local row = LibGUI:NewContainer('empty', self, 'row'..nbRow, nil, pt)
+        row.enableAllWidgets = false
         row.bg = row:CreateTexture('BACKGROUND')
         row.bg:SetAllPoints()
         if self.alternateColor == true then
             row.bg:SetColorTexture( unpack( colors[nbRow % 2 + 1] ) )
         end
 
-        local anchor = row
-        local w
-        local h
-        for i, v in ipairs(self.configuration) do
-            w = LibGUI:NewWidget(v.type, row, v.name, unpack(v.data))
+        if #self.configuration > 0 then
+            local anchor
+            local w
+            local h
+            for i, v in ipairs(self.configuration) do
+                if i == 1 then
+                    w = createWidget(row, v, { 'LEFT', row, 'LEFT' })
+                elseif i >= colCount then
+                    if v.type == 'checkbox' then
+                        w = createWidget(row, v, { 'RIGHT', row, 'RIGHT', -190 - 4, 0 })
+                    else
+                        w = createWidget(row, v, { 'RIGHT', row, 'RIGHT', -4, 0 })
+                    end
+                else
+                    w = createWidget(row, v, { 'LEFT', w, 'RIGHT' })
+                end
 
-            if i == 1 then
-                w:SetPoint( 'LEFT', anchor, 'LEFT')
-            else
-                w:SetPoint( 'LEFT', anchor, 'RIGHT')
+                h = w:GetHeight()
+                if h > wHeight then
+                    wHeight = h
+                end
+
+                --anchor = w
+                if i < colCount then
+                    anchor = w
+                end
             end
-            if v.type == 'editbox' then
-                w:ChangeFont( 'Game11Font' )
-
-            end
-
-            h = w:GetHeight()
-            if h > wHeight then
-                wHeight = h
-            end
-
-            anchor = w
+        else
+            row.configuration = {}
         end
 
         row:SetSize(width - 8, wHeight)
         self:SetHeight(height + wHeight)
+    end,
+
+    SetColumnCount = function(self, count)
+        self.columnCount = count
     end,
 
     GetRowCount = function(self)
@@ -117,6 +210,7 @@ local Methods = {
     end,
 
     HideRow = function (self, id)
+        print ('HIDE ROW', id)
         if self.Childs[id] ~= nil then
             self.Childs[id]:Hide()
         end
@@ -125,6 +219,9 @@ local Methods = {
     ShowRow = function (self, id)
         if self.Childs[id] ~= nil then
             self.Childs[id]:Show()
+            if self.alternateColor == true and self.enableAllChilds == false then
+                self.Childs[id].bg:Show()
+            end
         end
     end,
 
