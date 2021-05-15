@@ -18,13 +18,15 @@
         font as table. Can be an existing FontObject or new Font
     ChangeFontColor (self, color)
         color as colortable
+
+    local color = LibGUI:NewWidget('color', frame, 'AttributeColor', { 'LEFT', frame, 'LEFT' }, { 50, 50})
+    color:ChangeColor( { 1, 0, 0, 1 } )
 ]]--
 local _, Plugin = ...
 
 local LibGUI = Plugin.LibGUI
 
 local Methods = {
-
 
     ChangeColor = function(self, color)
         self.colors = color
@@ -101,16 +103,15 @@ end
 local function create(parent, name, point, size)
     local button = CreateFrame('Button', name, parent)
 
-    button:SetScript("OnShow", enable)
-    button:SetScript("OnHide", disable)
+    button:SetScript('OnShow', enable)
+    button:SetScript('OnHide', disable)
+    button:SetScript('OnClick', openColorPicker)
     button.Scripts = {}
     button.autoResize = false
+    button.colors = { 0, 0, 0, 1 }
+
     button.texture = button:CreateTexture('Texture', 'BACKGROUND')
     button.texture:SetAllPoints()
-    button.colors = { 0, 0, 0, 1 }
-    button.texture:SetColorTexture( unpack(button.colors) )
-
-    bindScript(button, 'OnClick', openColorPicker)
 
     if point then
         if type(point[1]) == 'table' then
