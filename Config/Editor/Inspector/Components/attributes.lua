@@ -12,65 +12,134 @@ local borderSettings = Editor.border
 local attributes = Editor.attributes
 local tChecker = Editor.TypeChecker
 
-local function getDropdownData(system, key)
+local buttonConfig = {
+    ['type'] = 'button',
+    ['name'] = 'RemoveButton',
+    ['data'] = {
+        nil, --point
+        {20, 20}, --size
+    }
+}
 
-    if attributes[system] == nil then
-        return nil
-    end
+local labelConfig = {
+    ['type'] = 'label',
+    ['name'] = 'AttributeLabel',
+    ['data'] = {
+        nil, --point
+        {125, 20}, --size
+        'ARTWORK',
+        'Game11Font'
+    }
+}
 
-    local table = {}
+local editboxConfig = {
+    ['type'] = 'editbox',
+    ['name'] = 'AttributeValueEdit',
+    ['data'] = {
+        nil, --point
+        {210, 20}, --size
+    }
+}
 
-    for k, v in pairs(attributes[system]) do
-        if k ~= key then
-            tinsert(table, { text = k, checker = v })
-        end
-    end
+local dropdownConfig = {
+    ['type'] = 'dropdownmenu',
+    ['name'] = 'AttributeValueMenu',
+    ['data'] = {
+        nil, --point
+        {175, 30}, --size
+    }
+}
 
-    return table
-
-end
+local checkboxConfig = {
+    ['type'] = 'checkbox',
+    ['name'] = 'AttributeValueCheck',
+    ['data'] = {
+        nil, --point
+        {20, 20}, --size
+        'UICheckButtonTemplate', --template
+    }
+}
 
 local function update(self, config, _, name)
-    local nbRow = self:GetRowCount()
-    local attribCount = 0
+
+    local attributeDropdown = self.Widgets[2]
+    local sheet = self.Childs[1]
+
+    --UPDATE grid content with attribute already set
+    local rowCount = sheet:GetRowCount()
+    local attributeCount = 0
+    for _, _ in pairs(config) do
+        attributeCount = attributeCount + 1
+    end
+
+    local height = (attributeCount+1) * 30
+    sheet:SetHeight(height)
+    self:SetHeight( 46 + height )
+    self.frameHeight = 46 + height
+
+    --UPDATE attributeDropdown with remaining attribute
+    local systemName = strlower( name )
+    local attributeList = attributes[ systemName ]
+    local menu = {}
+    for k, v in pairs(attributeList) do
+        if config[ k ] == nil then
+            tinsert( menu, { text = k } )
+        end
+    end
+    if #menu == 0 then
+        attributeDropdown:Disable()
+    else
+        attributeDropdown:Enable()
+        attributeDropdown:Update( menu )
+    end
+
     local indexRow = 1
-    local menu = getDropdownData( strlower( name ) )
-
-    if menu == nil then
-        return
-    end
-
-    --get attributes Count
-    for _, _ in pairs(menu) do
-        attribCount = attribCount + 1
-    end
-
-    print ('UPDATE', nbRow, attribCount)
-    if nbRow < attribCount then
-        self:AddRows(attribCount - nbRow) --add missing row
+    if rowCount < attributeCount then
+        sheet:AddRows(attributeCount - rowCount) --add missing row
     end
 
     local row
+    local label
+    local button
+    local check
+    local menu
+    local edit
     for k, v in pairs(config) do
-        row = self:GetRow( indexRow )
-        row.Widgets[1]:Update( menu, k )
-        row.Widgets[2]:ChangeText( tostring(v) )
-        row:Show()
+        row = sheet:GetRow( indexRow )
+
+
+        check = LibGUI:GetWidgetsByType(row, 'checkbox')[1]
+        menu = LibGUI:GetWidgetsByType(row, 'dropdownmenu')[1]
+        edit =  LibGUI:GetWidgetsByType(row, 'editbox')[1]
+        button = LibGUI:GetWidgetsByType(row, 'button')[1]
+        label = LibGUI:GetWidgetsByType(row, 'label')[1]
+
+        label:ChangeText( k )
+        label:Show()
+        button:Show()
+        if attributeList[k] == 'boolean' then
+            --checkbox
+            check:SetChecked( v )
+            check:Show()
+            menu:Hide()
+            edit:Hide()
+        elseif attributeList[k] == 'number' or attributeList[k] == 'string' then
+            check:Hide()
+            menu:Hide()
+            edit:ChangeText( tostring(v) )
+            edit:Show()
+        else
+            check:Hide()
+            edit:Hide()
+            menu:Update( attributeList[k], v )
+            menu:Show()
+        end
+        sheet:ShowRow( indexRow )
+
         indexRow = indexRow + 1
     end
 
-    for i = indexRow, attribCount do
-        row = self:GetRow( i )
-        row.Widgets[1]:Update( menu )
-        row.Widgets[2]:ChangeText( nil )
-        row:Show()
-    end
-
-    for i = attribCount, nbRow do
-        self:HideRow(i) --hide overflow rows
-    end
-
-    self:SetHeight(16 + self:GetRowHeight() * attribCount)
+    sheet.attributeCount = attributeCount
 
 end
 
@@ -87,33 +156,38 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     end
 
     local frame = LibGUI:NewContainer(
-            'sheet',
+            'empty',
             parent,
             baseName..'AttributesFrame',
             nil,
             pt
     )
-    frame:SetSize(300, 16)
 
-    local dropdown = {
-        ['type'] = 'dropdownmenu',
-        ['name'] = 'dropdown',
-        ['data'] = {
-            nil, --point
-            {150, 30}, --size
-        }
-    }
-    local editbox = {
-        ['type'] = 'editbox',
-        ['name'] = 'editbox',
-        ['data'] = {
-            nil, --point
-            {150, 25}, --size
-        }
-    }
+    local attributeLabel = LibGUI:NewWidget('label', frame, 'AttributeLabel', { 'TOPLEFT', 0, -8 }, { 150, 30 }, nil, nil)
+    attributeLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Attribute available' } )
 
-    frame:SetConfiguration(dropdown, editbox)
-    --frame:AddRows(20)
+    local attributeDropdown =  LibGUI:NewWidget('dropdownmenu', frame, 'AttributeDropdown', { 'LEFT', attributeLabel, 'RIGHT' }, { 150, 25 }, nil, nil)
+    --attributeDropdown:Update()
+
+    frame:SetSize(300, 46)
+
+    local sheet = LibGUI:NewContainer(
+            'sheet',
+            frame,
+            'SheetFrame',
+            nil,
+            {
+                { 'TOPLEFT', attributeLabel, 'BOTTOMLEFT' },
+                { 'RIGHT', parentPoint or parent, 'RIGHT' }
+            }
+    )
+    sheet.enableAllChilds = false
+    sheet:SetSize(300, 0)
+    sheet.attributeCount = 0
+
+    sheet:SetConfiguration(buttonConfig, labelConfig, checkboxConfig, editboxConfig, dropdownConfig)
+    sheet:SetColumnCount(3)
+    sheet:AddRows(20)
 
     if hasBorder then
         frame:CreateBorder(borderSettings.size, borderSettings.color )
@@ -131,9 +205,13 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
 end
 
 local function clean(self)
-    for i, row in pairs(self:GetRows()) do
-        row.Widgets[1]:Update()
-        row.Widgets[2]:ChangeText('')
+    local attributeDropdown = self.Widgets[2]
+    attributeDropdown:Update(nil)
+
+    local sheet = self.Childs[1]
+    sheet.attributeCount = 0
+    for i=1, sheet:GetRowCount() do
+        sheet:HideRow(i)
     end
 end
 
