@@ -16,6 +16,7 @@ local function create(parent, name, size, point)
     frame.Childs = {}
     frame.Widgets = {}
     frame.enableAllChilds = true
+    frame.enableAllWidgets = true
 
     if point then
         if type(point) == 'table' then
@@ -43,11 +44,13 @@ local function enable(self)
         return
     end
 
-    for _, w in ipairs(self.Widgets) do
-        w:Show()
+    if self.enableAllWidgets == true then
+        for _, w in ipairs(self.Widgets) do
+            w:Show()
+        end
     end
 
-    if self.enableAllChilds then
+    if self.enableAllChilds == true then
         for _, c in ipairs(self.Childs) do
             c:Show()
         end
@@ -67,8 +70,8 @@ local function disable(self)
         self:BeforeDisable()
     end
 
-    for i, c in pairs(self.Widgets) do
-        c:Hide()
+    for i, w in pairs(self.Widgets) do
+        w:Hide()
     end
 
     for i, c in pairs(self.Childs) do
