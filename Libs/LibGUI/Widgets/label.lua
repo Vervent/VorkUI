@@ -37,6 +37,10 @@ local Methods = {
         self:SetText(text)
     end,
 
+    JustifyH = function(self, justify)
+        self:SetJustifyH(justify)
+    end,
+
     ChangeFont = function(self, font)
         if type(font) == 'table' then
             if font.GetObjectType and font:GetObjectType() == 'Font' then
