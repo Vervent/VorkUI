@@ -106,7 +106,7 @@ local function onClick(self)
     --end
 end
 
-local function create(parent, name, point, size, template, dboption)
+local function create(parent, name, point, size, template)
 
     profile = LibGUI:GetProfile()
     local checkbutton = CreateFrame('CheckButton', name, parent, template)
@@ -115,10 +115,6 @@ local function create(parent, name, point, size, template, dboption)
     checkbutton:SetScript("OnHide", disable)
     checkbutton:SetScript("OnClick", onClick)
     checkbutton.Scripts = {}
-    --checkbutton.DBOption = dboption
-
-    --checkbutton:SetChecked(profile:GetValue( dboption ) or false)
-    --checkbutton.isChecked = profile:GetValue( dboption ) or false
 
     if point then
         checkbutton:SetPoint(unpack(point))
