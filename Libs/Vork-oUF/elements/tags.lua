@@ -129,7 +129,8 @@ oUF.Tags.Methods['Vorkui:SmartName'] = function(unit, realUnit, ...)
 
     if length > 0 then
         if strlen(name) > length then
-            return strmatch(name, '(%a+)$'):sub(1, length)
+            local n = strmatch(name, '(%a+)$') or name
+            return n:sub(1, length)
         else
             return name
         end
