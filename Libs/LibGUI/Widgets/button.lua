@@ -98,14 +98,18 @@ local Methods = {
         self:SetTextColor(unpack(color))
     end,
 
-    AddLabel = function(self, frame, text)
+    AddLabel = function(self, frame, text, point, fontObject)
         if self.Text then
             return
         end
 
         self.Text = frame:CreateFontString()
-        self.Text:SetAllPoints()
-        self.Text:SetFontObject('Game11Font')
+        if point then
+            self.Text:SetPoint(unpack(point))
+        else
+            self.Text:SetAllPoints()
+        end
+        self.Text:SetFontObject(fontObject or 'Game11Font')
         self.Text:SetText(text or '')
 
     end,

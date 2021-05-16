@@ -27,6 +27,7 @@ local function update(self, config)
 
         widgets[i]:Update( {config[i], function() Inspector:InspectComponent(config[i])  end } )
         widgets[i]:UpdateSize()
+        widgets[i]:Show()
     end
 
     for cIdx = buttonCount, #config +1, -1 do
@@ -59,6 +60,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
             nil,
             pt
     )
+    frame.enableAllWidgets = false
 
     for i=1,count do
         addButton(frame, i)

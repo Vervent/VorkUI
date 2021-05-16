@@ -1742,7 +1742,7 @@ function UnitFrames:CreateUnits()
             local header = Config.PartyLayout.Header
             local party = oUF:SpawnHeader( header.Name, header.Template or nil, header.Visibility,
                     "oUF-initialConfigFunction", initialConfigFunction,
-                    unpack( UnitFrames:GetFramesAttributes( Config.PartyLayout.Attributes ) )
+                    unpack( UnitFrames:GetFramesAttributes( header.Attributes ) )
             )
             party:Point( Config.PartyLayout.General.Point )
             self.Headers.Party = party
@@ -1751,7 +1751,7 @@ function UnitFrames:CreateUnits()
             local header = Config.RaidLayout.Header
             local raid = oUF:SpawnHeader( header.Name, header.Template or nil, header.Visibility,
                     "oUF-initialConfigFunction", initialConfigFunction,
-                    unpack( UnitFrames:GetFramesAttributes( Config.RaidLayout.Attributes ) )
+                    unpack( UnitFrames:GetFramesAttributes( header.Attributes ) )
             )
             raid:Point(Config.RaidLayout.General.Point)
             --TO TEST AREA

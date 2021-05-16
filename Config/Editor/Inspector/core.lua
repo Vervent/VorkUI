@@ -96,6 +96,7 @@ local function getComponentBlockData(config)
 
     local order = {
         'General',
+        'Header',
         'Health',
         'HealthPrediction',
         'Absorb',
@@ -161,10 +162,16 @@ local function parseItemConfig(item)
     local enable = fixedComponents[1]
     local submodule = fixedComponents[2]
     local blocks = fixedComponents[3]
+    local parent =
 
     initializeComponent(enable, config.Enable, true, Inspector.UI.Bg, Inspector.UI.Bg)
-    initializeComponent(submodule, config.Submodules, false, fixedComponents[1])
-    initializeComponent(blocks, getComponentBlockData(config), false, fixedComponents[2])
+    if config.Submodules ~= nil then
+        initializeComponent(submodule, config.Submodules, false, enable)
+        parent = submodule
+    else
+        parent = enable
+    end
+    initializeComponent(blocks, getComponentBlockData(config), false, parent)
 
     scrollParent:SetHeight(inspector.root.params.size[2] -
             enable:GetHeight() -
@@ -297,6 +304,14 @@ function Inspector:CreateGUI()
     LibGUI:BindScript(frame, 'OnHide', self.Disable)
     LibGUI:SetMovableContainer(frame, true)
 
+
+    local debugArea = LibGUI:NewWidget( 'button', frame, 'DebugFrameArea' )
+    debugArea:CreateBorder( 2, {1, 0, 0, 1})
+    debugArea.Texture = debugArea:AddTexture()
+    debugArea.Texture:SetColorTexture(0.25, 0.25, 0.25, 0.5)
+    debugArea.Label = debugArea:AddLabel(debugArea, '', nil, 'Game12Font_o1')
+    self.DebugFrameArea = debugArea
+
     self.UI = frame;
 
     createInspectorComponent(self)
@@ -317,32 +332,52 @@ function Inspector:Refresh()
 
 end
 
+function Inspector:ShowArea()
+    local frame = currentItem[1]
+    local layout = currentItem[4]
+    local width, height
+
+    if layout:match('Party') then
+        local attrib = currentItem[2].Header.Attributes
+        width = attrib['initial-width']
+        height = attrib['initial-height'] * 5
+        local yOffset = math.abs(attrib['yOffset'])
+        height = height + yOffset * 4
+    elseif layout:match('Raid') then
+        local attrib = currentItem[2].Header.Attributes
+        local unitsPerColumn = attrib['unitsPerColumn'] or 1
+        local maxColumn = attrib['maxColumns']
+        width = attrib['initial-width'] * maxColumn
+        height = attrib['initial-height'] * unitsPerColumn
+        local yOffset = math.abs(attrib['yOffset'])
+        local xOffset = math.abs(attrib['xOffset'])
+        local columnSpacing = math.abs(attrib['columnSpacing'])
+        height = height + yOffset * (unitsPerColumn-1)
+        width = width + columnSpacing * (maxColumn-1)
+    else
+        width, height = frame:GetSize()
+    end
+
+    self.DebugFrameArea:ChangeText(layout)
+    self.DebugFrameArea:SetSize(width, height)
+    self.DebugFrameArea:Point(currentItem[2].General.Point)
+
+    self.DebugFrameArea:Show()
+end
+
+function Inspector:HideArea()
+    self.DebugFrameArea:ClearAllPoints()
+    self.DebugFrameArea:Hide()
+end
+
 function Inspector:LockItem(item)
     currentFrame = item
     currentItem = Editor:GetFrameOptions(item)
 
     parseItemConfig(currentItem)
     self:InspectComponent('General')
+    self:ShowArea()
 end
-
---function Inspector:SubmitUpdateValue(component, subcomponent, key, value)
---    local config = currentItem[2]
---    component = currentComponent or component
---
---    print (component, subcomponent, key, value)
---
---    if subcomponent ~= nil then
---        if key ~= nil then
---            config[component][subcomponent][key] = value
---        else
---            config[component][subcomponent] = value
---        end
---    elseif key ~= nil then
---        config[component][key] = value
---    else
---        config[component] = value
---    end
---end
 
 local function clone(data)
     if type(data) ~= 'table' then
@@ -426,7 +461,27 @@ function Inspector:ReleaseItem()
     --release all widgets
     currentFrame = nil
     currentItem = nil
+    local component
+    for idx=1, #visibleComponentIndex do
+        component = scrollableComponents[visibleComponentIndex[idx]]
+        if component.Clean then
+            component.Clean(component)
+        end
+        component:Hide()
+    end
+
+    for i, v in ipairs(fixedComponents) do
+        if v.Clean then
+            v.Clean(v)
+        end
+        v:Hide()
+    end
+
+    --replace scroll to top
+    self.UI.Scroll:SetVerticalScroll(0)
     wipe(visibleComponentIndex)
+
+    self:HideArea()
 end
 
 function Inspector:Inspect(item)

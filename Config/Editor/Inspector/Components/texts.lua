@@ -145,7 +145,6 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     if tagFrame.Observer then
         tagFrame.Observer.OnNotify = function(...)
             local event, item, value = unpack(...)
-            print ('TEXTS', event, item.key, value)
             Inspector:SubmitUpdateValue('Texts', currentId, item.key, nil, value)
         end
     end

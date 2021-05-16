@@ -225,7 +225,7 @@ Editor.attributes.auras = {
 Editor.attributes.buffs = Editor.attributes.auras
 Editor.attributes.debuffs = Editor.attributes.auras
 
-Editor.attributes.party = {
+Editor.attributes.header = {
     --['template'] = 'string',
     --['templateType'] = 'string',
     ['showParty'] = 'boolean',
@@ -248,6 +248,8 @@ Editor.attributes.party = {
     ['startingIndex'] = 'number',
     ['groupBy'] = Editor.menus.groupingOrder,
     ['groupingOrder'] = 'string',
+    ['initial-width'] = 'number',
+    ['initial-height'] = 'number',
 }
 
 Editor.attributes.raid = Editor.attributes.party
