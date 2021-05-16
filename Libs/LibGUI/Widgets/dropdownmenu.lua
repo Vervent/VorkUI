@@ -73,6 +73,24 @@ local Methods = {
         end
     end,
 
+    FindIndex = function(self, key)
+        if key == nil then
+            return -1
+        end
+
+        for i, v in ipairs(self.Data) do
+            if v.text == tostring(key) then
+                return i
+            end
+        end
+
+        return -1
+    end,
+
+    RemoveItemByKey = function(self, key)
+        self:RemoveItem( self:FindIndex(key) )
+    end,
+
     RemoveItem = function (self, index)
         if index > 0 and index < #self.Data then
             tremove(self.Data, index)
@@ -91,7 +109,7 @@ local Methods = {
         local table = self.Data
         while level < parentKey.level do
             if table[iterator.index] then
-                table = self.Data[interator.index]
+                table = self.Data[iterator.index]
                 iterator = iterator.menuList
                 if iterator == nil then
                     return

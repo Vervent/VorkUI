@@ -34,12 +34,16 @@ local Methods = {
     end,
 
     ChangeColorTexture = function(self, color)
-        print (self, unpack(color),self:GetObjectType())
+        --print (self, unpack(color),self:GetObjectType())
         self:SetColorTexture(unpack(color))
     end,
 
     ChangeVertexColor = function(self, color)
         self:SetVertexColor(unpack(color))
+    end,
+
+    SetGradient = function(self, orientation, colorStart, colorEnd)
+        self:SetGradient(orientation, colorStart, colorEnd)
     end,
 
     ApplyVertexGradient = function(self,  colorStart, colorEnd, ratio)

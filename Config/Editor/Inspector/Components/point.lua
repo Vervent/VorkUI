@@ -295,14 +295,14 @@ local function addOffsetSetter(container, index)
         xOffsetEdit:Disable()
         yOffsetEdit:Disable()
         btnRemove:Disable()
-        parentMenu.Button:Disable()
+        parentMenu:Disable()
     end
 
     frame.EnableChilds = function()
         xOffsetEdit:Enable()
         yOffsetEdit:Enable()
         btnRemove:Enable()
-        parentMenu.Button:Enable()
+        parentMenu:Enable()
     end
 
     frame:DisableChilds()

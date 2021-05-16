@@ -133,8 +133,8 @@ local Methods = {
         local pt
         if nbRow == 1 then
             pt = {
-                {'TOPLEFT', self:GetName(), 'TOPLEFT', 4, -8},
-                {'TOPRIGHT', self:GetName(), 'TOPRIGHT', -4, -8}
+                {'TOPLEFT', self:GetName(), 'TOPLEFT', 4, 0},
+                {'TOPRIGHT', self:GetName(), 'TOPRIGHT', -4, 0}
             }
         else
             pt = {
@@ -183,6 +183,15 @@ local Methods = {
 
         row:SetSize(width - 8, wHeight)
         self:SetHeight(height + wHeight)
+
+        return row
+    end,
+
+    GetWidgetsByRow = function(self, id)
+        local row = self:GetRow(id)
+        if row then
+            return row.Widgets
+        end
     end,
 
     SetColumnCount = function(self, count)
@@ -210,7 +219,6 @@ local Methods = {
     end,
 
     HideRow = function (self, id)
-        print ('HIDE ROW', id)
         if self.Childs[id] ~= nil then
             self.Childs[id]:Hide()
         end
@@ -219,9 +227,9 @@ local Methods = {
     ShowRow = function (self, id)
         if self.Childs[id] ~= nil then
             self.Childs[id]:Show()
-            if self.alternateColor == true and self.enableAllChilds == false then
-                self.Childs[id].bg:Show()
-            end
+            --if self.alternateColor == true and self.enableAllChilds == false then
+            --    self.Childs[id].bg:Show()
+            --end
         end
     end,
 

@@ -25,6 +25,9 @@ Editor.TypeChecker = {
     ['boolean'] = function(val)
         return val == 'true' or val == 'false'
     end,
+    ['table'] = function(val)
+        return type(val) == 'table'
+    end
 }
 
 Editor.menus = {}
@@ -141,6 +144,32 @@ Editor.menus.auraFilter = {
     { text='PLAYER' },
 }
 
+Editor.menus.anchorPoint = {
+    { text='ANCHOR_TOP' },
+    { text='ANCHOR_RIGHT' },
+    { text='ANCHOR_BOTTOM' },
+    { text='ANCHOR_LEFT' },
+    { text='ANCHOR_TOPRIGHT' },
+    { text='ANCHOR_BOTTOMRIGHT' },
+    { text='ANCHOR_TOPLEFT' },
+    { text='ANCHOR_BOTTOMLEFT' },
+    { text='ANCHOR_CURSOR' },
+    { text='ANCHOR_PRESERVE' },
+    { text='ANCHOR_NONE' },
+}
+
+Editor.menus.point = {
+    { text = 'BOTTOMLEFT' },
+    { text = 'LEFT' },
+    { text = 'TOPLEFT' },
+    { text = 'TOP' },
+    { text = 'TOPRIGHT' },
+    { text = 'RIGHT' },
+    { text = 'BOTTOMRIGHT' },
+    { text = 'BOTTOM' },
+    { text = 'CENTER' },
+}
+
 Editor.attributes = {}
 Editor.attributes.health = { --all booleans
     ['colorDisconnected'] = 'boolean',
@@ -180,11 +209,11 @@ Editor.attributes.auras = {
     ['spacing'] = 'number',
     ['spacing-x'] = 'number',
     ['spacing-y'] = 'number',
-    ['growth-x'] = 'string',
-    ['growth-y'] = 'string',
-    ['initialAnchor'] = 'string',
+    ['growth-x'] = Editor.menus.growDirectionX,
+    ['growth-y'] = Editor.menus.growDirectionY,
+    ['initialAnchor'] = Editor.menus.point,
     ['filter'] = 'string',
-    ['tooltipAnchor'] = 'string',
+    ['tooltipAnchor'] = Editor.menus.anchorPoint,
     ['numBuffs'] = 'number',
     ['numDebuffs'] = 'number',
     ['numTotal'] = 'number',
@@ -197,27 +226,27 @@ Editor.attributes.buffs = Editor.attributes.auras
 Editor.attributes.debuffs = Editor.attributes.auras
 
 Editor.attributes.party = {
-    ['template'] = 'string',
-    ['templateType'] = 'string',
+    --['template'] = 'string',
+    --['templateType'] = 'string',
     ['showParty'] = 'boolean',
     ['showRaid'] = 'boolean',
     ['showPlayer'] = 'boolean',
     ['showSolo'] = 'boolean',
-    ['point'] = 'string',
+    ['point'] = Editor.menus.point,
     ['xOffset'] = 'number',
     ['yOffset'] = 'number',
     ['maxColumns'] = 'number',
     ['unitsPerColumn'] = 'number',
     ['columnSpacing'] = 'number',
-    ['columnAnchorPoint'] = 'string',
+    ['columnAnchorPoint'] = Editor.menus.point,
     ['nameList'] = 'string',
     ['groupFilter'] = 'string',
-    ['roleFilter'] = 'string',
+    ['roleFilter'] = Editor.menus.roleFilter,
     ['strictFiltering'] = 'boolean',
-    ['sortMethod'] = 'string',
-    ['sortDir'] = 'string',
+    ['sortMethod'] = Editor.menus.sortingOrder,
+    ['sortDir'] = Editor.menus.sortingDirection,
     ['startingIndex'] = 'number',
-    ['groupBy'] = 'string',
+    ['groupBy'] = Editor.menus.groupingOrder,
     ['groupingOrder'] = 'string',
 }
 
