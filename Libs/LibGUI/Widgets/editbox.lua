@@ -3,7 +3,6 @@
 
     Widget Data :
     .type as internal kind of frame
-    .text
 
     Widget Methods :
     Update (self, dataTable)
@@ -38,7 +37,13 @@ local Methods = {
         end
 
         if self.SetMinMaxValues then
-            self:SetMinMaxValues(unpack(minmax))
+            self:SetMinMax(unpack(minmax))
+        end
+    end,
+
+    SetMinMax = function(self, min, max)
+        if self.SetMinMaxValues then
+            self:SetMinMaxValues(min, max)
         end
     end,
 
@@ -50,27 +55,7 @@ local Methods = {
                 text = ''
             end
         end
-        self.text = text
         self:SetText(text)
-    end,
-
-    TextChanged = function(self, userinput)
-
-        if self:HasFocus() == false then
-            return
-        end
-
-        if self.SetValue then
-            self.text = self:GetNumber()
-            self:SetValue( tonumber( self.text ) or 0)
-        else
-            self.text = self:GetText()
-        end
-
-        self.Subject:Notify({ 'OnUpdate', self, self.text })
-        self:ChangeText(self.text)
-
-        return self.text
     end,
 
     ChangeFont = function(self, font)
@@ -133,9 +118,6 @@ local function create(parent, name, point, size, template)
 
     edit:SetScript("OnShow", enable)
     edit:SetScript("OnHide", disable)
-    edit:SetAutoFocus(false)
-    edit:ClearFocus()
-    edit:SetTextInsets(2, 2, 2, 2)
     edit.Scripts = {}
 
     if point then
@@ -148,20 +130,16 @@ local function create(parent, name, point, size, template)
     --push our internal Methods in the metatable, if it taints, need to wrap this
     setmetatable(edit, { __index = setmetatable(Methods, getmetatable(edit))})
 
-    edit.Scripts['OnTextChanged'] = edit.TextChanged
-    edit.Scripts['OnEnterPressed'] = edit.TextChanged
-    edit.Scripts['OnEscapePressed'] = edit.ClearFocus
-
-    local initialVal = ''
+    edit:HookScript('OnTextChanged', function(self)
+        self.Subject:Notify({ 'OnUpdate', self,  self:GetText() })
+    end)
 
     if edit.SetValue then
         edit:SetNumeric(false)
-        edit:SetMaxLetters(5)
-
-        edit:SetValue(tonumber(initialVal) or 0)
+        edit:SetMaxLetters(8)
+        edit:SetValue(0)
     else
-        edit:SetMaxLetters(255)
-        edit:ChangeText( initialVal )
+        edit:ChangeText('')
     end
 
     if template == nil then
@@ -169,6 +147,12 @@ local function create(parent, name, point, size, template)
         edit.bg = edit:CreateTexture(nil, "BACKGROUND")
         edit.bg:SetAllPoints()
         edit.bg:SetColorTexture(0, 0, 0, 0.5)
+
+        edit:SetAutoFocus(false)
+        edit:ClearFocus()
+        edit:SetTextInsets(2, 2, 2, 2)
+        edit.Scripts['OnEnterPressed'] = edit.ClearFocus
+        edit.Scripts['OnEscapePressed'] = edit.ClearFocus
     end
 
     local LibObserver = LibStub:GetLibrary("LibObserver")
