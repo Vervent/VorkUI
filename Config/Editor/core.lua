@@ -12,6 +12,7 @@ local function HookRegisteredFrameClick(self)
 
     for _, v in pairs(registry) do
         v[1]:HookScript('OnClick', function()
+            --print ('HookRegisteredFrameClick')
             self.Inspector:Inspect(v[1])
         end )
     end
@@ -61,6 +62,50 @@ function Editor:PrintFrameOptions(item)
     end
 end
 
+function Editor:GetSystems()
+    local data = {}
+
+    local system
+    local module
+    for i, v in ipairs(registry) do
+        system = v[3]
+        module = v[4]
+        if data[system] == nil then
+            data[system] = {}
+            tinsert(data[system], module)
+        elseif data[system][module] == nil then
+            tinsert(data[system], module)
+        end
+    end
+
+    for k, v in pairs(registry) do
+        system = v[3]
+        module = v[4]
+        if data[system] == nil then
+            data[system] = {}
+            tinsert(data[system], module)
+        elseif data[system][module] == nil then
+            tinsert(data[system], module)
+        end
+    end
+
+    return data
+end
+
+function Editor:GetFrameBySystemAndModule(system, module)
+    for i, v in ipairs(registry) do
+        if v[3] == system and v[4] == module then
+            return v[1]
+        end
+    end
+
+    for k, v in pairs(registry) do
+        if v[3] == system and v[4] == module then
+            return v[1]
+        end
+    end
+end
+
 function Editor:GetFrameTable(id)
 
     if id == nil then
@@ -82,18 +127,20 @@ function Editor:GetFrameTable(id)
 end
 
 function Editor:CreateGUI()
-    Editor.Inspector:CreateGUI()
-
+    self.Inspector:CreateGUI()
+    self.Hierarchy:CreateGUI()
     self:Hide()
 end
 
 function Editor:Enable()
     HookRegisteredFrameClick(self)
     self.Inspector:Show()
+    self.Hierarchy:Show()
 end
 
 function Editor:Disable()
     self.Inspector:Hide()
+    self.Hierarchy:Hide()
 end
 
 Editor:HookScript('OnShow', Editor.Enable)
