@@ -37,6 +37,12 @@ local Methods = {
             end
         end
 
+        for i, c in ipairs(self.ScrollChild.Widgets) do
+            if c:IsShown() then
+                height = height + c:GetHeight() + 16
+            end
+        end
+
         self.ScrollChild:SetHeight(height)
     end,
 
@@ -56,6 +62,7 @@ local function create(parent, name, size, point)
     frame.Childs = {}
     frame.Widgets = {}
     frame.enableAllChilds = true
+    frame.enableAllWidgets = true
 
     local scrollChild = LibGUI:NewContainer('empty', frame, name..'ScrollChildFrame')
 
@@ -110,8 +117,10 @@ local function enable(self)
         return
     end
 
-    for _, w in ipairs(self.Widgets) do
-        w:Show()
+    if self.enableAllWidgets then
+        for _, w in ipairs(self.Widgets) do
+            w:Show()
+        end
     end
 
     if self.enableAllChilds then
