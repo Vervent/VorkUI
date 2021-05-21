@@ -3,4 +3,5 @@
     <Script file='constant.lua'/>
 
     <Include file='Inspector\load.xml'/>
+    <Include file='Hierarchy\load.xml'/>
 </Ui>
