@@ -546,7 +546,7 @@ end
 local function GetRealParent(self, parent, root)
     if parent == nil then
         return self:GetParent()
-    elseif strlower(parent) == 'uiparent' then
+    elseif type(parent) == 'string' and strlower(parent) == 'uiparent' then
         return parent
     else
         if self[parent] then
