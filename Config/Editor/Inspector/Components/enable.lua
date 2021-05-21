@@ -14,7 +14,7 @@ local function update(self, config)
     w:SetChecked(config)
 end
 
-local function gui(baseName, parent, parentPoint, componentName, point,  hasBorder, isCollapsable, hasName, config)
+local function gui(baseName, parent, parentPoint, componentName, point,  hasBorder, isCollapsable, hasName)
 
     local pt
     if point then

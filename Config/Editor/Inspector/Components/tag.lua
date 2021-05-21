@@ -86,7 +86,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
 
     local tag = LibGUI:NewWidget('label', frame, 'SublayerLabel', { 'TOPLEFT', layer, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
     tag:Update( { 'OVERLAY', 'GameFontNormal','Tag' } )
-    local tagEdit = LibGUI:NewWidget('editbox', frame, 'SublayerEditbox', { 'TOPLEFT', layerMenu, 'BOTTOMLEFT', 0, -4 }, { 300, 0 }, nil, nil)
+    local tagEdit = LibGUI:NewWidget('editbox', frame, 'SublayerEditbox', { 'TOPLEFT', layerMenu, 'BOTTOMLEFT', 0, -4 }, { 300, 0 })
     tagEdit:ChangeFont( 'Game11Font' )
     tagEdit:SetMultiLine(true)
     tagEdit:SetPoint('BOTTOMRIGHT', layerMenu, 'BOTTOMRIGHT', 30, -50) --mandatory to size correctly the editbox

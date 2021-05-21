@@ -5,7 +5,7 @@ local LibGUI = Plugin.LibGUI
 local Editor = V.Editor
 local Inspector = CreateFrame("Frame")
 
-ComponentsGUI = {}
+local ComponentsGUI = {}
 local scrollableComponents = {}
 local fixedComponents = {}
 local visibleComponentIndex = {}
@@ -311,8 +311,7 @@ function Inspector:CreateGUI()
     debugArea.Texture:SetColorTexture(0.25, 0.25, 0.25, 0.5)
     debugArea.Label = debugArea:AddLabel(debugArea, '', nil, 'Game12Font_o1')
     self.DebugFrameArea = debugArea
-
-    self.UI = frame;
+    self.UI = frame
 
     createInspectorComponent(self)
 
@@ -321,7 +320,6 @@ end
 
 function Inspector:Enable()
     self.UI:Show()
-
 end
 
 function Inspector:Disable()

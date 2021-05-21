@@ -51,6 +51,11 @@ local function export(container, event)
 end
 
 local function updatePointConfig(index, key, value)
+
+    if pointConfig[index] == nil then
+        return
+    end
+
     if key == 5 and pointConfig[index][4] == nil then
         pointConfig[index][4] = 0
     elseif key == 4 and pointConfig[index][5] == nil then
@@ -270,12 +275,12 @@ local function addOffsetSetter(container, index)
     icon:ChangeColorTexture( pointColor[index] )
 
     local xOffsetEdit = LibGUI:NewWidget('editbox', frame, 'XOffsetEdit'..index, { 'LEFT', icon, 'RIGHT', 40, 0 }, { 40, 25 }, 'NumericInputSpinnerTemplate', nil)
-    xOffsetEdit:Update( { nil, nil, nil, {minOffset, maxOffset} } )
+    xOffsetEdit:SetMinMax( minOffset, maxOffset )
     xOffsetEdit.key = 4
     xOffsetEdit:RegisterObserver(frame.Observer)
 
     local yOffsetEdit = LibGUI:NewWidget('editbox', frame, 'YOffsetEdit'..index, { 'LEFT', xOffsetEdit, 'RIGHT', 60, 0 }, { 40, 25 }, 'NumericInputSpinnerTemplate', nil)
-    yOffsetEdit:Update( { nil, nil, nil, {minOffset, maxOffset} } )
+    yOffsetEdit:SetMinMax( minOffset, maxOffset )
     yOffsetEdit.key = 5
     yOffsetEdit:RegisterObserver(frame.Observer)
 
@@ -360,7 +365,6 @@ local function update(self, config, parentDropdown)
         --complex table point
         for i, v in ipairs(config) do
             anchor, parent, relativeTo, x, y = unpack(v)
-
             idx = updateWidgets(self, anchor, parent, relativeTo, x, y)
             pointConfig[idx][2] = parent
             pointConfig[idx][4] = x
