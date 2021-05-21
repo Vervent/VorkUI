@@ -162,8 +162,8 @@ local AtlasSettings = {
         ["DEFENSE"] = {375, 429, 64, 128},
         ["MASTERY"] = {429, 493, 46, 88},
         ["STRENGTH"] = {429, 493, 92, 126},
-        ["FOCUS"] = {401, 465, 0, 36}, --same as energy
-        ["FURY"] = {55, 119, 64, 128}, --same as rage
+        --["FOCUS"] = {401, 465, 0, 36}, --same as energy
+        --["FURY"] = {55, 119, 64, 128}, --same as rage
     },
     ["RaidIcon"] = {
         width = 256,
