@@ -114,9 +114,13 @@ local Methods = {
 
     end,
 
-    AddTexture = function(self)
+    AddTexture = function(self, point)
         local texture = self:CreateTexture('Texture', 'BACKGROUND')
-        texture:SetAllPoints()
+        if point then
+            texture:SetPoint(unpack(point))
+        else
+            texture:SetAllPoints()
+        end
 
         return texture
     end,
