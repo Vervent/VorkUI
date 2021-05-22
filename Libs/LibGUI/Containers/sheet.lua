@@ -211,11 +211,12 @@ local Methods = {
     end,
 
     AddRows = function (self, nbRow)
+        local rows = {}
         for i=1, nbRow do
-            self:AddRow()
+            tinsert(rows, self:AddRow())
         end
 
-        return self:GetRows()
+        return rows
     end,
 
     HideRow = function (self, id)
