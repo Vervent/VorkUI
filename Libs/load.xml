@@ -3,6 +3,9 @@
 	<!-- LibStub -->
 	<Script file='LibStub\LibStub.lua'/>
 
+	<!-- LibDiff -->
+	<Script file='Misc\LibDiff.lua'/>
+
 	<!-- Callback Handler -->
 	<Script file='LibSharedMedia\CallbackHandler-1.0\CallbackHandler-1.0.lua'/>
 
