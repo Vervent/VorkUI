@@ -138,8 +138,8 @@ local Methods = {
             }
         else
             pt = {
-                {'TOPLEFT', 'row'..nbRow-1, 'BOTTOMLEFT'},
-                {'TOPRIGHT', 'row'..nbRow-1, 'BOTTOMRIGHT'}
+                {'TOPLEFT', self.Childs[nbRow-1], 'BOTTOMLEFT'},
+                {'TOPRIGHT', self.Childs[nbRow-1], 'BOTTOMRIGHT'}
             }
         end
         local row = LibGUI:NewContainer('empty', self, 'row'..nbRow, nil, pt)
@@ -158,11 +158,7 @@ local Methods = {
                 if i == 1 then
                     w = createWidget(row, v, { 'LEFT', row, 'LEFT' })
                 elseif i >= colCount then
-                    if v.type == 'checkbox' then
-                        w = createWidget(row, v, { 'RIGHT', row, 'RIGHT', -190 - 4, 0 })
-                    else
-                        w = createWidget(row, v, { 'RIGHT', row, 'RIGHT', -4, 0 })
-                    end
+                    w = createWidget(row, v, { 'RIGHT', row, 'RIGHT', -4, 0 })
                 else
                     w = createWidget(row, v, { 'LEFT', w, 'RIGHT' })
                 end
