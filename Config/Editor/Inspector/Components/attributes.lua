@@ -94,6 +94,7 @@ local function initRow(self, valueType, key, value)
         check:Hide()
         menu:Hide()
         edit:ChangeText( tostring(value) )
+        --edit:SetNumeric(valueType == 'number')
         edit:Show()
     else
         check:Hide()
@@ -104,7 +105,13 @@ local function initRow(self, valueType, key, value)
 end
 
 local function updateOption(event, item, value)
-    Inspector:SubmitUpdateValue(nil, 'Attributes', item.key, nil, value)
+    local val
+    if tChecker['number'](value) == true then
+        val = tonumber(value)
+    else
+        val = value
+    end
+    Inspector:SubmitUpdateValue(nil, 'Attributes', item.key, nil, val)
 end
 
 local function addRow(self)

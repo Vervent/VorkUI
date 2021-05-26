@@ -354,10 +354,10 @@ local function update(self, config, parentDropdown)
     local tableFrame = self.Childs[2]
 
     self.parentDropdown = parentDropdown
+    for i=1, 3 do
+        tableFrame.Childs[i].Widgets[4]:Update( parentDropdown )
+    end
     if config == nil then
-        for i=1, 3 do
-            tableFrame.Childs[i].Widgets[4]:Update( parentDropdown )
-        end
         return
     end
 
@@ -517,7 +517,7 @@ local function clean(self)
     pointConfig = {}
     initialized = false
 
-    --print ('|cFFFF1010 CLEAN POINT |r')
+    print ('|cFFFF1010 CLEAN POINT |r')
 end
 
 Inspector:RegisterComponentGUI('Point', gui, update, clean)

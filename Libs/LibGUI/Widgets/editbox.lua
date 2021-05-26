@@ -131,7 +131,12 @@ local function create(parent, name, point, size, template)
     setmetatable(edit, { __index = setmetatable(Methods, getmetatable(edit))})
 
     edit:HookScript('OnTextChanged', function(self)
-        self.Subject:Notify({ 'OnUpdate', self,  self:GetText() })
+
+        if edit.SetValue then
+            self.Subject:Notify({ 'OnUpdate', self,  self:GetValue() })
+        else
+            self.Subject:Notify({ 'OnUpdate', self,  self:GetText() })
+        end
     end)
 
     if edit.SetValue then

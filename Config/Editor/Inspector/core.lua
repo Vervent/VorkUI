@@ -385,32 +385,48 @@ local function clone(data)
     end
 end
 
+
+
 function Inspector:SubmitUpdateValue(component, subcomponent, key, subkey, value)
     local config = currentItem[2]
     component = currentComponent or component
 
     local cloneValue = clone(value)
+    local oldvalue
 
     if subcomponent ~= nil then
         if key ~= nil then
             if subkey ~= nil then
-                config[component][subcomponent][key][subkey] = cloneValue
+                if config[component][subcomponent][key] == nil then
+                    return
+                end
+                if config[component][subcomponent][key][subkey] ~= nil then
+                    oldvalue = clone ( config[component][subcomponent][key][subkey] )
+                    config[component][subcomponent][key][subkey] = cloneValue
+                end
             else
                 if type(key) == 'number' then
+                    oldvalue = clone ( config[component][subcomponent][key] )
                     tremove(config[component][subcomponent], key)
                     tinsert(config[component][subcomponent], key, cloneValue)
                 else
+                    oldvalue = clone ( config[component][subcomponent][key] )
                     config[component][subcomponent][key] = cloneValue
                 end
             end
         else
+            oldvalue = clone ( config[component][subcomponent] )
             config[component][subcomponent] = cloneValue
         end
     elseif key ~= nil then
+        oldvalue = clone ( config[component][key] )
         config[component][key] = cloneValue
     else
+        oldvalue = clone ( config[component] )
         config[component] = cloneValue
     end
+
+    Editor:NotifyChangelist(currentFrame, component, subcomponent, key, subkey, oldvalue, cloneValue)
 end
 
 function Inspector:InspectComponent(name)
@@ -462,6 +478,7 @@ function Inspector:ReleaseItem()
     local component
     for idx=1, #visibleComponentIndex do
         component = scrollableComponents[visibleComponentIndex[idx]]
+        print ('|cff33ff99Release '..component:GetName()..'|r')
         if component.Clean then
             component.Clean(component)
         end

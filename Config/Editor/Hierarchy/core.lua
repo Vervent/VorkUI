@@ -20,7 +20,7 @@ local hierarchy = {
             name = 'VorkuiEditorHierarchy',
             title = 'Vorkui Hierarchy',
             size = {300, 400},
-            point = { 'TOPLEFT' },
+            point = { 'TOP' },
         },
         childs = {
         }
@@ -58,7 +58,8 @@ local function collapse(frame)
 end
 
 local function createModule(name, parent, point)
-    local btn = LibGUI:NewWidget('button', parent, name, point, { 200, 25 }, 'UIPanelButtonTemplate')
+
+    local btn = LibGUI:NewWidget('button', parent, name, point, { 0, 25 }, 'UIPanelButtonTemplate')
 
     return btn
 end
@@ -81,7 +82,6 @@ local function createSystem(name, parent, point)
     sectionName.Text:SetJustifyH('LEFT')
     sectionName.Texture = collapseTexture
     sectionName:AddCollapseSystem(frame, collapse, expand)
-
     return frame
 end
 
@@ -141,26 +141,27 @@ function Hierarchy:CreateGUI()
 end
 
 local function getModule(system, idx)
-    local moduleCount = #self.Widgets
+    local moduleCount = #system.Widgets
     --be careful because system frame got 1 widget for collapseButton
     local point
 
     if moduleCount == 1 then
         point = {
             { 'TOPLEFT', system, 'TOPLEFT', 4, 0 },
-            { 'TOPRIGHT', system, 'TOPRIGHT', 4, 0 },
+            { 'TOPRIGHT', system, 'TOPRIGHT', -4, 0 },
         }
     else
         point = {
-            { 'TOPLEFT', self.Widgets[moduleCount], 'BOTTOMLEFT' },
-            { 'TOPRIGHT', self.Widgets[moduleCount], 'BOTTOMRIGHT' },
+            { 'TOPLEFT', system.Widgets[moduleCount], 'BOTTOMLEFT' },
+            { 'TOPRIGHT', system.Widgets[moduleCount], 'BOTTOMRIGHT' },
         }
     end
 
-    if idx > moduleCount then
+    --we need to offset by one cause NameLabel Widget
+    if idx + 1 > moduleCount then
         return createModule('module'..idx, system, point)
     else
-        return self.Widgets[idx]
+        return system.Widgets[idx]
     end
 
 end
@@ -193,16 +194,9 @@ local function updateContent(self)
     local scroll = self.UI.Scroll
     local buttonParent = scroll.ScrollChild
 
-    scroll:ShowScrollChild()
-
-    local pt
     local iSystem = 1
     local parent = scroll
-    local point = {
-        { 'TOPLEFT', parent, 'TOPLEFT', 4, -20 },
-        { 'TOPRIGHT', parent, 'TOPRIGHT', -4, -20 }
-    }
-
+    local height = 0
     local btn
     local h
     local collapseButton
@@ -220,13 +214,14 @@ local function updateContent(self)
         end
         collapseButton:ChangeText(k)
         collapseButton.Texture:SetTexture(textureExpand)
-        parent:SetHeight(h + 2)
         parent.frameHeight = h + 2
+        parent:SetHeight(h + 2)
         parent:Show()
+        height = height + h + 2
         iSystem = iSystem + 1
     end
-
-    scroll:ResizeScrollChild()
+    scroll.ScrollChild:SetHeight(height)
+    scroll:ShowScrollChild()
 end
 
 function Hierarchy:Enable()
@@ -240,7 +235,6 @@ function Hierarchy:Disable()
 end
 
 function Hierarchy:Refresh()
-
 end
 
 Hierarchy:SetScript('OnShow', Hierarchy.Enable)

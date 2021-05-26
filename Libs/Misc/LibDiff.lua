@@ -5,6 +5,7 @@
 -- (c) 2007 Hisham Muhammad
 --
 -- License: MIT/X, see http://sputnik.freewisdom.org/en/License
+-- Adapt by Vorka for VorkUI
 -----------------------------------------------------------------------------
 
 local LibDiff = LibStub:NewLibrary("LibDiff", 1)
@@ -12,8 +13,6 @@ local LibDiff = LibStub:NewLibrary("LibDiff", 1)
 if not LibDiff then
     return
 end
-
-local SKIP_SEPARATOR = true  -- a constant
 
 local IN   = "in";
 local OUT  = "out";

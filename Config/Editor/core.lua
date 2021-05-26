@@ -92,6 +92,26 @@ function Editor:GetSystems()
     return data
 end
 
+function Editor:GetSystemByFrame(frame)
+    for i, v in ipairs(registry) do
+        if v[1] == frame then
+            return v[3], v[4]
+        end
+    end
+
+    for i, v in pairs(registry) do
+        if v[1] == frame then
+            return v[3], v[4]
+        end
+    end
+end
+
+function Editor:NotifyChangelist(frame, component, subcomponent, key, subkey, oldvalue, newvalue)
+    local changelist = self.Changelist
+    local system, module = self:GetSystemByFrame(frame)
+    changelist:Test(system, module, component, subcomponent, key, subkey, oldvalue, newvalue)
+end
+
 function Editor:GetFrameBySystemAndModule(system, module)
     for i, v in ipairs(registry) do
         if v[3] == system and v[4] == module then
@@ -129,6 +149,7 @@ end
 function Editor:CreateGUI()
     self.Inspector:CreateGUI()
     self.Hierarchy:CreateGUI()
+    self.Changelist:CreateGUI()
     self:Hide()
 end
 
@@ -136,11 +157,13 @@ function Editor:Enable()
     HookRegisteredFrameClick(self)
     self.Inspector:Show()
     self.Hierarchy:Show()
+    self.Changelist:Show()
 end
 
 function Editor:Disable()
     self.Inspector:Hide()
     self.Hierarchy:Hide()
+    self.Changelist:Hide()
 end
 
 Editor:HookScript('OnShow', Editor.Enable)

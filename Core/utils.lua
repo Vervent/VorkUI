@@ -477,7 +477,11 @@ Utils.API.DeepCopyTable = function(self, orig)
 
     local clone = { unpack(orig) }
     for i=1, #clone do
-        copy[i] = clone[i]
+        if type(clone[i]) == 'table' then
+            copy[i] = self:DeepCopyTable(clone[i])
+        else
+            copy[i] = clone[i]
+        end
     end
 
     for k, v in pairs(orig) do
