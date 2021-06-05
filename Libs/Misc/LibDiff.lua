@@ -5,7 +5,8 @@
 -- (c) 2007 Hisham Muhammad
 --
 -- License: MIT/X, see http://sputnik.freewisdom.org/en/License
--- Adapt by Vorka for VorkUI
+--
+-- Adapt and completed by Vorka for VorkUI
 -----------------------------------------------------------------------------
 
 local LibDiff = LibStub:NewLibrary("LibDiff", 1)
@@ -17,6 +18,12 @@ end
 local IN   = "in";
 local OUT  = "out";
 local SAME = "same"  -- token statuses
+
+local diffColor = {
+    ['in'] = 'FF04E261',
+    ['out'] = 'FFFF8300',--'FFD81E13',
+    ['same'] = 'FFFFE31E',
+}
 
 -----------------------------------------------------------------------------
 -- Split a string into tokens.  (Adapted from Gavin Kistner's split on
@@ -107,6 +114,64 @@ local function escape_html(text)
     text = text:gsub("&", "&amp;"):gsub(">","&gt;"):gsub("<","&lt;")
     text = text:gsub("\"", "&quot;")
     return text
+end
+
+-----------------------------------------------------------------------------
+-- Parse a flag string.
+--
+-- @param flags          The string to be parsed.
+-- @return               in_flag, out_flag, same_flag as booleans.
+-----------------------------------------------------------------------------
+local function return_flag(flags)
+    if strlower(flags) == 'all' then
+        return true, true, true
+    else
+        local _in, _out, _same = false, false, false
+        local tokens = { strsplit(',', strlower(flags)) }
+        for i, flag in ipairs(tokens) do
+            if flag == 'in' then
+                _in = true
+            elseif flag == 'out' then
+                _out = true
+            elseif flag == 'same' then
+                _same = true
+            end
+        end
+        return _in, _out, _same
+    end
+end
+
+-----------------------------------------------------------------------------
+-- Formats an inline diff as color formatted text.
+--
+-- @param tokens         a table of {token, status} pairs.
+-- @param colors         a table of {status, colors} pairs.
+-- @param flags          a flag list (IN, OUT, SAME, ALL) separed by ,
+-- @return               an HTML string.
+-----------------------------------------------------------------------------
+local function format_as_colors_formatted(tokens, colors, flags)
+    local diff_buffer = ""
+    local colorTable = colors or diffColor
+    local flags = flags or 'all'
+
+    local _in, _out, _same = return_flag(flags)
+
+    local token, status
+    local separator = '\n'
+    for i, token_record in ipairs(tokens) do
+        token = token_record[1]
+        status = token_record[2]
+        if status == "in" and _in == true then
+            diff_buffer = diff_buffer..'|c'..colorTable['in']..token..'|r'..separator
+            separator = ''
+        elseif status == "out" and _out == true  then
+            diff_buffer = diff_buffer..'|c'..colorTable['out']..token..'|r'..separator
+            separator = ''
+        elseif _same == true then
+            diff_buffer = diff_buffer..'|c'..colorTable['same']..token..'|r'
+        end
+    end
+    return diff_buffer
 end
 
 
@@ -212,6 +277,7 @@ function LibDiff:Diff(old, new, separator)
         table.insert(diff, rev_diff[i])
     end
     diff.to_html = format_as_html
+    diff.to_colored_text = format_as_colors_formatted
     return diff
 end
 
