@@ -259,7 +259,7 @@ end
 local function stringify(t)
     local str = '{'
 
-    for k, v in pairs(t) do
+    for k, v in pairs(t or {}) do
         if type(v) == 'table' then
             str = str..k..': '..stringify(v)..' , '
         else
@@ -270,33 +270,13 @@ local function stringify(t)
     return str
 end
 
-local function formatDiff(tokens, preserve_same)
-    local diff_buffer = ""
-    local token, status
-    local separator = '->'
-    for i, token_record in ipairs(tokens) do
-        token = token_record[1]
-        status = token_record[2]
-        if status == "in" then
-            diff_buffer = diff_buffer..'|c'..diffColor['in']..token..'|r'..separator
-            separator = ''
-        elseif status == "out" then
-            diff_buffer = diff_buffer..'|c'..diffColor['out']..token..'|r'..separator
-            separator = ''
-        elseif preserve_same == true then
-            diff_buffer = diff_buffer..'|c'..diffColor['same']..token..'|r'
-        end
-    end
-    return diff_buffer
-end
-
 local function getDiff(oldvalue, newvalue, preserve_same)
     if type(oldvalue) == 'table' then
         local list = LibDiff:Diff(stringify(oldvalue), stringify(newvalue))
-        return formatDiff(list, preserve_same)
+        return list:to_colored_text(nil, preserve_same)
     else
         local list = LibDiff:Diff(tostring(oldvalue), tostring(newvalue))
-        return formatDiff(list, preserve_same)
+        return list:to_colored_text(nil, preserve_same)
     end
 end
 
@@ -315,10 +295,10 @@ end
 
 function Changelist:Test(system, module, component, subcomponent, key, subkey, oldvalue, newvalue)
 
-    local rowIndex = findRowIndex(system, module, component, subcomponent, key, subkey)
+    local rowIndex = findRowIndex(system, module, component or 'nil', subcomponent or 'nil', key or 'nil', subkey or 'nil')
     if rowIndex > 0 then
         oldvalue = changeList['OldValue'][rowIndex] or oldvalue --retrieve originalValue
-        local diff = getDiff(oldvalue, newvalue, true)
+        local diff = getDiff(oldvalue, newvalue, 'all')
 
         changeList['NewValue'][rowIndex] = newvalue
         local scroll = self.UI.Scroll.ScrollChild
@@ -327,17 +307,17 @@ function Changelist:Test(system, module, component, subcomponent, key, subkey, o
         row.Widgets[5]:ChangeText(diff)
         row.Widgets[6]:SetChecked(true)
     else
-        local diff = getDiff(oldvalue, newvalue)
+        local diff = getDiff(oldvalue, newvalue, 'in, out')
         if diff == '' then
             return
         end
 
         tinsert(changeList['System'], system)
         tinsert(changeList['Module'], module)
-        tinsert(changeList['Component'], component)
-        tinsert(changeList['SubComponent'], subcomponent)
-        tinsert(changeList['Key'], key)
-        tinsert(changeList['SubKey'], subkey)
+        tinsert(changeList['Component'], component or 'nil')
+        tinsert(changeList['SubComponent'], subcomponent or 'nil')
+        tinsert(changeList['Key'], key or 'nil')
+        tinsert(changeList['SubKey'], subkey or 'nil')
         tinsert(changeList['OldValue'], oldvalue)
         tinsert(changeList['NewValue'], newvalue)
         self:AddChange(system, module, component, subcomponent, key, diff)
