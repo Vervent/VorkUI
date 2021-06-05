@@ -24,15 +24,15 @@ local pointColor = {
 --[[
     Debug Purpose
 ]]--
-local pointConfig = {
-}
+--local pointConfig = {
+--}
 
 local minOffset = -500
 local maxOffset = 500
 
 local initialized = false
 
-local function export(container, event)
+local function export(pointConfig, container, event)
 
     local val
     if next(pointConfig) == nil then
@@ -50,7 +50,7 @@ local function export(container, event)
     end
 end
 
-local function updatePointConfig(index, key, value)
+local function updatePointConfig(pointConfig, index, key, value)
 
     if pointConfig[index] == nil then
         return
@@ -87,6 +87,8 @@ local function getAnchorIdx(point)
 end
 
 local function resetWidgets(self, i)
+
+    local pointConfig = self.PointConfig
 
     local anchorChild, _, relativeTo = unpack(pointConfig[i])
     local countPoint = 0
@@ -133,6 +135,7 @@ end
 
 local function removePoint(self, i)
 
+    local pointConfig = self.PointConfig
     resetWidgets(self, i)
     pointConfig[i] = nil
 
@@ -149,7 +152,7 @@ local function addPoint(table, container, anchorChild, relativeTo)
             container.Childs[i].isUsed = true
             container.Childs[i]:EnableChilds()
             if initialized == true then
-                export(container, 'OnCreate')
+                export(table, container, 'OnCreate')
             end
             return i
         end
@@ -185,7 +188,7 @@ local function snap(frame)
         pt2 = anchors[btn2:GetID()]
     end
 
-    local colorIdx = addPoint(pointConfig, frame.Childs[2], pt1, pt2)
+    local colorIdx = addPoint(frame.PointConfig, frame.Childs[2], pt1, pt2)
     btn1:ChangeColor( pointColor[colorIdx] )
     btn2:ChangeColor( pointColor[colorIdx] )
 
@@ -234,9 +237,10 @@ local function addSnapButton(container, color, frame)
 
 end
 
-local function addOffsetSetter(container, index)
+local function addOffsetSetter(self, container, index)
 
     local name = container:GetName()
+    local pointConfig = self.PointConfig
     local point
 
     if index > 1 then
@@ -266,8 +270,8 @@ local function addOffsetSetter(container, index)
         frame.Observer = LibObserver:CreateObserver()
         frame.Observer.OnNotify = function (...)
             local event, item, value = unpack(...)
-            updatePointConfig(index, item.key, value)
-            export(container, event)
+            updatePointConfig(pointConfig, index, item.key, value)
+            export(pointConfig, container, event)
         end
     end
 
@@ -290,9 +294,9 @@ local function addOffsetSetter(container, index)
 
     local btnRemove = LibGUI:NewWidget('button', frame, 'RemoveButton'..index, { 'RIGHT', -10, 0}, { 20, 20 }, 'UIPanelButtonTemplate')
     btnRemove:SetID(index)
-    btnRemove:Update( { ' -', function(self)
-        removePoint(container:GetParent(), self:GetID())
-        export(container, 'OnDestroy')
+    btnRemove:Update( { ' -', function(btn)
+        removePoint(self, btn:GetID())
+        export(pointConfig, container, 'OnDestroy')
         --Inspector:SubmitUpdateValue(nil, 'Point', nil, nil, pointConfig)
     end } )
 
@@ -345,8 +349,9 @@ end
 
 local function update(self, config, parentDropdown)
 
-    --print ('|cff33ff99 Update Point|r')
+    print ('|cff33ff99 Update Point|r', self)
 
+    local pointConfig = self.PointConfig
     local idx
     local anchor, parent, relativeTo, x, y
 
@@ -403,6 +408,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     )
     frame:SetHeight(400)
     frame.anchorPairs = {}
+    frame.PointConfig = {}
 
     --[[
         The Anchor Snap Item
@@ -458,8 +464,6 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
         frame:CreateBorder(borderSettings.size, borderSettings.color )
     end
 
-    frame.pointConfig = pointConfig
-
     --
     local pointTableFrame = LibGUI:NewContainer(
             'empty',
@@ -493,7 +497,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     pointTableParentLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Parent' } )
 
     for i = 1, 3 do
-        addOffsetSetter(pointTableFrame, i)
+        addOffsetSetter(frame, pointTableFrame, i)
     end
 
     if hasName then
@@ -509,15 +513,17 @@ end
 
 local function clean(self)
 
+    local pointConfig = self.PointConfig
     for i=1, #pointConfig do
-        --removePoint(self, i)
         resetWidgets(self, i)
     end
 
-    pointConfig = {}
+    for i = 1, #pointConfig do
+        tremove(pointConfig, 1)
+    end
+
     initialized = false
 
-    print ('|cFFFF1010 CLEAN POINT |r')
 end
 
 Inspector:RegisterComponentGUI('Point', gui, update, clean)
