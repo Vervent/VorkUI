@@ -27,4 +27,5 @@
     <Script file="Components\aura.lua"/>
     <Script file="Components\attribute.lua"/>
     <Script file="Components\attributes.lua"/>
+    <Script file="Components\backdrop.lua"/>
 </Ui>
