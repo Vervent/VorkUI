@@ -117,29 +117,75 @@ V.Utils = Utils
 ---------------------------------------------------
 -- API func
 ---------------------------------------------------
+Utils.API.CreateBorderBySides = function (self, size, color, ...)
+    local borders = self.Borders or {}
+
+    for k, v in ipairs({...}) do
+        self:CreateOneBorder(v, size, color)
+    end
+
+    self.Borders = borders
+end
+
+Utils.API.CreateOneBorder = function( self, side, size, color )
+    local borders = self.Borders or {}
+
+    local b = self.CreateTexture(nil, 'BORDER', nil, 1)
+    b:SetSize(size, size)
+
+    if side == 'top' then
+        b:SetPoint('TOPLEFT', self, 'TOPLEFT')
+        b:SetPoint('TOPRIGHT', self, 'TOPRIGHT')
+    elseif side == 'bottom' then
+        b:SetPoint('BOTTOMLEFT', self, 'BOTTOMLEFT')
+        b:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT')
+    elseif side == 'right' then
+        b:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT')
+        b:SetPoint('TOPRIGHT', self, 'TOPRIGHT')
+    elseif side == 'left' then
+        b:SetPoint('BOTTOMLEFT', self, 'BOTTOMLEFT')
+        b:SetPoint('TOPLEFT', self, 'TOPLEFT')
+    end
+
+    if color then
+        b:SetColorTexture(unpack(color))
+    end
+
+    tinsert(borders, b)
+    self.Borders = borders
+end
 
 Utils.API.CreateBorder = function( self, size, color )
     self.Borders = {}
+    local frame
 
     local top = self:CreateTexture(nil, "BORDER", nil, 1)
     top:SetSize(size, size)
     top:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
     top:SetPoint("TOPRIGHT", self, "TOPRIGHT", 0, 0)
+    top:SetSnapToPixelGrid(false)
+    top:SetTexelSnappingBias(0)
 
     local bottom = self:CreateTexture(nil, "BORDER", nil, 1)
     bottom:SetSize(size, size)
     bottom:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 0, 0)
     bottom:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0)
+    bottom:SetSnapToPixelGrid(false)
+    bottom:SetTexelSnappingBias(0)
 
     local left = self:CreateTexture(nil, "BORDER", nil, 1)
     left:SetSize(size, size)
     left:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 0, 0)
     left:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
+    left:SetSnapToPixelGrid(false)
+    left:SetTexelSnappingBias(0)
 
     local right = self:CreateTexture(nil, "BORDER", nil, 1)
     right:SetSize(size, size)
     right:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0)
     right:SetPoint("TOPRIGHT", self, "TOPRIGHT", 0, 0)
+    right:SetSnapToPixelGrid(false)
+    right:SetTexelSnappingBias(0)
 
     tinsert(self.Borders, top)
     tinsert(self.Borders, bottom)
@@ -148,6 +194,30 @@ Utils.API.CreateBorder = function( self, size, color )
 
     if color then
         self:SetBorderColor(color)
+    end
+end
+
+Utils.API.SetBorderGradientColor = function (self, gradient )
+    if self.Borders and type(self.Borders) == 'table' then
+        for _, b in ipairs(self.Borders) do
+            b:SetGradient(unpack(gradient))
+        end
+    end
+end
+
+Utils.API.SetBorderTexture = function (self, texture)
+    if self.Borders and type(self.Borders) == 'table' then
+        for _, b in ipairs(self.Borders) do
+            b:SetTexture(texture)
+        end
+    end
+end
+
+Utils.API.SetBorderVertexColor = function (self, color )
+    if self.Borders and type(self.Borders) == 'table' then
+        for _, b in ipairs(self.Borders) do
+            b:SetVertexColor(unpack(color))
+        end
     end
 end
 
