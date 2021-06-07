@@ -4,4 +4,5 @@
 
     <Include file='Inspector\load.xml'/>
     <Include file='Hierarchy\load.xml'/>
+    <Include file='Changelist\load.xml'/>
 </Ui>
