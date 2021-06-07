@@ -121,6 +121,14 @@ function Medias:LoadAtlas(name, adress, settings)
     LibAtlas:RegisterAtlas(name, self.MediaPath["Icons"]..adress, settings)
 end
 
+function Medias:GetBackground(name)
+    return LibSharedMedia:Fetch('background', name)
+end
+
+function Medias:GetBorder(name)
+    return LibSharedMedia:Fetch('border', name)
+end
+
 function Medias:GetStatusBar(name)
     return StatusBar[name] or LibSharedMedia:Fetch('statusbar', name)
 end
