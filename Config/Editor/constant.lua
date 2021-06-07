@@ -253,3 +253,5 @@ Editor.attributes.header = {
 }
 
 Editor.attributes.raid = Editor.attributes.party
+
+Editor.insetTextArray = { 'Left', 'Top', 'Right', 'Bottom' }
