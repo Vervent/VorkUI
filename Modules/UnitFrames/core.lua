@@ -1438,6 +1438,37 @@ function UnitFrames:Update()
     end
 end
 
+local function CreateBackground(frame, config)
+
+    local insetConfig = config.Insets or { 0, 0, 0, 0}
+    local backdropInfo = {
+        bgFile = Medias:GetBackground(config.Background.Texture) or [[Interface/Tooltips/UI-Tooltip-Background]],
+        edgeFile = Medias:GetBorder(config.Border.Texture) or '',
+        edgeSize = config.Border.Size or 0,
+        insets = {
+            left = insetConfig[1] ,
+            right = insetConfig[2],
+            top = insetConfig[3],
+            bottom = insetConfig[4]
+        }
+    }
+
+    local background = CreateFrame("Frame", nil, frame, BackdropTemplateMixin and "BackdropTemplate")
+    background:SetAllPoints()
+    background:SetFrameLevel(frame:GetFrameLevel())
+    background:SetBackdrop( backdropInfo )
+
+    if config.Background.Color then
+        background:SetBackdropColor( unpack( config.Background.Color ) )
+    end
+
+    if config.Border.Color then
+        background:SetBackdropBorderColor( unpack( config.Border.Color ) )
+    end
+
+    return background
+end
+
 local function CreateUnit(self, unit, config)
 
     self:RegisterForClicks("AnyUp")
@@ -1448,19 +1479,15 @@ local function CreateUnit(self, unit, config)
 
     local frame = CreateFrame("Frame", nil, self)
     frame:SetAllPoints()
-
     if generalConfig then
-        if generalConfig.Background.Enable then
-            frame.background = frame:CreateTexture(nil, "BACKGROUND")
-            frame.background:SetAllPoints()
-            if generalConfig.Background.Color then
-                frame.background:SetColorTexture(unpack(generalConfig.Background.Color))
-            end
+        if generalConfig.Backdrop.Enable then
+            frame.background = CreateBackground(frame, generalConfig.Backdrop)
         end
     end
+
     self.Frame = frame
 
-    local health =  CreateSlantedStatusBar(frame, config.Health)
+    local health = CreateSlantedStatusBar(frame, config.Health)
     if config.Health.Attributes then
         for k, v in pairs(config.Health.Attributes) do
             health[k] = v
