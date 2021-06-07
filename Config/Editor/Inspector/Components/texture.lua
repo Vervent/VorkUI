@@ -19,16 +19,16 @@ local function update(self, config)
     local dropdownWidgets = LibGUI:GetWidgetsByType(self, 'dropdownmenu')
     local editboxWidgets = LibGUI:GetWidgetsByType(self, 'editbox')
     local buttonWidgets = LibGUI:GetWidgetsByType(self, 'button')
+    local colorWidgets = LibGUI:GetWidgetsByType(self, 'color')
 
     if type(config[1]) == 'string' then
         local texture = dropdownWidgets[1]
         texture:Update( V.Medias:GetLSMDropDown('statusbar'), config[1] )
         texture:Show()
     else
-        local colorTexture = buttonWidgets[2]
+        local colorTexture = colorWidgets[1]
         if colorTexture ~= nil then
-            colorTexture.colors = colorTexture:ShallowCopyTable(config[1])
-            colorTexture.texture:SetColorTexture( unpack(config[1]) )
+            colorTexture:ChangeColor( colorTexture:ShallowCopyTable( config[1] ) )
         end
         --colortable
     end
@@ -49,6 +49,7 @@ local function clean(self)
     local dropdownWidgets = LibGUI:GetWidgetsByType(self, 'dropdownmenu')
     local editboxWidgets = LibGUI:GetWidgetsByType(self, 'editbox')
     local buttonWidgets = LibGUI:GetWidgetsByType(self, 'button')
+    local colorWidgets = LibGUI:GetWidgetsByType(self, 'color')
 
     local texture = dropdownWidgets[1]
     texture:Update( V.Medias:GetLSMDropDown('statusbar'), '' )
@@ -63,10 +64,9 @@ local function clean(self)
     local sublayer = editboxWidgets[1]
     sublayer:ChangeText( 0)
 
-    local colorTexture = buttonWidgets[2]
+    local colorTexture = colorWidgets[1]
     if colorTexture ~= nil then
-        colorTexture.colors = { 0, 0, 0, 1 }
-        colorTexture.texture:SetColorTexture( 0, 0, 0, 1 )
+        colorTexture:ChangeColor( { 0, 0, 0, 1 } )
     end
 
 end
@@ -115,41 +115,11 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     local colorLabel = LibGUI:NewWidget('label', frame, 'ColorLabel', { 'TOPRIGHT', -20, 0 }, { 150, 30 })
     colorLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Color Texture' } )
 
-    local colorTexture = LibGUI:NewWidget('button', frame, 'ColorButton', { 'TOP', colorLabel, 'BOTTOM', 0, 0 }, { 25 , 25} )
-    colorTexture.texture = colorTexture:AddTexture()
-    colorTexture.colors = { 0, 0, 0, 1 }
-    colorTexture.texture:SetColorTexture( 0, 0, 0, 1 )
-    colorTexture:CreateBorder(borderSettings.size, borderSettings.color)
-    colorTexture:Bind('OnClick', function(self)
-        local r, g, b, a = unpack(self.colors)
-        ColorPickerFrame.hasOpacity = true
-        ColorPickerFrame.opacity = 1-a
-        ColorPickerFrame.previousValues = self.colors
-        ColorPickerFrame.func = function()
-            local newR, newG, newB = ColorPickerFrame:GetColorRGB();
-            self.colors[1] = newR
-            self.colors[2] = newG
-            self.colors[3] = newB
-            self.texture:SetColorTexture(unpack(self.colors))
-            self.Subject:Notify({ 'OnUpdate', self, self.colors })
-        end
-        ColorPickerFrame.opacityFunc = function()
-            local newA = 1-OpacitySliderFrame:GetValue()
-            self.colors[4] = newA
-            self.texture:SetColorTexture(unpack(self.colors))
-            self.Subject:Notify({ 'OnUpdate', self, self.colors })
-        end
-        ColorPickerFrame.cancelFunc = function(previousValues)
-            self.colors = previousValues
-            self.texture:SetColorTexture(unpack(self.colors))
-            self.Subject:Notify({ 'OnUpdate', self, self.colors })
-        end
-        ColorPickerFrame:SetColorRGB(r, g, b)
-        ColorPickerFrame:Hide(); -- Need to run the OnShow handler.
-        ColorPickerFrame:Show();
-    end)
+    local colorTexture = LibGUI:NewWidget('color', frame, 'ColorButton', { 'TOP', colorLabel, 'BOTTOM' }, { 25, 25 })
+    colorTexture:CreateBorder( 1, { 1, 1, 1, 1 } )
     colorTexture.key = 1
     colorTexture:RegisterObserver(frame.Observer)
+
 
     local layer = LibGUI:NewWidget('label', frame, 'LayerLabel', { 'TOP', pathMenu, 'BOTTOM' }, { 115, 30 }, nil, nil)
     layer:Update( { 'OVERLAY', 'GameFontNormal','Layer' } )
