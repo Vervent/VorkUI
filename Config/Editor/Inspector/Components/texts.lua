@@ -68,13 +68,17 @@ local function updateText(self, name)
 end
 
 local function clean(self)
-    --self.config = {}
-    --self.Childs[1].Clean(self.Childs[1])
-    --
-    --local dropdownWidgets = LibGUI:GetWidgetsByType(self, 'dropdownmenu')
-    --local indicatorChoice = dropdownWidgets[1]
-    --indicatorChoice.key = nil
-    --indicatorChoice:Update(nil, '')
+
+    local dropdownWidgets = LibGUI:GetWidgetsByType(self, 'dropdownmenu')
+    local textChoice = dropdownWidgets[1]
+
+    for i, c in ipairs(self.Childs) do
+        c.Clean(c)
+    end
+
+    textChoice.key = nil
+    textChoice:Update(nil, '')
+    currentId = nil
 end
 
 local function gui(baseName, parent, parentPoint, componentName, point,  hasBorder, isCollapsable, hasName, count)
@@ -94,7 +98,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     local frame = LibGUI:NewContainer(
             'empty',
             parent,
-            baseName..'FontFrame',
+            baseName..'TextsFrame',
             nil,
             pt
     )
@@ -149,31 +153,6 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
         end
     end
     height = height + tagFrame:GetHeight() + 16
-
-    --local indicatorLabel = LibGUI:NewWidget('label', frame, 'IndicatorLabel', { 'TOPLEFT', 0, -10 }, { 100, 30 }, nil, nil)
-    --indicatorLabel:Update( { 'OVERLAY', 'GameFontNormal', 'Choose Indicator' } )
-    --local indicatorMenu = LibGUI:NewWidget('dropdownmenu', frame, 'IndicatorDropdown', { 'LEFT', indicatorLabel, 'RIGHT' }, { 200, 25 }, nil, nil)
-    ----indicatorMenu:Update( indicatorDropdown )
-    --indicatorMenu.key = nil
-    --indicatorMenu:RegisterObserver(frame.Observer)
-    --
-    --local indicator = Inspector:CreateComponentGUI('Indicator', 'Indicator', frame, indicatorLabel, nil, {
-    --    {'TOPLEFT', 0, -45},
-    --    {'TOPRIGHT', 0, 0},
-    --}, false, false, true, nil)
-    --
-    --if indicator.Observer then
-    --    indicator.Observer.OnNotify = function (...)
-    --        local event, item, subkey, value = unpack(...)
-    --        if type(item) == 'string' then
-    --            --print ('INDICATORS', event, item, subkey, value)
-    --            Inspector:SubmitUpdateValue('Indicators', currentId, item, subkey, value)
-    --        else
-    --            --print ('INDICATORS', event, item.key, 'nil', subkey)
-    --            Inspector:SubmitUpdateValue('Indicators', currentId, item.key, item.subkey or nil, subkey)
-    --        end
-    --    end
-    --end
 
     frame:SetHeight(height + 8)
 
