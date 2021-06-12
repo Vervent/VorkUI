@@ -21,6 +21,30 @@ local print = print
 
 local Atlas = {}
 
+function LibAtlas:ListParticle()
+    local list = {}
+
+    for k, v in pairs(Atlas) do
+        if #v.Sprites > 0 then
+            tinsert(list, k)
+        end
+    end
+
+    return list
+end
+
+function LibAtlas:ListAtlas()
+    local list = {}
+
+    for k, v in pairs(Atlas) do
+        if #v.Sprites == 0 then
+            tinsert(list, k)
+        end
+    end
+
+    return list
+end
+
 function LibAtlas:List()
     local list = {}
     for k, v in pairs(Atlas) do

@@ -117,10 +117,6 @@ local AtlasAdress = {
     { [[Atlas\class.tga]], 'ClassIcon' },
     { [[Atlas\general.tga]], 'GlobalIcon' },
     { [[Atlas\raid_icons.tga]], 'RaidIcon' },
-    { [[Atlas\muzzle.tga]], 'Muzzle' },
-    { [[Atlas\flame.tga]], 'Flame' },
-    { [[Atlas\spark.tga]], 'Spark' },
-    { [[Atlas\dirt.tga]], 'Dirt' },
     { [[Atlas\status.tga]], 'Status' },
     { [[Atlas\phasing.tga]], 'Phasing' },
 }
@@ -177,6 +173,28 @@ local AtlasSettings = {
         ["CROSS"] = {128, 192, 64, 128},
         ["SKULL"] = {192, 256, 64, 128},
     },
+    ["Status"] = {
+        width = 128,
+        height = 64,
+        ["DIED"] = {0, 64, 0, 64},
+        ["RESURRECT"] = {64, 128, 0, 64},
+    },
+    ["Phasing"] = {
+        width = 128,
+        height = 64,
+        ["PHASE"] = {0, 66, 0, 64},
+        ["SUMMON"] = {66, 128, 0, 64},
+    },
+}
+
+local ParticleAdress = {
+    { [[Atlas\muzzle.tga]], 'Muzzle' },
+    { [[Atlas\flame.tga]], 'Flame' },
+    { [[Atlas\spark.tga]], 'Spark' },
+    { [[Atlas\dirt.tga]], 'Dirt' },
+}
+
+local ParticleSettings = {
     ["Muzzle"] = {
         width = 256,
         height = 128,
@@ -210,24 +228,6 @@ local AtlasSettings = {
         [3] = {0, 64, 64, 128},
         [4] = {64, 128, 64, 128},
     },
-    ["Status"] = {
-        width = 128,
-        height = 64,
-        ["DIED"] = {0, 64, 0, 64},
-        ["RESURRECT"] = {64, 128, 0, 64},
-    },
-    ["Phasing"] = {
-        width = 128,
-        height = 64,
-        ["PHASE"] = {0, 66, 0, 64},
-        ["SUMMON"] = {66, 128, 0, 64},
-    },
-}
-
-local ParticlesAdress = {
-    { [[Particles\muzzle_01.tga]], 'Spark' },
-    { [[Particles\muzzle_02.tga]], 'Spark2' },
-    { [[Particles\scorch_03.tga]], 'Scorch' },
 }
 
 function Medias:GetFontAddress(name, fullpath)
@@ -268,8 +268,8 @@ function Medias:LoadAllTextures()
 end
 
 function Medias:LoadParticles()
-    for _, v in pairs( ParticlesAdress ) do
-        Medias:LoadParticle(v[2], v[1])
+    for _, v in pairs( ParticleAdress ) do
+        Medias:LoadParticle(v[2], v[1], ParticleSettings[ v[2] ])
     end
 end
 

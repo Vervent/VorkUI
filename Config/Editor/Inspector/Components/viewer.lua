@@ -64,9 +64,11 @@ local function stop(self)
 end
 
 local function setPath(self, path)
-    self.path = path
-    self.spriteCount = LibAtlas:GetSpriteCount(path)
-    setIcon(self)
+    if path and path ~= '' then
+        self.path = path
+        self.spriteCount = LibAtlas:GetSpriteCount(path)
+        setIcon(self)
+    end
 end
 
 local function onClickFPSButton(self, ...)
@@ -123,7 +125,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     local viewerStep = LibGUI:NewWidget('button', frame, 'ViewerStep', { 'TOPLEFT', viewerPlay, 'BOTTOMLEFT', 0, -4 }, {30, 30}, 'UIPanelButtonTemplate')
     viewerStep:Update( {'>||', step })
     local viewerStop = LibGUI:NewWidget('button', frame, 'ViewerStop', { 'TOPLEFT', viewerStep, 'BOTTOMLEFT', 0, -4 }, {30, 30}, 'UIPanelButtonTemplate')
-    viewerStop:Update( {'[]', stop })
+    viewerStop:Update( {'=', stop })
 
     local viewerFPS10 = LibGUI:NewWidget('button', frame, 'ViewerFPS10', { 'TOPLEFT', viewerTexture, 'TOPRIGHT', 10, 0 }, {60, 30}, 'UIPanelButtonTemplate')
     viewerFPS10.frequency = 1/10

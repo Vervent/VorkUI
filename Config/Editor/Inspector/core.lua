@@ -74,7 +74,7 @@ local function initializeComponents(tab, config, ...)
     local t
     for i, v in ipairs(tab) do
         t = v.componentType
-        print ('|cFFFFFF00initializeComponents|r', t)
+        --print ('|cFFFFFF00initializeComponents|r', t)
         if config[t] then
             if isFirst == true then
                 initializeComponent(v, config[t], isFirst, ...)
@@ -206,14 +206,15 @@ local function createInspectorComponent(self)
     tinsert(scrollableComponents, self:CreateComponentGUI('Slanting', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Rendering'], 'Slanting', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Tag', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Slanting'], 'Tag', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Fonts', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Tag'], 'Fonts', nil, true, true, true, 6))
-    tinsert(scrollableComponents, self:CreateComponentGUI('Particle', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Fonts'], 'Particle', unpack(componentBaseConfig)))
-    tinsert(scrollableComponents, self:CreateComponentGUI('Castbar', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Particle'], 'Castbar', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Particles', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Fonts'], 'Particles', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Castbar', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Particles'], 'Castbar', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Aura', 'InspectorModule', scrollParent.ScrollChild,   scrollableComponents['Castbar'], 'Buffs', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Aura', 'InspectorModule', scrollParent.ScrollChild,     scrollableComponents['Buffs'], 'Debuffs', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Attribute', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Debuffs'], 'Attribute', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Texts', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Attribute'], 'Texts', nil, false, false, true))
     tinsert(scrollableComponents, self:CreateComponentGUI('Portrait', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Texts'], 'Portrait', unpack(componentBaseConfig)))
     tinsert(scrollableComponents, self:CreateComponentGUI('Attributes', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Portrait'], 'Attributes', unpack(componentBaseConfig)))
+    tinsert(scrollableComponents, self:CreateComponentGUI('Backdrop', 'InspectorModule', scrollParent.ScrollChild,  scrollableComponents['Attributes'], 'Backdrop', unpack(componentBaseConfig)))
 end
 
 function Inspector:Collapse()

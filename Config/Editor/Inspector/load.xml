@@ -13,6 +13,8 @@
     <Script file="Components\portrait.lua"/>
     <Script file="Components\indicator.lua"/>
     <Script file="Components\atlas.lua"/>
+    <Script file="Components\particle.lua"/>
+    <Script file="Components\backdrop.lua"/>
 
     <!-- Load Frame component -->
     <Script file="Components\rendering.lua"/>
@@ -22,10 +24,9 @@
     <Script file="Components\submodules.lua"/>
     <Script file="Components\componentlist.lua"/>
     <Script file="Components\componentblock.lua"/>
-    <Script file="Components\particle.lua"/>
     <Script file="Components\castbar.lua"/>
     <Script file="Components\aura.lua"/>
     <Script file="Components\attribute.lua"/>
     <Script file="Components\attributes.lua"/>
-    <Script file="Components\backdrop.lua"/>
+    <Script file="Components\particles.lua"/>
 </Ui>

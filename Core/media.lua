@@ -21,10 +21,22 @@ function Medias:GetLSM()
     return LibSharedMedia
 end
 
+function Medias:GetParticleDropDown()
+    local data = {}
+
+    local list = LibAtlas:ListParticle()
+
+    for _, p in ipairs(list) do
+        tinsert(data, { text = p })
+    end
+
+    return data
+end
+
 function Medias:GetAtlasDropDown()
     local data = {}
 
-    local list = LibAtlas:List()
+    local list = LibAtlas:ListAtlas()
 
     for _, e in ipairs(list) do
         tinsert(data, { text = e })
@@ -140,15 +152,11 @@ end
 
 function Medias:GetParticle(name)
     --print (name, Particles[name])
-    return Particles[name] or nil
+    return LibAtlas:GetAtlas(name)
 end
 
-function Medias:LoadParticle(name, adress)
-    if Particles[name] then
-        return
-    end
-
-    Particles[name] = self.MediaPath["Icons"]..adress
+function Medias:LoadParticle(name, adress, settings)
+    LibAtlas:RegisterAtlas(name, self.MediaPath["Icons"]..adress, settings)
 end
 
 local function alterFont(globalName, fontName, size, flags, colors, shadow)

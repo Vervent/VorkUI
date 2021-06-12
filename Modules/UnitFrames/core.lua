@@ -547,9 +547,14 @@ end
 --]]------------------------------------------------------------------
 function UnitFrames:CreateIndicator(frame, layer, sublayer, config, unit)
     local indicator = frame:CreateTexture(nil, layer, sublayer)
-    indicator:SetSize( unpack(config.Size) )
 
-    indicator:SetTexture( LibAtlas:GetPath(config.Texture) )
+    if config.Size then
+        indicator:SetSize( unpack(config.Size) )
+    end
+
+    if config.Texture then
+        indicator:SetTexture( LibAtlas:GetPath(config.Texture) )
+    end
     if config.TexCoord then
         indicator:SetTexCoord(LibAtlas:GetTexCoord( config.Texture ,config.TexCoord))
     elseif config.Texture == 'ClassIcon' and unit ~= nil then
@@ -771,7 +776,7 @@ end
 local function CreateCastBar(frame, config, baseConfig)
     local castbar = CreateFrame("StatusBar", frame:GetParent():GetName().."Castbar", frame)
     local textures = config.Rendering
-    local sparkSettings = config.Spark
+    local particlesSettings = config.Particles
 
     castbar:SetSize(unpack(config.Size))
     castbar:SetStatusBarTexture(Medias:GetStatusBar(textures[1][1]))
@@ -785,48 +790,53 @@ local function CreateCastBar(frame, config, baseConfig)
     background:SetAllPoints(castbar)
     background:SetTexture(Medias:GetStatusBar(textures[2][1]))
 
-    if sparkSettings then
-        local spark = castbar:CreateTexture(nil, sparkSettings.Layer)
-        spark:SetSize( unpack(sparkSettings.Size) )
-        spark:SetBlendMode(sparkSettings.BlendMode)
-        spark:SetTexture(LibAtlas:GetPath(config.CastSettings.AtlasName))
+    if particlesSettings then
+        local castTexture = particlesSettings.CastSettings.AtlasName
+        local channelTexture = particlesSettings.ChannelSettings.AtlasName
+
+        local spark = castbar:CreateTexture(nil, particlesSettings.CastSettings.Layer)
+        spark:SetSize( config.Size[2], config.Size[2] )
+        spark:SetBlendMode(particlesSettings.CastSettings.BlendMode)
+        spark:SetTexture(LibAtlas:GetPath(castTexture))
 
         local parentSpark = castbar:GetStatusBarTexture()
 
-        local anchorCast, _, relativeAnchorCast, xOffCast, yOffCast = unpack(config.CastSettings.Point)
-        local anchorChannel, _, relativeAnchorChannel, xOffChannel, yOffChannel = unpack(config.ChannelSettings.Point)
+        local anchorCast, _, relativeAnchorCast, xOffCast, yOffCast = unpack( particlesSettings.CastSettings.Point)
+        local anchorChannel, _, relativeAnchorChannel, xOffChannel, yOffChannel = unpack(particlesSettings.ChannelSettings.Point)
 
         spark:SetPoint( anchorChannel, parentSpark, relativeAnchorChannel, xOffChannel, yOffChannel )
         spark.castSettings = {
-            texture = config.CastSettings.AtlasName,
+            texture = castTexture,
             point = { anchorCast, parentSpark, relativeAnchorCast, xOffCast, yOffCast },
-            spriteCount = LibAtlas:GetSpriteCount(config.CastSettings.AtlasName)
+            spriteCount = LibAtlas:GetSpriteCount( castTexture )
         }
         spark.channelSettings = {
-            texture = config.ChannelSettings.AtlasName,
+            texture = channelTexture,
             point = { anchorChannel, parentSpark, relativeAnchorChannel, xOffChannel, yOffChannel },
-            spriteCount = LibAtlas:GetSpriteCount(config.ChannelSettings.AtlasName)
+            spriteCount = LibAtlas:GetSpriteCount( channelTexture )
         }
         spark.castbar = castbar
         castbar.Spark = spark
     end
 
-    -- Add a timer
-    if config.Time then
-        castbar.Time = UnitFrames:CreateFontString(castbar, config.Time, baseConfig)
-    end
-
-    -- Add spell text
     if config.Text then
         castbar.Text = UnitFrames:CreateFontString(castbar, config.Text, baseConfig)
+        castbar.Text:Point(config.Text.Point, castbar)
+    end
+
+    if config.Time then
+        castbar.Time = UnitFrames:CreateFontString(castbar, config.Time, baseConfig)
+        castbar.Time:Point(config.Time.Point, castbar)
     end
 
     -- Add spell icon
     if config.Icon then
         castbar.Icon = UnitFrames:CreateIndicator(castbar, "OVERLAY", nil, config.Icon)
+        castbar.Icon:Point(config.Icon.Point, castbar)
     end
     if config.Shield then
         castbar.Shield = UnitFrames:CreateIndicator(castbar, "OVERLAY", nil, config.Shield)
+        castbar.Shield:Point(config.Shield.Point, castbar)
     end
 
     -- Add safezone
@@ -839,7 +849,7 @@ local function CreateCastBar(frame, config, baseConfig)
 
     castbar.bg = background
     castbar.OnUpdate = UnitFrames.CastBarOnUpdate
-    if sparkSettings then
+    if particlesSettings then
         castbar.PostCastStart = UnitFrames.CastBarStart
         castbar.PostCastUpdate = UnitFrames.CastBarStart
     end
