@@ -386,8 +386,10 @@ function UnitFrames:CreateFontString(frame, config, baseConfig)
                 fontObject = Medias:GetFont( name..size )
             end
             font:SetFontObject( fontObject )
-            font:Point(config.Point, frame:GetParent())
+             if config.Point then
+                font:Point(config.Point, frame:GetParent())
             end
+        end
     end
 
     return font
@@ -547,6 +549,10 @@ end
 --]]------------------------------------------------------------------
 function UnitFrames:CreateIndicator(frame, layer, sublayer, config, unit)
     local indicator = frame:CreateTexture(nil, layer, sublayer)
+
+    if config == nil then
+        return indicator
+    end
 
     if config.Size then
         indicator:SetSize( unpack(config.Size) )
@@ -777,11 +783,15 @@ local function CreateCastBar(frame, config, baseConfig)
     local castbar = CreateFrame("StatusBar", frame:GetParent():GetName().."Castbar", frame)
     local textures = config.Rendering
     local particlesSettings = config.Particles
+    local attributes = config.Attributes
 
-    castbar:SetSize(unpack(config.Size))
+    local reverse = attributes.reverseFill or false
+    local size = config.Size
+
+    castbar:SetSize( unpack(size) )
     castbar:SetStatusBarTexture(Medias:GetStatusBar(textures[1][1]))
     castbar:SetStatusBarColor(unpack(config.StatusBarColor))
-    castbar:SetReverseFill(config.ReverseFill or false)
+    castbar:SetReverseFill(reverse)
 
     castbar:Point(config.Point, frame:GetParent())
 
@@ -826,17 +836,28 @@ local function CreateCastBar(frame, config, baseConfig)
 
     if config.Time then
         castbar.Time = UnitFrames:CreateFontString(castbar, config.Time, baseConfig)
-        castbar.Time:Point(config.Time.Point, castbar)
+        --castbar.Time:Point(config.Time.Point, castbar)
+        if reverse == true then
+            castbar.Time:Point({'LEFT', 'Castbar'}, castbar)
+        else
+            castbar.Time:Point({'RIGHT', 'Castbar'}, castbar)
+        end
     end
 
     -- Add spell icon
-    if config.Icon then
-        castbar.Icon = UnitFrames:CreateIndicator(castbar, "OVERLAY", nil, config.Icon)
-        castbar.Icon:Point(config.Icon.Point, castbar)
+    if attributes.icon == true then
+        castbar.Icon = UnitFrames:CreateIndicator(castbar, "OVERLAY")
+        castbar.Icon:SetSize(size[2], size[2])
+        if reverse == true then
+            castbar.Icon:Point({'TOPRIGHT', 'Castbar'}, castbar)
+        else
+            castbar.Icon:Point({'TOPLEFT', 'Castbar'}, castbar)
+        end
     end
     if config.Shield then
         castbar.Shield = UnitFrames:CreateIndicator(castbar, "OVERLAY", nil, config.Shield)
         castbar.Shield:Point(config.Shield.Point, castbar)
+        castbar.Shield:SetSize(size[2], size[2])
     end
 
     -- Add safezone

@@ -200,6 +200,11 @@ Editor.attributes.power = { --all booleans
     ['colorSmooth'] = 'boolean',
 }
 
+Editor.attributes.castbar = {
+    ['reverseFill'] = 'boolean',
+    ['icon'] = 'boolean',
+}
+
 Editor.attributes.auras = {
     ['disableMouse'] = 'boolean',
     ['disableCooldown'] = 'boolean',
