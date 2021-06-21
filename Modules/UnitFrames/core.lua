@@ -1623,6 +1623,34 @@ local function CreateUnit(self, unit, config)
         self.RaidDebuffs = raidDebuffs
     end
 
+    if config.AuraSystem and config.AuraSystem.Enable then
+        local auraSystem = CreateFrame('Frame', nil, frame)
+        auraSystem:SetSize(24, 24)
+        auraSystem:SetPoint('BOTTOM', self, 'TOP')
+        auraSystem.AuraFrames = {}
+        local auraFrame = CreateFrame("Frame", nil, auraSystem)
+        auraFrame:SetAllPoints()
+
+        auraFrame.icon = auraFrame:CreateTexture(nil, "ARTWORK", nil, 7)
+        auraFrame.icon:SetTexCoord(.1, .9, .1, .9)
+        auraFrame.icon:SetAllPoints()
+
+        auraFrame.cd = CreateFrame("Cooldown", nil, auraFrame, "CooldownFrameTemplate")
+        auraFrame.cd:SetAllPoints()
+        auraFrame.cd:SetReverse(true)
+        auraFrame.cd.noOCC = true
+        auraFrame.cd.noCooldownCount = true
+        auraFrame.cd:SetHideCountdownNumbers(true)
+        auraFrame.cd:SetAlpha(.7)
+
+        auraFrame.time = UnitFrames:CreateFontString(auraFrame, config.AuraSystem.Time, config.General.Fonts)
+        auraFrame.count = UnitFrames:CreateFontString(auraFrame, config.AuraSystem.Count, config.General.Fonts)
+        auraFrame.count:SetTextColor(1, .9, 0)
+
+        tinsert(auraSystem.AuraFrames, { auraFrame })
+        self.AuraSystem = auraSystem
+    end
+
     if config.Portrait and config.Portrait.Enable then
         self.Portrait = CreatePortrait('PlayerModel', frame, config.Portrait)
     end
@@ -1761,6 +1789,7 @@ function UnitFrames:Style(unit)
     if (not unit) then
         return
     end
+    print ('STYLE', unit)
 
     local style = C.UnitFrames
     local unitName
@@ -1784,6 +1813,17 @@ function UnitFrames:Style(unit)
     return self
 end
 
+local function getVisibility(header, showSolo)
+
+    if showSolo == true then
+        return [[custom show]]
+    elseif  header == 'raid' then
+        return [[custom [@raid6,exists] show; hide]]
+    else
+        return [[@custom [@raid6,exists] hide;show]]
+    end
+end
+
 function UnitFrames:CreateUnits()
 
     local Config = C.UnitFrames
@@ -1794,34 +1834,41 @@ function UnitFrames:CreateUnits()
                     self:SetHeight(header:GetAttribute("initial-height"))
                     ]]
 
+    local unit = nil
     for k, v in pairs (Config) do
         if k == "PartyLayout" and v.Enable == true then
-
             local header = Config.PartyLayout.Header
-            local party = oUF:SpawnHeader( header.Name, header.Template or nil, header.Visibility,
+            local visibility =  getVisibility('raid', header.Attributes['showSolo'])
+
+            unit = oUF:SpawnHeader( header.Name, header.Template or nil,  'custom show',
                     "oUF-initialConfigFunction", initialConfigFunction,
                     unpack( UnitFrames:GetFramesAttributes( header.Attributes ) )
             )
-            party:Point( Config.PartyLayout.General.Point )
-            self.Headers.Party = party
+            unit:Point( Config.PartyLayout.General.Point )
+
+            --We need to force show before to style it first time then set the right visibility
+            RegisterAttributeDriver(unit, 'state-visibility', visibility)
+            unit.visibility = visibility
+
+            self.Headers.Party = unit
         elseif k == "RaidLayout" and v.Enable == true then
-
             local header = Config.RaidLayout.Header
-            local raid = oUF:SpawnHeader( header.Name, header.Template or nil, header.Visibility,
+            local visibility =  getVisibility('raid', header.Attributes['showSolo'])
+
+            unit = oUF:SpawnHeader( header.Name, header.Template or nil, 'custom show',
                     "oUF-initialConfigFunction", initialConfigFunction,
                     unpack( UnitFrames:GetFramesAttributes( header.Attributes ) )
             )
-            raid:Point(Config.RaidLayout.General.Point)
-            --TO TEST AREA
-            --local background = raid:CreateTexture(nil, "BACKGROUND")
-            --background:SetSize(81*8,61*5)
-            --background:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 10)
-            --background:SetColorTexture(0,0,0,1)
+            unit:Point(Config.RaidLayout.General.Point)
 
-            self.Headers.Raid = raid
+            --We need to force show before to style it first time then set the right visibility
+            RegisterAttributeDriver(unit, 'state-visibility', visibility)
+            unit.visibility = visibility
+
+            self.Headers.Raid = unit
         elseif type(v) == 'table' and v.Enable == true then
             local unitName = gsub(k, 'Layout', '')
-            local unit = oUF:Spawn(strlower(unitName), "Vorkui"..unitName.."Frame")
+            unit = oUF:Spawn(strlower(unitName), "Vorkui"..unitName.."Frame")
                 unit:SetSize( unpack(Config[k].General.Size) )
                 unit:Point( Config[k].General.Point )
                 --unit:SetPoint( unpack(Config[k].General.Point) )
@@ -1836,5 +1883,6 @@ function UnitFrames:Enable()
     oUF:RegisterStyle("Vorkui", UnitFrames.Style)
     oUF:SetActiveStyle("Vorkui")
     self:CreateUnits()
+
 
 end
