@@ -32,6 +32,7 @@ local next = next
 local UnitIsPlayer = UnitIsPlayer
 local UnitIsConnected = UnitIsConnected
 local UnitPlayerControlled = UnitPlayerControlled
+local UnitInRange = UnitInRange
 local UnitIsGhost = UnitIsGhost
 local UnitIsDead = UnitIsDead
 local UnitPowerType = UnitPowerType
@@ -720,6 +721,124 @@ local function CreatePortrait(template, parent, config)
     return portrait
 end
 
+local function CreateAuraSystem(parent, config, baseConfig)
+    local frame = CreateFrame('Frame', nil, parent)
+    if config.Point then
+        frame:Point(config.Point)
+    else
+        frame:SetAllPoints()
+    end
+
+    if config.Size then
+        frame:SetSize(unpack(config.Size))
+    end
+
+    for k, v in pairs(config.Attributes) do
+        frame[k] = v
+        --frame.showDispellable = false
+        --frame.colorBorder = true
+    end
+
+    frame.AuraFrames = {}
+
+    local offsetX, offsetY, width, height
+    local anchorPoint, parent, parentPoint, baseX, baseY, growthDirectionX, growthDirectionY
+
+    for i, g in ipairs(config.AuraGroup) do
+        local container = {}
+        for aIndex = 1, g.AuraCount do
+            anchorPoint, parent, parentPoint, baseX, baseY = unpack(g.Point)
+            offsetX = g.OffsetX
+            offsetY = g.OffsetY
+            width, height = unpack(g.Size or {0,0})
+            growthDirectionX = g.GrowthDirectionX or 1
+            growthDirectionY = g.GrowthDirectionY or 1
+
+            local aura = CreateFrame("Frame", nil, frame)
+            aura:SetSize(width, height)
+            aura:SetPoint(anchorPoint, frame, parentPoint, (baseX + offsetX + width) * growthDirectionX * (aIndex-1), (baseY + offsetY + height) * growthDirectionY * (aIndex-1))
+
+            aura.icon = aura:CreateTexture(nil, "ARTWORK", nil, 7)
+            aura.icon:SetTexCoord(.1, .9, .1, .9) --fix issue with texture flipping out of button
+            if g.Size then
+                aura.icon:SetSize(width, height)
+                aura.icon:SetPoint('CENTER')
+            else
+                aura.icon:SetAllPoints()
+            end
+
+            if config.Cooldown then
+                aura.cd = CreateFrame("Cooldown", nil, aura, "CooldownFrameTemplate")
+                if g.Size then
+                    aura.cd:SetSize(width, height)
+                    aura.cd:SetPoint('CENTER')
+                else
+                    aura.cd:SetAllPoints()
+                end
+                aura.cd:SetReverse(config.Cooldown.Reverse or true)
+                aura.cd.noOCC = true
+                aura.cd.noCooldownCount = true
+                aura.cd:SetHideCountdownNumbers(config.Cooldown.HideNumbers or true)
+                aura.cd:SetAlpha(.7)
+            end
+
+            if config.Time then
+                aura.time = UnitFrames:CreateFontString(aura, config.Time, baseConfig)
+            end
+            if config.Count then
+                aura.count = UnitFrames:CreateFontString(aura, config.Count, baseConfig)
+                aura.count:SetTextColor(1, .9, 0)
+            end
+            aura:Hide()
+
+            if config.Border then
+                aura:CreateBorder(1, nil, 'OVERLAY')
+            end
+
+            tinsert( container, aura )
+        end
+        tinsert( frame.AuraFrames, container )
+    end
+    --
+    --for c = 1, 2 do
+    --    local container = { }
+    --    for i= 1, 4 do
+    --        local auraFrame = CreateFrame("Frame", nil, auraSystem)
+    --        --auraFrame:SetAllPoints()
+    --        auraFrame:SetSize( 24, 24 )
+    --        if c == 1 then
+    --            auraFrame:SetPoint('BOTTOMLEFT', auraSystem, 'BOTTOMLEFT', 0, 24*(i-1))
+    --        else
+    --            auraFrame:SetPoint('BOTTOMRIGHT', auraSystem, 'BOTTOMRIGHT', 0, 24*(i-1))
+    --        end
+    --
+    --        auraFrame.icon = auraFrame:CreateTexture(nil, "ARTWORK", nil, 7)
+    --        auraFrame.icon:SetTexCoord(.1, .9, .1, .9)
+    --        auraFrame.icon:SetAllPoints()
+    --
+    --        auraFrame.cd = CreateFrame("Cooldown", nil, auraFrame, "CooldownFrameTemplate")
+    --        auraFrame.cd:SetAllPoints()
+    --        auraFrame.cd:SetReverse(true)
+    --        auraFrame.cd.noOCC = true
+    --        auraFrame.cd.noCooldownCount = true
+    --        auraFrame.cd:SetHideCountdownNumbers(true)
+    --        auraFrame.cd:SetAlpha(.7)
+    --
+    --        auraFrame.time = UnitFrames:CreateFontString(auraFrame, config.AuraSystem.Time, config.General.Fonts)
+    --        auraFrame.count = UnitFrames:CreateFontString(auraFrame, config.AuraSystem.Count, config.General.Fonts)
+    --        auraFrame.count:SetTextColor(1, .9, 0)
+    --        auraFrame:Hide()
+    --
+    --        auraFrame:CreateBorder(1, nil, 'OVERLAY')
+    --
+    --        tinsert( container, auraFrame )
+    --    end
+    --    tinsert(frame.AuraFrames, container)
+    --end
+
+    return frame
+end
+
 local function CreateRaidDebuffs(parent, config, baseConfig)
     local frame = CreateFrame("Frame", nil, parent)
 
@@ -1350,6 +1469,13 @@ function UnitFrames:UpdateHealthColorOverride(event, unit)
         r, g, b = t[1], t[2], t[3]
     end
 
+    local IsRaid = strfind(self:GetName(), "Button")
+    if UnitIsPlayer(unit) and IsRaid ~= nil then
+        if not UnitInRange(unit) then
+            r, g, b = 0.6, 0.6, 0.6
+        end
+    end
+
     if(b) then
         --element:SetStatusBarColor(r, g, b)
 
@@ -1624,31 +1750,7 @@ local function CreateUnit(self, unit, config)
     end
 
     if config.AuraSystem and config.AuraSystem.Enable then
-        local auraSystem = CreateFrame('Frame', nil, frame)
-        auraSystem:SetSize(24, 24)
-        auraSystem:SetPoint('BOTTOM', self, 'TOP')
-        auraSystem.AuraFrames = {}
-        local auraFrame = CreateFrame("Frame", nil, auraSystem)
-        auraFrame:SetAllPoints()
-
-        auraFrame.icon = auraFrame:CreateTexture(nil, "ARTWORK", nil, 7)
-        auraFrame.icon:SetTexCoord(.1, .9, .1, .9)
-        auraFrame.icon:SetAllPoints()
-
-        auraFrame.cd = CreateFrame("Cooldown", nil, auraFrame, "CooldownFrameTemplate")
-        auraFrame.cd:SetAllPoints()
-        auraFrame.cd:SetReverse(true)
-        auraFrame.cd.noOCC = true
-        auraFrame.cd.noCooldownCount = true
-        auraFrame.cd:SetHideCountdownNumbers(true)
-        auraFrame.cd:SetAlpha(.7)
-
-        auraFrame.time = UnitFrames:CreateFontString(auraFrame, config.AuraSystem.Time, config.General.Fonts)
-        auraFrame.count = UnitFrames:CreateFontString(auraFrame, config.AuraSystem.Count, config.General.Fonts)
-        auraFrame.count:SetTextColor(1, .9, 0)
-
-        tinsert(auraSystem.AuraFrames, { auraFrame })
-        self.AuraSystem = auraSystem
+        self.AuraSystem = CreateAuraSystem(frame, config.AuraSystem, config.General.Fonts)
     end
 
     if config.Portrait and config.Portrait.Enable then
@@ -1838,7 +1940,7 @@ function UnitFrames:CreateUnits()
     for k, v in pairs (Config) do
         if k == "PartyLayout" and v.Enable == true then
             local header = Config.PartyLayout.Header
-            local visibility =  getVisibility('raid', header.Attributes['showSolo'])
+            local visibility =  getVisibility('party', header.Attributes['showSolo'])
 
             unit = oUF:SpawnHeader( header.Name, header.Template or nil,  'custom show',
                     "oUF-initialConfigFunction", initialConfigFunction,

@@ -155,32 +155,32 @@ Utils.API.CreateOneBorder = function( self, side, size, color )
     self.Borders = borders
 end
 
-Utils.API.CreateBorder = function( self, size, color )
+Utils.API.CreateBorder = function( self, size, color, layer )
     self.Borders = {}
-    local frame
+    local l = layer or 'BORDER'
 
-    local top = self:CreateTexture(nil, "BORDER", nil, 1)
+    local top = self:CreateTexture(nil, l, nil, 1)
     top:SetSize(size, size)
     top:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
     top:SetPoint("TOPRIGHT", self, "TOPRIGHT", 0, 0)
     top:SetSnapToPixelGrid(false)
     top:SetTexelSnappingBias(0)
 
-    local bottom = self:CreateTexture(nil, "BORDER", nil, 1)
+    local bottom = self:CreateTexture(nil, l, nil, 1)
     bottom:SetSize(size, size)
     bottom:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 0, 0)
     bottom:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0)
     bottom:SetSnapToPixelGrid(false)
     bottom:SetTexelSnappingBias(0)
 
-    local left = self:CreateTexture(nil, "BORDER", nil, 1)
+    local left = self:CreateTexture(nil, l, nil, 1)
     left:SetSize(size, size)
     left:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 0, 0)
     left:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
     left:SetSnapToPixelGrid(false)
     left:SetTexelSnappingBias(0)
 
-    local right = self:CreateTexture(nil, "BORDER", nil, 1)
+    local right = self:CreateTexture(nil, l, nil, 1)
     right:SetSize(size, size)
     right:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0)
     right:SetPoint("TOPRIGHT", self, "TOPRIGHT", 0, 0)
