@@ -743,20 +743,45 @@ local function CreateAuraSystem(parent, config, baseConfig)
 
     local offsetX, offsetY, width, height
     local anchorPoint, parent, parentPoint, baseX, baseY, growthDirectionX, growthDirectionY
+    local growthAuraLimit, expansionDirection
+
+    local newX, newY
 
     for i, g in ipairs(config.AuraGroup) do
         local container = {}
-        for aIndex = 1, g.AuraCount do
-            anchorPoint, parent, parentPoint, baseX, baseY = unpack(g.Point)
-            offsetX = g.OffsetX
-            offsetY = g.OffsetY
-            width, height = unpack(g.Size or {0,0})
-            growthDirectionX = g.GrowthDirectionX or 1
-            growthDirectionY = g.GrowthDirectionY or 1
+        growthAuraLimit = g.GrowthAuraLimit or 40
+        anchorPoint, parent, parentPoint, baseX, baseY = unpack(g.Point)
+        offsetX = g.OffsetX
+        offsetY = g.OffsetY
+        width, height = unpack(g.Size or {0,0})
+        growthDirectionX = g.GrowthDirectionX or 0
+        growthDirectionY = g.GrowthDirectionY or 0
+        expansionDirection = g.ExpansionDirection or 1
 
-            local aura = CreateFrame("Frame", nil, frame)
+        for aIndex = 1, g.AuraCount do
+
+            if growthDirectionY ~= 0 then
+                if aIndex < growthAuraLimit then
+                    newY = baseY + (offsetY + height) * growthDirectionY * (aIndex-1)
+                    newX = baseX
+                else
+                    newY = baseY + (offsetY + height) * growthDirectionY * ((aIndex-1)%growthAuraLimit)
+                    newX = baseX + (offsetX + width) * math.floor((aIndex-1)/growthAuraLimit) * expansionDirection
+                end
+            elseif growthDirectionX ~= 0 then
+                if aIndex < growthAuraLimit then
+                    newY = baseY
+                    newX = baseX + (offsetX + width) * growthDirectionX * (aIndex-1)
+                else
+                    newY = baseY + (offsetY + height) * math.floor((aIndex-1)/growthAuraLimit) * expansionDirection
+                    newX = baseX + (offsetX + width) * growthDirectionX * ((aIndex-1)%growthAuraLimit)
+                end
+            end
+
+            local aura = CreateFrame("Button", nil, frame)
+            aura:SetID(aIndex)
             aura:SetSize(width, height)
-            aura:SetPoint(anchorPoint, frame, parentPoint, (baseX + offsetX + width) * growthDirectionX * (aIndex-1), (baseY + offsetY + height) * growthDirectionY * (aIndex-1))
+            aura:SetPoint(anchorPoint, frame, parentPoint, newX, newY)
 
             aura.icon = aura:CreateTexture(nil, "ARTWORK", nil, 7)
             aura.icon:SetTexCoord(.1, .9, .1, .9) --fix issue with texture flipping out of button
@@ -793,6 +818,10 @@ local function CreateAuraSystem(parent, config, baseConfig)
 
             if config.Border then
                 aura:CreateBorder(1, nil, 'OVERLAY')
+            end
+
+            if g.Filter then
+                container.Filter = g.Filter
             end
 
             tinsert( container, aura )
@@ -1750,7 +1779,9 @@ local function CreateUnit(self, unit, config)
     end
 
     if config.AuraSystem and config.AuraSystem.Enable then
-        self.AuraSystem = CreateAuraSystem(frame, config.AuraSystem, config.General.Fonts)
+        local auraSystem = CreateAuraSystem(frame, config.AuraSystem, config.General.Fonts)
+        auraSystem.aura_data = UnitFrames.SetupAuraTracking(self, unit)
+        self.AuraSystem = auraSystem
     end
 
     if config.Portrait and config.Portrait.Enable then

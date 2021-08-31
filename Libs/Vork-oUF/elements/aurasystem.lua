@@ -19,17 +19,19 @@ Think about :
 
 .ColorBorder        - Specify if the border is colored using dispell color. False by default
 .ShowDispellable    - Filter to display only dispellable aura by player
-.filter             - Custom filter list for auras to display.
-.whitelist          - Structure for auras to display. Cannot be combine with filter
-    .FrameID        - Specify Group for this Aura
-    .Position       - Specify fixed position in the Group. If not specified it takes dynamically free Button
-    .TexturedIcon   - Display the icon of the aura instead of colored point
-    .Color          - Specify color of the square. Cannot be combine with TexturedIcon
-.blacklist          - Array for auras to hide. Can be combine with filter
+.Aura_Data          - Structure to specify for groups multiples params for every entry :
+    .Filter                     - Custom filter list for auras to display.
+    .Whitelist                  - Structure for auras to display.
+    .Position                   - Specify fixed position in the Group. If not specified it takes dynamically free Button
+    .Priority                   - Specify priority on draw to manage multiple aura at same position. If a spell takes
+    priority over current Aura, it takes dynamically free Button
+    .TexturedIcon               - Display the icon of the aura instead of colored point
+    .Color                      - Specify color of the square. Cannot be combine with TexturedIcon
+    .Blacklist                  - Array for auras to hide
+    .OnlyShowWhitelist          - Ignore all aura not in the Whilelist. False by default
+    .DisableDynamicPosition     - Disable Dynamic Aura Position. Works only with WhiteList. False by default
 
 ## Future Update
-
-    priority aura in the whitelist if multiple aura are on the same position
 
 --]]
 
@@ -49,6 +51,11 @@ local UnitClass = UnitClass
 local GetActiveSpecGroup = GetActiveSpecGroup
 local GetSpecialization = GetSpecialization
 local ipairs = ipairs
+local GameTooltip = GameTooltip
+local pairs = pairs
+local tinsert = tinsert
+local setmetatable = setmetatable
+local getmetatable = getmetatable
 
 local ViragDevTool = _G['ViragDevTool']
 
@@ -57,20 +64,7 @@ local DispellColor = {
     ['Curse'] = { .6, 0, 1 },
     ['Disease'] = { .6, .4, 0 },
     ['Poison'] = { 0, .6, 0 },
-    ['none'] = { 1, 0, 0 },
-}
-
-local FrameTableID = {
-    ['Left'] = 1,
-    ['Top'] = 2,
-    ['Right'] = 3,
-    ['Bottom'] = 4,
-    ['Center'] = 5,
-    [1] = 'Left',
-    [2] = 'Top',
-    [3] = 'Right',
-    [4] = 'Bottom',
-    [5] = 'Center',
+    ['none'] = { 0, 0, 0 },
 }
 
 local DispellPerClass = {
@@ -100,9 +94,6 @@ local DispellPerClass = {
     },
 }
 
-local NEW_AURA = 0
-local REFRESH_AURA = 1
-
 local function log(data, str)
 
     if ViragDevTool then
@@ -120,7 +111,263 @@ local function formatTime(s)
     end
 end
 
-local function UpdateDispellPerClass(self, event, levels)
+local function resetAura(f)
+
+    f.name = ''
+    f.spellId = -1
+    f.priority = 0
+    f.icon:SetTexture(nil)
+    f.icon:Hide()
+    f.duration = -1
+    f:EnableMouse(false)
+    f:SetID(-1)
+
+    if f.count then
+        f.count:SetText('')
+        f.count:Hide()
+    end
+
+    if f.time then
+        f:SetScript('OnUpdate', nil)
+        f.time:Hide()
+    end
+
+    if f.cd then
+        f.cd:Hide()
+    end
+
+    f:Hide()
+
+end
+
+local function OnUpdate(self, elapsed)
+    self.elapsed = (self.elapsed or 0) + elapsed
+    if self.elapsed >= 0.1 then
+        local timeLeft = self.expiration - GetTime()
+        if self.reverse then
+            timeLeft = abs((self.expiration - GetTime()) - self.duration)
+        end
+        if timeLeft > 0 then
+            local text = formatTime(timeLeft)
+            self.time:SetText(text)
+        end
+        self.elapsed = 0
+    end
+end
+
+local AuraGroupFunction = {
+
+    RefreshAura = function(_, auraID, frame, stack, duration, expiration)
+        local remainingTime = expiration - GetTime()
+        if remainingTime > 0 then
+            frame:SetID(auraID)
+            if frame.count and stack and stack > 1 then
+                if stack > 1 then
+                    frame.count:SetText(stack)
+                else
+                    frame.count:Hide()
+                end
+            end
+
+            if frame.time and duration and duration > 0 then
+                frame.expiration = expiration
+                frame.nextUpdate = 0
+            end
+
+            if duration and duration > 0 then
+                if frame.cd then
+                    frame.cd:SetCooldown(expiration - duration, duration)
+                end
+            end
+        elseif duration ~= 0 then
+            resetAura(frame)
+        end
+
+        return true
+    end,
+
+    ShowAura = function(self, auraID, name, icon, stack, dType, duration, expiration, spellId, isBorderColored)
+
+        if self:IsIgnored(spellId) then
+            return false
+        end
+        local forceIcon = false
+
+        local position = self:GetPosition(spellId)
+        local priority = self:GetPriority(spellId)
+        --check priority if position > 0
+        if position > 0 then
+            if not self:IsPriority(spellId, self[position].spellId or 0) then
+                if not self.DisableDynamicPosition then
+                    position = self:GetFreeSlotIndex()
+                    forceIcon = true
+                else
+                    return false
+                end
+            end
+        end
+        if position == -1 then
+            if self.OnlyShowWhitelist == true then
+                return false
+            end
+
+            --not in whitelist so automatically icon
+            position = self:GetFreeSlotIndex()
+            forceIcon = true
+        end
+
+        local frame = self[position]
+
+        if frame == nil then
+            return false
+        end
+
+        frame.name = name
+        frame.spellId = spellId
+        frame.priority = priority
+        frame:SetID(auraID)
+        frame:EnableMouse(not self.DisableMouse)
+        if forceIcon == true or self:IsTexturedIcon(spellId) then
+            frame.icon:SetTexture(icon)
+        else
+            frame.icon:SetColorTexture(self:GetColor(spellId))
+        end
+
+        frame.icon:Show()
+        frame.duration = duration
+
+        if frame.Borders and isBorderColored then
+            frame:SetBorderColor(DispellColor[dType] or DispellColor.none)
+        else
+            --frame:SetBackdropBorderColor(c[1], c[2], c[3])
+        end
+
+        if frame.count and stack and stack > 1 then
+            frame.count:SetText(stack)
+            frame.count:Show()
+        end
+
+        if frame.time and duration and duration > 0 then
+            frame.expiration = expiration
+            frame.nextUpdate = 0
+            frame:SetScript('OnUpdate', OnUpdate)
+            frame.time:Show()
+        end
+
+        if duration and duration > 0 then
+            if frame.cd then
+                frame.cd:SetCooldown(expiration - duration, duration)
+                frame.cd:Show()
+            end
+        end
+        frame:Show()
+        return true
+    end,
+
+    HasAura = function(self, spellId)
+        for idx, frame in ipairs(self) do
+            if frame.spellId == spellId then
+                return true, idx
+            end
+        end
+        return false, nil
+    end,
+
+    GetIndex = function(self, spellId)
+        if not self.Whitelist then
+            return -1
+        end
+        return self.Whitelist[spellId] or -1
+    end,
+
+    GetPosition = function(self, spellId)
+
+        if self.Position == nil or self.Position[spellId] == nil or self.Position[spellId] > #self then
+            return -1
+        end
+
+        return self.Position[spellId]
+    end,
+
+    GetFreeSlotIndex = function(self)
+        for idx, frame in ipairs(self) do
+            if frame.name == nil or frame.name == '' then
+                return idx
+            end
+        end
+    end,
+
+    GetFreeSlot = function(self)
+        for _, frame in ipairs(self) do
+            if frame.name == nil or frame.name == '' then
+                return frame
+            end
+        end
+    end,
+
+    HasFreeSlot = function(self)
+        for _, frame in ipairs(self) do
+            if frame.name == nil or frame.name == '' then
+                return true
+            end
+        end
+    end,
+
+    GetFreeSlots = function(self)
+        local freeSlots = {}
+        for i, frame in ipairs(self) do
+            if frame.name == '' then
+                tinsert(freeSlots, i)
+            end
+        end
+
+        return freeSlots
+    end,
+
+    IsTexturedIcon = function(self, index)
+        local isTexturedIcon = self.TexturedIcon
+        if isTexturedIcon == nil then
+            return false
+        end
+        if type(isTexturedIcon) == 'boolean' then
+            return isTexturedIcon
+        elseif type(isTexturedIcon) == 'table' then
+            return self.TexturedIcon[index]
+        end
+    end,
+
+    GetColor = function(self, index)
+        if self.Color[index] then
+            return unpack(self.Color[index])
+        end
+        return 1, 1, 1
+    end,
+
+    IsIgnored = function(self, spellID)
+
+        if not self.Blacklist then
+            return false
+        end
+        return self.Blacklist[spellID] and true
+    end,
+
+    GetPriority = function(self, spellId)
+        if spellId < 0 or self.Priority == nil then
+            return 0
+        end
+
+        return self.Priority[spellId] or 0
+    end,
+
+    IsPriority = function(self, spell1, spell2)
+        if spell2 == nil then
+            return true
+        end
+        return self:GetPriority(spell1) > self:GetPriority(spell2)
+    end,
+}
+
+local function UpdateDispellPerClass(_, event, levels)
     -- Not interested in gained points from leveling
     if event == "CHARACTER_POINTS_CHANGED" and levels > 0 then
         return
@@ -161,162 +408,6 @@ local function UpdateDispellPerClass(self, event, levels)
     end
 end
 
-local function resetAura(f)
-
-    f.name = ''
-    f.spellId = -1
-    f.icon:SetTexture(nil)
-    f.icon:Hide()
-    f.duration = -1
-
-    if f.count then
-        f.count:SetText('')
-        f.count:Hide()
-    end
-
-    if f.time then
-        f:SetScript('OnUpdate', nil)
-        f.time:Hide()
-    end
-
-    if f.cd then
-        f.cd:Hide()
-    end
-
-    f:Hide()
-
-end
-
-local function OnUpdate(self, elapsed)
-    self.elapsed = (self.elapsed or 0) + elapsed
-    if self.elapsed >= 0.1 then
-        local timeLeft = self.expiration - GetTime()
-        if self.reverse then
-            timeLeft = abs((self.expiration - GetTime()) - self.duration)
-        end
-        if timeLeft > 0 then
-            local text = formatTime(timeLeft)
-            self.time:SetText(text)
-        end
-        self.elapsed = 0
-    end
-end
-
-local function showAura(frame, name, icon, stack, dType, duration, expiration, spellId, isBorderColored)
-    frame.name = name
-    frame.spellId = spellId
-    if type(icon) == 'table' then
-        frame.icon:SetColorTexture(unpack(icon))
-    else
-        frame.icon:SetTexture(icon)
-    end
-    frame.icon:Show()
-    frame.duration = duration
-
-    if frame.Borders and isBorderColored then
-        frame:SetBorderColor((DispellColor[dType] or DispellColor.none))
-    else
-        --frame:SetBackdropBorderColor(c[1], c[2], c[3])
-    end
-
-    if frame.count and stack and stack > 1 then
-        frame.count:SetText(stack)
-        frame.count:Show()
-    end
-
-    if frame.time and duration and duration > 0 then
-        frame.expiration = expiration
-        frame.nextUpdate = 0
-        frame:SetScript('OnUpdate', OnUpdate)
-        frame.time:Show()
-    end
-
-    if duration and duration > 0 then
-        if frame.cd then
-            frame.cd:SetCooldown(expiration - duration, duration)
-            frame.cd:Show()
-        end
-        frame:Show()
-    end
-end
-
-local function refreshAura(frame, stack, duration, expiration)
-
-    local remainingTime = expiration - GetTime()
-    if remainingTime > 0 then
-
-        if frame.count and stack and stack > 1 then
-            if stack > 1 then
-                frame.count:SetText(stack)
-            else
-                frame.count:Hide()
-            end
-        end
-
-        if frame.time and duration and duration > 0 then
-            frame.expiration = expiration
-            frame.nextUpdate = 0
-        end
-
-        if duration and duration > 0 then
-            if frame.cd then
-                frame.cd:SetCooldown(expiration - duration, duration)
-            end
-        end
-    else
-        resetAura(frame)
-    end
-end
-
-local function getSlot(auraHolder, name, spellId, position)
-
-    if position ~= nil then
-
-        if auraHolder[position].spellId == spellId then
-            return auraHolder[position], REFRESH_AURA
-        else
-            return auraHolder[position], NEW_AURA
-        end
-    end
-
-    local n = name or ''
-    for _, f in ipairs(auraHolder) do
-        if f.name == n and f.spellId == spellId then
-            return f, REFRESH_AURA --return to refresh this slot
-        end
-    end
-
-    for _, f in ipairs(auraHolder) do
-        if (not f:IsShown()) and (not f:IsVisible()) then
-            return f, NEW_AURA --return to affect new slot
-        end
-    end
-
-    return nil, nil --return first slot by default
-
-end
-
-local function updateAura(self, name, icon, stack, dType, duration, expiration, spellId, frameID, position)
-    local element = self.AuraSystem
-    local frameCount = #element.AuraFrames or 0
-    if frameCount == 0 then
-        return
-    end
-    if frameID > frameCount then
-        return
-    end
-
-    local f, status = getSlot(element.AuraFrames[frameID], name, spellId, position)
-    if f == nil then
-        return
-    elseif status == NEW_AURA then
-        showAura(f, name, icon, stack, dType, duration, expiration, spellId, element.ColorBorder)
-    elseif status == REFRESH_AURA then
-        refreshAura(f, stack, duration, expiration, spellId)
-    end
-
-end
-
 local function preUpdate(self)
     local element = self.AuraSystem
     local findAura
@@ -326,6 +417,7 @@ local function preUpdate(self)
         for i = 1, 40 do
             if aura.spellId == select(10, UnitAura(self.unit, i, element.filter)) then
                 findAura = true
+                aura:SetID(i)
             end
         end
 
@@ -335,19 +427,8 @@ local function preUpdate(self)
     end
 end
 
-local function postUpdate(self)
+local function postUpdate(_)
 
-end
-
-local function IsIgnored(ignore_data, id)
-
-    for i, v in ipairs(ignore_data) do
-        if v == id then
-            return true
-        end
-    end
-
-    return false
 end
 
 local function CanDispell(debuffType)
@@ -361,7 +442,7 @@ local function CanDispell(debuffType)
     end
 end
 
-local function Update(self, event, unit)
+local function Update(self, _, unit)
     if unit ~= self.unit then
         return
     end
@@ -373,49 +454,17 @@ local function Update(self, event, unit)
         preUpdate(self)
     end
 
-    local filter = element.filter
+    --local filter = element.filter
 
     local showDispellable = element.ShowDispellable
 
-    --store if the unit its charmed, mind controlled units
-    local isCharmed = UnitIsCharmed(unit)
-
-    --store if we cand attack that unit, if its so the unit its hostile
-    local canAttack = UnitCanAttack("player", unit)
-
-    local frameID, position
     local name, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate,
     spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
 
-    local isIgnored
+    local group, frameIdx, refresh
 
-    for i = 1, 40 do
-        if filter == nil then
-            --explicit filter by spellId
-            name, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate,
-            spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAura(unit, i)
-            if not name then
-                --no aura for n >= i so breqk
-                break
-            end
-
-            isIgnored = IsIgnored(element.ignore_data, spellId) or isCharmed or canAttack
-            if showDispellable then
-                isIgnored = isIgnored or not CanDispell(debuffType)
-            end
-
-            if not isIgnored and element.aura_data[spellId] then
-                frameID = element.aura_data[spellId].FrameID or nil
-                position = element.aura_data[spellId].Position or nil
-                if not element.aura_data[spellId].TexturedIcon then
-                    icon = element.aura_data[spellId].Color or { 1, 1, 1 }
-                end
-                if frameID ~= nil then
-                    updateAura(self, name, icon, count, debuffType, duration, expirationTime, spellId, frameID, position)
-                end
-            end
-        else
-            --let me filter only with a classic wow filter then affect aura to frameID == 1
+    for filter, auraGroup in pairs(element.Filters) do
+        for i = 1, 40 do
             name, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate,
             spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAura(unit, i, filter)
             if not name then
@@ -423,14 +472,26 @@ local function Update(self, event, unit)
                 break
             end
 
-            isIgnored = IsIgnored(element.ignore_data, spellId) or isCharmed or canAttack
-            if showDispellable then
-                isIgnored = isIgnored or not CanDispell(debuffType)
+            if showDispellable == nil or showDispellable == false or (showDispellable == CanDispell(debuffType)) then
+                for _, frameID in ipairs(auraGroup) do
+                    group = element.AuraFrames[frameID]
+                    refresh, frameIdx = group:HasAura(spellId)
+                    if refresh == true then
+                        group:RefreshAura(i, group[frameIdx], count, duration, expirationTime)
+                        break
+                    end
+                end
+
+                if refresh == false then
+                    for _, frameID in ipairs(auraGroup) do
+                        group = element.AuraFrames[frameID]
+                        if group:ShowAura(i, name, icon, count, debuffType, duration, expirationTime, spellId, element.ColorBorder) == true then
+                            break
+                        end
+                    end
+                end
             end
 
-            if not isIgnored then
-                updateAura(self, name, icon, count, debuffType, duration, expirationTime, spellId, 1)
-            end
         end
     end
 
@@ -442,71 +503,74 @@ local function Update(self, event, unit)
 
 end
 
-local function initAuraTable(auraTable, auraFrames)
-    for _, hFrame in ipairs(auraFrames) do
+local function init(auraFrames, auraData)
+    local auraTable, filters = {}, {}
+
+    local filter
+
+    for idxGroup, hFrame in ipairs(auraFrames) do
+        filter = auraData[idxGroup].Filter or 'HELPFUL'
+        if not filters[filter] then
+            filters[filter] = { idxGroup }
+        else
+            tinsert(filters[filter], idxGroup)
+        end
+
+        --link the frame holder with its corresponding data
+        if idxGroup <= #auraData then
+            hFrame.Whitelist = auraData[idxGroup].Whitelist
+            hFrame.Blacklist = auraData[idxGroup].Blacklist
+            hFrame.TexturedIcon = auraData[idxGroup].TexturedIcon
+            hFrame.Color = auraData[idxGroup].Color
+            hFrame.Position = auraData[idxGroup].Position
+            hFrame.Priority = auraData[idxGroup].Priority
+            hFrame.OnlyShowWhitelist = auraData[idxGroup].OnlyShowWhitelist or false
+            hFrame.DisableDynamicPosition = auraData[idxGroup].DisableDynamicPosition or false
+            hFrame.DisableMouse = auraData[idxGroup].DisableMouse or false
+            hFrame.TooltipAnchor = auraData[idxGroup].TooltipAnchor or 'ANCHOR_TOPLEFT'
+            hFrame.Filter = filter
+        end
+
+        --Setup GameTooltip
         for _, f in ipairs(hFrame) do
+            if not hFrame.DisableMouse then
+                f:RegisterForClicks('RightButtonUp')
+                f.UpdateTooltip = function(self)
+                    if(GameTooltip:IsForbidden()) then return end
+
+                    GameTooltip:SetUnitAura(self:GetParent().__owner.unit, self:GetID(), hFrame.Filter)
+                end
+                f:SetScript('OnEnter', function(self)
+                    if(GameTooltip:IsForbidden() or not self:IsVisible()) then return end
+                    -- Avoid parenting GameTooltip to frames with anchoring restrictions,
+                    -- otherwise it'll inherit said restrictions which will cause issues with
+                    -- its further positioning, clamping, etc
+                    GameTooltip:SetOwner(self, self:GetParent().__restricted and 'ANCHOR_CURSOR' or hFrame.TooltipAnchor)
+                    self:UpdateTooltip()
+                end)
+                f:SetScript('OnLeave', function(_)
+                    if(GameTooltip:IsForbidden()) then return end
+
+                    GameTooltip:Hide()
+                end)
+            end
             tinsert(auraTable, f)
         end
+
+        --push our internal Methods in the metatable, if it taints, need to wrap this
+        setmetatable(hFrame, { __index = setmetatable(AuraGroupFunction, getmetatable(hFrame)) })
     end
+
+    return auraTable, filters
 end
 
-local function Enable(self, unit)
+local function Enable(self, _)
     local element = self.AuraSystem
     if element then
         element.__owner = self
+        element.__restricted = not pcall(self.GetCenter, self)
         element.AuraTable = {}
-        element.aura_data = element.aura_data or {
-            [1459] = {
-                ["FrameID"] = 1, --arcane intell
-                ["Position"] = 1,
-            },
-            [774] = {
-                ["FrameID"] = 1, --rejuv
-                ["Position"] = 1,
-                ["Color"] = { 163/255, 48/255, 201/255 },
-                ["TexturedIcon"] = true,
-            },
-            [8936] = {
-                ["FrameID"] = 1, --regrowth
-                ["Position"] = 2,
-                ["Color"] = { 0, 1, 150/255 },
-                ["TexturedIcon"] = true,
-            },
-            [188550] = {
-                ["FrameID"] = 1 ,--lifebloom
-                ["Position"] = 3,
-                ["Color"] = { 171/255, 212/255, 115/255 },
-                ["TexturedIcon"] = true,
-            },
-            [320009] = {
-                ["FrameID"] = 1, --Empowered Chrysalis
-                ["Position"] = 4,
-                ["TexturedIcon"] = true,
-            },
-            [48438] = {
-                ["FrameID"] = 2, --Wild Growth
-                ["Position"] = 1,
-                ["Color"] = { 1, 245/255, 105/255 },
-                ["TexturedIcon"] = true,
-            },
-            [344244] = {
-                ["FrameID"] = 2, --Manabound Mirror
-                ["TexturedIcon"] = true,
-                --["Position"] = 2,
-            },
-        }
-        element.ignore_data = element.ignore_data or {
-            --Heroism/Lust/Warp debuff
-            57724, --Sated
-            57723, --Sated
-            80354, --Temporal Displacement
-            95809, --Insanity
-            264689, --Fatigued
-            --Mythic Keystone debuff
-            206151, --Challenger's Burden
-        }
-
-        initAuraTable(element.AuraTable, element.AuraFrames)
+        element.AuraTable, element.Filters = init(element.AuraFrames, element.aura_data)
 
         self:RegisterEvent('UNIT_AURA', Update)
         self:RegisterEvent("PLAYER_TALENT_UPDATE", UpdateDispellPerClass, true)
