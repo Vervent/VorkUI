@@ -264,6 +264,13 @@ local AuraGroupFunction = {
         return true
     end,
 
+    HasTooltip = function(self)
+        if self.HasTooltip then
+            return self.HasTooltip
+        end
+        return false
+    end,
+
     HasAura = function(self, spellId)
         for idx, frame in ipairs(self) do
             if frame.spellId == spellId then
@@ -421,7 +428,7 @@ local function preUpdate(self)
             end
         end
 
-        if findAura == false and aura.spellId > 0 then
+        if findAura == false and (aura.spellId and aura.spellId > 0) then
             resetAura(aura)
         end
     end
@@ -528,6 +535,7 @@ local function init(auraFrames, auraData)
             hFrame.DisableDynamicPosition = auraData[idxGroup].DisableDynamicPosition or false
             hFrame.DisableMouse = auraData[idxGroup].DisableMouse or false
             hFrame.TooltipAnchor = auraData[idxGroup].TooltipAnchor or 'ANCHOR_TOPLEFT'
+            hFrame.HasTooltip = auraData[idxGroup].HasTooltip and true
             hFrame.Filter = filter
         end
 
@@ -535,24 +543,26 @@ local function init(auraFrames, auraData)
         for _, f in ipairs(hFrame) do
             if not hFrame.DisableMouse then
                 f:RegisterForClicks('RightButtonUp')
-                f.UpdateTooltip = function(self)
-                    if(GameTooltip:IsForbidden()) then return end
+                if hFrame.HasTooltip then
+                    f.UpdateTooltip = function(self)
+                        if(GameTooltip:IsForbidden()) then return end
 
-                    GameTooltip:SetUnitAura(self:GetParent().__owner.unit, self:GetID(), hFrame.Filter)
+                        GameTooltip:SetUnitAura(self:GetParent().__owner.unit, self:GetID(), hFrame.Filter)
+                    end
+                    f:SetScript('OnEnter', function(self)
+                        if(GameTooltip:IsForbidden() or not self:IsVisible()) then return end
+                        -- Avoid parenting GameTooltip to frames with anchoring restrictions,
+                        -- otherwise it'll inherit said restrictions which will cause issues with
+                        -- its further positioning, clamping, etc
+                        GameTooltip:SetOwner(self, self:GetParent().__restricted and 'ANCHOR_CURSOR' or hFrame.TooltipAnchor)
+                        self:UpdateTooltip()
+                    end)
+                    f:SetScript('OnLeave', function(_)
+                        if(GameTooltip:IsForbidden()) then return end
+
+                        GameTooltip:Hide()
+                    end)
                 end
-                f:SetScript('OnEnter', function(self)
-                    if(GameTooltip:IsForbidden() or not self:IsVisible()) then return end
-                    -- Avoid parenting GameTooltip to frames with anchoring restrictions,
-                    -- otherwise it'll inherit said restrictions which will cause issues with
-                    -- its further positioning, clamping, etc
-                    GameTooltip:SetOwner(self, self:GetParent().__restricted and 'ANCHOR_CURSOR' or hFrame.TooltipAnchor)
-                    self:UpdateTooltip()
-                end)
-                f:SetScript('OnLeave', function(_)
-                    if(GameTooltip:IsForbidden()) then return end
-
-                    GameTooltip:Hide()
-                end)
             end
             tinsert(auraTable, f)
         end
