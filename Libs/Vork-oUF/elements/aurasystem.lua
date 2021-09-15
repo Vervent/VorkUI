@@ -535,7 +535,7 @@ local function init(auraFrames, auraData)
             hFrame.DisableDynamicPosition = auraData[idxGroup].DisableDynamicPosition or false
             hFrame.DisableMouse = auraData[idxGroup].DisableMouse or false
             hFrame.TooltipAnchor = auraData[idxGroup].TooltipAnchor or 'ANCHOR_TOPLEFT'
-            hFrame.HasTooltip = auraData[idxGroup].HasTooltip and true
+            hFrame.HasTooltip = auraData[idxGroup].HasTooltip
             hFrame.Filter = filter
         end
 
@@ -543,7 +543,7 @@ local function init(auraFrames, auraData)
         for _, f in ipairs(hFrame) do
             if not hFrame.DisableMouse then
                 f:RegisterForClicks('RightButtonUp')
-                if hFrame.HasTooltip then
+                if hFrame.HasTooltip == true then
                     f.UpdateTooltip = function(self)
                         if(GameTooltip:IsForbidden()) then return end
 

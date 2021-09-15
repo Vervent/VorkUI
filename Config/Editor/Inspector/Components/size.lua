@@ -10,13 +10,21 @@ local Inspector = Editor.Inspector
 local borderSettings = Editor.border
 
 local minSize = 0
-local maxSize = 500
+local maxSize = 1000
 
 local function update(self, config)
     local widgets = LibGUI:GetWidgetsByType(self, 'editbox')
 
     widgets[1]:ChangeText( config[1] )
     widgets[2]:ChangeText( config[2] )
+
+end
+
+local function clean(self)
+    local widgets = LibGUI:GetWidgetsByType(self, 'editbox')
+
+    widgets[1]:ChangeText( '' )
+    widgets[2]:ChangeText( '' )
 
 end
 
@@ -80,4 +88,4 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     return frame
 end
 
-Inspector:RegisterComponentGUI('Size', gui, update)
+Inspector:RegisterComponentGUI('Size', gui, update, clean)

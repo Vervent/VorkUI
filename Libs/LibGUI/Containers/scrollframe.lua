@@ -28,22 +28,22 @@ local Methods = {
         end
     end,
 
-    ResizeScrollChild = function(self)
+    ResizeScrollChild = function(self, offsetY)
         local height = 0
 
         for i, c in ipairs(self.ScrollChild.Childs) do
             if c:IsShown() then
-                height = height + c:GetHeight() + 16
+                height = height + c:GetHeight() + (offsetY or 0)
             end
         end
 
         for i, c in ipairs(self.ScrollChild.Widgets) do
             if c:IsShown() then
-                height = height + c:GetHeight() + 16
+                height = height + c:GetHeight() + (offsetY or 0)
             end
         end
 
-        self.ScrollChild:SetHeight(height)
+        self.ScrollChild:SetHeight(height + 16)
     end,
 
     ShowScrollChild = function (self)

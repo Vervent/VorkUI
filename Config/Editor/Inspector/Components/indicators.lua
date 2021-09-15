@@ -63,7 +63,7 @@ end
 
 local function clean(self)
     self.config = {}
-    self.Childs[1].Clean(self.Childs[1])
+    self.Childs[1]:Clean()
 
     local dropdownWidgets = LibGUI:GetWidgetsByType(self, 'dropdownmenu')
     local indicatorChoice = dropdownWidgets[1]
