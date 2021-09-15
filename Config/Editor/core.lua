@@ -30,11 +30,33 @@ function Editor:RegisterFrame(frame, config, module, submodule)
         return
     end
 
+    local searchKey = function(t, module, submodule)
+        for i, v in ipairs(t) do
+            if v[3] == module and v[4] == submodule then
+                return i
+            end
+        end
+
+        for k, v in pairs(t) do
+            if v[3] == module and v[4] == submodule then
+                return k
+            end
+        end
+
+        return nil
+    end
+
     local name = frame:GetName()
     if name == nil then
-        tinsert(registry, { frame, config, module, submodule })
+        local registryKey = searchKey(registry, module, submodule)
+        if registryKey == nil then
+            tinsert(registry, { frame, config, module, submodule })
+        end
     else
-        registry[name] = { frame, config, module, submodule }
+        local registryKey = searchKey(registry, module, submodule)
+        if registryKey == nil then
+            registry[name] = { frame, config, module, submodule }
+        end
     end
 end
 
@@ -150,6 +172,7 @@ function Editor:CreateGUI()
     self.Inspector:CreateGUI()
     self.Hierarchy:CreateGUI()
     self.Changelist:CreateGUI()
+    self.AuraFilter:CreateGUI()
     self:Hide()
 end
 
@@ -158,12 +181,14 @@ function Editor:Enable()
     self.Inspector:Show()
     self.Hierarchy:Show()
     self.Changelist:Show()
+    self.AuraFilter:Show()
 end
 
 function Editor:Disable()
     self.Inspector:Hide()
     self.Hierarchy:Hide()
     self.Changelist:Hide()
+    self.AuraFilter:Hide()
 end
 
 Editor:HookScript('OnShow', Editor.Enable)

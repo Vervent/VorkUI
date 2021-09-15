@@ -124,6 +124,11 @@ local Methods = {
         row:SetSize(width - 8, wHeight)
     end,
 
+    SetOffset = function(self, x, y)
+        self.offsetX = x
+        self.offsetY = y
+    end,
+
     AddRow = function(self)
         local width, height = self:GetSize()
         local wHeight = 0
@@ -138,8 +143,8 @@ local Methods = {
             }
         else
             pt = {
-                {'TOPLEFT', self.Childs[nbRow-1], 'BOTTOMLEFT'},
-                {'TOPRIGHT', self.Childs[nbRow-1], 'BOTTOMRIGHT'}
+                {'TOPLEFT', self.Childs[nbRow-1], 'BOTTOMLEFT', 0, self.offsetY},
+                {'TOPRIGHT', self.Childs[nbRow-1], 'BOTTOMRIGHT', 0, self.offsetY}
             }
         end
         local row = LibGUI:NewContainer('empty', self, 'row'..nbRow, nil, pt)
@@ -158,9 +163,9 @@ local Methods = {
                 if i == 1 then
                     w = createWidget(row, v, { 'LEFT', row, 'LEFT' })
                 elseif i >= colCount then
-                    w = createWidget(row, v, { 'RIGHT', row, 'RIGHT', -4, 0 })
+                    w = createWidget(row, v, { 'RIGHT', row, 'RIGHT', - (v.offsetX or self.offsetX or 4), 0 })
                 else
-                    w = createWidget(row, v, { 'LEFT', w, 'RIGHT' })
+                    w = createWidget(row, v, { 'LEFT', w, 'RIGHT', v.offsetX or self.offsetX or 0, 0 })
                 end
 
                 h = w:GetHeight()
@@ -252,7 +257,65 @@ local Methods = {
 
     GetRows = function(self)
         return self.Childs
-    end
+    end,
+
+    GetColumns = function(self, id)
+        local result = {}
+        for _, r in ipairs(self.Childs) do
+            tinsert(result, r.Widgets[id])
+        end
+        return result
+    end,
+
+    GetColumnDatas = function(self, id)
+        local result = {}
+        local widget
+        for _, r in ipairs(self.Childs) do
+            widget = r.Widgets[id]
+            if widget.GetText then
+                tinsert(result, widget:GetText())
+            end
+        end
+        return result
+    end,
+
+    Match = function(self, columnId, pattern)
+        local result = {}
+        local widget, txt, number
+        local added = false
+        for _, r in ipairs(self.Childs) do
+            widget = r.Widgets[columnId]
+            if widget.GetText then
+                txt = widget:GetText()
+                if txt and txt:find(pattern) ~= nil then
+                    added = false
+                    number = tonumber(txt)
+                    for _, v in ipairs(result) do
+                        if v == number then
+                            added = true
+                            break
+                        end
+                    end
+                    if added == false then
+                        tinsert(result, number)
+                    end
+                end
+            end
+        end
+        return result
+    end,
+
+    Clear = function(self)
+        local rows = self:GetRows()
+        local widget
+        for _, row in ipairs(rows) do
+            for _, widget in ipairs(row.Widgets) do
+                if widget.Clear then
+                    widget:Clear()
+                end
+            end
+        end
+    end,
 }
 
 local function create(parent, name, size, point)
@@ -264,6 +327,8 @@ local function create(parent, name, size, point)
     frame.enableAllChilds = true
     frame.configuration = {}
     frame.alternateColor = true
+    frame.offsetX = 0
+    frame.offsetY = 0
 
     if point then
         if type(point) == 'table' then

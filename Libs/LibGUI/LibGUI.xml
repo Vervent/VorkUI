@@ -11,6 +11,7 @@
 	<Script file='Widgets\button.lua'/>
 	<Script file='Widgets\checkbox.lua'/>
 	<Script file='Widgets\dropdownmenu.lua'/>
+	<Script file='Widgets\dropdown.lua'/>
 	<Script file='Widgets\editbox.lua'/>
 	<Script file='Widgets\label.lua'/>
 	<Script file='Widgets\icon.lua'/>

@@ -5,6 +5,7 @@ local LibGUI = Plugin.LibGUI
 local Editor = V.Editor
 local Changelist = CreateFrame("Frame")
 local LibDiff = LibStub:GetLibrary('LibDiff')
+local LibAtlas = LibStub:GetLibrary('LibAtlas')
 
 local borderSettings = Editor.border
 local diffColor = {
@@ -39,6 +40,13 @@ local hierarchy = {
         },
         childs = {
         }
+    }
+}
+
+local previewButtonConfig = {
+    ['type'] = 'button',
+    ['name'] = 'PreviewButton',
+    ['data'] = {
     }
 }
 
@@ -79,7 +87,7 @@ local diffLabelConfig = {
     ['name'] = 'DiffLabel',
     ['data'] = {
         nil, --point
-        {310, 20}, --size
+        {290, 20}, --size
         'ARTWORK',
         'Game10Font_o1'
     }
@@ -104,10 +112,10 @@ local headerData = {
     },
     {
         ['text'] = 'Value',
-        ['width'] = 310
+        ['width'] = 290
     },
     {
-        ['text'] = 'Apply',
+        ['text'] = 'Save',
         ['width'] = 50
     },
 }
@@ -154,11 +162,27 @@ local function createSheet(self)
     sheet.attributeCount = 0
 
     --System, Module, Component, Properties, value, apply
-    sheet:SetConfiguration(labelConfig, labelConfig, labelConfig, propertyLabelConfig, diffLabelConfig, checkboxConfig)
-    sheet:SetColumnCount(6)
-    sheet:AddRows(20)
+    sheet:SetConfiguration(labelConfig, labelConfig, labelConfig, propertyLabelConfig, diffLabelConfig, checkboxConfig, previewButtonConfig)
+    sheet:SetColumnCount(7)
+    local rows = sheet:AddRows(20)
 
-    print (sheet:GetRowCount(), #sheet.Childs)
+    local previewButton
+    local texture = LibAtlas:GetPath('GlobalIcon')
+    local l, r, t, b = LibAtlas:GetTexCoord('GlobalIcon', 'ENERGY')
+    for i=1, 20 do
+        previewButton = rows[i].Widgets[7]
+        previewButton.icon = previewButton:AddTexture()
+        previewButton.icon:SetTexture(texture)
+        previewButton.icon:SetTexCoord(l, r, t, b)
+        previewButton:SetSize(19, 10)
+        previewButton:Bind('OnEnter', function(self)
+            self.icon:SetVertexColor(0.05, 0.88, 0.38, 1)
+        end)
+        previewButton:Bind('OnLeave', function(self)
+            self.icon:SetVertexColor(1, 1, 1, 1)
+        end)
+        previewButton:Hide()
+    end
 
 end
 
@@ -202,6 +226,7 @@ function Changelist:CreateGUI()
 end
 
 local function getRow(self)
+    print ("GET ROW CHANGELIST WTF")
     local scroll = self.UI.Scroll.ScrollChild
     local sheet = scroll.Childs[1]
     local attributeCount = sheet.attributeCount

@@ -11,15 +11,35 @@ local _G = _G
 
 local Load = CreateFrame("Frame")
 
+local ViragDevTool = _G['ViragDevTool']
+local function log(data, str)
+
+    if ViragDevTool then
+        ViragDevTool:ViragDevTool_AddData(data, str)
+    end
+end
+
 local function moveBlizzardFrame()
+
+    local extraAbilityContainer = _G.ExtraAbilityContainer
+    --Prevent WoW from moving the frame around
+    _G.UIPARENT_MANAGED_FRAME_POSITIONS.ExtraAbilityContainer = nil
+    extraAbilityContainer:ClearAllPoints()
+    extraAbilityContainer:SetPoint('CENTER', -400, 100)
+
+    --Move the MinimapCluster to be able to move MawBuffsBelowMinimapFrame
+    --This frame is hard positionned by Blizzard and MinimapCluster=nil causes errors
+    --in Blizzard side
+    local minimapCluster = _G.MinimapCluster
+    minimapCluster:ClearAllPoints()
+    minimapCluster:SetPoint('RIGHT', 0, 0)
+    --local mawBuffsBelowMinimapFrame = _G.MawBuffsBelowMinimapFrame
+    --mawBuffsBelowMinimapFrame:ClearAllPoints()
+    --mawBuffsBelowMinimapFrame:SetPoint('RIGHT', -50, 0)
 
     local belowMinimapContainer = _G.UIWidgetBelowMinimapContainerFrame
     belowMinimapContainer:ClearAllPoints()
     belowMinimapContainer:SetPoint("TOP", 0, -50)
-
-    local extraAbilityContainer = _G.ExtraAbilityContainer
-    extraAbilityContainer:ClearAllPoints()
-    extraAbilityContainer:SetPoint('BOTTOM', -400, 200)
 
 end
 
@@ -39,6 +59,7 @@ function Load:OnEvent(event, ...)
             V["Editor"]:CreateGUI()
         end
         V["UnitFrames"]:Enable()
+
     elseif (event == 'ADDON_LOADED') then
 
         --We want to load Medias as soon as possible

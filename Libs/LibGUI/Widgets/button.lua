@@ -26,6 +26,7 @@ local LibGUI = Plugin.LibGUI
 local Methods = {
 
     Bind = function(self, event, fct)
+        self.Scripts[event] = fct
         self:SetScript(event, fct)
     end,
 

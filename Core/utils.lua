@@ -130,7 +130,7 @@ end
 Utils.API.CreateOneBorder = function( self, side, size, color )
     local borders = self.Borders or {}
 
-    local b = self.CreateTexture(nil, 'BORDER', nil, 1)
+    local b = self:CreateTexture(nil, 'BORDER', nil, 1)
     b:SetSize(size, size)
 
     if side == 'top' then

@@ -67,16 +67,16 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     pathMenu:RegisterObserver(frame.Observer)
     --pathMenu:Update( V.Medias:GetLSMDropDown('font') )
 
-    local flag = LibGUI:NewWidget('label', frame, 'LayerLabel', { 'TOPLEFT', path, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
+    local flag = LibGUI:NewWidget('label', frame, 'FlagLabel', { 'TOPLEFT', path, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
     flag:Update( { 'OVERLAY', 'GameFontNormal','Layer' } )
-    local flagMenu = LibGUI:NewWidget('dropdownmenu', frame, 'LayerDropdown', { 'TOPLEFT', pathMenu, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
+    local flagMenu = LibGUI:NewWidget('dropdownmenu', frame, 'FlagDropdown', { 'TOPLEFT', pathMenu, 'BOTTOMLEFT', 0, -4 }, { 200, 25 }, nil, nil)
     flagMenu.key = 4
     flagMenu:RegisterObserver(frame.Observer)
     --flagMenu:Update(flags)
 
-    local size = LibGUI:NewWidget('label', frame, 'SublayerLabel', { 'TOPLEFT', flag, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
+    local size = LibGUI:NewWidget('label', frame, 'SizeLabel', { 'TOPLEFT', flag, 'BOTTOMLEFT', 0, -4 }, { 80, 30 }, nil, nil)
     size:Update( { 'OVERLAY', 'GameFontNormal','Size' } )
-    local sizeEdit = LibGUI:NewWidget('editbox', frame, 'SublayerEditbox', { 'TOPLEFT', flagMenu, 'BOTTOMLEFT', 42, -4 }, { 50, 25 }, 'NumericInputSpinnerTemplate', nil)
+    local sizeEdit = LibGUI:NewWidget('editbox', frame, 'SizeEditbox', { 'TOPLEFT', flagMenu, 'BOTTOMLEFT', 42, -4 }, { 50, 25 }, 'NumericInputSpinnerTemplate', nil)
     sizeEdit:Update( { nil, nil, nil, {minSize, maxSize} } )
     sizeEdit.key = 3
     sizeEdit:RegisterObserver(frame.Observer)

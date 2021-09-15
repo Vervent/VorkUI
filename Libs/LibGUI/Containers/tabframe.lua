@@ -62,6 +62,17 @@ local Methods = {
         return LibGUI:NewWidget(t, page, name, point, ...)
     end,
 
+    DisableHeader = function(self, btn)
+        local header = self.Childs[1]
+        btn:Disable()
+
+        for _, b in ipairs(header.Widgets) do
+            if b ~= btn then
+                b:Enable()
+            end
+        end
+    end,
+
     AddEmptyPage = function(self, pageName, buttonSize)
         local header = self.Childs[1]
         local container = self.Childs[2]
@@ -89,7 +100,8 @@ local Methods = {
         pageContent:SetAllPoints()
 
         pageHeader:Bind('OnClick',
-                function()
+                function(btn)
+                    self:DisableHeader(btn)
                     if self.currentPage then
                         self.currentPage:Hide()
                     end
@@ -100,6 +112,7 @@ local Methods = {
 
         if self.currentPage == nil then
             self.currentPage = pageContent
+            self:DisableHeader(pageHeader)
         end
 
         self:UpdateHeaderLayout()
@@ -121,7 +134,19 @@ local function create(parent, name, size, point, headerTemplate, containerTempla
     container.enableAllChilds = false
 
     if point then
-        frame:SetPoint(unpack(point))
+        if type(point) == 'table' then
+            if type(point[1]) == 'table' then
+                --tricks to manage multi pointing anchor
+                for _, p in pairs(point) do
+                    frame:SetPoint(unpack(p))
+                end
+            else
+                frame:SetPoint(unpack(point))
+            end
+
+        else
+            frame:SetAllPoints()
+        end
     end
     if size then
         local width, height = unpack(size)

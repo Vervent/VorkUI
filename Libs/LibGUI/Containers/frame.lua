@@ -23,7 +23,19 @@ local function create(parent, name, size, point, template)
     frame.enableAllChilds = true
 
     if point then
-        frame:SetPoint(unpack(point))
+        if type(point) == 'table' then
+            if type(point[1]) == 'table' then
+                --tricks to manage multi pointing anchor
+                for _, p in pairs(point) do
+                    frame:SetPoint(unpack(p))
+                end
+            else
+                frame:SetPoint(unpack(point))
+            end
+
+        else
+            frame:SetAllPoints()
+        end
     end
     if size then
         frame:SetSize(unpack(size))

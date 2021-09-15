@@ -15,6 +15,7 @@
     <Script file="Components\atlas.lua"/>
     <Script file="Components\particle.lua"/>
     <Script file="Components\backdrop.lua"/>
+    <Script file="Components\auragroup.lua"/>
 
     <!-- Load Frame component -->
     <Script file="Components\rendering.lua"/>

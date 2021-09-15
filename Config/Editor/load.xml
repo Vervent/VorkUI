@@ -5,4 +5,5 @@
     <Include file='Inspector\load.xml'/>
     <Include file='Hierarchy\load.xml'/>
     <Include file='Changelist\load.xml'/>
+    <Include file='Aurafilter\load.xml'/>
 </Ui>

@@ -108,7 +108,7 @@ Editor.menus.growDirectionX = {
 
 Editor.menus.growDirectionY = {
     { text='UP' },
-    { text='BOTTOM' },
+    { text='DOWN' },
 }
 
 Editor.menus.roleFilter = {
@@ -229,6 +229,10 @@ Editor.attributes.auras = {
 }
 Editor.attributes.buffs = Editor.attributes.auras
 Editor.attributes.debuffs = Editor.attributes.auras
+
+Editor.attributes.aurasystem = {
+
+}
 
 Editor.attributes.header = {
     --['template'] = 'string',

@@ -94,7 +94,7 @@ oUF.Tags.Methods['Vorkui:Deficit:Curhp-Max'] = function(unit)
         if deficit > 0 then
             return deficit
         else
-            return ""
+            return max
         end
     end
 
