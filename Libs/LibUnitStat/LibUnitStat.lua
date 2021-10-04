@@ -15,6 +15,7 @@
     LibUnitStat:Enable()
     LibUnitStat:Disable()
 --]]
+local LibStub = LibStub
 
 local LibUnitStat = LibStub:NewLibrary("LibUnitStat", 1)
 
@@ -22,8 +23,62 @@ if not LibUnitStat then
     return
 end
 
+local LibObserver = LibStub:GetLibrary('LibObserver')
+
+local CreateFrame = CreateFrame
+local GetCombatRating = GetCombatRating
+local GetCombatRatingBonus = GetCombatRatingBonus
+local UnitStat = UnitStat
+local UnitHealth = UnitHealth
+local UnitHealthMax = UnitHealthMax
+local UnitPowerType = UnitPowerType
+local UnitPowerMax = UnitPowerMax
+local UnitClass = UnitClass
+local GetSpecialization = GetSpecialization
+local GetAverageItemLevel = GetAverageItemLevel
+local C_PaperDollInfo = C_PaperDollInfo
+local GetUnitSpeed = GetUnitSpeed
+local GetSpellCritChance = GetSpellCritChance
+local GetRangedCritChance = GetRangedCritChance
+local GetCritChance = GetCritChance
+local GetHaste = GetHaste
+local GetMasteryEffect = GetMasteryEffect
+local GetVersatilityBonus = GetVersatilityBonus
+local GetLifesteal = GetLifesteal
+local GetAvoidance = GetAvoidance
+local GetSpeed = GetSpeed
+local UnitAttackSpeed = UnitAttackSpeed
+local IsRangedWeapon = IsRangedWeapon
+local UnitDamage = UnitDamage
+local UnitRangedDamage = UnitRangedDamage
+local GetSpellBonusDamage = GetSpellBonusDamage
+local GetSpellBonusHealing = GetSpellBonusHealing
+local UnitAttackPower = UnitAttackPower
+local UnitRangedAttackPower = UnitRangedAttackPower
+local GetMeleeHaste = GetMeleeHaste
+local GetPowerRegen = GetPowerRegen
+local GetRuneCooldown = GetRuneCooldown
+local UnitHasMana = UnitHasMana
+local GetManaRegen = GetManaRegen
+local UnitArmor = UnitArmor
+local UnitEffectiveLevel = UnitEffectiveLevel
+local GetDodgeChance = GetDodgeChance
+local GetParryChance = GetParryChance
+local GetBlockChance = GetBlockChance
+local GetShieldBlock = GetShieldBlock
+local GetSpellCooldown = GetSpellCooldown
+
+local SPEC_MONK_MISTWEAVER = SPEC_MONK_MISTWEAVER
+local MAX_SPELL_SCHOOLS = MAX_SPELL_SCHOOLS
+
+local strupper = strupper
+local floor = floor
+local unpack = unpack
 local frame = CreateFrame('Frame')
 
+---@param fct function the basic function to call to get value, coeff
+---@param ratingKey number the rating value to get combat rating and combat rating bonus
+---@return value, coeff, rating, percent
 local function getStats(fct, ratingKey)
     local value, coeff = fct()
     local rating, percent
@@ -34,24 +89,27 @@ local function getStats(fct, ratingKey)
     return value, coeff, rating, percent
 end
 
+---@param unit string the name of the unit
+---@param id number the id of the stat
+---@return stat, effectiveStat, posBuff, negBuff
 local function getPrimaryStats(unit, id)
     if (unit ~= 'player') then
-        return ;
+        return
     end
 
     return UnitStat(unit, id)
 end
 
-local stats = {}
-local StatGetter = {
+local StatMethods = {
     -- General
     ["HEALTH"] = {
         Get = function(unit)
             if (not unit) then
                 unit = 'player'
             end
-            return UnitHealthMax(unit)
-        end
+            return UnitHealth(unit), UnitHealthMax(unit)
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["POWER"] = {
         Get = function(unit)
@@ -61,7 +119,8 @@ local StatGetter = {
             local powerType, powerToken = UnitPowerType(unit)
             local power = UnitPowerMax(unit) or 0;
             return power, powerType, powerToken
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["ALTERNATE_MANA"] = {
         Get = function(unit)
@@ -70,16 +129,17 @@ local StatGetter = {
             end
             local _, class = UnitClass(unit);
             if (class ~= "DRUID" and (class ~= "MONK" or GetSpecialization() ~= SPEC_MONK_MISTWEAVER)) then
-                return ;
+                return
             end
             local powerType, powerToken = UnitPowerType(unit);
             if (powerToken == "MANA") then
-                return ;
+                return
             end
 
             local power = UnitPowerMax(unit, 0);
             return power, powerType, powerToken
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["ITEM_LEVEL"] = {
         Get = function(unit)
@@ -91,7 +151,8 @@ local StatGetter = {
             local minItemLevel = C_PaperDollInfo.GetMinItemLevel()
 
             return avgItemLevel, avgItemLevelEquipped, avgItemLevelPvP, minItemLevel
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["MOVE_SPEED"] = {
         Get = function(unit)
@@ -128,29 +189,34 @@ local StatGetter = {
             --Let the logic for the user
             return currentSpeed, runSpeed, flightSpeed, swimSpeed
 
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
 
     -- Base stats
     ["STRENGTH"] = {
         Get = function(unit)
             return getPrimaryStats(unit, 1)
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["AGILITY"] = {
         Get = function(unit)
             return getPrimaryStats(unit, 2)
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["INTELLECT"] = {
         Get = function(unit)
             return getPrimaryStats(unit, 4)
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["STAMINA"] = {
         Get = function(unit)
             return getPrimaryStats(unit, 3)
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
 
     -- Enhancements
@@ -171,39 +237,67 @@ local StatGetter = {
             return meleeCrit, GetCombatRating(9), GetCombatRatingBonus(9),
             rangedCrit, GetCombatRating(10), GetCombatRatingBonus(10),
             unpack(spellCrit), GetCombatRating(11), GetCombatRatingBonus(11)
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["HASTE"] = {
-        Get = getStats(GetHaste, 18),
+        Get = function()
+            return getStats(GetHaste, 18)
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["MASTERY"] = {
-        Get = getStats(GetMasteryEffect, 26),
+        Get = function()
+            return getStats(GetMasteryEffect, 26)
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["VERSATILITY"] = {
         Get = function()
-            local versatility = GetCombatRating(28);
-            local outcomeRatingBonus = GetCombatRating(28)
-            local outcomeVersaBonus = GetVersatilityBonus(28)
-            local incomeRatingBonus = GetCombatRating(29)
-            local incomeVersaBonus = GetVersatilityBonus(29)
+            local versatility = GetCombatRating(29);
+            local outcomeRatingBonus = GetCombatRatingBonus(29)
+            local outcomeVersaBonus = GetVersatilityBonus(29)
+            local incomeRatingBonus = GetCombatRatingBonus(31)
+            local incomeVersaBonus = GetVersatilityBonus(31)
+
             return versatility, outcomeRatingBonus, outcomeVersaBonus, incomeRatingBonus, incomeVersaBonus
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["LIFESTEAL"] = {
-        Get = getStats(GetLifesteal, 17),
+        Get = function()
+            return getStats(GetLifesteal, 17)
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["AVOIDANCE"] = {
-        Get = getStats(GetAvoidance, 21),
+        Get = function()
+            return getStats(GetAvoidance, 21)
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["SPEED"] = {
-        Get = getStats(GetSpeed, 14)
+        Get = function()
+            return getStats(GetSpeed, 14)
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
 
     -- Attack
     ["ATTACK_DAMAGE"] = {
         Get = function(unit)
             local _, offhandSpeed = UnitAttackSpeed(unit)
-            local minDamage, maxDamage, minOffHandDamage, maxOffHandDamage, physicalBonusPos, physicalBonusNeg, percent = GetAppropriateDamage(unit)
+            local minDamage, maxDamage, minOffHandDamage, maxOffHandDamage, physicalBonusPos, physicalBonusNeg, percent
+
+            if IsRangedWeapon() then
+                _, minDamage, maxDamage, _, _, percent = UnitRangedDamage(unit)
+                minOffHandDamage = nil
+                maxOffHandDamage = nil
+                physicalBonusPos = 0
+                physicalBonusNeg = 0
+            else
+                minDamage, maxDamage, minOffHandDamage, maxOffHandDamage, physicalBonusPos, physicalBonusNeg, percent = UnitDamage(unit);
+            end
 
             -- calculate base damage
             minDamage = (minDamage / percent) - physicalBonusPos - physicalBonusNeg
@@ -220,12 +314,14 @@ local StatGetter = {
                 local offhandBaseDamage = (minOffHandDamage + maxOffHandDamage) * 0.5
                 local offhandFullDamage = (offhandBaseDamage + physicalBonusPos + physicalBonusNeg) * percent
 
-                return baseDamage, fullDamage, offhandBaseDamage, offhandFullDamage
+                return minDamage, maxDamage, minOffHandDamage, maxOffHandDamage,
+                baseDamage, fullDamage, offhandBaseDamage, offhandFullDamage, percent
             end
 
-            return baseDamage, fullDamage
+            return minDamage, maxDamage, baseDamage, fullDamage, percent
 
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["SPELL_POWER"] = {
         Get = function(_, school)
@@ -245,14 +341,16 @@ local StatGetter = {
             spellPower[MAX_SPELL_SCHOOLS] = GetSpellBonusHealing()
 
             return unpack(spellPower)
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["ATTACK_POWER"] = {
         Get = function(unit)
             local base, posBuff, negBuff = UnitAttackPower(unit)
 
             return base, posBuff, negBuff
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["RANGED_ATTACK_POWER"] = {
         Get = function(unit)
@@ -262,18 +360,20 @@ local StatGetter = {
             local base, posBuff, negBuff = UnitRangedAttackPower(unit);
 
             return base, posBuff, negBuff
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
-    ["ATTACK_ATTACKSPEED"] = {
+    ["ATTACK_SPEED"] = {
         Get = function(unit)
             local meleeHaste = GetMeleeHaste();
             local speed, offhandSpeed = UnitAttackSpeed(unit);
-           return meleeHaste, speed, offhandSpeed
-        end
+            return meleeHaste, speed, offhandSpeed
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["ENERGY_REGEN"] = {
         Get = function(unit)
-            if ( unit ~= 'player' ) then
+            if (unit ~= 'player') then
                 return
             end
 
@@ -284,11 +384,12 @@ local StatGetter = {
 
             local regenRate = GetPowerRegen();
             return regenRate
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["RUNE_REGEN"] = {
         Get = function(unit)
-            if ( unit ~= 'player' ) then
+            if (unit ~= 'player') then
                 return
             end
 
@@ -300,33 +401,35 @@ local StatGetter = {
             local _, regenRate = GetRuneCooldown(1) -- Assuming they are all the same for now
 
             return regenRate
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["FOCUS_REGEN"] = {
         Get = function(unit)
-            if ( unit ~= 'player' ) then
-                return;
+            if (unit ~= 'player') then
+                return ;
             end
 
             local _, powerToken = UnitPowerType(unit)
             if (powerToken ~= "FOCUS") then
-                return;
+                return ;
             end
 
             local regenRate = GetPowerRegen()
 
             return regenRate
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
 
     -- Spell
     ["MANA_REGEN"] = {
         Get = function(unit)
-            if ( unit ~= 'player' ) then
+            if (unit ~= 'player') then
                 return
             end
 
-            if ( not UnitHasMana(unit) ) then
+            if (not UnitHasMana(unit)) then
                 return
             end
 
@@ -336,7 +439,8 @@ local StatGetter = {
             combat = floor(combat * 5.0);
 
             return base, combat
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
 
     -- Defense
@@ -344,31 +448,34 @@ local StatGetter = {
         Get = function(unit)
             local baselineArmor, effectiveArmor, armor, bonusArmor = UnitArmor(unit)
 
-            local armorReduction = C_PaperDollInfo.GetArmorEffectiveness(effectiveArmor, UnitEffectiveLevel(unit))*100
-            local armorReductionAgainstTarget = (C_PaperDollInfo.GetArmorEffectivenessAgainstTarget(effectiveArmor) or 0)*100
+            local armorReduction = C_PaperDollInfo.GetArmorEffectiveness(effectiveArmor, UnitEffectiveLevel(unit)) * 100
+            local armorReductionAgainstTarget = (C_PaperDollInfo.GetArmorEffectivenessAgainstTarget(effectiveArmor) or 0) * 100
 
             return baselineArmor, effectiveArmor, armor, bonusArmor, armorReduction, armorReductionAgainstTarget
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["DODGE"] = {
         Get = function(unit)
             if (unit ~= 'player') then
-                return;
+                return ;
             end
 
             local chance = GetDodgeChance()
             return chance
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["PARRY"] = {
         Get = function(unit)
             if (unit ~= 'player') then
-                return;
+                return ;
             end
 
             local chance = GetParryChance();
             return chance
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["BLOCK"] = {
         Get = function(unit)
@@ -378,19 +485,28 @@ local StatGetter = {
 
             local chance = GetBlockChance()
             local shieldBlockArmor = GetShieldBlock()
-            local blockArmorReduction = C_PaperDollInfo.GetArmorEffectiveness(shieldBlockArmor, UnitEffectiveLevel(unit))*100
-            local blockArmorReductionAgainstTarget = (C_PaperDollInfo.GetArmorEffectivenessAgainstTarget(shieldBlockArmor) or 0)*100
+            local blockArmorReduction = C_PaperDollInfo.GetArmorEffectiveness(shieldBlockArmor, UnitEffectiveLevel(unit)) * 100
+            local blockArmorReductionAgainstTarget = (C_PaperDollInfo.GetArmorEffectivenessAgainstTarget(shieldBlockArmor) or 0) * 100
 
             return chance, shieldBlockArmor, blockArmorReduction, blockArmorReductionAgainstTarget
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
     ["STAGGER"] = {
         Get = function(unit)
             local stagger, staggerAgainstTarget = C_PaperDollInfo.GetStaggerPercentage(unit);
 
             return stagger, staggerAgainstTarget
-        end
+        end,
+        Subject = LibObserver:CreateSubject(),
     },
+    ['GLOBAL_COOLDOWN'] = {
+        Get = function()
+            local _, gcd = GetSpellCooldown(61304)
+            return gcd
+        end,
+        Subject = LibObserver:CreateSubject(),
+    }
 }
 
 --
@@ -425,6 +541,7 @@ local unitEvents = {
     'UNIT_ATTACK_SPEED',
     'UNIT_MAXHEALTH',
     'UNIT_AURA',
+    'UNIT_HEALTH',
 }
 
 local StatObserved = {}
@@ -467,10 +584,51 @@ function LibUnitStat:ClearStats()
     wipe(StatObserved)
 end
 
-local function onEvent(_, unit,...)
+local function updateStat(unit, stat)
+    StatObserved[stat] = { StatMethods[stat].Get(unit or 'player') }
+    StatMethods[stat].Subject:Notify({ 'OnUpdate', stat })
+end
 
-    for stat, v in pairs(StatObserved) do
-        v = { StatGetter[stat].Get(unit or 'player') }
+local function onEvent(_, event, unit, ...)
+
+    if event == 'MASTERY_UPDATE' then
+        updateStat(unit, 'MASTERY')
+    elseif event == 'UNIT_SPELL_HASTE' then
+        updateStat(unit, 'HASTE')
+    elseif event == 'SPEED_UPDATE' then
+        updateStat(unit, 'SPEED')
+    elseif event == 'LIFESTEAL_UPDATE' then
+        updateStat(unit, 'LIFESTEAL')
+    elseif event == 'AVOIDANCE_UPDATE' then
+        updateStat(unit, 'AVOIDANCE')
+    elseif event == 'SPELL_POWER_CHANGED' then
+        updateStat(unit, 'SPELL_POWER')
+    elseif event == 'UNIT_MAXHEALTH' or event == 'UNIT_HEALTH' then
+        updateStat(unit, 'HEALTH')
+    elseif event == 'UNIT_RANGEDDAMAGE' then
+        updateStat(unit, 'ATTACK_DAMAGE')
+    elseif event == 'UNIT_ATTACK_POWER' then
+        updateStat(unit, 'ATTACK_POWER')
+    elseif event == 'UNIT_RANGED_ATTACK_POWER' then
+        updateStat(unit, 'RANGED_ATTACK_POWER')
+    elseif event == 'UNIT_ATTACK_SPEED' then
+        updateStat(unit, 'ATTACK_SPEED')
+    elseif event == 'COMBAT_RATING_UPDATE' then
+        updateStat(unit, 'MASTERY')
+        updateStat(unit, 'HASTE')
+        updateStat(unit, 'CRIT_CHANCE')
+        updateStat(unit, 'VERSATILITY')
+        updateStat(unit, 'LIFESTEAL')
+        updateStat(unit, 'AVOIDANCE')
+        updateStat(unit, 'SPEED')
+    else
+        for stat, _ in pairs(StatObserved) do
+            updateStat(unit, stat)
+            --StatObserved[stat] = { StatMethods[stat].Get(unit or 'player') }
+            --if StatMethods[stat].Subject then
+            --StatMethods[stat].Subject:Notify({'OnUpdate', stat})
+            --end
+        end
     end
 
 end
@@ -494,17 +652,27 @@ function LibUnitStat:Disable()
     frame:UnregisterAllEvents()
 end
 
+function LibUnitStat:RegisterObserver(statName, entity)
+    local s = strupper(statName)
+
+    if StatMethods[s].Subject then
+        StatMethods[s].Subject:RegisterObserver(entity)
+    end
+end
+
 ---@param statName string the statistic to get
 ---@return number[]|nil may return multiples values or nil
-function LibUnitStat:GetStat( statName )
-    if (not statName) or (not stats[statName]) then
+function LibUnitStat:GetStat(statName)
+    local s = strupper(statName)
+
+    if (not s) or (not StatObserved[s]) then
         return
     end
 
-    return stats[statName]
+    return StatObserved[s]
 end
 
 ---@return table<string, number[]> return an array of value for every stat
 function LibUnitStat:GetAllStats()
-    return stats
+    return StatObserved
 end
