@@ -59,6 +59,7 @@ function Load:OnEvent(event, ...)
             V["Editor"]:CreateGUI()
         end
         V["UnitFrames"]:Enable()
+        V['DataFrames']:Enable()
 
     elseif (event == 'ADDON_LOADED') then
 

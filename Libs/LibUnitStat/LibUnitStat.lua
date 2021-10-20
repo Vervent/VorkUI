@@ -587,6 +587,7 @@ end
 local function updateStat(unit, stat)
     StatObserved[stat] = { StatMethods[stat].Get(unit or 'player') }
     StatMethods[stat].Subject:Notify({ 'OnUpdate', stat })
+
 end
 
 local function onEvent(_, event, unit, ...)

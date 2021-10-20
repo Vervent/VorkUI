@@ -1,0 +1,19 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="core.lua"/>
+
+    <!-- Elements -->
+    <Script file="Elements\health.lua"/>
+    <Script file="Elements\primary.lua"/>
+    <Script file="Elements\secondary.lua"/>
+    <Script file="Elements\time.lua"/>
+    <Script file="Elements\money.lua"/>
+    <Script file="Elements\armor.lua"/>
+    <Script file="Elements\dodge.lua"/>
+    <Script file="Elements\parry.lua"/>
+    <Script file="Elements\block.lua"/>
+    <Script file="Elements\durability.lua"/>
+    <Script file="Elements\item_level.lua"/>
+    <Script file="Elements\micromenu.lua"/>
+    <Script file="Elements\vault.lua"/>
+    <Script file="Elements\bag.lua"/>
+</Ui>

@@ -1,4 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="UnitFrames\core.lua"/>
 	<Script file="UnitFrames\auratracking.lua"/>
+
+	<Script file="DebugFrames\core.lua"/>
+
+	<Include file="DataFrames\load.xml"/>
 </Ui>
