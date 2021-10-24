@@ -1,11 +1,7 @@
 local select = select
-local V, C, L = select(2, ...):unpack()
-local AddOn, Plugin = ...
+local V = select(2, ...):unpack()
 
 local DataFrames = V["DataFrames"]
-local Medias = V["Medias"]
-local LibAtlas = Medias:GetLibAtlas()
-local DebugFrames = V['DebugFrames']
 
 local floor = floor
 local format = format
@@ -23,12 +19,6 @@ local colors = {
     [2] = select(4, GetClassColor('ROGUE') ),
     [3] = select(4, GetClassColor('MONK') ),
 }
-
-local function formatQty(qty)
-    local color = colors[qty]
-
-    return format('|c%s%d|r', color, qty)
-end
 
 local function update(self, event, ...)
     local level
