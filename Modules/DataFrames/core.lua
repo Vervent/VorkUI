@@ -9,8 +9,16 @@ local LibSlant = LibStub:GetLibrary("LibSlant")
 local LibUnitStat = LibStub:GetLibrary('LibUnitStat')
 local LibObserver = LibStub:GetLibrary('LibObserver')
 
-local class = UnitClass('player')
-local r, g, b = GetClassColor(strupper(class))
+local pairs = pairs
+local ipairs = ipairs
+local unpack = unpack
+local max = max
+local CreateFrame = CreateFrame
+local UnitClass = UnitClass
+local GetClassColor = GetClassColor
+
+local _, classFilename = UnitClass('player')
+local r, g, b = GetClassColor(classFilename)
 
 DataFrames.LibUnitStat = LibUnitStat
 DataFrames.Frames = {}
@@ -85,10 +93,14 @@ local frames = {
         ['Size'] = { 100, 30 },
     },
     --{
-    --    ['Point'] = { 'CENTER', 0, -50 },
-    --    ['Count'] = 9,
+    --    ['Point'] = { 'TOP', 0, -30 },
+    --    ['Count'] = 1,
     --    ['Distribution'] = 'RIGHT',
-    --    ['Size'] = { 100, 30 },
+    --    ['Size'] = { 200, 30 },
+    --    ['HasBorder'] = false,
+    --    ['StatusBarClassColor'] = true,
+    --    ['BorderClassColor'] = true,
+    --    ['Spacing'] = { 0, 0 },
     --},
     ['Stats'] = {
         ['health'] = { 2, 1, true, true, false, true },
@@ -127,6 +139,7 @@ local frames = {
         ['legendary'] = { 1, 11, true, true, false, false },
         ['equipmentset'] = { 1, 15, true, true, false, false },
         ['primary'] = { 2, 4, true, true, false, true, true },
+        --['xp'] = { 3, 1, true, true, true, true, true },
     },
 }
 
@@ -229,13 +242,6 @@ local function createDataFrames(conf)
     for i = 1, conf.Count do
         data = CreateFrame('Button', 'Data' .. i, frame)
 
-        --data.bg = data:CreateTexture('BACKGROUND')
-        --data.bg:SetAllPoints()
-        --data.bg:SetColorTexture(0,0,0,0.66)
-
-        --Debug
-        --data.border = data:CreateBorder(1, {1,1,1})
-
         if conf.Size then
             data:SetSize(w, h)
         end
@@ -334,12 +340,11 @@ local function enableData(self)
         end
 
         if hasStatusBar == true then
-            createStatusBar(element)
+            createStatusBar(element, frames[frameId].StatusBarClassColor)
         end
 
         if hasText == true then
             createText(element)
-            --element.Text:SetPoint('RIGHT')
         end
 
         if hasTooltip == true then

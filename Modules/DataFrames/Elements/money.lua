@@ -23,7 +23,7 @@ local function formatQTY(money)
     elseif gold > 9999 then
         return format('%.2fk|T%s:0:1|t%.0f|T%s:0:1|t', gold / 1000, goldIcon, silver, silverIcon)
     else
-        return format('%f|T%s:0:1|t%.0f|T%s:0:1|t%.0f|T%s:0:1|t', gold, goldIcon, silver, silverIcon, copper, copperIcon)
+        return format('%.f|T%s:0:1|t%.0f|T%s:0:1|t%.0f|T%s:0:1|t', gold, goldIcon, silver, silverIcon, copper, copperIcon)
     end
 end
 

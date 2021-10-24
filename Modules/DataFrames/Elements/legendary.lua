@@ -38,15 +38,17 @@ local function update(self, event, ...)
     for _, it in ipairs(item) do
         id = GetInventorySlotInfo(it)
         location = Item:CreateFromEquipmentSlot(id):GetItemLocation()
-        check = C_LegendaryCrafting.IsRuneforgeLegendary(location)
-        if check == true then
-            powerID = C_LegendaryCrafting.GetRuneforgeLegendaryComponentInfo(location).powerID
-            runeforgePowerInfo = C_LegendaryCrafting.GetRuneforgePowerInfo(powerID)
-            spellID = runeforgePowerInfo.descriptionSpellID
-            local name, _, icon = GetSpellInfo(spellID)
-            self.Text:SetText(format('%.8s', name))
-            self.Icon:SetTexture(icon)
-            return
+        if location:IsValid() == true then
+            check = C_LegendaryCrafting.IsRuneforgeLegendary(location)
+            if check == true then
+                powerID = C_LegendaryCrafting.GetRuneforgeLegendaryComponentInfo(location).powerID
+                runeforgePowerInfo = C_LegendaryCrafting.GetRuneforgePowerInfo(powerID)
+                spellID = runeforgePowerInfo.descriptionSpellID
+                local name, _, icon = GetSpellInfo(spellID)
+                self.Text:SetText(format('%.8s', name))
+                self.Icon:SetTexture(icon)
+                return
+            end
         end
     end
 

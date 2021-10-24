@@ -14,6 +14,7 @@ local GetSpecializationInfo = GetSpecializationInfo
 local MAX_TALENT_TIERS = MAX_TALENT_TIERS
 local NUM_TALENT_COLUMNS = NUM_TALENT_COLUMNS
 local GetTalentInfoBySpecialization = GetTalentInfoBySpecialization
+local format = format
 
 local function update(self, event)
 
