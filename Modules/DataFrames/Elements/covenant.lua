@@ -53,6 +53,10 @@ local function updateSoulbind(self)
     local maxRenown = C_CovenantSanctumUI.HasMaximumRenown()
     local soulbindData = C_Soulbinds.GetSoulbindData(soulbindID)
 
+    if soulbindData.name == '' then
+        soulbindData.name = 'UNKNOWN'
+    end
+
     if maxRenown then
         self.Text:SetText(format('|c%s%s|r - %.11s', maxRenownColor, level, soulbindData.name:match('%a+')))
     else

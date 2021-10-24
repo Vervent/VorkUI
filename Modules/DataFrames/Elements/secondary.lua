@@ -101,15 +101,12 @@ local function update(self, event)
 end
 
 local function enable(self)
-    self:SetSize(30, 30)
-    self.Icon:SetTexture(iconPath[self.stat])
-    self.Icon:SetDesaturated(true)
-    --local path = LibAtlas:GetPath('GlobalIcon')
-    --self.Icon:SetTexture(path)
-    --self.Icon:SetTexCoord(LibAtlas:GetTexCoord('GlobalIcon', iconCoord[self.stat]))
-    self.Icon:SetPoint('LEFT')
-    --self.Icon:SetVertexColor(1, 0, 0)
+    self:SetSize(100, 30)
 
+    self.Icon:SetSize(25, 25)
+    self.Icon:SetTexture(iconPath[self.stat])
+    --self.Icon:SetDesaturated(true)
+    self.Icon:SetPoint('LEFT', 1, 0)
 
     if self.Text then
         self.Text:SetPoint('TOPLEFT', self.Icon, 'TOPRIGHT', 2, 0)
@@ -120,7 +117,6 @@ local function enable(self)
         self.StatusBar:SetOrientation('HORIZONTAL')
         self.StatusBar:SetPoint('BOTTOMLEFT', self.Icon, 'BOTTOMRIGHT', 2, 0)
         self.StatusBar:SetPoint('RIGHT', self, 'RIGHT')
-        --self.StatusBar:SetHeight(self:GetHeight() - self.Icon:GetHeight() - 20)
         self.StatusBar:SetHeight(self:GetHeight() * 0.2)
         self.StatusBar:SetMinMaxValues(0, 100)
     end

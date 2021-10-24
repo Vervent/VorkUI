@@ -21,17 +21,11 @@ local function update(self, event)
 end
 
 local function enable(self)
-    self:SetSize(30, 30)
-    --local path = LibAtlas:GetPath('GlobalIcon')
-    --self.Icon:SetTexture(path)
-    --self.Icon:SetTexCoord(LibAtlas:GetTexCoord('GlobalIcon', 'HEALTH'))
-    self.Icon:SetTexture([[Interface\AddOns\VorkUI\Medias\Icons\Statusbar\PetBattle_Health]])
-    --self.Icon:SetDesaturated(true)
-
-    --self.Icon:SetTexture('interface/icons/ability_parry')
-    --self.Icon:SetTexture('interface/icons/ability_defend')
-    --self.Icon:SetDesaturated(true)
-    self.Icon:SetPoint('LEFT')
+    self:SetSize(100, 30)
+    self.Icon:SetSize(25, 25)
+    self.Icon:SetPoint('LEFT', 1, 0)
+    --self.Icon:SetTexture([[Interface\AddOns\VorkUI\Medias\Icons\Statusbar\PetBattle_Health]])
+    self.Icon:SetTexture([[interface/icons/petbattle_health]])
 
     self.Text:SetPoint('LEFT', self.Icon, 'RIGHT')
     self.Text:SetJustifyH('LEFT')

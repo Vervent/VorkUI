@@ -62,19 +62,28 @@ local stats = {
 
 local frames = {
     {
-        ['Point'] = { 'TOP', 0, 0 },
+        ['Point'] = {
+            { 'TOP' },
+            { 'LEFT' },
+            { 'RIGHT' },
+        },
         ['Count'] = 15,
         ['Distribution'] = 'CENTER',
         ['Spacing'] = { 10, 0 },
-        --['Size'] = { 125, 30 },
+        ['HasBorder'] = true,
+        ['BorderClassColor'] = true,
+        ['Size'] = { 125, 30 },
     },
-    --{
-    --    ['Point'] = { 'TOPLEFT', 50, -50 },
-    --    ['Count'] = 16,
-    --    ['Distribution'] = 'BOTTOM',
-    --    ['Spacing'] = { 0, -5 },
-    --    --['Size'] = { 100, 25 },
-    --},
+    {
+        ['Point'] = { 'TOPLEFT', 0, -30 },
+        ['Count'] = 11,
+        ['Distribution'] = 'BOTTOM',
+        ['Spacing'] = { 0, -5 },
+        ['HasBorder'] = false,
+        ['StatusBarClassColor'] = true,
+        ['BorderClassColor'] = true,
+        ['Size'] = { 100, 30 },
+    },
     --{
     --    ['Point'] = { 'CENTER', 0, -50 },
     --    ['Count'] = 9,
@@ -82,46 +91,42 @@ local frames = {
     --    ['Size'] = { 100, 30 },
     --},
     ['Stats'] = {
-        --['stamina'] = { 1, 6, true, true, false },
-        --['health'] = { 1, 4, true, true, false },
-        --['intellect'] = { 1, 5, true, true, false },
-        ----['agility'] = { 1, 7, true, true, false },
-        --['strength'] = { 1, 8, true, true, false },
-        --['mastery'] = { 2, 1, true, true, true },
-        --['haste'] = { 2, 2, true, true, true },
-        --['crit_chance'] = { 2, 3, true, true, true },
-        --['versatility'] = { 2, 4, true, true, true },
-        --['lifesteal'] = { 2, 5, true, true, true },
-        --['speed'] = { 2, 6, true, true, true },
-        --['avoidance'] = { 2, 7, true, true, true },
-        --['armor'] = { 2, 8, true, true, true },
-        --['dodge'] = { 2, 9, true, true, true },
-        --['parry'] = { 2, 10, true, true, true },
-        --['block'] = { 2, 11, true, true, true },
-        --['attack_speed'] = { 2, 12, true, true, true },
-        --['power'] = { 2, 13, true, true, true },
-        --['attack_power'] = { 2, 14, true, true, false },
-        --['spell_power'] = { 2, 15, true, true, false },
-        ['item_level'] = {1, 13, true, true, false, false},
-        --['NAME'] = { frameId, itemId, hasIcon, hasText, HasStatusBar, hasTooltip
+        ['health'] = { 2, 1, true, true, false, true },
+        ['stamina'] = { 2, 2, true, true, false, true },
+        ['power'] = { 2, 3, true, true, true, true },
+        --['spell_power'] = { 2, 5, true, true, false },
+        ['mastery'] = { 2, 5, true, true, true, true },
+        ['haste'] = { 2, 6, true, true, true, true },
+        ['crit_chance'] = { 2, 7, true, true, true, true },
+        ['versatility'] = { 2, 8, true, true, true, true },
+        ['lifesteal'] = { 2, 9, true, true, true, true },
+        ['speed'] = { 2, 10, true, true, true, true },
+        ['avoidance'] = { 2, 11, true, true, true, true },
+        --['armor'] = { 2, 12, true, true, true },
+        --['dodge'] = { 2, 13, true, true, true },
+        --['parry'] = { 2, 14, true, true, true },
+        --['block'] = { 2, 15, true, true, true },
+        --['attack_speed'] = { 2, 16, true, true, true },
+        --['attack_power'] = { 2, 18, true, true, false },
+        ['item_level'] = { 1, 13, true, true, false, false },
+        --['NAME'] = { frameId, itemId, hasIcon, hasText, HasStatusBar, hasTooltip, hasBorder
     },
     ['Datas'] = {
-        ['framerate'] = {1, 1, true, true, false, true},
-        ['ping'] = {1, 2, true, true, false, true},
-        ['money'] = {1, 4, false, true, false, true},
-        ['currencies'] = {1, 6},
-        ['bag'] = {1, 8, true, true, false, true},
-        ['vault'] = {1, 10, true, true, false, true},
-        ['micromenu'] = {1, 12},
-        ['professions'] = {1, 14, true, true, false, false},
-
-        ['time'] = {1, 3, true, true, false, true},
-        ['durability'] = {1, 5, true, true, false, true},
-        ['covenant'] = {1, 7, true, true, false, false},
-        ['specialization'] = {1, 9, true, true, false, false},
-        ['legendary'] = {1, 11, true, true, false, false},
-        ['equipmentset'] = {1, 15, true, true, false, false},
-
+        ['framerate'] = { 1, 1, true, true, false, true },
+        ['ping'] = { 1, 2, true, true, false, true },
+        ['money'] = { 1, 4, false, true, false, true },
+        ['currencies'] = { 1, 6 },
+        ['bag'] = { 1, 8, true, true, false, true },
+        ['vault'] = { 1, 10, true, true, false, true },
+        ['micromenu'] = { 1, 12 },
+        ['professions'] = { 1, 14, true, true, false, false },
+        ['time'] = { 1, 3, true, true, false, true },
+        ['durability'] = { 1, 5, true, true, false, true },
+        ['covenant'] = { 1, 7, true, true, false, false },
+        ['specialization'] = { 1, 9, true, true, false, false },
+        ['legendary'] = { 1, 11, true, true, false, false },
+        ['equipmentset'] = { 1, 15, true, true, false, false },
+        ['primary'] = { 2, 4, true, true, false, true, true },
     },
 }
 
@@ -147,10 +152,14 @@ local function getPoint(direction, oldOffset)
     end
 end
 
-local function createStatusBar(self)
+local function createStatusBar(self, isClassColored)
 
     local statusBar = CreateFrame('StatusBar', nil, self)
     statusBar:SetStatusBarTexture(Medias:GetStatusBar('VorkuiDefault'))
+
+    if isClassColored then
+        statusBar:SetStatusBarColor(r, g, b)
+    end
 
     statusBar.bg = statusBar:CreateTexture(nil, "BACKGROUND")
     statusBar.bg:SetTexture(Medias:GetStatusBar('VorkuiBackground'))
@@ -169,10 +178,10 @@ end
 
 local function createIcon(self)
     local icon = self:CreateTexture(nil, 'OVERLAY')
-    local w, h = self:GetSize()
-    h = min(h, w)
-    h = min(h, 30) - 4
-    icon:SetSize(h, h)
+    --local w, h = self:GetSize()
+    --h = min(h, w)
+    --h = min(h, 30) - 4
+    --icon:SetSize(h, h)
     self.Icon = icon
 end
 
@@ -193,18 +202,26 @@ local function createDataFrames(conf)
 
     if conf.Size then
         w, h = unpack(conf.Size)
-        frame:SetSize(w * conf.Count, h)
+        if conf.Distribution == 'LEFT' or conf.Distribution == 'RIGHT' or conf.Distribution == 'CENTER' then
+            frame:SetSize((w + (max(conf.Spacing[1], -conf.Spacing[1]) or 0)) * conf.Count, h)
+        else
+            frame:SetSize(w, (h + (max(conf.Spacing[2], -conf.Spacing[2]) or 0)) * conf.Count)
+        end
     end
 
     --frame:SetSize(frame:GetParent():GetWidth(), 40)
-    frame:SetPoint('LEFT')
-    frame:SetPoint('RIGHT')
-    frame:SetHeight(30)
-    frame.bg = frame:CreateTexture('BACKGROUND')
+    --frame:SetHeight(30)
+    frame.bg = frame:CreateTexture(nil, 'BACKGROUND')
     frame.bg:SetAllPoints()
     frame.bg:SetColorTexture(0, 0, 0, 0.5)
 
-    frame:CreateOneBorder('bottom', 1, {r, g, b})
+    if conf.HasBorder == true then
+        if conf.BorderClassColor == true then
+            frame:CreateOneBorder('bottom', 1, { r, g, b })
+        else
+            frame:CreateOneBorder('bottom', 1, { 1, 1, 1 })
+        end
+    end
 
     local offsetX, offsetY = unpack(conf.Spacing or { 0, 0 })
 
@@ -257,11 +274,15 @@ local function createDataFrames(conf)
 end
 
 local function enableStat(self)
+
     local element
-    local frameId, itemId, hasIcon, hasText, hasStatusBar, hasTooltip
+    local frameId, itemId, hasIcon, hasText, hasStatusBar, hasTooltip, hasBorder
     for k, idxTable in pairs(frames.Stats) do
+
+        --print (k)
+        frameId, itemId, hasIcon, hasText, hasStatusBar, hasBorder = unpack(idxTable)
+
         LibUnitStat:AddStat(k)
-        frameId, itemId, hasIcon, hasText, hasStatusBar = unpack(idxTable)
         element = self.Frames[frameId].elements[itemId]
         element:SetStat(k)
 
@@ -271,7 +292,7 @@ local function enableStat(self)
         end
 
         if hasStatusBar == true then
-            createStatusBar(element)
+            createStatusBar(element, frames[frameId].StatusBarClassColor)
         end
 
         if hasText == true then
@@ -281,6 +302,14 @@ local function enableStat(self)
 
         if hasTooltip == true then
             --AddTooltip
+        end
+
+        if hasBorder == true then
+            if frames[frameId].BorderClassColor == true then
+                element:CreateOneBorder('bottom', 1, { r, g, b })
+            else
+                element:CreateOneBorder('bottom', 1, { 1, 1, 1 })
+            end
         end
 
         LibUnitStat:RegisterObserver(k, element.Observer)
@@ -293,9 +322,9 @@ end
 
 local function enableData(self)
     local element
-    local frameId, itemId, hasIcon, hasText, hasStatusBar, hasTooltip
+    local frameId, itemId, hasIcon, hasText, hasStatusBar, hasTooltip, hasBorder
     for k, idxTable in pairs(frames.Datas) do
-        frameId, itemId, hasIcon, hasText, hasStatusBar = unpack(idxTable)
+        frameId, itemId, hasIcon, hasText, hasStatusBar, hasTooltip, hasBorder = unpack(idxTable)
         element = self.Frames[frameId].elements[itemId]
         element:SetStat(k)
 
@@ -315,6 +344,14 @@ local function enableData(self)
 
         if hasTooltip == true then
             --AddTooltip
+        end
+
+        if hasBorder == true then
+            if frames[frameId].BorderClassColor == true then
+                element:CreateOneBorder('bottom', 1, { r, g, b })
+            else
+                element:CreateOneBorder('bottom', 1, { 1, 1, 1 })
+            end
         end
 
         if elements[k] then

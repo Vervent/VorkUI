@@ -25,12 +25,11 @@ local function update(self, event)
 end
 
 local function enable(self)
-    self:SetSize(30, 30)
-    --self.Icon:SetTexture('interface/icons/ability_parry')
-    --self.Icon:SetTexture('interface/icons/ability_defend')
+    self:SetSize(100, 30)
+    self.Icon:SetSize(25, 25)
+    self.Icon:SetPoint('LEFT', 1, 0)
     self.Icon:SetTexture([[INTERFACE\ICONS\ABILITY_PARRY]])
-    self.Icon:SetDesaturated(true)
-    self.Icon:SetPoint('LEFT')
+    --self.Icon:SetDesaturated(true)
 
     if self.Text then
         self.Text:SetPoint('TOPLEFT', self.Icon, 'TOPRIGHT', 2, 0)

@@ -29,8 +29,8 @@ local item = {
     'Trinket1Slot',
     'BackSlot',
     'MainHandSlot',
-    'RangedSlot',
-    'SecondaryHandSlot'
+    --'RangedSlot',
+    --'SecondaryHandSlot'
 }
 
 local function update(self, event, ...)

@@ -30,9 +30,11 @@ local function enable(self)
 
     --self.Icon:SetTexture('interface/icons/ability_parry')
     --self.Icon:SetTexture('interface/icons/ability_defend')
+    self:SetSize(100, 30)
+    self.Icon:SetSize(25, 25)
     self.Icon:SetTexture([[INTERFACE\ICONS\INV_SHIELD_06]])
-    self.Icon:SetDesaturated(true)
-    self.Icon:SetPoint('LEFT')
+    --self.Icon:SetDesaturated(true)
+    self.Icon:SetPoint('LEFT', 1, 0)
 
     if self.Text then
         self.Text:SetPoint('TOPLEFT', self.Icon, 'TOPRIGHT', 2, 0)
@@ -46,8 +48,6 @@ local function enable(self)
         self.StatusBar:SetHeight(self:GetHeight() * 0.2)
         self.StatusBar:SetMinMaxValues(0, 100)
     end
-
-    self:SetSize(30, 30)
 
     self.Observer.OnNotify = function(...)
         update(self, ...)
