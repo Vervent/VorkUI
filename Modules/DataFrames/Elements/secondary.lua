@@ -101,7 +101,7 @@ local function update(self, event)
 end
 
 local function enable(self)
-
+    self:SetSize(30, 30)
     self.Icon:SetTexture(iconPath[self.stat])
     self.Icon:SetDesaturated(true)
     --local path = LibAtlas:GetPath('GlobalIcon')

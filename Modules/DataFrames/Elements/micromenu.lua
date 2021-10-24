@@ -20,11 +20,11 @@ local function click(btn, frameName)
     local frame = _G[frameName]
     if frame:IsShown() then
         HideUIPanel(frame)
-        btn.Icon:SetDesaturated(true)
+        btn.Icon:SetDesaturated(false)
         --currentSelection = nil
     else
         ShowUIPanel(frame)
-        btn.Icon:SetDesaturated(false)
+        btn.Icon:SetDesaturated(true)
         --currentSelection = btn
     end
 end
@@ -87,9 +87,9 @@ local menus = {
             local frame = _G['PVEFrame']
             if frame:IsShown() then
                 HideUIPanel(frame)
-                btn.Icon:SetDesaturated(true)
-            else
                 btn.Icon:SetDesaturated(false)
+            else
+                btn.Icon:SetDesaturated(true)
                 PVEFrame_ShowFrame()
             end
         end
@@ -120,14 +120,14 @@ local menus = {
         Name = 'StoreFrame',
         OnClick = function(btn)
             if StoreFrame_IsShown() then
-                btn.Icon:SetDesaturated(true)
+                btn.Icon:SetDesaturated(false)
                 StoreFrame_SetShown(false)
             else
-                btn.Icon:SetDesaturated(false)
+                btn.Icon:SetDesaturated(true)
                 StoreFrame_SetShown(true)
                 btn:SetScript('OnUpdate', function()
                     if not StoreFrame_IsShown() then
-                        btn.Icon:SetDesaturated(true)
+                        btn.Icon:SetDesaturated(false)
                         btn:SetScript('OnUpdate', nil)
                     end
                 end)
@@ -148,6 +148,7 @@ local function update(self, event)
 end
 
 local function enable(self)
+    self:SetSize(313, 30)
 
     UIParentLoadAddOn("Blizzard_Communities")
     UIParentLoadAddOn("Blizzard_Collections")
@@ -162,9 +163,9 @@ local function enable(self)
         local btn
         for i, item in ipairs(menus) do
             btn = CreateFrame('Button', 'MicroMenuButton'..item.Name, self)
-            btn:SetSize(25,25)
+            btn:SetSize(25, 25)
             if i == 1 then
-                btn:SetPoint('LEFT', self)
+                btn:SetPoint('LEFT', self, 'LEFT', 1, 0)
             else
                 btn:SetPoint('LEFT', self.Buttons[i-1], 'RIGHT', 1, 0)
             end
@@ -172,7 +173,7 @@ local function enable(self)
             btn.Icon = btn:CreateTexture('OVERLAY')
             btn.Icon:SetAllPoints()
             btn.Icon:SetTexture(item.Path)
-            btn.Icon:SetDesaturated(true)
+            btn.Icon:SetDesaturated(false)
 
             btn:SetID(i)
 
@@ -180,7 +181,7 @@ local function enable(self)
             btn:SetScript('OnClick', item.OnClick)
             if i < #menus then
                 _G[item.Name]:HookScript('OnHide', function()
-                    self.Buttons[i].Icon:SetDesaturated(true)
+                    self.Buttons[i].Icon:SetDesaturated(false)
                 end)
             end
 

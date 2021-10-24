@@ -25,7 +25,7 @@ local function update(self, event)
 end
 
 local function enable(self)
-
+    self:SetSize(30, 30)
     --self.Icon:SetTexture('interface/icons/ability_parry')
     --self.Icon:SetTexture('interface/icons/ability_defend')
     self.Icon:SetTexture([[INTERFACE\ICONS\ABILITY_PARRY]])

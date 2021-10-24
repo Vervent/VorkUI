@@ -1,3 +1,4 @@
+local select = select
 local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 
@@ -7,6 +8,7 @@ local LibAtlas = Medias:GetLibAtlas()
 local DebugFrames = V['DebugFrames']
 
 local format = format
+local floor = floor
 local BACKPACK_CONTAINER = BACKPACK_CONTAINER
 local NUM_BAG_SLOTS = NUM_BAG_SLOTS
 local GetContainerNumFreeSlots = GetContainerNumFreeSlots
@@ -14,6 +16,14 @@ local GetContainerNumSlots = GetContainerNumSlots
 local IsBagOpen = IsBagOpen
 local CloseAllBags = CloseAllBags
 local ToggleAllBags = ToggleAllBags
+local GetClassColor = GetClassColor
+
+local colors = {
+    [0] = { GetClassColor('MONK') },
+    [1] = { GetClassColor('ROGUE') },
+    [2] = { GetClassColor('DRUID') },
+    [3] = { GetClassColor('DEATHKNIGHT') },
+}
 
 local function update(self, event)
 
@@ -25,23 +35,24 @@ local function update(self, event)
         max = max + GetContainerNumSlots(i)
     end
 
-    if totalFree == max then
-        self.Text:SetTextColor(1, 0, 0)
-    else
-        self.Text:SetTextColor(1, 1, 1)
-    end
+    local ratio = 1-totalFree/max
+    local colorIdx = floor(ratio / 0.25)
+    local color = colors[colorIdx]
 
+    self.Text:SetTextColor(color[1], color[2], color[3])
     self.Text:SetText(format('%d/%d',totalFree, max))
 
 end
 
 local function enable(self)
+    self:SetSize(80, 30)
+    self.Icon:SetSize(25, 25)
 
     self.Icon:SetTexture([[INTERFACE\ICONS\ACHIEVEMENT_GUILDPERK_BOUNTIFULBAGS]])
     self.Icon:SetDesaturated(true)
-    self.Icon:SetPoint('LEFT')
+    self.Icon:SetPoint('LEFT', 1, 0)
 
-    self.Text:SetPoint('LEFT', self.Icon, 'RIGHT')
+    self.Text:SetPoint('LEFT', self.Icon, 'RIGHT', 1, 0)
 
     self:RegisterForClicks('AnyUp')
     self:SetScript('OnClick', function(btn)

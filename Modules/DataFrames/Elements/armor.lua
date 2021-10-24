@@ -47,6 +47,8 @@ local function enable(self)
         self.StatusBar:SetMinMaxValues(0, 100)
     end
 
+    self:SetSize(30, 30)
+
     self.Observer.OnNotify = function(...)
         update(self, ...)
     end

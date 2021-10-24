@@ -7,19 +7,26 @@ local LibAtlas = Medias:GetLibAtlas()
 local DebugFrames = V['DebugFrames']
 
 local unpack = unpack
-local BreakUpLargeNumbers = BreakUpLargeNumbers
+local format = format
 
 local function update(self, event)
 
     local _, stat = unpack(event)
-    local percent, shieldBlockArmor, blockArmorReduction, blockArmorReductionAgainstTarget = unpack(DataFrames.LibUnitStat:GetStat(stat))
+    local meleehaste, speed, ohspeed = unpack(DataFrames.LibUnitStat:GetStat(stat))
 
-    if self.Text then
-        self.Text:SetText(BreakUpLargeNumbers(percent or 0))
-    end
+    if speed > 0 then
+        if self.Text then
+            if ohspeed then
+                self.Text:SetText(format('%.2f | %.2f', speed, ohspeed))
+            else
+                self.Text:SetText(format('%.2f', speed))
+            end
 
-    if self.StatusBar then
-        self.StatusBar:SetValue(percent or 0)
+        end
+
+        if self.StatusBar then
+            self.StatusBar:SetValue(meleehaste or 0)
+        end
     end
 
 end
@@ -28,7 +35,7 @@ local function enable(self)
     self:SetSize(30, 30)
     --self.Icon:SetTexture('interface/icons/ability_parry')
     --self.Icon:SetTexture('interface/icons/ability_defend')
-    self.Icon:SetTexture([[INTERFACE\ICONS\ABILITY_DEFEND]])
+    self.Icon:SetTexture([[INTERFACE\ICONS\ABILITY_ROGUE_ROLLTHEBONES02]])
     self.Icon:SetDesaturated(true)
     self.Icon:SetPoint('LEFT')
 
@@ -54,4 +61,4 @@ local function disable(self)
     self.Observer.OnNotify = nil
 end
 
-DataFrames:RegisterElement('block', enable, disable, update)
+DataFrames:RegisterElement('attack_speed', enable, disable, update)

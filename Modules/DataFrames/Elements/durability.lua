@@ -71,18 +71,20 @@ local function update(self, event, ...)
 end
 
 local function enable(self)
+    self:SetSize(66, 30)
+    self.Icon:SetSize(25,25)
 
     self.Icon:SetTexture([[INTERFACE\ICONS\TRADE_BLACKSMITHING]])
     self.Icon:SetDesaturated(true)
-    self.Icon:SetPoint('LEFT')
+    self.Icon:SetPoint('LEFT', 1, 0)
 
-    self.Text:SetPoint('LEFT', self.Icon, 'RIGHT')
+    self.Text:SetPoint('LEFT', self.Icon, 'RIGHT', 1, 0)
 
     self:RegisterEvent('PLAYER_ENTERING_WORLD')
     self:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
     self:RegisterEvent('UPDATE_INVENTORY_ALERTS')
     self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
-    --self:RegisterEvent('PLAYER_MONEY')
+    self:RegisterEvent('MERCHANT_UPDATE')
     self:SetScript('OnEvent', update)
 end
 
@@ -91,7 +93,7 @@ local function disable(self)
     self:UnregisterEvent('UPDATE_INVENTORY_ALERTS')
     self:UnregisterEvent('UPDATE_INVENTORY_DURABILITY')
     self:UnregisterEvent('PLAYER_EQUIPMENT_CHANGED')
-    --self:UnregisterEvent('PLAYER_MONEY')
+    self:UnregisterEvent('MERCHANT_UPDATE')
 end
 
 DataFrames:RegisterElement('durability', enable, disable, update)

@@ -12,7 +12,14 @@ local BreakUpLargeNumbers = BreakUpLargeNumbers
 local function update(self, event)
 
     local _, stat = unpack(event)
-    local _, max = unpack(DataFrames.LibUnitStat:GetStat(stat))
+    local arrayPower = DataFrames.LibUnitStat:GetStat(stat)
+
+    local max = 0
+    for _, spell in ipairs(arrayPower) do
+        if spell > max then
+            max = spell
+        end
+    end
 
     if self.Text then
         self.Text:SetText(BreakUpLargeNumbers(max))
@@ -22,20 +29,17 @@ end
 
 local function enable(self)
     self:SetSize(30, 30)
-    --local path = LibAtlas:GetPath('GlobalIcon')
-    --self.Icon:SetTexture(path)
-    --self.Icon:SetTexCoord(LibAtlas:GetTexCoord('GlobalIcon', 'HEALTH'))
-    self.Icon:SetTexture([[Interface\AddOns\VorkUI\Medias\Icons\Statusbar\PetBattle_Health]])
-    --self.Icon:SetDesaturated(true)
-
     --self.Icon:SetTexture('interface/icons/ability_parry')
     --self.Icon:SetTexture('interface/icons/ability_defend')
-    --self.Icon:SetDesaturated(true)
+    self.Icon:SetTexture([[INTERFACE\ICONS\achievement_reputation_kirintor_offensive]])
+    self.Icon:SetDesaturated(true)
     self.Icon:SetPoint('LEFT')
 
-    self.Text:SetPoint('LEFT', self.Icon, 'RIGHT')
-    self.Text:SetJustifyH('LEFT')
-    --self.Icon:SetVertexColor(1, 0, 0)
+    if self.Text then
+        self.Text:SetPoint('TOPLEFT', self.Icon, 'TOPRIGHT', 2, 0)
+        self.Text:SetJustifyH('LEFT')
+    end
+
     self.Observer.OnNotify = function(...)
         update(self, ...)
     end
@@ -45,4 +49,4 @@ local function disable(self)
     self.Observer.OnNotify = nil
 end
 
-DataFrames:RegisterElement('health', enable, disable, update)
+DataFrames:RegisterElement('spell_power', enable, disable, update)

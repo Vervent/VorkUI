@@ -35,6 +35,7 @@ local function update(self, event)
 end
 
 local function enable(self)
+    self:SetSize(30, 30)
     --local path = LibAtlas:GetPath('GlobalIcon')
     --self.Icon:SetTexture(path)
     --self.Icon:SetTexCoord(LibAtlas:GetTexCoord('GlobalIcon', iconCoord[self.stat]))

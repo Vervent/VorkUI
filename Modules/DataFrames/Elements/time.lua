@@ -52,14 +52,18 @@ end
 
 local function enable(self)
 
+    self:SetSize(90, 30)
     if self.Icon then
+        self.Icon:SetSize(25,25)
         self.Icon:SetTexture([[INTERFACE\ICONS\SPELL_HOLY_BORROWEDTIME]])
-        self.Icon:SetDesaturated(true)
-        self.Icon:SetPoint('LEFT')
+        --self.Icon:SetDesaturated(true)
+        self.Icon:SetPoint('LEFT', 1, 0)
+        self.Text:SetPoint('LEFT', self.Icon, 'RIGHT', 1, 0)
+    else
+        self.Text:SetPoint('CENTER')
     end
 
-    self.Text:SetPoint('CENTER')
-    self.Text:SetFontObject('Number15Font')
+    self.Text:SetFontObject(Medias:GetFont('Montserrat Bold Italic14'))
     self:SetScript('OnUpdate', update)
 end
 

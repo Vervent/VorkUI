@@ -8,9 +8,8 @@ local DebugFrames = V['DebugFrames']
 
 local ipairs = ipairs
 local tinsert = tinsert
-local format = format
+local unpack = unpack
 local GetInventorySlotInfo = GetInventorySlotInfo
-local GetInventoryItemDurability = GetInventoryItemDurability
 local BreakUpLargeNumbers = BreakUpLargeNumbers
 
 local item = {
@@ -49,12 +48,13 @@ local function update(self, event, ...)
 end
 
 local function enable(self)
-
+    self:SetSize(66, 30)
+    self.Icon:SetSize(25, 25)
     self.Icon:SetTexture([[INTERFACE\ICONS\GARRISON_BLUEARMORUPGRADE]])
-    self.Icon:SetDesaturated(true)
-    self.Icon:SetPoint('LEFT')
+    --self.Icon:SetDesaturated(true)
+    self.Icon:SetPoint('LEFT', 1, 0)
 
-    self.Text:SetPoint('LEFT', self.Icon, 'RIGHT')
+    self.Text:SetPoint('LEFT', self.Icon, 'RIGHT', 1, 0)
 
     self.Observer.OnNotify = function(...)
         update(self, ...)

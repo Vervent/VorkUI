@@ -9,6 +9,9 @@ local LibSlant = LibStub:GetLibrary("LibSlant")
 local LibUnitStat = LibStub:GetLibrary('LibUnitStat')
 local LibObserver = LibStub:GetLibrary('LibObserver')
 
+local class = UnitClass('player')
+local r, g, b = GetClassColor(strupper(class))
+
 DataFrames.LibUnitStat = LibUnitStat
 DataFrames.Frames = {}
 
@@ -59,18 +62,19 @@ local stats = {
 
 local frames = {
     {
-        ['Point'] = { 'TOP'},
-        ['Count'] = 11,
-        ['Distribution'] = 'RIGHT',
-        ['Size'] = { 125, 30 },
+        ['Point'] = { 'TOP', 0, 0 },
+        ['Count'] = 15,
+        ['Distribution'] = 'CENTER',
+        ['Spacing'] = { 10, 0 },
+        --['Size'] = { 125, 30 },
     },
-    {
-        ['Point'] = { 'TOPLEFT', 50, -50 },
-        ['Count'] = 11,
-        ['Distribution'] = 'BOTTOM',
-        ['Spacing'] = { 0, -5 },
-        ['Size'] = { 100, 25 },
-    },
+    --{
+    --    ['Point'] = { 'TOPLEFT', 50, -50 },
+    --    ['Count'] = 16,
+    --    ['Distribution'] = 'BOTTOM',
+    --    ['Spacing'] = { 0, -5 },
+    --    --['Size'] = { 100, 25 },
+    --},
     --{
     --    ['Point'] = { 'CENTER', 0, -50 },
     --    ['Count'] = 9,
@@ -78,32 +82,46 @@ local frames = {
     --    ['Size'] = { 100, 30 },
     --},
     ['Stats'] = {
-        ['stamina'] = { 1, 6, true, true, false },
-        ['health'] = { 1, 4, true, true, false },
-        ['intellect'] = { 1, 5, true, true, false },
-        --['agility'] = { 1, 7, true, true, false },
-        ['strength'] = { 1, 8, true, true, false },
-        ['mastery'] = { 2, 1, true, true, true },
-        ['haste'] = { 2, 2, true, true, true },
-        ['crit_chance'] = { 2, 3, true, true, true },
-        ['versatility'] = { 2, 4, true, true, true },
-        ['lifesteal'] = { 2, 5, true, true, true },
-        ['speed'] = { 2, 6, true, true, true },
-        ['avoidance'] = { 2, 7, true, true, true },
-        ['armor'] = { 2, 8, true, true, true },
-        ['dodge'] = { 2, 9, true, true, true },
-        ['parry'] = { 2, 10, true, true, true },
-        ['block'] = { 2, 11, true, true, true },
-        ['item_level'] = {1, 7, true, true, false, false},
+        --['stamina'] = { 1, 6, true, true, false },
+        --['health'] = { 1, 4, true, true, false },
+        --['intellect'] = { 1, 5, true, true, false },
+        ----['agility'] = { 1, 7, true, true, false },
+        --['strength'] = { 1, 8, true, true, false },
+        --['mastery'] = { 2, 1, true, true, true },
+        --['haste'] = { 2, 2, true, true, true },
+        --['crit_chance'] = { 2, 3, true, true, true },
+        --['versatility'] = { 2, 4, true, true, true },
+        --['lifesteal'] = { 2, 5, true, true, true },
+        --['speed'] = { 2, 6, true, true, true },
+        --['avoidance'] = { 2, 7, true, true, true },
+        --['armor'] = { 2, 8, true, true, true },
+        --['dodge'] = { 2, 9, true, true, true },
+        --['parry'] = { 2, 10, true, true, true },
+        --['block'] = { 2, 11, true, true, true },
+        --['attack_speed'] = { 2, 12, true, true, true },
+        --['power'] = { 2, 13, true, true, true },
+        --['attack_power'] = { 2, 14, true, true, false },
+        --['spell_power'] = { 2, 15, true, true, false },
+        ['item_level'] = {1, 13, true, true, false, false},
         --['NAME'] = { frameId, itemId, hasIcon, hasText, HasStatusBar, hasTooltip
     },
     ['Datas'] = {
-        ['time'] = {1, 1, false, true, false, true},
-        ['money'] = {1, 2, true, true, false, true},
-        ['durability'] = {1, 3, true, true, false, true},
-        ['micromenu'] = {1, 11},
+        ['framerate'] = {1, 1, true, true, false, true},
+        ['ping'] = {1, 2, true, true, false, true},
+        ['money'] = {1, 4, false, true, false, true},
+        ['currencies'] = {1, 6},
+        ['bag'] = {1, 8, true, true, false, true},
         ['vault'] = {1, 10, true, true, false, true},
-        ['bag'] = {1, 9, true, true, false, true},
+        ['micromenu'] = {1, 12},
+        ['professions'] = {1, 14, true, true, false, false},
+
+        ['time'] = {1, 3, true, true, false, true},
+        ['durability'] = {1, 5, true, true, false, true},
+        ['covenant'] = {1, 7, true, true, false, false},
+        ['specialization'] = {1, 9, true, true, false, false},
+        ['legendary'] = {1, 11, true, true, false, false},
+        ['equipmentset'] = {1, 15, true, true, false, false},
+
     },
 }
 
@@ -142,7 +160,7 @@ local function createStatusBar(self)
 end
 
 local function createText(self)
-    local txt = self:CreateFontString(nil, 'OVERLAY', 'Number12Font_o1')
+    local txt = self:CreateFontString(nil, 'OVERLAY', 'NumberFont_OutlineThick_Mono_Small')
     local h = self:GetHeight() - 4
     local w = self:GetWidth() - 4
 
@@ -162,7 +180,13 @@ local function createDataFrames(conf)
     local frame = CreateFrame('Frame', 'VorkuiDataFrames', UIParent)
     frame.elements = {}
     if conf.Point then
-        frame:SetPoint(unpack(conf.Point))
+        if type(conf.Point[1]) == 'table' then
+            for _, p in ipairs(conf.Point) do
+                frame:SetPoint(unpack(p))
+            end
+        else
+            frame:SetPoint(unpack(conf.Point))
+        end
     end
 
     local w, h
@@ -172,15 +196,28 @@ local function createDataFrames(conf)
         frame:SetSize(w * conf.Count, h)
     end
 
+    --frame:SetSize(frame:GetParent():GetWidth(), 40)
+    frame:SetPoint('LEFT')
+    frame:SetPoint('RIGHT')
+    frame:SetHeight(30)
+    frame.bg = frame:CreateTexture('BACKGROUND')
+    frame.bg:SetAllPoints()
+    frame.bg:SetColorTexture(0, 0, 0, 0.5)
+
+    frame:CreateOneBorder('bottom', 1, {r, g, b})
+
     local offsetX, offsetY = unpack(conf.Spacing or { 0, 0 })
 
     local data, offset, anchorPoint, relativeTo
     for i = 1, conf.Count do
         data = CreateFrame('Button', 'Data' .. i, frame)
 
-        data.bg = data:CreateTexture('BACKGROUND')
-        data.bg:SetAllPoints()
-        data.bg:SetColorTexture(0,0,0,0.66)
+        --data.bg = data:CreateTexture('BACKGROUND')
+        --data.bg:SetAllPoints()
+        --data.bg:SetColorTexture(0,0,0,0.66)
+
+        --Debug
+        --data.border = data:CreateBorder(1, {1,1,1})
 
         if conf.Size then
             data:SetSize(w, h)
@@ -195,7 +232,7 @@ local function createDataFrames(conf)
             elseif conf.Distribution == 'TOP' then
                 data:SetPoint('BOTTOMLEFT')
             else
-                data:SetPoint('CENTER')
+                data:SetPoint('TOP')
             end
         else
             offset, anchorPoint, relativeTo = getPoint(conf.Distribution, offset)

@@ -16,4 +16,18 @@
     <Script file="Elements\micromenu.lua"/>
     <Script file="Elements\vault.lua"/>
     <Script file="Elements\bag.lua"/>
+    <Script file="Elements\ping.lua"/>
+    <Script file="Elements\framerate.lua"/>
+    <Script file="Elements\attack_speed.lua"/>
+    <Script file="Elements\power.lua"/>
+    <Script file="Elements\attack_power.lua"/>
+    <Script file="Elements\spell_power.lua"/>
+    <Script file="Elements\anima.lua"/>
+    <Script file="Elements\currencies.lua"/>
+    <Script file="Elements\professions.lua"/>
+    <Script file="Elements\specialization.lua"/>
+    <Script file="Elements\covenant.lua"/>
+    <Script file="Elements\legendary.lua"/>
+    <Script file="Elements\equipmentset.lua"/>
+
 </Ui>

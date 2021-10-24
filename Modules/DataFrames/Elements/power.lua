@@ -12,14 +12,14 @@ local BreakUpLargeNumbers = BreakUpLargeNumbers
 local function update(self, event)
 
     local _, stat = unpack(event)
-    local percent, shieldBlockArmor, blockArmorReduction, blockArmorReductionAgainstTarget = unpack(DataFrames.LibUnitStat:GetStat(stat))
+    local power, max = unpack(DataFrames.LibUnitStat:GetStat(stat))
 
     if self.Text then
-        self.Text:SetText(BreakUpLargeNumbers(percent or 0))
+        self.Text:SetText(BreakUpLargeNumbers(power))
     end
 
     if self.StatusBar then
-        self.StatusBar:SetValue(percent or 0)
+        self.StatusBar:SetValue(power/max or 0)
     end
 
 end
@@ -28,7 +28,7 @@ local function enable(self)
     self:SetSize(30, 30)
     --self.Icon:SetTexture('interface/icons/ability_parry')
     --self.Icon:SetTexture('interface/icons/ability_defend')
-    self.Icon:SetTexture([[INTERFACE\ICONS\ABILITY_DEFEND]])
+    self.Icon:SetTexture([[INTERFACE\ICONS\SPELL_PRIEST_POWER WORD]])
     self.Icon:SetDesaturated(true)
     self.Icon:SetPoint('LEFT')
 
@@ -42,7 +42,7 @@ local function enable(self)
         self.StatusBar:SetPoint('BOTTOMLEFT', self.Icon, 'BOTTOMRIGHT', 2, 0)
         self.StatusBar:SetPoint('RIGHT', self, 'RIGHT')
         self.StatusBar:SetHeight(self:GetHeight() * 0.2)
-        self.StatusBar:SetMinMaxValues(0, 100)
+        self.StatusBar:SetMinMaxValues(0, 1)
     end
 
     self.Observer.OnNotify = function(...)
@@ -54,4 +54,4 @@ local function disable(self)
     self.Observer.OnNotify = nil
 end
 
-DataFrames:RegisterElement('block', enable, disable, update)
+DataFrames:RegisterElement('power', enable, disable, update)
