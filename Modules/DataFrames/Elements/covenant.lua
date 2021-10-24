@@ -17,6 +17,9 @@ local C_Covenants = C_Covenants
 local C_Soulbinds = C_Soulbinds
 local C_CovenantSanctumUI = C_CovenantSanctumUI
 local GetClassColor = GetClassColor
+local HideUIPanel = HideUIPanel
+local GarrisonLandingPage_Toggle = GarrisonLandingPage_Toggle
+local UIParentLoadAddOn = UIParentLoadAddOn
 
 local conversionTable = {
     [1] = 276, --Niya
@@ -102,6 +105,9 @@ local function update(self, event)
 end
 
 local function enable(self)
+
+    UIParentLoadAddOn('Blizzard_GarrisonUI')
+
     self:SetSize(468, 30)
     --self.Icon:SetTexture([[INTERFACE\ICONS\ACHIEVEMENT_GUILDPERK_BOUNTIFULBAGS]])
     self.Icon:SetSize(25,25)
@@ -135,6 +141,22 @@ local function enable(self)
     self:RegisterEvent('SOULBIND_PATH_CHANGED')
     self:RegisterEvent('SOULBIND_NODE_UPDATED')
     self:SetScript('OnEvent', update)
+
+    self:RegisterForClicks('AnyUp')
+    self:SetScript('OnClick', function(btn)
+        local frame = _G['GarrisonLandingPage']
+        if frame:IsShown() then
+            HideUIPanel(frame)
+            btn.Icon:SetDesaturated(false)
+        else
+            GarrisonLandingPage_Toggle()
+            btn.Icon:SetDesaturated(true)
+        end
+    end)
+
+    _G['GarrisonLandingPage']:HookScript('OnHide', function()
+        self.Icon:SetDesaturated(false)
+    end)
 end
 
 local function disable(self)

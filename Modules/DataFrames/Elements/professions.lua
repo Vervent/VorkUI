@@ -14,6 +14,8 @@ local tinsert = tinsert
 local CreateFrame = CreateFrame
 local GetProfessions = GetProfessions
 local GetProfessionInfo = GetProfessionInfo
+local C_TradeSkillUI = C_TradeSkillUI
+local UIParentLoadAddOn = UIParentLoadAddOn
 
 local function update(self, event)
 
@@ -29,7 +31,7 @@ local function update(self, event)
 end
 
 local function createProfButton(self, prof)
-    local name, icon = GetProfessionInfo(prof)
+    local name, icon, _,_,_,_, profID = GetProfessionInfo(prof)
     local btn = CreateFrame('Button', 'Profession' .. name, self)
     btn:SetSize(110, 30)
     if #self.Buttons == 0 then
@@ -50,10 +52,29 @@ local function createProfButton(self, prof)
     btn.Text:SetText(format('%s', name))
 
     btn:SetID(prof)
+    btn.profID = profID
+
+    btn:RegisterForClicks('AnyUp')
+    btn:SetScript('OnClick', function(b)
+        local frame = _G['TradeSkillFrame']
+        if frame:IsShown() then
+            C_TradeSkillUI.CloseTradeSkill()
+            b.Icon:SetDesaturated(false)
+        else
+            C_TradeSkillUI.OpenTradeSkill(b.profID)
+            b.Icon:SetDesaturated(true)
+        end
+    end)
+
+    _G['TradeSkillFrame']:HookScript('OnHide', function()
+        btn.Icon:SetDesaturated(false)
+    end)
+
     tinsert(self.Buttons, btn)
 end
 
 local function enable(self)
+    UIParentLoadAddOn("Blizzard_TradeSkillUI")
     local prof1, prof2 = GetProfessions()
 
     local idx = 0

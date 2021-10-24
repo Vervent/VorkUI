@@ -15,6 +15,9 @@ local MAX_TALENT_TIERS = MAX_TALENT_TIERS
 local NUM_TALENT_COLUMNS = NUM_TALENT_COLUMNS
 local GetTalentInfoBySpecialization = GetTalentInfoBySpecialization
 local format = format
+local HideUIPanel = HideUIPanel
+local ShowUIPanel = ShowUIPanel
+local UIParentLoadAddOn = UIParentLoadAddOn
 
 local function update(self, event)
 
@@ -36,6 +39,9 @@ local function update(self, event)
 end
 
 local function enable(self)
+
+    UIParentLoadAddOn("Blizzard_TalentUI")
+
     self:SetSize(244, 30)
     --self.Icon:SetTexture([[INTERFACE\ICONS\ACHIEVEMENT_GUILDPERK_BOUNTIFULBAGS]])
     --self.Icon:SetDesaturated(true)
@@ -67,6 +73,22 @@ local function enable(self)
     self:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
     self:RegisterEvent('PLAYER_TALENT_UPDATE')
     self:SetScript('OnEvent', update)
+
+    self:RegisterForClicks('AnyUp')
+    self:SetScript('OnClick', function(btn)
+        local frame = _G['PlayerTalentFrame']
+        if frame:IsShown() then
+            HideUIPanel(frame)
+            btn.Icon:SetDesaturated(false)
+        else
+            ShowUIPanel(frame)
+            btn.Icon:SetDesaturated(true)
+        end
+    end)
+
+    _G['PlayerTalentFrame']:HookScript('OnHide', function()
+        self.Icon:SetDesaturated(false)
+    end)
 end
 
 local function disable(self)

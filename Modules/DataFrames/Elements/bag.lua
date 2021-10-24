@@ -49,7 +49,7 @@ local function enable(self)
     self.Icon:SetSize(25, 25)
 
     self.Icon:SetTexture([[INTERFACE\ICONS\ACHIEVEMENT_GUILDPERK_BOUNTIFULBAGS]])
-    self.Icon:SetDesaturated(true)
+    --self.Icon:SetDesaturated(false)
     self.Icon:SetPoint('LEFT', 1, 0)
 
     self.Text:SetPoint('LEFT', self.Icon, 'RIGHT', 1, 0)
