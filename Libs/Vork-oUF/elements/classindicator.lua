@@ -24,11 +24,15 @@ A default texture will be applied if the widget is a Texture and doesn't have a 
 
 local _, ns = ...
 local oUF = ns.oUF
+local select = select
+local UnitClass = UnitClass
+local UnitName = UnitName
+local unpack = unpack
 
 local function Update(self, event, unit)
 
     local element = self.ClassIndicator
-    local class = select(2,UnitClass(unit))
+    local class = select(2, UnitClass(unit))
     local name = UnitName(unit)
 
     --[[ Callback: RestingIndicator:PreUpdate()

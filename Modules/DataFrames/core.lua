@@ -92,16 +92,16 @@ local frames = {
         ['BorderClassColor'] = true,
         ['Size'] = { 100, 30 },
     },
-    --{
-    --    ['Point'] = { 'TOP', 0, -30 },
-    --    ['Count'] = 1,
-    --    ['Distribution'] = 'RIGHT',
-    --    ['Size'] = { 200, 30 },
-    --    ['HasBorder'] = false,
-    --    ['StatusBarClassColor'] = true,
-    --    ['BorderClassColor'] = true,
-    --    ['Spacing'] = { 0, 0 },
-    --},
+    {
+        ['Point'] = { 'TOP', 0, -30 },
+        ['Count'] = 1,
+        ['Distribution'] = 'RIGHT',
+        ['Size'] = { 260, 30 },
+        ['HasBorder'] = false,
+        ['StatusBarClassColor'] = true,
+        ['BorderClassColor'] = true,
+        ['Spacing'] = { 0, 0 },
+    },
     ['Stats'] = {
         ['health'] = { 2, 1, true, true, false, true },
         ['stamina'] = { 2, 2, true, true, false, true },
@@ -139,7 +139,7 @@ local frames = {
         ['legendary'] = { 1, 11, true, true, false, false },
         ['equipmentset'] = { 1, 15, true, true, false, false },
         ['primary'] = { 2, 4, true, true, false, true, true },
-        --['xp'] = { 3, 1, true, true, true, true, true },
+        ['xp'] = { 3, 1, true, true, true, true, true },
     },
 }
 

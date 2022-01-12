@@ -23,6 +23,7 @@ local colors = {
     [1] = { GetClassColor('ROGUE') },
     [2] = { GetClassColor('DRUID') },
     [3] = { GetClassColor('DEATHKNIGHT') },
+    [4] = { GetClassColor('DEATHKNIGHT') },
 }
 
 local function update(self, event)

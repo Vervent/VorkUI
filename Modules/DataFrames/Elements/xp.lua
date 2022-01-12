@@ -42,7 +42,14 @@ local function update(self, event, ...)
         local colorIdx =  floor(ratio / 0.25)
         local color = colors[colorIdx]
 
-        self.Text:SetText(format('%d / %d - |c%s%.f / %.f|r (%.f)', level, maxLevel, color, XP, XPMax, rest))
+        local strFormat
+
+        if rest then
+            self.Text:SetText(format('%d / %d - |c%s%.f / %.f|r (%.f)', level, maxLevel, color, XP or 0, XPMax or 0, rest or 0))
+        else
+            self.Text:SetText(format('%d / %d - |c%s%.f / %.f|r', level, maxLevel, color, XP or 0, XPMax or 0))
+        end
+
         if self.StatusBar then
             self.StatusBar:SetValue(XP / XPMax)
         end
@@ -50,7 +57,7 @@ local function update(self, event, ...)
 end
 
 local function enable(self)
-    self:SetSize(250, 30)
+    self:SetSize(260, 30)
     self.Icon:SetSize(25, 25)
     self.Icon:SetTexture([[interface/icons/xp_icon]])
     self.Icon:SetPoint('LEFT', 1, 0)

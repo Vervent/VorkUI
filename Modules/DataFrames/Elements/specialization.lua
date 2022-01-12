@@ -24,7 +24,7 @@ local function update(self, event)
     local currentSpec = GetSpecialization()
     local _, name, _, icon, _, _ = GetSpecializationInfo(currentSpec)
     self.Icon:SetTexture(icon)
-    self.Text:SetText(format('%.4s', name))
+    self.Text:SetText(format('%.4s', name or ''))
 
     for i = 1, MAX_TALENT_TIERS do
         for j=1, NUM_TALENT_COLUMNS do

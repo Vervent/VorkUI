@@ -32,7 +32,7 @@ local function update(self, event)
 end
 
 local function enable(self)
-    self:SetSize(105, 30)
+    self:SetSize(120, 30)
     self.Text:SetPoint('LEFT', 1, 0)
 
     self:RegisterEvent('PLAYER_ENTERING_WORLD')

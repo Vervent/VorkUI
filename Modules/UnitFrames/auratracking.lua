@@ -857,8 +857,10 @@ local pveDebuff = {
     [348760] = SetDefaultAuraData(6, 1), -- Frost Blast
     -- Sylvanas Windrunner         , 1
     [349458] = SetDefaultAuraData(2, 1), -- Domination Chains
+    [347807] = SetDefaultAuraData(1, 1), -- Barbed Arrow
     [347704] = SetDefaultAuraData(2, 1), -- Veil of Darkness
     [347607] = SetDefaultAuraData(5, 1), -- Banshee's Mark
+    [353929] = SetDefaultAuraData(6, 1), -- Banshee's Bane
     [347670] = SetDefaultAuraData(5, 1), -- Shadow Dagger
     [351117] = SetDefaultAuraData(5, 1), -- Crushing Dread
     [351870] = SetDefaultAuraData(5, 1), -- Haunting Wave
@@ -1114,11 +1116,13 @@ local defaultTracking = {
             TexturedIcon = true,
             OnlyShowWhitelist = true,
             Filter = 'PLAYER HELPFUL',
+            HasTooltip = true,
         },
         [2] = { --Debuff
             Blacklist = blacklist,
             TexturedIcon = true,
             Filter = 'HARMFUL',
+            HasTooltip = true,
         },
     },
     ["pet"] = {
@@ -1128,11 +1132,13 @@ local defaultTracking = {
             TexturedIcon = true,
             OnlyShowWhitelist = true,
             Filter = 'HELPFUL',
+            HasTooltip = true,
         },
         [2] = { --Debuff
             Blacklist = blacklist,
             TexturedIcon = true,
             Filter = 'HARMFUL',
+            HasTooltip = true,
         },
     },
     ["target"] = {
@@ -1141,12 +1147,14 @@ local defaultTracking = {
             Whitelist = playerWhitelist,
             TexturedIcon = true,
             Filter = 'HELPFUL',
+            HasTooltip = true,
         },
         [2] = { --Debuff
             Blacklist = blacklist,
             Whitelist = fusionTable(pveDebuff, pvpDebuff, pvpCC),
             TexturedIcon = true,
             Filter = 'HARMFUL',
+            HasTooltip = true,
         },
     },
     ["party"] = {
@@ -1156,6 +1164,7 @@ local defaultTracking = {
             TexturedIcon = true,
             OnlyShowWhitelist = true,
             Filter = 'HELPFUL',
+            HasTooltip = false,
         },
         [2] = { -- Debuff
             Blacklist = blacklist,
@@ -1163,6 +1172,7 @@ local defaultTracking = {
             TexturedIcon = true,
             OnlyShowWhitelist = true,
             Filter = 'HARMFUL',
+            HasTooltip = false,
         },
         [3] = { -- Beacon/heal
             Blacklist = blacklist,
@@ -1170,6 +1180,7 @@ local defaultTracking = {
             TexturedIcon = true,
             OnlyShowWhitelist = true,
             Filter = 'PLAYER HELPFUL',
+            HasTooltip = false,
         }
     },
     ["raid"] = {
@@ -1179,6 +1190,7 @@ local defaultTracking = {
             TexturedIcon = false,
             OnlyShowWhitelist = true,
             Filter = 'PLAYER HELPFUL',
+            HasTooltip = false,
         },
         [2] = { -- Defensive Buff
             Blacklist = blacklist,
@@ -1186,6 +1198,7 @@ local defaultTracking = {
             TexturedIcon = true,
             OnlyShowWhitelist = true,
             Filter = 'HELPFUL',
+            HasTooltip = false,
         },
         [3] = { -- Debuff
             Blacklist = blacklist,
@@ -1193,6 +1206,7 @@ local defaultTracking = {
             TexturedIcon = true,
             OnlyShowWhitelist = true,
             Filter = 'HARMFUL',
+            HasTooltip = false,
         }
     }
 }
@@ -1209,6 +1223,7 @@ function UnitFrames:SetupAuraTracking(unit)
         result[frameID].OnlyShowWhitelist = aura_data.OnlyShowWhitelist or false
         result[frameID].Filter = aura_data.Filter or 'HELPFUL'
         result[frameID].DisableDynamicPosition = aura_data.DisableDynamicPosition or false
+        result[frameID].HasTooltip = aura_data.HasTooltip and true
     end
     return result
 end

@@ -13,6 +13,8 @@ Medias.MediaPath = {
     Icons = [[Interface\AddOns\VorkUI\Medias\Icons\]],
 }
 
+local BlankTexture = [[blank.tga]]
+
 local StatusBarAdress = {
     {[[StatusBar\bubbles.tga]], 'VorkuiBubbles'},
     {[[StatusBar\default.tga]], 'VorkuiDefault'},
@@ -265,6 +267,8 @@ function Medias:LoadAllTextures()
     for _, v in pairs( StatusBarAdress ) do
         Medias:LoadStatusBar(v[2], v[1])
     end
+
+    Medias:LoadTexture(BlankTexture, 'Blank')
 end
 
 function Medias:LoadParticles()

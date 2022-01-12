@@ -15,6 +15,7 @@ local Fonts = {
 }
 
 local StatusBar = {}
+local Background = {}
 local Particles = {}
 
 function Medias:GetLSM()
@@ -134,7 +135,7 @@ function Medias:LoadAtlas(name, adress, settings)
 end
 
 function Medias:GetBackground(name)
-    return LibSharedMedia:Fetch('background', name)
+    return Background[name] or LibSharedMedia:Fetch('background', name)
 end
 
 function Medias:GetBorder(name)
@@ -143,6 +144,11 @@ end
 
 function Medias:GetStatusBar(name)
     return StatusBar[name] or LibSharedMedia:Fetch('statusbar', name)
+end
+
+function Medias:LoadTexture(name, adress)
+    LibSharedMedia:Register('background', name, self.MediaPath['Textures']..adress)
+    Background[name] = self.MediaPath['Textures']..adress
 end
 
 function Medias:LoadStatusBar(name, adress)

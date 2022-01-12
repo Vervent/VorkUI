@@ -30,9 +30,6 @@ local function moveBlizzardFrame()
     --Move the MinimapCluster to be able to move MawBuffsBelowMinimapFrame
     --This frame is hard positionned by Blizzard and MinimapCluster=nil causes errors
     --in Blizzard side
-    local minimapCluster = _G.MinimapCluster
-    minimapCluster:ClearAllPoints()
-    minimapCluster:SetPoint('RIGHT', 0, 0)
     --local mawBuffsBelowMinimapFrame = _G.MawBuffsBelowMinimapFrame
     --mawBuffsBelowMinimapFrame:ClearAllPoints()
     --mawBuffsBelowMinimapFrame:SetPoint('RIGHT', -50, 0)
@@ -60,7 +57,7 @@ function Load:OnEvent(event, ...)
         end
         V["UnitFrames"]:Enable()
         V['DataFrames']:Enable()
-
+        V['Minimap']:Enable()
     elseif (event == 'ADDON_LOADED') then
 
         --We want to load Medias as soon as possible

@@ -22,11 +22,13 @@ local function update(self, event)
     local skillLevel, maxSkillLevel
     local profession
 
-    --for i, btn in ipairs(self.Buttons) do
-    --    profession = btn:GetID()
-    --    skillLevel, maxSkillLevel = select(3, GetProfessionInfo(profession))
-    --    btn.Text:SetText(format('%d/%d', skillLevel, maxSkillLevel))
-    --end
+    for i, btn in ipairs(self.Buttons) do
+        profession = btn:GetID()
+        skillLevel, maxSkillLevel = select(3, GetProfessionInfo(profession))
+        if skillLevel < maxSkillLevel then
+            btn.Progress:SetText(format('%d', skillLevel))
+        end
+    end
 
 end
 
@@ -50,6 +52,11 @@ local function createProfButton(self, prof)
     btn.Text:SetPoint('LEFT', btn.Icon, 'RIGHT')
     --btn.Text:SetText(format('%d/%d', skillLevel, maxSkillLevel))
     btn.Text:SetText(format('%s', name))
+
+    btn.Progress = btn:CreateFontString(nil, 'OVERLAY', 'Number12Font_o1')
+    btn.Progress:SetPoint('BOTTOM', btn.Icon, 'BOTTOM')
+    --btn.Text:SetText(format('%d/%d', skillLevel, maxSkillLevel))
+    --btn.Text:SetText(format('%s', name))
 
     btn:SetID(prof)
     btn.profID = profID

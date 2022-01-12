@@ -5,4 +5,6 @@
 	<Script file="DebugFrames\core.lua"/>
 
 	<Include file="DataFrames\load.xml"/>
+
+	<Include file="Maps\minimap.lua" />
 </Ui>

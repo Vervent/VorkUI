@@ -155,6 +155,34 @@ Utils.API.CreateOneBorder = function( self, side, size, color )
     self.Borders = borders
 end
 
+Utils.API.StripTextures = function(self, Kill)
+    for i = 1, self:GetNumRegions() do
+        local Region = select(i, self:GetRegions())
+        if (Region and Region:GetObjectType() == "Texture") then
+            if (Kill and type(Kill) == "boolean") then
+                Region:Kill()
+            elseif (Region:GetDrawLayer() == Kill) then
+                Region:SetTexture(nil)
+            elseif (Kill and type(Kill) == "string" and Region:GetTexture() ~= Kill) then
+                Region:SetTexture(nil)
+            else
+                Region:SetTexture(nil)
+            end
+        end
+    end
+end
+
+Utils.API.Kill = function(self)
+    if (self.UnregisterAllEvents) then
+        self:UnregisterAllEvents()
+        self:SetParent(nil)
+    else
+        self.Show = self.Hide
+    end
+
+    self:Hide()
+end
+
 Utils.API.CreateBorder = function( self, size, color, layer )
     self.Borders = {}
     local l = layer or 'BORDER'
