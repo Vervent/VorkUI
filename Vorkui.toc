@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 ## Author: VorkaPal@Archimonde-EU
 ## Title: |cff1700aaVorkUI|r
 ## X-oUF: VorkUF

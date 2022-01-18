@@ -6,3 +6,4 @@ V['UnitFrames'] = CreateFrame("Frame")
 V['DataFrames'] = CreateFrame("Frame")
 V['DebugFrames'] = CreateFrame('Frame')
 V['Minimap'] = Minimap
+V['ChatFrames'] = CreateFrame('Frame')

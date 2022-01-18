@@ -1,6 +1,5 @@
-print ("UTILS.LUA")
-
 local V,C,L = select(2,...):unpack()
+V.Hider:Hide()
 
 local CreateFrame = CreateFrame
 
@@ -74,6 +73,14 @@ Utils.Functions.RegisterDefaultSettings = function(self)
     end
 end
 
+Utils.Functions.RGBToHex = function(r, g, b)
+    r = r <= 1 and r >= 0 and r or 0
+    g = g <= 1 and g >= 0 and g or 0
+    b = b <= 1 and b >= 0 and b or 0
+
+    return format("|cff%02x%02x%02x", r * 255, g * 255, b * 255)
+end
+
 ---------------------------------------------------
 -- Utils init
 ---------------------------------------------------
@@ -109,7 +116,6 @@ end
 
 Utils:RegisterEvent("PLAYER_LOGIN")
 Utils:RegisterEvent("ADDON_LOADED")
-print ("|cFF10FF10 BIND UTILS EVENT|r")
 Utils:SetScript("OnEvent", Utils.Functions.OnEvent)
 
 V.Utils = Utils
@@ -118,33 +124,31 @@ V.Utils = Utils
 -- API func
 ---------------------------------------------------
 Utils.API.CreateBorderBySides = function (self, size, color, ...)
-    local borders = self.Borders or {}
 
     for k, v in ipairs({...}) do
         self:CreateOneBorder(v, size, color)
     end
 
-    self.Borders = borders
 end
 
-Utils.API.CreateOneBorder = function( self, side, size, color )
+Utils.API.CreateOneBorder = function( self, side, size, color, o )
     local borders = self.Borders or {}
 
     local b = self:CreateTexture(nil, 'BORDER', nil, 1)
     b:SetSize(size, size)
 
     if side == 'top' then
-        b:SetPoint('TOPLEFT', self, 'TOPLEFT')
-        b:SetPoint('TOPRIGHT', self, 'TOPRIGHT')
+        b:SetPoint('TOPLEFT', self, 'TOPLEFT', 0, o or 0)
+        b:SetPoint('TOPRIGHT', self, 'TOPRIGHT', 0, o or 0)
     elseif side == 'bottom' then
-        b:SetPoint('BOTTOMLEFT', self, 'BOTTOMLEFT')
-        b:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT')
+        b:SetPoint('BOTTOMLEFT', self, 'BOTTOMLEFT', 0, -(o or 0))
+        b:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT', 0, -(o or 0))
     elseif side == 'right' then
-        b:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT')
-        b:SetPoint('TOPRIGHT', self, 'TOPRIGHT')
+        b:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT', o or 0, 0)
+        b:SetPoint('TOPRIGHT', self, 'TOPRIGHT', o or 0, 0)
     elseif side == 'left' then
-        b:SetPoint('BOTTOMLEFT', self, 'BOTTOMLEFT')
-        b:SetPoint('TOPLEFT', self, 'TOPLEFT')
+        b:SetPoint('BOTTOMLEFT', self, 'BOTTOMLEFT', -(o or 0), 0)
+        b:SetPoint('TOPLEFT', self, 'TOPLEFT', -(o or 0), 0)
     end
 
     if color then
@@ -172,10 +176,61 @@ Utils.API.StripTextures = function(self, Kill)
     end
 end
 
-Utils.API.Kill = function(self)
+Utils.API.OrientedSetPoint = function(self, parent, isFirst, orientation)
+    if orientation == 'UP' then
+        if isFirst == true then
+            self:SetPoint('BOTTOM', parent, 'BOTTOM', 0, 1)
+        else
+            self:SetPoint('BOTTOM', parent, 'TOP', 0, 1)
+        end
+    elseif orientation == 'DOWN' then
+        if isFirst == true then
+            self:SetPoint('TOP', parent, 'TOP', 0, -1)
+        else
+            self:SetPoint('TOP', parent, 'BOTTOM', 0, -1)
+        end
+    elseif orientation == 'RIGHT' then
+        if isFirst == true then
+            self:SetPoint('LEFT', parent, 'LEFT', 1, 0)
+        else
+            self:SetPoint('LEFT', parent, 'RIGHT', 1, 0)
+        end
+    else
+        if isFirst == true then
+            self:SetPoint('RIGHT', parent, 'RIGHT', -1, 0)
+        else
+            self:SetPoint('RIGHT', parent, 'LEFT', -1, 0)
+        end
+    end
+end
+
+Utils.API.DirectionalSetPoint = function(self, parent, isFirst, direction)
+    if direction == 'VERTICAL' then
+        if isFirst == true then
+            self:SetPoint('TOP', parent, 'TOP', 0, 1)
+        else
+            self:SetPoint('TOP', parent, 'BOTTOM', 0, 1)
+        end
+    else
+        if isFirst == true then
+            self:SetPoint('LEFT', parent, 'LEFT', 1, 0)
+        else
+            self:SetPoint('LEFT', parent, 'RIGHT', 1, 0)
+        end
+    end
+end
+
+Utils.API.Kill = function(self, withChilds)
+
+    if withChilds and self:GetNumChildren() > 0 then
+        for _, c in ipairs({self:GetChildren()}) do
+            c:Kill()
+        end
+    end
+
     if (self.UnregisterAllEvents) then
         self:UnregisterAllEvents()
-        self:SetParent(nil)
+        self:SetParent(V.Hider)
     else
         self.Show = self.Hide
     end

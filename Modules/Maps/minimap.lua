@@ -5,6 +5,7 @@ local LibDBIcon = LibStub:GetLibrary('LibDBIcon-1.0') or nil
 local LibDataBroker = LibStub:GetLibrary("LibDataBroker-1.1") or nil
 
 local DebugFrames = V['DebugFrames']
+local DataFrames = V["DataFrames"]
 local Medias = V["Medias"]
 local Minimap = V['Minimap']
 local C_Map = C_Map
@@ -208,9 +209,10 @@ function Minimap:StyleMinimap(shape)
     self.Cluster:ClearAllPoints()
     if shape == 'rect' then
         self.Cluster:SetPoint('TOPRIGHT', self, 'TOPRIGHT', 0, -46)
-        self.Cluster:SetPoint('BOTTOMLEFT', self, 'BOTTOMLEFT', 0, 46)
+        self.Cluster:SetPoint('BOTTOMLEFT', self, 'BOTTOMLEFT', 0, 6)
     else
-        self.Cluster:SetAllPoints()
+        self.Cluster:SetPoint('TOPRIGHT', self, 'TOPRIGHT', 0, 0)
+        self.Cluster:SetPoint('BOTTOMLEFT', self, 'BOTTOMLEFT', 0, -40)
     end
 
     self.GameTimeFrame = GameTimeFrame
@@ -405,7 +407,7 @@ function Minimap:AddAddonBtnRegion(shape)
     btn.Icon:SetTexture('interface/talentframe/ui-talentarrows.blp')
     btn.Icon:SetTexCoord(0, 0.5, 0, 0.5)
 
-    btn.Panel = CreateFrame("Frame", nil, btn, 'BackdropTemplate')
+    btn.Panel = CreateFrame("Frame", nil, btn)
     btn.Panel:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
     btn.Panel.Background = btn.Panel:CreateTexture (nil, 'BACKGROUND')
     btn.Panel.Background:SetAllPoints()
@@ -417,8 +419,10 @@ function Minimap:AddAddonBtnRegion(shape)
     btn:SetScript('OnClick', function(b)
         if btn.isExpanded == true then
             collapse(b)
+            self.DataFramePanel:Show()
         else
             expand(b)
+            self.DataFramePanel:Hide()
         end
     end)
     self.AddonButton = btn
@@ -438,7 +442,20 @@ function Minimap:Enable()
     self:AddTaxiEarlyExit()
     self:HookButton()
 
-    --hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", self.MoveGarrisonButton)
+    local pt
+    local spacing
+    if shape == 'rect' then
+        pt = {'TOP', self, 'BOTTOM', 0, 46}
+        spacing = {15, 0}
+    else
+        pt = {'TOP', self, 'BOTTOM'}
+        spacing = {15, 0}
+    end
+    self.DataFramePanel = DataFrames:CreatePanel(pt, 3, 'RIGHT', {self:GetWidth()/3-spacing[1], 32}, spacing, true, true)
+    DataFrames:AddData('framerate', self.DataFramePanel, 1, true, true, false, true)
+    DataFrames:AddData('time', self.DataFramePanel, 2, true, true, false, true)
+    DataFrames:AddData('ping', self.DataFramePanel, 3, true, true, false, true)
+
 end
 
 function Minimap:Disable()

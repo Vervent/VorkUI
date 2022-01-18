@@ -124,17 +124,17 @@ local frames = {
         --['NAME'] = { frameId, itemId, hasIcon, hasText, HasStatusBar, hasTooltip, hasBorder
     },
     ['Datas'] = {
-        ['framerate'] = { 1, 1, true, true, false, true },
-        ['ping'] = { 1, 2, true, true, false, true },
+        --['framerate'] = { 1, 1, true, true, false, true },
+        --['ping'] = { 1, 2, true, true, false, true },
         ['money'] = { 1, 4, false, true, false, true },
         ['currencies'] = { 1, 6 },
         ['bag'] = { 1, 8, true, true, false, true },
         ['vault'] = { 1, 10, true, true, false, true },
-        ['micromenu'] = { 1, 12 },
+        --['micromenu'] = { 1, 12 },
         ['professions'] = { 1, 14, true, true, false, false },
-        ['time'] = { 1, 3, true, true, false, true },
+        --['time'] = { 1, 3, true, true, false, true },
         ['durability'] = { 1, 5, true, true, false, true },
-        ['covenant'] = { 1, 7, true, true, false, false },
+        --['covenant'] = { 1, 7, true, true, false, false },
         ['specialization'] = { 1, 9, true, true, false, false },
         ['legendary'] = { 1, 11, true, true, false, false },
         ['equipmentset'] = { 1, 15, true, true, false, false },
@@ -326,43 +326,81 @@ local function enableStat(self)
     LibUnitStat:Enable()
 end
 
-local function enableData(self)
+local function enableData(self, name, frameId, itemId, hasIcon, hasText, hasStatusBar, hasTooltip, hasBorder)
+    local element = self.Frames[frameId].elements[itemId]
+    element:SetStat(name)
+
+    if hasIcon == true then
+        createIcon(element)
+        --element.Icon:SetPoint('LEFT')
+    end
+
+    if hasStatusBar == true then
+        createStatusBar(element, frames[frameId].StatusBarClassColor)
+    end
+
+    if hasText == true then
+        createText(element)
+    end
+
+    if hasTooltip == true then
+        --AddTooltip
+    end
+
+    if hasBorder == true then
+        if frames[frameId].BorderClassColor == true then
+            element:CreateOneBorder('bottom', 1, { r, g, b })
+        else
+            element:CreateOneBorder('bottom', 1, { 1, 1, 1 })
+        end
+    end
+
+    if elements[name] then
+        elements[name].Enable(element)
+    end
+end
+
+local function enableDatas(self)
     local element
     local frameId, itemId, hasIcon, hasText, hasStatusBar, hasTooltip, hasBorder
     for k, idxTable in pairs(frames.Datas) do
         frameId, itemId, hasIcon, hasText, hasStatusBar, hasTooltip, hasBorder = unpack(idxTable)
-        element = self.Frames[frameId].elements[itemId]
-        element:SetStat(k)
+        enableData(self, k, frameId, itemId, hasIcon, hasText, hasStatusBar, hasTooltip, hasBorder)
+    end
+end
 
-        if hasIcon == true then
-            createIcon(element)
-            --element.Icon:SetPoint('LEFT')
-        end
-
-        if hasStatusBar == true then
-            createStatusBar(element, frames[frameId].StatusBarClassColor)
-        end
-
-        if hasText == true then
-            createText(element)
-        end
-
-        if hasTooltip == true then
-            --AddTooltip
-        end
-
-        if hasBorder == true then
-            if frames[frameId].BorderClassColor == true then
-                element:CreateOneBorder('bottom', 1, { r, g, b })
-            else
-                element:CreateOneBorder('bottom', 1, { 1, 1, 1 })
-            end
-        end
-
-        if elements[k] then
-            elements[k].Enable(element)
+local function getPanelIdx(self, panel)
+    for i, p in ipairs(self.Frames) do
+        if p == panel then
+            return i
         end
     end
+end
+
+function DataFrames:AddData(name, panel, itemId, hasIcon, hasText, hasStatusBar, hasTooltip, hasBorder)
+    local frameId = getPanelIdx(self, panel)
+    frames.Datas[name] = { frameId, itemId, hasIcon, hasText, hasStatusBar, hasTooltip, hasBorder }
+
+    enableData(self, name, frameId, itemId, hasIcon, hasText, hasStatusBar, hasTooltip, hasBorder)
+
+end
+
+function DataFrames:CreatePanel(pt, count, distribution, size, spacing, hasBorder, borderClassColor)
+    local config = {
+        ['Point'] = pt or nil,
+        ['Count'] = count or 0,
+        ['Distribution'] = distribution or 'CENTER',
+        ['Spacing'] = spacing or { 0, 0 },
+        ['HasBorder'] = hasBorder and true,
+        ['BorderClassColor'] = borderClassColor and true,
+        ['Size'] = size or { 0, 0 },
+    }
+
+    tinsert(frames, config)
+    local f = createDataFrames(config)
+    tinsert(self.Frames, f)
+
+    return f
 end
 
 function DataFrames:Enable()
@@ -372,7 +410,7 @@ function DataFrames:Enable()
     end
 
     enableStat(self)
-    enableData(self)
+    enableDatas(self)
 end
 
 function DataFrames:Disable()

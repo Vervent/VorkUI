@@ -148,7 +148,7 @@ local function update(self, event)
 end
 
 local function enable(self)
-    self:SetSize(313, 30)
+    self:SetSize(30, 313)
 
     UIParentLoadAddOn("Blizzard_Communities")
     UIParentLoadAddOn("Blizzard_Collections")
@@ -161,14 +161,18 @@ local function enable(self)
     if self.Buttons == nil then
         self.Buttons = {}
         local btn
+        local parent = self
         for i, item in ipairs(menus) do
             btn = CreateFrame('Button', 'MicroMenuButton'..item.Name, self)
             btn:SetSize(25, 25)
-            if i == 1 then
-                btn:SetPoint('LEFT', self, 'LEFT', 1, 0)
-            else
-                btn:SetPoint('LEFT', self.Buttons[i-1], 'RIGHT', 1, 0)
-            end
+            --setOrientedPoint(btn, parent, i==1, 'VERTICAL')
+            btn:OrientedSetPoint(parent, i==1, 'UP')
+            parent = btn
+            --if i == 1 then
+            --    btn:SetPoint('LEFT', self, 'LEFT', 1, 0)
+            --else
+            --    btn:SetPoint('LEFT', self.Buttons[i-1], 'RIGHT', 1, 0)
+            --end
 
             btn.Icon = btn:CreateTexture('OVERLAY')
             btn.Icon:SetAllPoints()

@@ -348,6 +348,9 @@ function Medias:ChangeSystemFonts()
     alterFont('SpellFont_Small', 'Montserrat Extra Bold', 10)
     alterFont('SplashHeaderFont', 'Montserrat Bold', 24)
 
+    alterFont('ChatFontNormal', 'Montserrat Semi Bold', 13, 'OUTLINE')
+    alterFont('GameFontNormalSmall', 'Montserrat Bold', 13, 'OUTLINE')
+    --GameFontNormalSmall
 end
 
 V["Medias"] = Medias
