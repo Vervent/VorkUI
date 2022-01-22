@@ -139,12 +139,7 @@ function Chat:StyleFrame(frame)
         self:Hide()
     end)
     editbox:CreateOneBorder('top', 1, {0.2, 0.4, 0.6})
-    editbox.Background = editbox:CreateTexture(nil, 'BACKGROUND')
-    editbox.Background:SetAllPoints()
-    --editbox.Background:SetTexture(texture)
-    --editbox.Background:SetColorTexture(GetClassColor(select(2, UnitClass('Player'))))
-    editbox.Background:SetColorTexture(0.2, 0.4, 0.6, 0.75)
-    --editbox.Background:SetGradientAlpha('VERTICAL', 0.2, 0.4, 0.6, 0,  0.2, 0.4, 0.6, 1)
+    editbox:CreateBackground({0.2, 0.4, 0.6, 0.75})
 
     for i = 1, #CHAT_FRAME_TEXTURES do
         _G[name .. CHAT_FRAME_TEXTURES[i]]:SetTexture(nil)

@@ -15,6 +15,16 @@ Medias.MediaPath = {
 
 local BlankTexture = [[blank.tga]]
 
+local FlagsAddress = {
+    { [[Flags\german.tga]], 'german'},
+    { [[Flags\british.tga]], 'british'},
+    { [[Flags\portuguese.tga]], 'portuguese'},
+    { [[Flags\french.tga]], 'french'},
+    { [[Flags\spanish.tga]], 'spanish'},
+    { [[Flags\italian.tga]], 'italian'},
+    { [[Flags\russian.tga]], 'russian'},
+}
+
 local StatusBarAdress = {
     {[[StatusBar\bubbles.tga]], 'VorkuiBubbles'},
     {[[StatusBar\default.tga]], 'VorkuiDefault'},
@@ -95,7 +105,7 @@ local FontSettings = {
         "OUTLINE"
     },
     ["Montserrat"] = {
-        { 10, 14, 22 },
+        { 6, 10, 14, 22 },
         "OUTLINE"
     },
     ["Montserrat SemiBold"] = {
@@ -277,10 +287,17 @@ function Medias:LoadParticles()
     end
 end
 
+function Medias:LoadAllFlags()
+    for _, f in pairs( FlagsAddress ) do
+        Medias:LoadFlag(f[2], f[1])
+    end
+end
+
 function Medias:Enable()
     self:LoadAllFonts()
     self:ChangeSystemFonts()
     self:LoadAllAtlas()
     self:LoadAllTextures()
     self:LoadParticles()
+    self:LoadAllFlags()
 end

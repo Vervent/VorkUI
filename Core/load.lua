@@ -59,6 +59,8 @@ function Load:OnEvent(event, ...)
         V['DataFrames']:Enable()
         V['Minimap']:Enable()
         V['ChatFrames']:Enable()
+        V['Tooltips']:Enable()
+        V['ActionBars']:Enable()
     elseif (event == 'ADDON_LOADED') then
 
         --We want to load Medias as soon as possible

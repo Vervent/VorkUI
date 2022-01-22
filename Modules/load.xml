@@ -11,4 +11,10 @@
 	<Include file="Chats\chat.lua" />
 	<Include file="Chats\link.lua" />
 	<Include file="Chats\copy.lua" />
+
+	<Include file="Tooltips\tooltips.lua" />
+
+	<Include file="Misc\realmflag.lua" />
+
+	<Include file="ActionBars\core.lua" />
 </Ui>

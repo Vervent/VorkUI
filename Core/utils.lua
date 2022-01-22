@@ -1,4 +1,4 @@
-local V,C,L = select(2,...):unpack()
+local V, C, L = select(2, ...):unpack()
 V.Hider:Hide()
 
 local CreateFrame = CreateFrame
@@ -22,7 +22,7 @@ local max = max
 ---------------------------------------------------
 -- Basic Utils
 ---------------------------------------------------
-local Resolution = select(1, GetPhysicalScreenSize()).."x"..select(2, GetPhysicalScreenSize())
+local Resolution = select(1, GetPhysicalScreenSize()) .. "x" .. select(2, GetPhysicalScreenSize())
 local PixelPerfectScale = 768 / string.match(Resolution, "%d+x(%d+)")
 
 Utils.Settings = {}
@@ -36,7 +36,9 @@ Utils.Functions.AddAPI = function(object)
     local mt = getmetatable(object).__index
 
     for API, FUNCTIONS in pairs(Utils.API) do
-        if not object[API] then mt[API] = Utils.API[API] end
+        if not object[API] then
+            mt[API] = Utils.API[API]
+        end
     end
 end
 
@@ -45,8 +47,8 @@ Utils.Functions.OnEvent = function(self, event, ...)
         SetCVar("uiScale", self.Settings.UIScale)
         SetCVar("useUiScale", 1)
 
-         --Allow 4K and WQHD Resolution to have an UIScale lower than 0.64, which is
-         --the lowest value of UIParent scale by default
+        --Allow 4K and WQHD Resolution to have an UIScale lower than 0.64, which is
+        --the lowest value of UIParent scale by default
         if (self.Settings.UIScale < 0.64) then
             UIParent:SetScale(self.Settings.UIScale)
         end
@@ -81,12 +83,42 @@ Utils.Functions.RGBToHex = function(r, g, b)
     return format("|cff%02x%02x%02x", r * 255, g * 255, b * 255)
 end
 
+-- Return short value of a number!
+Utils.Functions.ShortValue = function(v)
+    if (v >= 1e6) then
+        return gsub(format("%.1fm", v / 1e6), "%.?0+([km])$", "%1")
+    elseif (v >= 1e3 or v <= -1e3) then
+        return gsub(format("%.1fk", v / 1e3), "%.?0+([km])$", "%1")
+    else
+        return v
+    end
+end
+
+Utils.Functions.FormatTime = function(s)
+    if s == Infinity then
+        return
+    end
+
+    local Day, Hour, Minute = 86400, 3600, 60
+
+    if (s >= Day) then
+        return format("%dd", ceil(s / Day))
+    elseif (s >= Hour) then
+        return format("%dh", ceil(s / Hour))
+    elseif (s >= Minute) then
+        return format("%dm", ceil(s / Minute))
+    elseif (s >= Minute / 12) then
+        return ceil(s)
+    end
+
+    return format("%.1f", s)
+end
 ---------------------------------------------------
 -- Utils init
 ---------------------------------------------------
 
 Utils.Enable = function(self)
-    local Handled = {["Frame"] = true}
+    local Handled = { ["Frame"] = true }
     local Object = CreateFrame("Frame")
     local AddAPI = self.Functions.AddAPI
     local AddFrames = self.Functions.AddFrames
@@ -123,15 +155,15 @@ V.Utils = Utils
 ---------------------------------------------------
 -- API func
 ---------------------------------------------------
-Utils.API.CreateBorderBySides = function (self, size, color, ...)
+Utils.API.CreateBorderBySides = function(self, size, color, ...)
 
-    for k, v in ipairs({...}) do
+    for k, v in ipairs({ ... }) do
         self:CreateOneBorder(v, size, color)
     end
 
 end
 
-Utils.API.CreateOneBorder = function( self, side, size, color, o )
+Utils.API.CreateOneBorder = function(self, side, size, color, o)
     local borders = self.Borders or {}
 
     local b = self:CreateTexture(nil, 'BORDER', nil, 1)
@@ -223,7 +255,7 @@ end
 Utils.API.Kill = function(self, withChilds)
 
     if withChilds and self:GetNumChildren() > 0 then
-        for _, c in ipairs({self:GetChildren()}) do
+        for _, c in ipairs({ self:GetChildren() }) do
             c:Kill()
         end
     end
@@ -238,7 +270,38 @@ Utils.API.Kill = function(self, withChilds)
     self:Hide()
 end
 
-Utils.API.CreateBorder = function( self, size, color, layer )
+Utils.API.CreateBackground = function(self, bg)
+    local background = self:CreateTexture(nil, 'BACKGROUND')
+    background:SetAllPoints()
+
+    if type(bg) == 'string' then
+        background:SetTexture(bg)
+    elseif type(bg) == 'table' then
+        background:SetColorTexture(unpack(bg))
+    end
+
+    return background
+end
+
+Utils.API.CreateBackdrop = function(self)
+    local backdropInfo = {
+        bgFile = [[Interface/Tooltips/UI-Tooltip-Background]],
+        edgeFile = [[Interface/Tooltips/UI-Tooltip-Border]],
+        edgeSize = 1,
+    }
+
+    local backdrop = CreateFrame('frame', nil, self, 'BackdropTemplate')
+    backdrop:SetAllPoints()
+    backdrop:SetFrameLevel(self:GetFrameLevel())
+    --backdrop:CreateBorder(1, {1, 1, 1})
+
+    backdrop:SetBackdrop(backdropInfo)
+    --backdrop:SetBackdropColor(0, 0, 0, 1)
+
+    self.Backdrop = backdrop
+end
+
+Utils.API.CreateBorder = function(self, size, color, layer)
     self.Borders = {}
     local l = layer or 'BORDER'
 
@@ -280,7 +343,7 @@ Utils.API.CreateBorder = function( self, size, color, layer )
     end
 end
 
-Utils.API.SetBorderGradientColor = function (self, gradient )
+Utils.API.SetBorderGradientColor = function(self, gradient)
     if self.Borders and type(self.Borders) == 'table' then
         for _, b in ipairs(self.Borders) do
             b:SetGradient(unpack(gradient))
@@ -288,7 +351,7 @@ Utils.API.SetBorderGradientColor = function (self, gradient )
     end
 end
 
-Utils.API.SetBorderTexture = function (self, texture)
+Utils.API.SetBorderTexture = function(self, texture)
     if self.Borders and type(self.Borders) == 'table' then
         for _, b in ipairs(self.Borders) do
             b:SetTexture(texture)
@@ -296,7 +359,7 @@ Utils.API.SetBorderTexture = function (self, texture)
     end
 end
 
-Utils.API.SetBorderVertexColor = function (self, color )
+Utils.API.SetBorderVertexColor = function(self, color)
     if self.Borders and type(self.Borders) == 'table' then
         for _, b in ipairs(self.Borders) do
             b:SetVertexColor(unpack(color))
@@ -304,7 +367,7 @@ Utils.API.SetBorderVertexColor = function (self, color )
     end
 end
 
-Utils.API.SetBorderColor = function (self, color )
+Utils.API.SetBorderColor = function(self, color)
     if self.Borders and type(self.Borders) == 'table' then
         for _, b in ipairs(self.Borders) do
             b:SetColorTexture(unpack(color))
@@ -354,9 +417,9 @@ Utils.API.UpdateWidgetsFloatLayout = function(self, firstItemIndex, paddingTop, 
             lineCount = lineCount + 1
             width = newWidth - width
         else
-            if i-1 >= firstItemIndex then
+            if i - 1 >= firstItemIndex then
                 w:ClearAllPoints()
-                w:SetPoint("TOPLEFT", self.Widgets[i-1], "TOPRIGHT", 2, 0)
+                w:SetPoint("TOPLEFT", self.Widgets[i - 1], "TOPRIGHT", 2, 0)
             end
             width = newWidth
         end
@@ -397,9 +460,9 @@ Utils.API.UpdateFloatLayoutOnWidgets = function(self, widgets, paddingTop, paddi
             lineCount = lineCount + 1
             width = newWidth - width
         else
-            if i-1 >= 1 then
+            if i - 1 >= 1 then
                 w:ClearAllPoints()
-                w:SetPoint("TOPLEFT", widgets[i-1], "TOPRIGHT", 2, 0)
+                w:SetPoint("TOPLEFT", widgets[i - 1], "TOPRIGHT", 2, 0)
             end
             width = newWidth
         end
@@ -419,7 +482,7 @@ Utils.API.UpdateFloatLayoutOnWidgets = function(self, widgets, paddingTop, paddi
 end
 
 --Grid aligned by component type
-Utils.API.UpdateLayoutOnWidgets = function (self, widgets, paddingTop, paddingBottom)
+Utils.API.UpdateLayoutOnWidgets = function(self, widgets, paddingTop, paddingBottom)
     local maxWidth, maxHeight = self:GetWidth(), self:GetHeight()
 
     if maxWidth == 0 then
@@ -440,31 +503,31 @@ Utils.API.UpdateLayoutOnWidgets = function (self, widgets, paddingTop, paddingBo
         if w:IsShown() then
             if w:IsObjectType('Frame') and w.text then
                 if type(w.text) ~= 'string' then
-                    width = max(width, w:GetWidth() + w.text:GetWrappedWidth() )
+                    width = max(width, w:GetWidth() + w.text:GetWrappedWidth())
                     height = max(height, w:GetHeight(), w.text:GetStringHeight())
                 else
-                    width = max(width, w:GetTextWidth() + 20 )
+                    width = max(width, w:GetTextWidth() + 20)
                     height = max(height, w:GetTextHeight())
                 end
             else
-                width = max(width, w:GetWidth() + 4 )
+                width = max(width, w:GetWidth() + 4)
                 height = max(height, w:GetHeight())
             end
         end
     end
 
-    nbItemPerLine = math.floor( maxWidth / width )
-    lineCount = math.floor((#widgets)/nbItemPerLine) + 1
+    nbItemPerLine = math.floor(maxWidth / width)
+    lineCount = math.floor((#widgets) / nbItemPerLine) + 1
 
     for i = firstItem, #widgets do
         w = widgets[i]
         if nbItem < nbItemPerLine then
-            if i-1 >= 1 then
+            if i - 1 >= 1 then
                 w:ClearAllPoints()
-                w:SetPoint("TOPLEFT", widgets[i-1], "TOPLEFT", width + 2, 0)
+                w:SetPoint("TOPLEFT", widgets[i - 1], "TOPLEFT", width + 2, 0)
             else
                 w:ClearAllPoints()
-                w:SetPoint("TOPLEFT", 0, - (paddingTop or 0))
+                w:SetPoint("TOPLEFT", 0, -(paddingTop or 0))
             end
             nbItem = nbItem + 1
         else
@@ -475,10 +538,10 @@ Utils.API.UpdateLayoutOnWidgets = function (self, widgets, paddingTop, paddingBo
         end
     end
 
-    return lineCount*height + (paddingTop or 0) + (paddingBottom or 0)
+    return lineCount * height + (paddingTop or 0) + (paddingBottom or 0)
 end
 
-Utils.API.UpdateWidgetsByTypeLayout = function (self, widgetType, paddingTop, paddingBottom)
+Utils.API.UpdateWidgetsByTypeLayout = function(self, widgetType, paddingTop, paddingBottom)
     local maxWidth, maxHeight = self:GetWidth(), self:GetHeight()
 
     if maxWidth == 0 then
@@ -504,30 +567,30 @@ Utils.API.UpdateWidgetsByTypeLayout = function (self, widgetType, paddingTop, pa
         w = widgets[i]
         if w:IsObjectType('Frame') and w.text then
             if type(w.text) ~= 'string' then
-                width = max(width, w:GetWidth() + w.text:GetWrappedWidth() )
+                width = max(width, w:GetWidth() + w.text:GetWrappedWidth())
                 height = max(height, w:GetHeight(), w.text:GetStringHeight())
             else
-                width = max(width, w:GetTextWidth() + 20 )
+                width = max(width, w:GetTextWidth() + 20)
                 height = max(height, w:GetTextHeight())
             end
         else
-            width = max(width, w:GetWidth() + 4 )
+            width = max(width, w:GetWidth() + 4)
             height = max(height, w:GetHeight())
         end
     end
 
-    nbItemPerLine = math.floor( maxWidth / width )
-    lineCount = math.floor((#widgets)/nbItemPerLine) + 1
+    nbItemPerLine = math.floor(maxWidth / width)
+    lineCount = math.floor((#widgets) / nbItemPerLine) + 1
 
     for i = firstItem, #widgets do
         w = widgets[i]
         if nbItem < nbItemPerLine then
-            if i-1 >= 1 then
+            if i - 1 >= 1 then
                 w:ClearAllPoints()
-                w:SetPoint("TOPLEFT", widgets[i-1], "TOPLEFT", width + 2, 0)
+                w:SetPoint("TOPLEFT", widgets[i - 1], "TOPLEFT", width + 2, 0)
             else
                 w:ClearAllPoints()
-                w:SetPoint("TOPLEFT", 0, - (paddingTop or 0))
+                w:SetPoint("TOPLEFT", 0, -(paddingTop or 0))
             end
             nbItem = nbItem + 1
         else
@@ -538,11 +601,11 @@ Utils.API.UpdateWidgetsByTypeLayout = function (self, widgetType, paddingTop, pa
         end
     end
 
-    return lineCount*height + (paddingTop or 0) + (paddingBottom or 0)
+    return lineCount * height + (paddingTop or 0) + (paddingBottom or 0)
 end
 
 --Grid aligned
-Utils.API.UpdateWidgetsLayout = function (self, firstItemIndex, paddingTop, paddingBottom)
+Utils.API.UpdateWidgetsLayout = function(self, firstItemIndex, paddingTop, paddingBottom)
     local maxWidth, maxHeight = self:GetWidth(), self:GetHeight()
 
     if maxWidth == 0 then
@@ -562,30 +625,30 @@ Utils.API.UpdateWidgetsLayout = function (self, firstItemIndex, paddingTop, padd
         w = self.Widgets[i]
         if w:IsObjectType('Frame') and w.text then
             if type(w.text) ~= 'string' then
-                width = max(width, w:GetWidth() + w.text:GetWrappedWidth() )
+                width = max(width, w:GetWidth() + w.text:GetWrappedWidth())
                 height = max(height, w:GetHeight(), w.text:GetStringHeight())
             else
-                width = max(width, w:GetTextWidth() + 20 )
+                width = max(width, w:GetTextWidth() + 20)
                 height = max(height, w:GetTextHeight())
             end
         else
-            width = max(width, w:GetWidth() + 4 )
+            width = max(width, w:GetWidth() + 4)
             height = max(height, w:GetHeight())
         end
     end
 
-    nbItemPerLine = math.floor( maxWidth / width )
-    lineCount = math.floor((#self.Widgets - firstItemIndex + 1)/nbItemPerLine) + 1
+    nbItemPerLine = math.floor(maxWidth / width)
+    lineCount = math.floor((#self.Widgets - firstItemIndex + 1) / nbItemPerLine) + 1
 
     for i = firstItem, #self.Widgets do
         w = self.Widgets[i]
         if nbItem < nbItemPerLine then
-            if i-1 >= firstItemIndex then
+            if i - 1 >= firstItemIndex then
                 w:ClearAllPoints()
-                w:SetPoint("TOPLEFT", self.Widgets[i-1], "TOPLEFT", width + 2, 0)
+                w:SetPoint("TOPLEFT", self.Widgets[i - 1], "TOPLEFT", width + 2, 0)
             else
                 w:ClearAllPoints()
-                w:SetPoint("TOPLEFT", 0, - (paddingTop or 0))
+                w:SetPoint("TOPLEFT", 0, -(paddingTop or 0))
             end
             nbItem = nbItem + 1
         else
@@ -596,7 +659,7 @@ Utils.API.UpdateWidgetsLayout = function (self, firstItemIndex, paddingTop, padd
         end
     end
 
-    return lineCount*height + (paddingTop or 0) + (paddingBottom or 0)
+    return lineCount * height + (paddingTop or 0) + (paddingBottom or 0)
 end
 
 Utils.API.ShallowCopyTableRecursivelyIgnoring = function(self, orig, degree, degreeMax, ignoreField)
@@ -609,7 +672,7 @@ Utils.API.ShallowCopyTableRecursivelyIgnoring = function(self, orig, degree, deg
             --if type(orig_key) == 'number' then
             --    copy = self:ShallowCopyTableRecursivelyIgnoring(orig_value, degree + 1, degreeMax, ignoreField)
             --else
-                if type(orig_value) == 'table' then
+            if type(orig_value) == 'table' then
                 copy[orig_key] = self:ShallowCopyTableRecursivelyIgnoring(orig_value, degree + 1, degreeMax, ignoreField)
             else
                 if type(ignoreField) == 'string' and orig_key ~= ignoreField then
@@ -619,7 +682,8 @@ Utils.API.ShallowCopyTableRecursivelyIgnoring = function(self, orig, degree, deg
                 end
             end
         end
-    else -- number, string, boolean, etc
+    else
+        -- number, string, boolean, etc
         copy = orig
     end
     return copy
@@ -629,7 +693,7 @@ Utils.API.DeepCopyTable = function(self, orig)
     local copy = {}
 
     local clone = { unpack(orig) }
-    for i=1, #clone do
+    for i = 1, #clone do
         if type(clone[i]) == 'table' then
             copy[i] = self:DeepCopyTable(clone[i])
         else
@@ -640,7 +704,8 @@ Utils.API.DeepCopyTable = function(self, orig)
     for k, v in pairs(orig) do
         if type(k) ~= 'number' or math.floor(k) ~= k then
             if type(v) == 'table' then
-                if next(v) == nil then --empty table
+                if next(v) == nil then
+                    --empty table
                     copy[k] = {}
                 else
                     copy[k] = self:DeepCopyTable(v)
@@ -663,8 +728,8 @@ Utils.API.ShallowCopyTableRecursively = function(self, orig, degree, degreeMax)
         for orig_key, orig_value in pairs(orig) do
             if type(orig_value) == 'table' then
                 local clone = { unpack(orig_value) }
-                for i=1, #clone do
-                    print (i, tab[i])
+                for i = 1, #clone do
+                    print(i, tab[i])
                 end
 
                 if type(orig_key) == 'number' then
@@ -680,7 +745,8 @@ Utils.API.ShallowCopyTableRecursively = function(self, orig, degree, degreeMax)
                 end
             end
         end
-    else -- number, string, boolean, etc
+    else
+        -- number, string, boolean, etc
         copy = orig or nil
     end
     return copy
@@ -694,7 +760,8 @@ Utils.API.ShallowCopyTable = function(self, orig)
         for orig_key, orig_value in pairs(orig) do
             copy[orig_key] = orig_value
         end
-    else -- number, string, boolean, etc
+    else
+        -- number, string, boolean, etc
         copy = orig
     end
     return copy
@@ -719,9 +786,9 @@ local function GetRealParent(self, parent, root)
     return nil
 end
 
-Utils.API.Point = function (self, point, root)
+Utils.API.Point = function(self, point, root)
     if self == nil then
-        print ("|cFFFF2200 ERROR API POINT self == nil|r")
+        print("|cFFFF2200 ERROR API POINT self == nil|r")
     end
 
     if type(point) == 'string' then

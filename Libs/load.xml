@@ -35,4 +35,7 @@
 	<!-- LibUnitStat -->
 	<Include file='LibUnitStat\LibUnitStat.xml'/>
 
+	<!-- LibChallengeInfo -->
+	<Script file='Misc\LibChallengeInfo.lua'/>
+
 </Ui>

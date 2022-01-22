@@ -7,3 +7,6 @@ V['DataFrames'] = CreateFrame("Frame")
 V['DebugFrames'] = CreateFrame('Frame')
 V['Minimap'] = Minimap
 V['ChatFrames'] = CreateFrame('Frame')
+V['Tooltips'] = CreateFrame('Frame')
+V['RealmFlag'] = CreateFrame('Frame')
+V['ActionBars'] = CreateFrame('Frame')

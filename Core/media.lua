@@ -17,6 +17,7 @@ local Fonts = {
 local StatusBar = {}
 local Background = {}
 local Particles = {}
+local Flags = {}
 
 function Medias:GetLSM()
     return LibSharedMedia
@@ -128,6 +129,16 @@ end
 
 function Medias:GetLibAtlas()
     return LibAtlas
+end
+
+function Medias:GetFlag(name)
+    return Flags[name]
+end
+
+function Medias:LoadFlag(name, adress)
+    if not Flags[name] then
+        Flags[name] = self.MediaPath['Icons']..adress
+    end
 end
 
 function Medias:LoadAtlas(name, adress, settings)
@@ -324,6 +335,7 @@ function Medias:ChangeSystemFonts()
     alterFont('SystemFont_World_ThickOutline' ,'Montserrat Bold', 100, "OUTLINE")
     alterFont('System_IME' ,'Montserrat Medium', 16)
 
+    alterFont('GameTooltipHeader', 'Montserrat Bold', 14)
     alterFont('Tooltip_Med', 'Montserrat Bold', 12)
     alterFont('Tooltip_Small', 'Montserrat SemiBold', 10)
 
@@ -340,7 +352,6 @@ function Medias:ChangeSystemFonts()
     alterFont('AchievementFont_Small', 'Montserrat Extra Bold', 10)
     alterFont('ChatBubbleFont', 'Montserrat Bold', 13)
     alterFont('CoreAbilityFont', 'Montserrat Bold', 32)
-    alterFont('GameTooltipHeader', 'Montserrat', 14)
     alterFont('InvoiceFont_Med', 'Montserrat Bold', 12)
     alterFont('InvoiceFont_Small', 'Montserrat Extra Bold', 10)
     alterFont('MailFont_Large', 'Montserrat Medium', 15)
@@ -349,8 +360,8 @@ function Medias:ChangeSystemFonts()
     alterFont('SplashHeaderFont', 'Montserrat Bold', 24)
 
     alterFont('ChatFontNormal', 'Montserrat Semi Bold', 13, 'OUTLINE')
-    alterFont('GameFontNormalSmall', 'Montserrat Bold', 13, 'OUTLINE')
-    --GameFontNormalSmall
+    alterFont('GameFontNormalSmall', 'Montserrat Semi Bold', 12)
+    --GameFontNormalLarge
 end
 
 V["Medias"] = Medias
