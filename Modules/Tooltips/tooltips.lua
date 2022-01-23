@@ -269,18 +269,22 @@ local function setUnitBorderColor(self)
         r, g, b = color[1], color[2], color[3]
 
         HealthBar:SetStatusBarColor(r, g, b)
-        HealthBar.Backdrop:SetBackdropBorderColor(r, g, b)
+        --HealthBar.Backdrop:SetBackdropBorderColor(r, g, b)
+        HealthBar:SetBorderColor({r,g,b})
 
-        gameTooltip.Backdrop:SetBackdropBorderColor(r, g, b)
+        --gameTooltip.Backdrop:SetBackdropBorderColor(r, g, b)
+        gameTooltip:SetBorderColor({r,g,b})
     elseif reaction then
         local color = {1, 0, 0} --Colors.Reaction[reaction]
 
         r, g, b = color[1], color[2], color[3]
 
         HealthBar:SetStatusBarColor(r, g, b)
-        HealthBar.Backdrop:SetBackdropBorderColor(r, g, b)
+        --HealthBar.Backdrop:SetBackdropBorderColor(r, g, b)
+        HealthBar:SetBorderColor({r,g,b})
 
-        gameTooltip.Backdrop:SetBackdropBorderColor(r, g, b)
+        --gameTooltip.Backdrop:SetBackdropBorderColor(r, g, b)
+        gameTooltip:SetBorderColor({r,g,b})
     end
 end
 
@@ -292,8 +296,10 @@ local function skin(self)
     if (not self.IsSkinned) then
 
         self:StripTextures()
-        self:CreateBackdrop()
-        self.Backdrop:SetBackdropColor(0.2, 0.4, 0.6)
+        --self:CreateBackdrop()
+        --self.Backdrop:SetBackdropColor(0.2, 0.4, 0.6)
+        self.Background = self:CreateBackground({0.1, 0.2, 0.3, 1})
+        self:CreateBorder(1)
 
         if self.NineSlice then
             self.NineSlice:SetAlpha(0)
@@ -306,7 +312,10 @@ end
 function Tooltip:SkinHealthBar()
     HealthBar:SetScript("OnValueChanged", self.OnValueChanged)
     HealthBar:SetStatusBarTexture(Medias:GetStatusBar('VorkuiDefault'))
-    HealthBar:CreateBackdrop()
+    --HealthBar:CreateBackdrop()
+    HealthBar.Background = HealthBar:CreateBackground()
+    HealthBar:CreateBorder(1)
+
     HealthBar:ClearAllPoints()
     HealthBar:SetPoint("BOTTOMLEFT", HealthBar:GetParent(), "TOPLEFT", 0, 4)
     HealthBar:SetPoint("BOTTOMRIGHT", HealthBar:GetParent(), "TOPRIGHT", 0, 4)
@@ -322,9 +331,9 @@ end
 local function setItemBorderColor(self)
     local link = select(2, self:GetItem())
     local r, g, b
-    local backdrop = self.Backdrop
+    local bg = self.Background
 
-    if backdrop then
+    if bg then
         if link then
             local itemInfo = select(3, GetItemInfo(link))
 
@@ -333,10 +342,11 @@ local function setItemBorderColor(self)
             else
                 r, g, b = 0.2, 0.4, 0.6
             end
-
-            backdrop:SetBorderColor(r, g, b)
+            self:SetBorderColor({ r, g, b })
+            --backdrop:SetBorderColor(r, g, b)
         else
-            backdrop:SetBorderColor(0.2, 0.4, 0.6)
+            self:SetBorderColor({0.2, 0.4, 0.6})
+            --backdrop:SetBorderColor(0.2, 0.4, 0.6)
         end
     end
 end
@@ -422,10 +432,9 @@ local function setCompareItemBorderColor(self, anchorFrame)
 
                 if itemInfo then
                     local r, g, b = GetItemQualityColor(itemInfo)
-
-                    shoppingTooltip.Backdrop:SetBackdropBorderColor(r, g, b)
+                    shoppingTooltip:SetBorderColor({ r, g, b})
                 else
-                    shoppingTooltip.Backdrop:SetBackdropBorderColor(0.2, 0.4, 0.6)
+                    shoppingTooltip:SetBorderColor({ 0.2, 0.4, 0.6})
                 end
             end
         end
@@ -437,12 +446,13 @@ local function resetBorderColor(self)
         return
     end
 
-    if self.Backdrop then
-        self.Backdrop:SetBackdropBorderColor(0.2, 0.4, 0.6)
+    if self.Background then
+        self:SetBorderColor({0.2, 0.4, 0.6})
     end
 
+
     if HealthBar then
-        HealthBar.Backdrop:SetBackdropBorderColor(0, 1, 0)
+        HealthBar:SetBorderColor({0, 1, 0})
 
         if HealthBar.Text then
             HealthBar.Text:Hide()
@@ -453,9 +463,8 @@ local function resetBorderColor(self)
 end
 
 function Tooltip:SetBackdropStyle()
-    --self:SetBackdrop(Tooltip.BackdropStyle)
-    self:SetBackdropColor(0.2, 0.4, 0.6)
-    self:SetBackdropBorderColor(0.2, 0.4, 0.6)
+    self.Background:SetColorTexture(0.1, 0.2, 0.3, 1)
+    self:SetBorderColor({0.2, 0.4, 0.6})
 end
 
 function Tooltip:AddHooks()

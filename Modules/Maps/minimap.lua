@@ -334,13 +334,13 @@ function Minimap:AddTaxiEarlyExit()
     Minimap.EarlyExitButton.Text:SetShadowOffset(1.25, -1.25)
 end
 
-function expand(btn)
+local function expand(btn)
     btn.Icon:SetRotation(0)
     btn.isExpanded = true
     btn.Panel:Show()
 end
 
-function collapse(btn)
+local function collapse(btn)
     btn.Icon:SetRotation(math.pi/2)
     btn.isExpanded = false
     btn.Panel:Hide()

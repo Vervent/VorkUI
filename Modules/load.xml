@@ -17,4 +17,6 @@
 	<Include file="Misc\realmflag.lua" />
 
 	<Include file="ActionBars\core.lua" />
+
+	<Include file="Inventory\bags.lua" />
 </Ui>
