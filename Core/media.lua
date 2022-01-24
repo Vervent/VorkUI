@@ -361,6 +361,7 @@ function Medias:ChangeSystemFonts()
 
     alterFont('ChatFontNormal', 'Montserrat Semi Bold', 13, 'OUTLINE')
     alterFont('GameFontNormalSmall', 'Montserrat Semi Bold', 12)
+    alterFont('NumberFontNormal', 'Montserrat Extra Bold Italic', 12, 'OUTLINE')
     --GameFontNormalLarge
 end
 
