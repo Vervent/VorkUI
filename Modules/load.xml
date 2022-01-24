@@ -19,4 +19,5 @@
 	<Include file="ActionBars\core.lua" />
 
 	<Include file="Inventory\bags.lua" />
+	<Include file="Inventory\merchant.lua" />
 </Ui>
