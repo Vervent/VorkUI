@@ -7,7 +7,7 @@ local LibDataBroker = LibStub:GetLibrary("LibDataBroker-1.1") or nil
 local Module = V.Module
 local Medias = Module:GetModule('Medias')
 local DataFrames = Module:GetModule('DataFrames')
-local Minimap = Module:GetModule('Minimap')
+local Minimap = Module:RegisterModule('Minimap', true)
 
 
 local C_Map = C_Map

@@ -10,7 +10,7 @@ local LibAtlas = LibStub:GetLibrary("LibAtlas")
 local LibSharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 
 local Module = V.Module
-local Medias = Module:GetModule('Medias')
+local Medias = Module:RegisterModule('Medias', false)
 
 local Fonts = {
 }

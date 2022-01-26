@@ -4,7 +4,7 @@ local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 
 local Module = V.Module
-local ActionBars = Module:GetModule('ActionBars')
+local ActionBars = Module:RegisterModule('ActionBars', false)
 
 local gsub = string.gsub
 local tinsert = tinsert

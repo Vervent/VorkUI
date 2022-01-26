@@ -7,7 +7,7 @@ local AddOn, Plugin = ...
 local oUF = Plugin.oUF or oUF
 
 local Module = V.Module
-local UnitFrames = Module:GetModule('UnitFrames')
+local UnitFrames = Module:RegisterModule('UnitFrames', false)
 local Medias = Module:GetModule('Medias')
 
 local LibSlant = LibStub:GetLibrary("LibSlant")

@@ -5,7 +5,7 @@ local V, C, L = select(2, ...):unpack()
 
 local Module = V.Module
 local DebugFrames = Module:GetModule('DebugFrames')
-local SkinFrames = Module:GetModule('SkinFrames')
+local SkinFrames = Module:RegisterModule('SkinFrames', false)
 
 
 local skins = {}

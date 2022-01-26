@@ -3,7 +3,7 @@ local AddOn, Plugin = ...
 
 local Module = V.Module
 local Medias = Module:GetModule('Medias')
-local RealmFlag = Module:GetModule('RealmFlag')
+local RealmFlag = Module:RegisterModule('RealmFlag', false)
 
 local realmLocale = {
     ['Aegwynn'] = "german",

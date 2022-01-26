@@ -2,7 +2,7 @@ local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 
 local Module = V.Module
-local DebugFrames = Module:GetModule('DebugFrames')
+local DebugFrames = Module:RegisterModule('DebugFrames', false)
 
 local ViragDevTool = _G['ViragDevTool']
 function DebugFrames:Log(data, str)

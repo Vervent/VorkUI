@@ -7,8 +7,8 @@ local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 
 local Module = V.Module
-local Merchant = Module:GetModule('Merchant')
 local Utils = Module:GetModule('Utils')
+local Merchant = Module:RegisterModule('Merchant', false)
 
 local AutoSellJunk = true
 local AutoRepair = true

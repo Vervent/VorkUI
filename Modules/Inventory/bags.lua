@@ -2,7 +2,7 @@ local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 
 local Module = V.Module
-local Bags = Module:GetModule('Bags')
+local Bags = Module:RegisterModule('Bags', false)
 
 local UIParent = UIParent
 local unpack = unpack

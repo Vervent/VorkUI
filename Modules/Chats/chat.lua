@@ -46,8 +46,8 @@ local ChatEdit_ActivateChat = ChatEdit_ActivateChat
 local ChatEdit_DeactivateChat = ChatEdit_DeactivateChat
 
 local Module = V.Module
-local Chat = Module:GetModule('ChatFrames')
 local DataFrames = Module:GetModule('DataFrames')
+local Chat = Module:RegisterModule('ChatFrames', false)
 
 local texture = [[Interface/Tooltips/UI-Tooltip-Background]]
 local position = { 'BOTTOMLEFT', UIParent, 'BOTTOMLEFT', 32, 32 }

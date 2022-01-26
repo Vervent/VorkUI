@@ -3,11 +3,8 @@ local AddOn, Plugin = ...
 
 local Module = V.Module
 local Medias = Module:GetModule('Medias')
-local DataFrames = Module:GetModule('DataFrames')
+local DataFrames = Module:RegisterModule('DataFrames', false)
 
-
-local LibAtlas = Medias:GetLibAtlas()
-local LibSlant = LibStub:GetLibrary("LibSlant")
 local LibUnitStat = LibStub:GetLibrary('LibUnitStat')
 local LibObserver = LibStub:GetLibrary('LibObserver')
 

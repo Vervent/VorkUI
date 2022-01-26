@@ -60,8 +60,8 @@ local HealthBar = GameTooltipStatusBar
 local Module = V.Module
 local Medias = Module:GetModule('Medias')
 local RealmFlag = Module:GetModule('RealmFlag')
-local Tooltip = Module:GetModule('Tooltips')
 local Utils = Module:GetModule('Utils')
+local Tooltip = Module:RegisterModule('Tooltips', false)
 
 local RGBToHex = Utils.Functions.RGBToHex
 local ShortValue = Utils.Functions.ShortValue

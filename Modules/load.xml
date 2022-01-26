@@ -1,25 +1,25 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="UnitFrames\core.lua"/>
-	<Script file="UnitFrames\auratracking.lua"/>
-
 	<Script file="DebugFrames\core.lua"/>
+
+	<!--this need to be load before tooltips-->
+	<Script file="Misc\realmflag.lua" />
 
 	<Include file="DataFrames\load.xml"/>
 
+	<Script file="UnitFrames\core.lua"/>
+	<Script file="UnitFrames\auratracking.lua"/>
+
+	<Script file="Maps\minimap.lua" />
+
+	<Include file="Chats\load.xml"/>
+
+	<Script file="Tooltips\tooltips.lua" />
+
+	<Script file="ActionBars\core.lua" />
+
+	<Script file="Inventory\bags.lua" />
+	<Script file="Inventory\merchant.lua" />
+
 	<Include file="SkinFrames\load.xml"/>
 
-	<Include file="Maps\minimap.lua" />
-
-	<Include file="Chats\chat.lua" />
-	<Include file="Chats\link.lua" />
-	<Include file="Chats\copy.lua" />
-
-	<Include file="Tooltips\tooltips.lua" />
-
-	<Include file="Misc\realmflag.lua" />
-
-	<Include file="ActionBars\core.lua" />
-
-	<Include file="Inventory\bags.lua" />
-	<Include file="Inventory\merchant.lua" />
 </Ui>

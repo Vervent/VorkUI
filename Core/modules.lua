@@ -11,18 +11,18 @@ local enabled = {}
 local disabled = {}
 
 local mods = {
-    'DebugFrames',
-    'Medias',
-    'Utils',
-    'UnitFrames',
-    'DataFrames',
-    'ChatFrames',
-    'Tooltips',
-    'RealmFlag',
-    'ActionBars',
-    'Bags',
-    'Merchant',
-    'SkinFrames',
+    --'DebugFrames',
+    --'Medias',
+    --'Utils',
+    --'UnitFrames',
+    --'DataFrames',
+    --'ChatFrames',
+    --'Tooltips',
+    --'RealmFlag',
+    --'ActionBars',
+    --'Bags',
+    --'Merchant',
+    --'SkinFrames',
 }
 
 local Module = CreateFrame('Frame')
@@ -157,6 +157,6 @@ end
 Module:RegisterModules(mods)
 
 --Modules that need to hook Global Frames
-Module:RegisterModule('Minimap', true)
+--Module:RegisterModule('Minimap', true)
 
 V.Module = Module

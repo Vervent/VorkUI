@@ -4,7 +4,7 @@ V.Hider:Hide()
 local CreateFrame = CreateFrame
 
 local Module = V.Module
-local Utils = Module:GetModule('Utils')
+local Utils = Module:RegisterModule('Utils', false)
 --local Utils = CreateFrame("Frame")
 local strlower = strlower
 local tinsert = tinsert
