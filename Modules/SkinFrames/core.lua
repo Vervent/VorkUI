@@ -1,10 +1,12 @@
-local V, C, L = select(2, ...):unpack()
-local AddOn, Plugin = ...
+local select = select
+local pairs = pairs
 
-local DataFrames = V["DataFrames"]
-local Medias = V["Medias"]
-local DebugFrames = V['DebugFrames']
-local SkinFrames = V['SkinFrames']
+local V, C, L = select(2, ...):unpack()
+
+local Module = V.Module
+local DebugFrames = Module:GetModule('DebugFrames')
+local SkinFrames = Module:GetModule('SkinFrames')
+
 
 local skins = {}
 
@@ -43,6 +45,38 @@ function SkinFrames:RegisterSkin(frame, enableFct, disableFct)
     else
         DebugFrames:LogError(frame, 'exists yet in Skins Table')
     end
+end
+
+function SkinFrames:GetDebugNameFrames()
+    local list = {}
+
+    for frame, _ in pairs(skins) do
+
+        if type(frame) == 'string' then
+            tinsert(list, frame)
+        elseif frame:GetObjectType() == 'Frame' then
+            local name
+            if frame.GetDebugName then
+                name = frame:GetDebugName()
+            else
+                name = frame:GetName() or frame
+            end
+
+            tinsert(list, name)
+        end
+    end
+
+    return list
+end
+
+function SkinFrames:GetFrames()
+    local list = {}
+
+    for frame, _ in pairs(skins) do
+        tinsert(list, frame)
+    end
+
+    return list
 end
 
 function SkinFrames:Disable()

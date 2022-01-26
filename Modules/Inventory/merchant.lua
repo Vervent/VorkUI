@@ -6,12 +6,14 @@ local format = format
 local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 
-local Merchant = V['Merchant']
+local Module = V.Module
+local Merchant = Module:GetModule('Merchant')
+local Utils = Module:GetModule('Utils')
 
 local AutoSellJunk = true
 local AutoRepair = true
 
-local formatQTY = V.Utils.Functions.FormatMoney
+local formatQTY = Utils.Functions.FormatMoney
 
 local GetContainerNumSlots = GetContainerNumSlots
 local GetContainerItemLink = GetContainerItemLink

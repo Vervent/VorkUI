@@ -5,6 +5,8 @@ local select = select
 local V = select(2, ...):unpack()
 local LibGUI = Plugin.LibGUI
 
+local Module = V.Module
+local Medias = Module:GetModule('Medias')
 local Editor = V.Editor
 local Inspector = Editor.Inspector
 local borderSettings = Editor.border
@@ -83,7 +85,7 @@ end
 
 local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config, isBlended)
 
-    LibAtlas = V.Medias:GetLibAtlas()
+    LibAtlas = Medias:GetLibAtlas()
     local pt
     if point then
         pt = point

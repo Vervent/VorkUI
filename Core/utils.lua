@@ -3,7 +3,9 @@ V.Hider:Hide()
 
 local CreateFrame = CreateFrame
 
-local Utils = CreateFrame("Frame")
+local Module = V.Module
+local Utils = Module:GetModule('Utils')
+--local Utils = CreateFrame("Frame")
 local strlower = strlower
 local tinsert = tinsert
 local EnumerateFrames = EnumerateFrames
@@ -168,7 +170,7 @@ Utils:RegisterEvent("PLAYER_LOGIN")
 Utils:RegisterEvent("ADDON_LOADED")
 Utils:SetScript("OnEvent", Utils.Functions.OnEvent)
 
-V.Utils = Utils
+--V.Utils = Utils
 
 ---------------------------------------------------
 -- API func

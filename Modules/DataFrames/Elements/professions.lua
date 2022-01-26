@@ -1,15 +1,12 @@
 local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 
-local DataFrames = V["DataFrames"]
-local Medias = V["Medias"]
-local LibAtlas = Medias:GetLibAtlas()
-local DebugFrames = V['DebugFrames']
+local Module = V.Module
+local DataFrames = Module:GetModule('DataFrames')
 
 local format = format
 local select = select
 local ipairs = ipairs
-local pairs = pairs
 local tinsert = tinsert
 local CreateFrame = CreateFrame
 local GetProfessions = GetProfessions

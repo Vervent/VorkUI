@@ -6,6 +6,8 @@ local V = select(2, ...):unpack()
 local LibGUI = Plugin.LibGUI
 
 --local constant in local cache
+local Module = V.Module
+local Medias = Module:GetModule('Medias')
 local Editor = V.Editor
 local Inspector = Editor.Inspector
 local borderSettings = Editor.border
@@ -103,7 +105,7 @@ local function gui(baseName, parent, parentPoint, componentName, point, hasBorde
     local path = LibGUI:NewWidget('label', frame, 'PathLabel', { 'TOPLEFT', 20, 0 }, { 150, 30 }, nil, nil)
     path:Update( { 'OVERLAY', 'GameFontNormal','Texture' } )
     local pathMenu = LibGUI:NewWidget('dropdownmenu', frame, 'PathDropdown', { 'TOP', path, 'BOTTOM' }, { 150, 25 }, nil, nil)
-    pathMenu:Update( V.Medias:GetLSMDropDown('statusbar') )
+    pathMenu:Update( Medias:GetLSMDropDown('statusbar') )
     pathMenu.key = 1
     pathMenu:RegisterObserver(frame.Observer)
 

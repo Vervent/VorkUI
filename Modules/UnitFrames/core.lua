@@ -6,8 +6,10 @@ local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 local oUF = Plugin.oUF or oUF
 
-local UnitFrames = V["UnitFrames"]
-local Medias = V["Medias"]
+local Module = V.Module
+local UnitFrames = Module:GetModule('UnitFrames')
+local Medias = Module:GetModule('Medias')
+
 local LibSlant = LibStub:GetLibrary("LibSlant")
 local LibAtlas = Medias:GetLibAtlas()
 

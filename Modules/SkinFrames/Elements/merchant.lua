@@ -4,8 +4,9 @@ local hooksecurefunc = hooksecurefunc
 local V, C, L = select(2, ...):unpack()
 
 local LibSlant = LibStub:GetLibrary("LibSlant")
-local SkinFrames = V["SkinFrames"]
-local Medias = V["Medias"]
+local Module = V.Module
+local Medias = Module:GetModule('Medias')
+local SkinFrames = Module:GetModule('SkinFrames')
 
 local BUYBACK_ITEMS_PER_PAGE = BUYBACK_ITEMS_PER_PAGE
 local UnitClass = UnitClass

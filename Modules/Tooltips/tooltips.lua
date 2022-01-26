@@ -56,12 +56,15 @@ local ShoppingTooltip1 = ShoppingTooltip1
 local ShoppingTooltip2 = ShoppingTooltip2
 
 local HealthBar = GameTooltipStatusBar
-local Medias = V['Medias']
-local RealmFlag = V['RealmFlag']
-local DebugFrames = V['DebugFrames']
-local Tooltip = V['Tooltips']
-local RGBToHex = V.Utils.Functions.RGBToHex
-local ShortValue = V.Utils.Functions.ShortValue
+
+local Module = V.Module
+local Medias = Module:GetModule('Medias')
+local RealmFlag = Module:GetModule('RealmFlag')
+local Tooltip = Module:GetModule('Tooltips')
+local Utils = Module:GetModule('Utils')
+
+local RGBToHex = Utils.Functions.RGBToHex
+local ShortValue = Utils.Functions.ShortValue
 
 local OnMouseOver = true
 local DisplayTitle = true

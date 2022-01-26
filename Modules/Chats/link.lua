@@ -10,11 +10,13 @@ local ChatEdit_ActivateChat = ChatEdit_ActivateChat
 local ChatFrame_AddMessageEventFilter = ChatFrame_AddMessageEventFilter
 local ItemRefTooltip = ItemRefTooltip
 
-local Chat = V['ChatFrames']
+local Module = V.Module
+local Chat = Module:GetModule('ChatFrames')
+local Utils = Module:GetModule('Utils')
 local Link = CreateFrame('frame')
 local currentLink
 local linkColor = { 0.7, 0.4, 0.8 }
-local RGBToHex = V.Utils.Functions.RGBToHex
+local RGBToHex = Utils.Functions.RGBToHex
 
 local function create(self, url)
     url = RGBToHex(unpack(linkColor)).."|Hurl:"..url.."|h["..url.."]|h|r "

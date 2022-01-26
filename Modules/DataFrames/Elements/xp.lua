@@ -1,7 +1,8 @@
 local select = select
 local V = select(2, ...):unpack()
 
-local DataFrames = V["DataFrames"]
+local Module = V.Module
+local DataFrames = Module:GetModule('DataFrames')
 
 local floor = floor
 local format = format

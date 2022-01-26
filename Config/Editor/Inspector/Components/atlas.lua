@@ -2,6 +2,9 @@ local _, Plugin = ...
 local select = select
 
 local V = select(2, ...):unpack()
+local Module = V.Module
+
+local Medias = Module:GetModule('Medias')
 local LibGUI = Plugin.LibGUI
 local LibAtlas
 
@@ -99,8 +102,8 @@ end
 
 local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
 
-    LibAtlas = V.Medias:GetLibAtlas()
-    atlasDropdown = V.Medias:GetAtlasDropDown()
+    LibAtlas = Medias:GetLibAtlas()
+    atlasDropdown = Medias:GetAtlasDropDown()
     local height = 0
     local pt
     if point then

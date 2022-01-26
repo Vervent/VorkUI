@@ -1,9 +1,11 @@
 local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 
-local DataFrames = V["DataFrames"]
-local DebugFrames = V['DebugFrames']
-local Medias = V["Medias"]
+local Module = V.Module
+local Medias = Module:GetModule('Medias')
+local DataFrames = Module:GetModule('DataFrames')
+
+
 local LibAtlas = Medias:GetLibAtlas()
 local LibSlant = LibStub:GetLibrary("LibSlant")
 local LibUnitStat = LibStub:GetLibrary('LibUnitStat')
@@ -405,7 +407,7 @@ end
 
 function DataFrames:Enable()
 
-    for _, conf in ipairs(frames) do
+    for i, conf in ipairs(frames) do
         tinsert(self.Frames, createDataFrames(conf))
     end
 

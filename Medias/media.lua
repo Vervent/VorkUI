@@ -5,7 +5,9 @@
 ---
 
 local V, C, L = select(2, ...):unpack()
-local Medias = V["Medias"]
+
+local Module = V.Module
+local Medias = Module:GetModule('Medias')
 
 Medias.MediaPath = {
     Fonts = [[Interface\AddOns\VorkUI\Medias\Fonts\]],

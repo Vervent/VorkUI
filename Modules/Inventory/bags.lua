@@ -1,7 +1,8 @@
 local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 
-local Bags = V['Bags']
+local Module = V.Module
+local Bags = Module:GetModule('Bags')
 
 local UIParent = UIParent
 local unpack = unpack
@@ -1143,7 +1144,8 @@ local function cooldownOnUpdate(self, elapsed)
 
             self:SetScript("OnUpdate", nil)
         else
-            self.Text:SetFont(C.Medias.Font, 12, "THINOUTLINE")
+            --self.Text:SetFont(C.Medias.Font, 12, "THINOUTLINE")
+            self.Text:SetFontObject('NumberFontNormal')
             self.Text:SetTextColor(1, 0, 0)
             self.Text:SetText(V.Utils.Functions.FormatTime(Cooldown))
         end

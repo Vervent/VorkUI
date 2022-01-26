@@ -6,6 +6,8 @@ local V = select(2, ...):unpack()
 local LibGUI = Plugin.LibGUI
 
 --local constant in local cache
+local Module = V.Module
+local Medias = Module:GetModule('Medias')
 local Editor = V.Editor
 local Inspector = Editor.Inspector
 local borderSettings = Editor.border
@@ -14,7 +16,7 @@ local blendmode = Editor.menus.blendmode
 
 local function gui(baseName, parent, parentPoint, componentName, point, hasBorder, isCollapsable, hasName, config)
 
-    local atlasDropDown = V.Medias:GetAtlasDropDown()
+    local atlasDropDown = Medias:GetAtlasDropDown()
     local pt
     if point then
         pt = point

@@ -11,9 +11,11 @@ local SELECTED_CHAT_FRAME = SELECTED_CHAT_FRAME
 local FCF_GetChatWindowInfo = FCF_GetChatWindowInfo
 local FCF_SetChatWindowFontSize = FCF_SetChatWindowFontSize
 
-local Chat = V['ChatFrames']
+local Module = V.Module
+local Chat = Module:GetModule('ChatFrames')
+local Utils = Module:GetModule('Utils')
 local Copy = CreateFrame('frame')
-local RGBToHex = V.Utils.Functions.RGBToHex
+local RGBToHex = Utils.Functions.RGBToHex
 
 local function onTextCopied(self)
     self:SetTextCopyable(false)

@@ -5,6 +5,8 @@ local select = select
 local V = select(2, ...):unpack()
 local LibGUI = Plugin.LibGUI
 
+local Module = V.Module
+local Medias = Module:GetModule('Medias')
 local Editor = V.Editor
 local Inspector = Editor.Inspector
 local borderSettings = Editor.border
@@ -104,7 +106,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     local bgPath = LibGUI:NewWidget('label', frame, 'BgPathLabel', { 'TOPLEFT', bgTitle, 'BOTTOMLEFT' }, { 150, 30 }, nil, nil)
     bgPath:Update( { 'OVERLAY', 'GameFontNormal','Texture' } )
     local bgPathMenu = LibGUI:NewWidget('dropdownmenu', frame, 'BgPathDropdown', { 'TOP', bgPath, 'BOTTOM' }, { 150, 25 }, nil, nil)
-    bgPathMenu:Update( V.Medias:GetLSMDropDown('background') )
+    bgPathMenu:Update( Medias:GetLSMDropDown('background') )
     bgPathMenu.key = 'Background'
     bgPathMenu.subkey = 'Texture'
     bgPathMenu:RegisterObserver(frame.Observer)
@@ -129,7 +131,7 @@ local function gui(baseName, parent, parentPoint, componentName, point,  hasBord
     local borderPath = LibGUI:NewWidget('label', frame, 'BorderPathLabel', { 'TOPLEFT', borderTitle, 'BOTTOMLEFT' }, { 150, 30 }, nil, nil)
     borderPath:Update( { 'OVERLAY', 'GameFontNormal','Texture' } )
     local borderPathMenu = LibGUI:NewWidget('dropdownmenu', frame, 'BorderPathDropdown', { 'TOP', borderPath, 'BOTTOM' }, { 150, 25 }, nil, nil)
-    borderPathMenu:Update( V.Medias:GetLSMDropDown('border') )
+    borderPathMenu:Update( Medias:GetLSMDropDown('border') )
     borderPathMenu.key = 'Border'
     borderPathMenu.subkey = 'Texture'
     borderPathMenu:RegisterObserver(frame.Observer)

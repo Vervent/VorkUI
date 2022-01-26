@@ -9,7 +9,8 @@ local V,C,L = select(2,...):unpack()
 local LibAtlas = LibStub:GetLibrary("LibAtlas")
 local LibSharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 
-local Medias = CreateFrame("Frame")
+local Module = V.Module
+local Medias = Module:GetModule('Medias')
 
 local Fonts = {
 }
@@ -360,9 +361,7 @@ function Medias:ChangeSystemFonts()
     alterFont('SplashHeaderFont', 'Montserrat Bold', 24)
 
     alterFont('ChatFontNormal', 'Montserrat Semi Bold', 13, 'OUTLINE')
-    alterFont('GameFontNormalSmall', 'Montserrat Semi Bold', 12)
+    alterFont('GameFontNormalSmall', 'Montserrat Medium', 10)
     alterFont('NumberFontNormal', 'Montserrat Extra Bold Italic', 12, 'OUTLINE')
     --GameFontNormalLarge
 end
-
-V["Medias"] = Medias

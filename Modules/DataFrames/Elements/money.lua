@@ -1,15 +1,13 @@
 local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 
-local DataFrames = V["DataFrames"]
-local Medias = V["Medias"]
-local LibAtlas = Medias:GetLibAtlas()
-local DebugFrames = V['DebugFrames']
+local Module = V.Module
+local Utils = Module:GetModule('Utils')
+local DataFrames = Module:GetModule('DataFrames')
 
 local GetMoney = GetMoney
-local GetCoinText = GetCoinText
 
-local formatQTY = V.Utils.Functions.FormatMoney
+local formatQTY = Utils.Functions.FormatMoney
 
 local function update(self, event)
     self.Text:SetText(formatQTY(GetMoney()))

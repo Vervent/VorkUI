@@ -1,8 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="modules.lua"/>
 	<Script file="load.lua"/>
 	<Script file="utils.lua"/>
-	<Script file="media.lua"/>
 	<Script file="themes.lua"/>
 	<Script file="profiles.lua"/>
-	<Script file="modules.lua"/>
+	<Script file="media.lua"/>
 </Ui>

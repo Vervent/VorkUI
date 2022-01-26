@@ -1,7 +1,8 @@
 local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 
-local DebugFrames = V["DebugFrames"]
+local Module = V.Module
+local DebugFrames = Module:GetModule('DebugFrames')
 
 local ViragDevTool = _G['ViragDevTool']
 function DebugFrames:Log(data, str)
@@ -47,4 +48,10 @@ function DebugFrames:LogSucess(data, str)
     else
         print ('|cFF00FF00'..(str or '')..'|r', data)
     end
+end
+
+function DebugFrames:Enable()
+end
+
+function DebugFrames:Disable()
 end

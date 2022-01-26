@@ -1,9 +1,9 @@
 local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 
-local Medias = V['Medias']
-local DebugFrames = V['DebugFrames']
-local RealmFlag = V['RealmFlag']
+local Module = V.Module
+local Medias = Module:GetModule('Medias')
+local RealmFlag = Module:GetModule('RealmFlag')
 
 local realmLocale = {
     ['Aegwynn'] = "german",
@@ -310,4 +310,12 @@ function RealmFlag:GetFlagIcon(serverName)
     end
 
     return Medias:GetFlag(locale)
+end
+
+function RealmFlag:Enable()
+
+end
+
+function RealmFlag:Disable()
+
 end

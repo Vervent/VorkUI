@@ -1,10 +1,9 @@
 local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 
-local DataFrames = V["DataFrames"]
-local Medias = V["Medias"]
-local LibAtlas = Medias:GetLibAtlas()
-local DebugFrames = V['DebugFrames']
+local Module = V.Module
+local Medias = Module:GetModule('Medias')
+local DataFrames = Module:GetModule('DataFrames')
 
 local GetCVarBool = GetCVarBool
 local date = date
@@ -52,7 +51,7 @@ end
 
 local function enable(self)
 
-    self:SetSize(90, 30)
+    self:SetSize(110, 30)
     if self.Icon then
         self.Icon:SetSize(25,25)
         self.Icon:SetTexture([[INTERFACE\ICONS\SPELL_HOLY_BORROWEDTIME]])

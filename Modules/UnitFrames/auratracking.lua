@@ -1,5 +1,6 @@
 local V, C, L = select(2, ...):unpack()
-local UnitFrames = V["UnitFrames"]
+local Module = V.Module
+local UnitFrames = Module:GetModule('UnitFrames')
 
 ------------------------------------------------------------------------------------
 -- Locales functions and tables

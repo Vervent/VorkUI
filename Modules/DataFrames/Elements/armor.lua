@@ -1,10 +1,13 @@
 local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 
+
 local DataFrames = V["DataFrames"]
 local Medias = V["Medias"]
-local LibAtlas = Medias:GetLibAtlas()
-local DebugFrames = V['DebugFrames']
+
+local Module = V.Module
+local Medias = Module:GetModule('Medias')
+local DataFrames = Module:GetModule('DataFrames')
 
 local unpack = unpack
 local BreakUpLargeNumbers = BreakUpLargeNumbers

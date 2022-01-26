@@ -3,8 +3,8 @@ local select = select
 local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 
-local ActionBars = V['ActionBars']
-local DebugFrames = V['DebugFrames']
+local Module = V.Module
+local ActionBars = Module:GetModule('ActionBars')
 
 local gsub = string.gsub
 local tinsert = tinsert

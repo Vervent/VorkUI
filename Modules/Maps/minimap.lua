@@ -4,10 +4,12 @@ local LibStub = LibStub
 local LibDBIcon = LibStub:GetLibrary('LibDBIcon-1.0') or nil
 local LibDataBroker = LibStub:GetLibrary("LibDataBroker-1.1") or nil
 
-local DebugFrames = V['DebugFrames']
-local DataFrames = V["DataFrames"]
-local Medias = V["Medias"]
-local Minimap = V['Minimap']
+local Module = V.Module
+local Medias = Module:GetModule('Medias')
+local DataFrames = Module:GetModule('DataFrames')
+local Minimap = Module:GetModule('Minimap')
+
+
 local C_Map = C_Map
 local CreateFrame = CreateFrame
 
