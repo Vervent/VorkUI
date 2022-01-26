@@ -94,6 +94,24 @@ Utils.Functions.ShortValue = function(v)
     end
 end
 
+Utils.Functions.FormatMoney = function(money)
+    local copperIcon = [[interface/icons/inv_misc_coin_05]]
+    local silverIcon = [[interface/icons/inv_misc_coin_03]]
+    local goldIcon = [[interface/icons/inv_misc_coin_01]]
+
+    local copper = money % 100
+    local silver = floor((money % 10000) / 100)
+    local gold = floor(money / 10000)
+
+    if gold > 999999 then
+        return format('%.2fm|T%s:0:1|t', gold / 1000000, goldIcon)
+    elseif gold > 9999 then
+        return format('%.2fk|T%s:0:1|t%.0f|T%s:0:1|t', gold / 1000, goldIcon, silver, silverIcon)
+    else
+        return format('%.f|T%s:0:1|t%.0f|T%s:0:1|t%.0f|T%s:0:1|t', gold, goldIcon, silver, silverIcon, copper, copperIcon)
+    end
+end
+
 Utils.Functions.FormatTime = function(s)
     if s == Infinity then
         return

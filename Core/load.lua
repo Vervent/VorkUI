@@ -63,6 +63,7 @@ function Load:OnEvent(event, ...)
         V['ActionBars']:Enable()
         V['Bags']:Enable()
         V['Merchant']:Enable()
+        V['SkinFrames']:Enable()
     elseif (event == 'ADDON_LOADED') then
 
         --We want to load Medias as soon as possible

@@ -6,6 +6,8 @@
 
 	<Include file="DataFrames\load.xml"/>
 
+	<Include file="SkinFrames\load.xml"/>
+
 	<Include file="Maps\minimap.lua" />
 
 	<Include file="Chats\chat.lua" />

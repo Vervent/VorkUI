@@ -9,23 +9,7 @@ local DebugFrames = V['DebugFrames']
 local GetMoney = GetMoney
 local GetCoinText = GetCoinText
 
-local copperIcon = [[interface/icons/inv_misc_coin_05]]
-local silverIcon = [[interface/icons/inv_misc_coin_03]]
-local goldIcon = [[interface/icons/inv_misc_coin_01]]
-
-local function formatQTY(money)
-    local copper = money % 100
-    local silver = (money / 100) % 100
-    local gold = money / 100 / 100
-
-    if gold > 999999 then
-        return format('%.2fm|T%s:0:1|t', gold / 1000000, goldIcon)
-    elseif gold > 9999 then
-        return format('%.2fk|T%s:0:1|t%.0f|T%s:0:1|t', gold / 1000, goldIcon, silver, silverIcon)
-    else
-        return format('%.f|T%s:0:1|t%.0f|T%s:0:1|t%.0f|T%s:0:1|t', gold, goldIcon, silver, silverIcon, copper, copperIcon)
-    end
-end
+local formatQTY = V.Utils.Functions.FormatMoney
 
 local function update(self, event)
     self.Text:SetText(formatQTY(GetMoney()))
