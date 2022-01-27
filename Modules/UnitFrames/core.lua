@@ -7,11 +7,11 @@ local AddOn, Plugin = ...
 local oUF = Plugin.oUF or oUF
 
 local Module = V.Module
-local UnitFrames = Module:RegisterModule('UnitFrames', false)
-local Medias = Module:GetModule('Medias')
+local UnitFrames = Module:RegisterModule('UnitFrames', false, 'Medias')
+local Medias
+local LibAtlas
 
 local LibSlant = LibStub:GetLibrary("LibSlant")
-local LibAtlas = Medias:GetLibAtlas()
 
 -- Lib globals
 local strfind = strfind
@@ -2014,6 +2014,9 @@ function UnitFrames:CreateUnits()
 end
 
 function UnitFrames:Enable()
+
+    Medias = Module:GetModule('Medias')
+    LibAtlas = Medias:GetLibAtlas()
 
     oUF:RegisterStyle("Vorkui", UnitFrames.Style)
     oUF:SetActiveStyle("Vorkui")

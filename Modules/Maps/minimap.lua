@@ -5,10 +5,9 @@ local LibDBIcon = LibStub:GetLibrary('LibDBIcon-1.0') or nil
 local LibDataBroker = LibStub:GetLibrary("LibDataBroker-1.1") or nil
 
 local Module = V.Module
-local Medias = Module:GetModule('Medias')
-local DataFrames = Module:GetModule('DataFrames')
-local Minimap = Module:RegisterModule('Minimap', true)
-
+local Medias
+local DataFrames
+local Minimap = Module:RegisterModule('Minimap', true, {'Medias', 'DataFrames'})
 
 local C_Map = C_Map
 local CreateFrame = CreateFrame
@@ -431,6 +430,9 @@ function Minimap:AddAddonBtnRegion(shape)
 end
 
 function Minimap:Enable()
+    Medias = Module:GetModule('Medias')
+    DataFrames = Module:GetModule('DataFrames')
+
     local shape = 'blank'
 
     self:DisableMinimapElements()

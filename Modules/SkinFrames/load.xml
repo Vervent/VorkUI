@@ -2,4 +2,5 @@
     <Script file="core.lua"/>
 
     <Script file="Elements\merchant.lua"/>
+    <Script file="Elements\gossip.lua"/>
 </Ui>

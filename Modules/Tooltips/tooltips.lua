@@ -58,13 +58,13 @@ local ShoppingTooltip2 = ShoppingTooltip2
 local HealthBar = GameTooltipStatusBar
 
 local Module = V.Module
-local Medias = Module:GetModule('Medias')
-local RealmFlag = Module:GetModule('RealmFlag')
-local Utils = Module:GetModule('Utils')
-local Tooltip = Module:RegisterModule('Tooltips', false)
+local Medias
+local RealmFlag
+local Utils
+local Tooltip = Module:RegisterModule('Tooltips', false, {'Medias', 'RealmFlag', 'Utils'})
 
-local RGBToHex = Utils.Functions.RGBToHex
-local ShortValue = Utils.Functions.ShortValue
+local RGBToHex
+local ShortValue
 
 local OnMouseOver = true
 local DisplayTitle = true
@@ -487,6 +487,12 @@ function Tooltip:AddHooks()
 end
 
 function Tooltip:Enable()
+
+    Medias = Module:GetModule('Medias')
+    RealmFlag = Module:GetModule('RealmFlag')
+    Utils = Module:GetModule('Utils')
+    RGBToHex = Utils.Functions.RGBToHex
+    ShortValue = Utils.Functions.ShortValue
 
     self:CreateAnchor()
     self:AddHooks()

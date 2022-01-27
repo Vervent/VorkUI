@@ -3,12 +3,17 @@ local debugstack = debugstack
 
 local V, C, L = select(2, ...):unpack()
 
+local LibGraph = LibStub:GetLibrary('LibGraph')
+
 local CreateFrame = CreateFrame
 
+local graph = LibGraph:CreateGraph()
 local modules = {}
 
 local enabled = {}
 local disabled = {}
+
+local list = {}
 
 local mods = {
     --'DebugFrames',
@@ -29,7 +34,8 @@ local Module = CreateFrame('Frame')
 
 local function log(...)
 
-    if modules['DebugFrames'] then
+    if modules['DebugFrames'] and Module:IsModuleEnabled('DebugFrames') then
+        print ('debug enabled', Module:IsModuleEnabled('DebugFrames'))
         modules['DebugFrames']:LogError(...)
     else
         print (...)
@@ -48,7 +54,6 @@ local function getIndexInTable(name, t)
 end
 
 function Module:Enable()
-
 end
 
 function Module:Disable()
@@ -57,7 +62,12 @@ end
 
 function Module:EnableModule(name, mustRemove)
     local idx = getIndexInTable(name, disabled)
+
     if modules[name] and idx ~= nil then
+
+        if graph:Contains(name) then
+            graph:RemoveNode(name)
+        end
         modules[name]:Enable()
 
         tinsert(enabled, name)
@@ -84,9 +94,17 @@ function Module:DisableModule(name, mustRemove)
 end
 
 function Module:EnableModules()
-    for i, n in ipairs(disabled) do
+
+    local list = graph:GetListOrder()
+
+    for i, n in ipairs(list) do
+        log(n, 'enabling module')
         self:EnableModule(n)
     end
+
+    --for i, n in ipairs(disabled) do
+    --    self:EnableModule(n)
+    --end
 
     disabled = {}
 end
@@ -97,7 +115,63 @@ function Module:DisableModules()
     end
 end
 
-function Module:RegisterModule(name, isGlobalHook)
+-----@param name string the name of the module
+-----@param isGlobalHook boolean if we want to catch frame in _G
+-----@param dependencies table a list a other module that we need to load before
+-----@return frame if new module, otherwise return nil
+--function Module:RegisterModule(name, isGlobalHook, dependencies)
+--    if not modules[name] then
+--
+--        if dependencies then
+--            for _, d in ipairs(dependencies) do
+--                self:RegisterModule(d)
+--            end
+--        end
+--
+--        if not isGlobalHook then
+--            modules[name] = CreateFrame('Frame')
+--        else
+--            modules[name] = _G[name]
+--        end
+--        --modulesStatus[name] = false
+--
+--        tinsert(disabled, name)
+--
+--        return modules[name]
+--    else
+--        if dependencies then
+--
+--            log(name, 'this module is existing yet, update Dependencies')
+--
+--            --local t = {}
+--            local idx = getIndexInTable(name, disabled)
+--            --for _, d in ipairs(dependencies) do
+--            --    tinsert(t, d)
+--            --end
+--            --tinsert(t, name)
+--            tinsert(dependencies, name)
+--
+--            tremove(disabled, idx)
+--
+--            for _, dep in ipairs(dependencies) do
+--                if getIndexInTable(dep, disabled) == nil then
+--                    log(dep, 'push in disabled as dependencies for'..name)
+--                    tinsert(disabled, dep)
+--                else
+--                    log(dep, 'is load before'..getIndexInTable(dep, disabled)..'/'..idx)
+--                end
+--            end
+--        else
+--            log(name, "this module is existing yet and don't have dependencies, you cannot register twice")
+--        end
+--
+--    end
+--
+--    --since dependencies can cause a CreateFrame for a later module, we need to return reference on it
+--    return modules[name] or nil
+--end
+
+function Module:RegisterModule(name, isGlobalHook, dependencies)
     if not modules[name] then
         if not isGlobalHook then
             modules[name] = CreateFrame('Frame')
@@ -107,6 +181,8 @@ function Module:RegisterModule(name, isGlobalHook)
         --modulesStatus[name] = false
 
         tinsert(disabled, name)
+
+        graph:AddNode(name, dependencies)
 
         return modules[name]
     else
@@ -154,7 +230,7 @@ function Module:GetModuleStatus(name)
 end
 
 --We need to create frame as soon as possible to avoid loading issue
-Module:RegisterModules(mods)
+--Module:RegisterModules(mods)
 
 --Modules that need to hook Global Frames
 --Module:RegisterModule('Minimap', true)

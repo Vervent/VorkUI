@@ -46,8 +46,8 @@ local ChatEdit_ActivateChat = ChatEdit_ActivateChat
 local ChatEdit_DeactivateChat = ChatEdit_DeactivateChat
 
 local Module = V.Module
-local DataFrames = Module:GetModule('DataFrames')
-local Chat = Module:RegisterModule('ChatFrames', false)
+local DataFrames
+local Chat = Module:RegisterModule('ChatFrames', false, { 'DataFrames', 'Utils' })
 
 local texture = [[Interface/Tooltips/UI-Tooltip-Background]]
 local position = { 'BOTTOMLEFT', UIParent, 'BOTTOMLEFT', 32, 32 }
@@ -519,6 +519,8 @@ local function noMouseAlpha(self)
 end
 
 function Chat:Enable()
+    DataFrames = Module:GetModule('DataFrames')
+
     createPanel(self)
     self:Setup()
     self.Chats = {}

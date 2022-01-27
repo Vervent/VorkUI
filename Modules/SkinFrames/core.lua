@@ -4,13 +4,14 @@ local pairs = pairs
 local V, C, L = select(2, ...):unpack()
 
 local Module = V.Module
-local DebugFrames = Module:GetModule('DebugFrames')
-local SkinFrames = Module:RegisterModule('SkinFrames', false)
-
+local DebugFrames
+local SkinFrames = Module:RegisterModule('SkinFrames', false, 'Medias')
 
 local skins = {}
 
 function SkinFrames:Enable()
+    DebugFrames = Module:GetModule('DebugFrames')
+
     for _, skin in pairs(skins) do
         skin.Enable(skin)
     end

@@ -38,4 +38,7 @@
 	<!-- LibChallengeInfo -->
 	<Script file='Misc\LibChallengeInfo.lua'/>
 
+	<!-- LibGraph -->
+	<Script file='LibGraph\LibGraph.lua'/>
+
 </Ui>

@@ -1,8 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="DebugFrames\core.lua"/>
 
-	<!--this need to be load before tooltips-->
-	<Script file="Misc\realmflag.lua" />
+	<Script file="Tooltips\tooltips.lua" />
 
 	<Include file="DataFrames\load.xml"/>
 
@@ -13,7 +12,7 @@
 
 	<Include file="Chats\load.xml"/>
 
-	<Script file="Tooltips\tooltips.lua" />
+	<Script file="Misc\realmflag.lua" />
 
 	<Script file="ActionBars\core.lua" />
 

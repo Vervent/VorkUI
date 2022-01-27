@@ -7,13 +7,12 @@ local V, C, L = select(2, ...):unpack()
 local AddOn, Plugin = ...
 
 local Module = V.Module
-local Utils = Module:GetModule('Utils')
-local Merchant = Module:RegisterModule('Merchant', false)
+local Merchant = Module:RegisterModule('Merchant', false, 'Utils')
+local Utils
+local formatQTY
 
 local AutoSellJunk = true
 local AutoRepair = true
-
-local formatQTY = Utils.Functions.FormatMoney
 
 local GetContainerNumSlots = GetContainerNumSlots
 local GetContainerItemLink = GetContainerItemLink
@@ -105,6 +104,9 @@ local function onClick(self, ...)
 end
 
 function Merchant:Enable()
+    Utils = Module:GetModule('Utils')
+    formatQTY = Utils.Functions.FormatMoney
+
     self:RegisterEvent('MERCHANT_SHOW')
     self:SetScript('OnEvent', onEvent)
 
