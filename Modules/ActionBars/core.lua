@@ -1009,7 +1009,7 @@ local function startHighlight(self)
         self.Animation:Play()
 
         if self.Borders then
-            self.Borders:SetBorderColor({ 1, 1, 0 })
+            self:SetBorderColor({ 1, 1, 0 })
         end
     end
 end
@@ -1019,7 +1019,7 @@ local function stopHightlight(self)
         self.Animation:Stop()
 
         if self.Borders then
-            self.Borders:SetBorderColor({ 0.2, 0.4, 0.6 })
+            self:SetBorderColor({ 0.2, 0.4, 0.6 })
         end
     end
 end

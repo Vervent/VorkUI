@@ -8,6 +8,8 @@ local Module = V.Module
 local Medias = Module:GetModule('Medias')
 local SkinFrames = Module:GetModule('SkinFrames')
 
+local _G = _G
+
 local BUYBACK_ITEMS_PER_PAGE = BUYBACK_ITEMS_PER_PAGE
 local UnitClass = UnitClass
 local GetClassColor = GetClassColor

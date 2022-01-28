@@ -8,6 +8,9 @@ local SkinFrames = Module:GetModule('SkinFrames')
 
 local frame = _G['QuestFrame']
 
+local QuestFrame_SetTitleTextColor = QuestFrame_SetTitleTextColor
+local QuestFrame_SetTextColor = QuestFrame_SetTextColor
+
 local function skinPanel(panelName, scrollName, scrollChildName, skinChildButton, skinFct)
     local w = frame:GetWidth()-10
     local detailPanel = _G[panelName]

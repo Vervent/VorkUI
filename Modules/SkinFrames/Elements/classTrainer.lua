@@ -14,7 +14,6 @@ local frame = _G['ClassTrainerFrame']
 CLASS_TRAINER_SKILL_BARBUTTON_WIDTH = frame:GetWidth()-20
 
 local function skinButton(self)
-    local disabledBG = self.disabledBG
     self:SetNormalTexture('')
 end
 

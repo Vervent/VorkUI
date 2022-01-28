@@ -1,10 +1,11 @@
+local select = select
+
 local V, C, L = select(2, ...):unpack()
 
-local LibSlant = LibStub:GetLibrary("LibSlant")
 local Module = V.Module
-local Medias = Module:GetModule('Medias')
 local SkinFrames = Module:GetModule('SkinFrames')
 
+local _G = _G
 local frame = _G['GossipFrame']
 
 local function skinFriendship()
@@ -16,11 +17,22 @@ local function skinFriendship()
 end
 
 local function skinScrollFrame()
+    local w = frame:GetWidth()-10
     local f = _G['GossipFrameGreetingPanel']
 
     local scroll = _G['GossipGreetingScrollFrame']
+    local scrollBar = scroll.ScrollBar
+    local scrollChild = _G['GossipGreetingScrollChildFrame']
 
-    Module:GetModule('DebugFrames'):Log(scroll)
+    scrollBar:SetAlpha(0)
+    local r
+    for i=1, scroll:GetNumRegions() do
+        r = select(i, scroll:GetRegions())
+        r:Kill()
+    end
+
+    scroll:SetWidth(w)
+    scrollChild:SetWidth(w)
 end
 
 local function skinFrame()
@@ -48,7 +60,7 @@ local function skinFrame()
     frame:CreateBorder(1, { 0.2, 0.4, 0.6, 0.75 })
 
     skinFriendship()
-    skinScrollFrame()
+    skinScrollFrame(frame)
 end
 
 local function enable()
