@@ -3,4 +3,6 @@
 
     <Script file="Elements\merchant.lua"/>
     <Script file="Elements\gossip.lua"/>
+    <Script file="Elements\quest.lua"/>
+    <Script file="Elements\classTrainer.lua"/>
 </Ui>

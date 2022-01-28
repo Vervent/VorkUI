@@ -15,19 +15,7 @@ local disabled = {}
 
 local list = {}
 
-local mods = {
-    --'DebugFrames',
-    --'Medias',
-    --'Utils',
-    --'UnitFrames',
-    --'DataFrames',
-    --'ChatFrames',
-    --'Tooltips',
-    --'RealmFlag',
-    --'ActionBars',
-    --'Bags',
-    --'Merchant',
-    --'SkinFrames',
+local timeToLoadMods = {
 }
 
 local Module = CreateFrame('Frame')
@@ -35,7 +23,6 @@ local Module = CreateFrame('Frame')
 local function log(...)
 
     if modules['DebugFrames'] and Module:IsModuleEnabled('DebugFrames') then
-        print ('debug enabled', Module:IsModuleEnabled('DebugFrames'))
         modules['DebugFrames']:LogError(...)
     else
         print (...)
@@ -63,12 +50,15 @@ end
 function Module:EnableModule(name, mustRemove)
     local idx = getIndexInTable(name, disabled)
 
+
     if modules[name] and idx ~= nil then
 
         if graph:Contains(name) then
             graph:RemoveNode(name)
         end
+        local beginTime  = debugprofilestop()
         modules[name]:Enable()
+        timeToLoadMods[name] = (debugprofilestop()-beginTime)*1000
 
         tinsert(enabled, name)
         if mustRemove then
@@ -98,7 +88,6 @@ function Module:EnableModules()
     local list = graph:GetListOrder()
 
     for i, n in ipairs(list) do
-        log(n, 'enabling module')
         self:EnableModule(n)
     end
 
@@ -107,6 +96,8 @@ function Module:EnableModules()
     --end
 
     disabled = {}
+
+    self:PrintLoadingTime()
 end
 
 function Module:DisableModules()
@@ -114,62 +105,6 @@ function Module:DisableModules()
         self:EnableModule(n)
     end
 end
-
------@param name string the name of the module
------@param isGlobalHook boolean if we want to catch frame in _G
------@param dependencies table a list a other module that we need to load before
------@return frame if new module, otherwise return nil
---function Module:RegisterModule(name, isGlobalHook, dependencies)
---    if not modules[name] then
---
---        if dependencies then
---            for _, d in ipairs(dependencies) do
---                self:RegisterModule(d)
---            end
---        end
---
---        if not isGlobalHook then
---            modules[name] = CreateFrame('Frame')
---        else
---            modules[name] = _G[name]
---        end
---        --modulesStatus[name] = false
---
---        tinsert(disabled, name)
---
---        return modules[name]
---    else
---        if dependencies then
---
---            log(name, 'this module is existing yet, update Dependencies')
---
---            --local t = {}
---            local idx = getIndexInTable(name, disabled)
---            --for _, d in ipairs(dependencies) do
---            --    tinsert(t, d)
---            --end
---            --tinsert(t, name)
---            tinsert(dependencies, name)
---
---            tremove(disabled, idx)
---
---            for _, dep in ipairs(dependencies) do
---                if getIndexInTable(dep, disabled) == nil then
---                    log(dep, 'push in disabled as dependencies for'..name)
---                    tinsert(disabled, dep)
---                else
---                    log(dep, 'is load before'..getIndexInTable(dep, disabled)..'/'..idx)
---                end
---            end
---        else
---            log(name, "this module is existing yet and don't have dependencies, you cannot register twice")
---        end
---
---    end
---
---    --since dependencies can cause a CreateFrame for a later module, we need to return reference on it
---    return modules[name] or nil
---end
 
 function Module:RegisterModule(name, isGlobalHook, dependencies)
     if not modules[name] then
@@ -213,6 +148,14 @@ function Module:IsModuleEnabled(name)
     return idx ~= nil
 end
 
+function Module:PrintLoadingTime()
+    log(timeToLoadMods, 'loading times')
+end
+
+function Module:GetLoadingTime(name)
+    return timeToLoadMods[name] or 0
+end
+
 function Module:GetModuleStatus(name)
     for _, n in ipairs(enabled) do
         if n == name then
@@ -228,11 +171,5 @@ function Module:GetModuleStatus(name)
 
     return nil
 end
-
---We need to create frame as soon as possible to avoid loading issue
---Module:RegisterModules(mods)
-
---Modules that need to hook Global Frames
---Module:RegisterModule('Minimap', true)
 
 V.Module = Module

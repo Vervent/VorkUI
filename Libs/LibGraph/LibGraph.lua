@@ -12,7 +12,6 @@ end
 local Methods = {
 
     GetListOrder = function(self)
-        local b = debugprofilestop()
 
         local node = self.root.Childs
         local max = #self.root.Childs
@@ -35,8 +34,6 @@ local Methods = {
             end
         end
 
-        local e = debugprofilestop()
-        print('|cFFFF1010Time to get Order|r', e-b)
         return order
 
     end,
@@ -51,7 +48,6 @@ local Methods = {
                 return true
             end
         end
-
         return false
     end,
 

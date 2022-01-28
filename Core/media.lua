@@ -194,7 +194,7 @@ local function alterFont(globalName, fontName, size, flags, colors, shadow)
 
     if shadow then
         font:SetShadowColor(0, 0, 0, 0.75)
-        font:SetShadowOffset(2, -2)
+        font:SetShadowOffset(1, -1)
     end
 
 end
@@ -285,6 +285,10 @@ function Medias:ChangeSystemFonts()
     alterFont('QuestFont_Shadow_Small', 'Montserrat Medium', 14, "NONE", nil, true)
     alterFont('QuestFont_Super_Huge', 'Montserrat Bold', 24)
     alterFont('QuestFont_Super_Huge_Outline', 'Montserrat Bold', 24)
+    alterFont('QuestFont', 'Montserrat Medium', 12, nil, {1,1,1})
+    alterFont('QuestTitleFont', 'Montserrat Medium', 18, nil, {0.8,1,0.8}, true)
+    --Cannot catch MapQuestInfoSpellHeaderTemplate try with parent QuestMapRewardsFont
+    alterFont('QuestMapRewardsFont', 'Montserrat Medium', 18, nil, {0.8,1,0.8}, true)
 
     alterFont( 'System15Font', 'Montserrat Medium', 15)
     alterFont( 'SystemFont22_Outline', 'Montserrat Bold', 22, "OUTLINE")
